@@ -1,4 +1,5 @@
 import { Component } from "@angular/core"
+import { Router } from "@angular/router"
 import { MatIconModule } from "@angular/material/icon"
 import { MatButtonModule } from "@angular/material/button"
 import { FormsModule } from "@angular/forms"
@@ -20,4 +21,10 @@ import { MatFormFieldModule } from "@angular/material/form-field"
 export class LoginPageComponent {
 	username = ""
 	password = ""
+
+	constructor(private router: Router) {}
+
+	login() {
+		this.router.navigate(["tables"])
+	}
 }

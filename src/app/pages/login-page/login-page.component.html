@@ -1,25 +1,72 @@
 <div class="container">
-	<div class="form-container">
-		<div>
-			<mat-form-field class="username-field">
-				<mat-label>Nutzername</mat-label>
+    <div class="form-container" *ngIf="!showRegistrationForm && !showForgotPassword">
+        <div class="input-container">
+            <mat-form-field>
+                <input matInput placeholder="Nutzername" type="text" [(ngModel)]="username">
+            </mat-form-field>
+        </div>
+        <div class="input-container">
+            <mat-form-field>
+                <input matInput placeholder="Passwort" type="password" [(ngModel)]="password">
+            </mat-form-field>
+        </div>
+        <div class="button-container">
+            <button mat-raised-button color="primary" (click)="login()">Anmelden</button>
+            <button mat-raised-button color="accent" (click)="showRegistrationForm = true">Registrieren</button>
+        </div>
+		<div class="forgot-password">
+            <button href="#" (click)="showForgotPassword = true">Passwort vergessen?</button>
+        </div>	
+    </div>
 
-				<input matInput type="text" [(ngModel)]="username" />
+	<div class="form-container" *ngIf="showRegistrationForm">
+        <div class="input-container">
+            <mat-form-field>
+                <input matInput placeholder="Name" type="text" [(ngModel)]="name">
+            </mat-form-field>
+        </div>
+        <div class="input-container">
+            <mat-form-field>
+                <input matInput placeholder="E-Mail" type="email" [(ngModel)]="email">
+            </mat-form-field>
+        </div>
+        <div class="input-container">
+            <mat-form-field>
+                <input matInput placeholder="Passwort" type="password" [(ngModel)]="password">
+            </mat-form-field>
+        </div>
+        <div class="input-container">
+            <mat-form-field>
+                <input matInput placeholder="Name des Restaurants" type="text" [(ngModel)]="restaurantName">
+            </mat-form-field>
+        </div>
+        <div class="input-container">
+            <mat-form-field>
+                <input matInput placeholder="Adresse" type="text" [(ngModel)]="address">
+            </mat-form-field>
+        </div>
+        <div class="input-container">
+            <mat-form-field>
+                <input matInput placeholder="Anzahl der Räume" type="number" [(ngModel)]="roomCount">
+            </mat-form-field>
+        </div>
+        <div class="button-container">
+            <button mat-raised-button color="primary" (click)="register()">Registrieren</button>
+            <button mat-raised-button color="warn" (click)="cancelRegistration()">Abbrechen</button>
+        </div>
+    </div>
+
+	<div class="form-container" *ngIf="showForgotPassword">
+		<div class="input-container">
+			<mat-form-field>
+				<input matInput placeholder="E-Mail" type="email" [(ngModel)]="forgotPasswordEmail">
 			</mat-form-field>
 		</div>
-
-		<div>
-			<mat-form-field class="password-field">
-				<mat-label>Passwort</mat-label>
-
-				<input matInput type="text" [(ngModel)]="password" />
-			</mat-form-field>
+		<div class="button-container">
+			<button mat-raised-button color="primary" (click)="sendResetEmail()">Senden</button>
+			<button mat-raised-button color="warn" (click)="cancelForgotPassword()">Abbrechen</button>
 		</div>
-
-		<div>
-			<button mat-flat-button color="primary" (click)="login()">
-				Log in
-			</button>
-		</div>
-	</div>
+	</div>	
+	
 </div>
+

@@ -52,14 +52,4 @@ export class LoginPageComponent {
         this.address = "";
         this.roomCount = 0;
     }
-
-	showForgotPassword: boolean = false;
-    forgotPasswordEmail: string = "";
-    sendResetEmail() {
-        // Zu Implementieren
-    }
-
-    cancelForgotPassword() {
-        this.showForgotPassword = false;
-    }
 }

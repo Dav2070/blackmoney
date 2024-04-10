@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="form-container" *ngIf="!showRegistrationForm && !showForgotPassword">
+    <div class="form-container" *ngIf="!showRegistrationForm">
         <div class="input-container">
             <mat-form-field>
                 <input matInput placeholder="Nutzername" type="text" [(ngModel)]="username">
@@ -14,12 +14,9 @@
             <button mat-raised-button color="primary" (click)="login()">Anmelden</button>
             <button mat-raised-button color="accent" (click)="showRegistrationForm = true">Registrieren</button>
         </div>
-		<div class="forgot-password">
-            <button href="#" (click)="showForgotPassword = true">Passwort vergessen?</button>
-        </div>	
     </div>
 
-	<div class="form-container" *ngIf="showRegistrationForm">
+    <div class="form-container" *ngIf="showRegistrationForm">
         <div class="input-container">
             <mat-form-field>
                 <input matInput placeholder="Name" type="text" [(ngModel)]="name">
@@ -55,18 +52,5 @@
             <button mat-raised-button color="warn" (click)="cancelRegistration()">Abbrechen</button>
         </div>
     </div>
-
-	<div class="form-container" *ngIf="showForgotPassword">
-		<div class="input-container">
-			<mat-form-field>
-				<input matInput placeholder="E-Mail" type="email" [(ngModel)]="forgotPasswordEmail">
-			</mat-form-field>
-		</div>
-		<div class="button-container">
-			<button mat-raised-button color="primary" (click)="sendResetEmail()">Senden</button>
-			<button mat-raised-button color="warn" (click)="cancelForgotPassword()">Abbrechen</button>
-		</div>
-	</div>	
-	
 </div>
 

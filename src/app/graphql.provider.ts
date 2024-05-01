@@ -3,7 +3,7 @@ import { HttpLink } from "apollo-angular/http"
 import { ApplicationConfig, inject } from "@angular/core"
 import { ApolloClientOptions, InMemoryCache } from "@apollo/client/core"
 
-const uri = "localhost:5000"
+const uri = "http://localhost:2000"
 
 export function apolloOptionsFactory(): ApolloClientOptions<any> {
 	const httpLink = inject(HttpLink)

@@ -6,6 +6,7 @@ import { FormsModule } from "@angular/forms"
 import { MatInputModule } from "@angular/material/input"
 import { MatFormFieldModule } from "@angular/material/form-field"
 import { CommonModule } from "@angular/common"
+import { ApiService } from "src/app/services/api-service"
 
 @Component({
 	templateUrl: "./login-page.component.html",
@@ -18,24 +19,33 @@ import { CommonModule } from "@angular/common"
 		MatButtonModule,
 		MatIconModule,
 		CommonModule
-	]
+	],
+	providers: [ApiService]
 })
 export class LoginPageComponent {
 	username = ""
 	password = ""
 
-	showRegistrationForm = false // Diese Variable hinzufügen
+	showRegistrationForm = false
 
-	name = "" // Diese Variablen für das Registrierungsformular hinzufügen
+	name = ""
 	email = ""
 	restaurantName = ""
 	address = ""
 	roomCount = 0
 
-	constructor(private router: Router) {}
+	constructor(private router: Router, private apiService: ApiService) {}
 
-	login() {
-		this.router.navigate(["tables"])
+	async login() {
+		let result = await this.apiService.createSession("token", {
+			username: this.username,
+			password: this.password
+		})
+
+		if (result?.data?.createSession.token != null) {
+			// Redirect to tables page
+			this.router.navigate(["tables"])
+		}
 	}
 
 	register() {

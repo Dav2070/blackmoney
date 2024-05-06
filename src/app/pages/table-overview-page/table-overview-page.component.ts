@@ -27,22 +27,17 @@ interface Room {
 		MatToolbarModule
 	]
 })
-export class TableOverviewPageComponent implements OnInit {
-	
+export class TableOverviewPageComponent {
 	rooms: Room[] = [
 		{ value: "restaurant", viewValue: "Restaurant", tables: [] },
 		{ value: "biergarten", viewValue: "Biergarten", tables: ["3", "4", "5"] }
 	]
 
-	
-
-	selected = this.rooms[0];
+	selected = this.rooms[0]
 
 	ngOnInit(): void {
-		for(var i =0;i<=20;i++){
-			this.selected.tables.push(i.toString());
-		};
+		for (var i = 0; i <= 20; i++) {
+			this.selected.tables.push(i.toString())
+		}
 	}
-
-	
 }

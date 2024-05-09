@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core"
+import { isServer } from "../utils"
 
 const accessTokenKey = "ACCESS_TOKEN"
 
@@ -7,6 +8,8 @@ export class AuthService {
 	accessToken: string = null
 
 	getAccessToken() {
+		if (isServer()) return null
+
 		if (this.accessToken == null) {
 			this.accessToken = localStorage.getItem(accessTokenKey)
 		}
@@ -15,6 +18,8 @@ export class AuthService {
 	}
 
 	setAccessToken(accessToken: string) {
+		if (isServer()) return
+
 		this.accessToken = accessToken
 		localStorage.setItem(accessTokenKey, accessToken)
 	}

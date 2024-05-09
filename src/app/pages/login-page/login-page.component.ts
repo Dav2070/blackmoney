@@ -1,6 +1,7 @@
 import { Component } from "@angular/core"
 import { Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
+import { AuthService } from "src/app/services/auth-service"
 
 @Component({
 	templateUrl: "./login-page.component.html",
@@ -18,7 +19,18 @@ export class LoginPageComponent {
 	address = ""
 	roomCount = 0
 
-	constructor(private router: Router, private apiService: ApiService) {}
+	constructor(
+		private router: Router,
+		private apiService: ApiService,
+		private authService: AuthService
+	) {}
+
+	ngOnInit() {
+		if (this.authService.getAccessToken() != null) {
+			// Redirect to tables page
+			this.router.navigate(["tables"])
+		}
+	}
 
 	async login() {
 		let result = await this.apiService.createSession("token", {
@@ -26,7 +38,11 @@ export class LoginPageComponent {
 			password: this.password
 		})
 
-		if (result?.data?.createSession.token != null) {
+		let token = result?.data?.createSession.token
+
+		if (token != null) {
+			this.authService.setAccessToken(token)
+
 			// Redirect to tables page
 			this.router.navigate(["tables"])
 		}

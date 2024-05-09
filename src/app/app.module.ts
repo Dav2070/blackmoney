@@ -33,6 +33,7 @@ import { TableOverviewPageComponent } from "./pages/table-overview-page/table-ov
 
 // Services
 import { ApiService } from "./services/api-service"
+import { AuthService } from "./services/auth-service"
 
 @NgModule({
 	declarations: [
@@ -60,7 +61,7 @@ import { ApiService } from "./services/api-service"
 		MatSelectModule,
 		MatToolbarModule
 	],
-	providers: [ApiService, provideClientHydration()],
+	providers: [ApiService, AuthService, provideClientHydration()],
 	bootstrap: [AppComponent]
 })
 export class AppModule {}

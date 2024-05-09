@@ -1,10 +1,10 @@
-import { Routes } from "@angular/router"
-
+import { NgModule } from "@angular/core"
+import { RouterModule, Routes } from "@angular/router"
+import { ForgotPasswordPageComponent } from "./pages/forgot-password-page/forgot-password-page.component"
 import { LoginPageComponent } from "./pages/login-page/login-page.component"
 import { TableOverviewPageComponent } from "./pages/table-overview-page/table-overview-page.component"
-import { ForgotPasswordPageComponent } from "./pages/forgot-password-page/forgot-password-page.component"
 
-export const routes: Routes = [
+const routes: Routes = [
 	{
 		path: "login",
 		component: LoginPageComponent
@@ -18,3 +18,9 @@ export const routes: Routes = [
 		component: ForgotPasswordPageComponent
 	}
 ]
+
+@NgModule({
+	imports: [RouterModule.forRoot(routes)],
+	exports: [RouterModule]
+})
+export class AppRoutingModule {}

@@ -1,26 +1,10 @@
 import { Component } from "@angular/core"
 import { Router } from "@angular/router"
-import { MatIconModule } from "@angular/material/icon"
-import { MatButtonModule } from "@angular/material/button"
-import { FormsModule } from "@angular/forms"
-import { MatInputModule } from "@angular/material/input"
-import { MatFormFieldModule } from "@angular/material/form-field"
-import { CommonModule } from "@angular/common"
 import { ApiService } from "src/app/services/api-service"
 
 @Component({
 	templateUrl: "./login-page.component.html",
-	styleUrl: "./login-page.component.scss",
-	standalone: true,
-	imports: [
-		MatFormFieldModule,
-		MatInputModule,
-		FormsModule,
-		MatButtonModule,
-		MatIconModule,
-		CommonModule
-	],
-	providers: [ApiService]
+	styleUrl: "./login-page.component.scss"
 })
 export class LoginPageComponent {
 	username = ""

@@ -1,11 +1,4 @@
-import { Component, OnInit } from "@angular/core"
-import { MatCardModule } from "@angular/material/card"
-import { CommonModule } from "@angular/common"
-import { FormsModule } from "@angular/forms"
-import { MatInputModule } from "@angular/material/input"
-import { MatSelectModule } from "@angular/material/select"
-import { MatFormFieldModule } from "@angular/material/form-field"
-import { MatToolbarModule } from "@angular/material/toolbar"
+import { Component } from "@angular/core"
 
 interface Room {
 	value: string
@@ -15,17 +8,7 @@ interface Room {
 
 @Component({
 	templateUrl: "./table-overview-page.component.html",
-	styleUrl: "./table-overview-page.component.scss",
-	standalone: true,
-	imports: [
-		MatCardModule,
-		CommonModule,
-		FormsModule,
-		MatInputModule,
-		MatSelectModule,
-		MatFormFieldModule,
-		MatToolbarModule
-	]
+	styleUrl: "./table-overview-page.component.scss"
 })
 export class TableOverviewPageComponent {
 	rooms: Room[] = [

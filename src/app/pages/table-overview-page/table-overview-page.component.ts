@@ -1,26 +1,42 @@
 import { Component } from "@angular/core"
-
-interface Room {
-	value: string
-	viewValue: string
-	tables: string[]
-}
+import { ApiService } from "src/app/services/api-service"
+import { isServer } from "src/app/utils"
+import { RoomResource } from "src/app/types"
 
 @Component({
 	templateUrl: "./table-overview-page.component.html",
 	styleUrl: "./table-overview-page.component.scss"
 })
 export class TableOverviewPageComponent {
-	rooms: Room[] = [
-		{ value: "restaurant", viewValue: "Restaurant", tables: [] },
-		{ value: "biergarten", viewValue: "Biergarten", tables: ["3", "4", "5"] }
-	]
+	rooms: RoomResource[] = []
+	selected: RoomResource = null
 
-	selected = this.rooms[0]
+	constructor(private apiService: ApiService) {}
 
-	ngOnInit(): void {
-		for (var i = 0; i <= 20; i++) {
-			this.selected.tables.push(i.toString())
+	async ngOnInit() {
+		if (isServer()) return
+
+		let listRoomsResult = await this.apiService.listRooms(
+			`
+				items {
+					name
+					tables {
+						items {
+							name
+						}
+					}
+				}
+			`
+		)
+
+		if (listRoomsResult.data?.listRooms != null) {
+			for (let roomItem of listRoomsResult.data.listRooms.items) {
+				this.rooms.push(roomItem)
+			}
+
+			if (this.rooms.length > 0) {
+				this.selected = this.rooms[0]
+			}
 		}
 	}
 }

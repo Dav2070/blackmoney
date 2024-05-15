@@ -34,6 +34,7 @@ import { TableOverviewPageComponent } from "./pages/table-overview-page/table-ov
 // Services
 import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
+import { BookingComponent } from "./pages/booking/booking.component"
 
 @NgModule({
 	declarations: [
@@ -42,7 +43,8 @@ import { AuthService } from "./services/auth-service"
 		// Pages
 		ForgotPasswordPageComponent,
 		LoginPageComponent,
-		TableOverviewPageComponent
+		TableOverviewPageComponent,
+		BookingComponent
 	],
 	imports: [
 		BrowserModule,

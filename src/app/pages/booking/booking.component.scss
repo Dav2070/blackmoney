@@ -45,6 +45,7 @@ nav {
 }
 
 #order {
+    overflow-y: scroll;
     flex:1;
     background-color: purple;
 }
@@ -72,3 +73,5 @@ footer {
     flex: 1;
 	background-color: limegreen; 
 }
+
+

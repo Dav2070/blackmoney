@@ -2,25 +2,49 @@
 	<header>Bediener 1 Tisch 1</header>
 	<div id="mehrspaltig">
 		<nav>
-			<div id="order">Bestellungen</div>
+			<div id="order">
+				<div class="tables">
+					@for (item of bookedItems.keys(); track item) {
+					<mat-card>
+						<mat-card-content
+							>{{ item.name }} {{ bookedItems.get(item) }}</mat-card-content
+						>
+					</mat-card>
+					}
+				</div>
+			</div>
 			<div id="numpad">Numberpad</div>
 		</nav>
 		<article>
 			<div id="items">
 				@for (item of selectedInventory; track item){
-                    <button mat-flat-button>{{item.name}}</button>
-                }
+				<button (click)="selectItem(item)" mat-flat-button>
+					{{ item.name }}
+				</button>
+				}
 			</div>
 		</article>
 		<aside>
 			<div id="drinks">
-                @for (drink of drinks; track drink){
-                    <button (click)="changeSelectedInventory(drink.items)" mat-flat-button>{{drink.name}}</button>
-                }
-            </div>
-			<div id="dishes">@for (dish of dishes; track dish){
-                <button (click)="changeSelectedInventory(dish.items)" mat-flat-button>{{dish.name}}</button>
-            }</div>
+				@for (drink of drinks; track drink){
+				<button
+					(click)="changeSelectedInventory(drink.items)"
+					mat-flat-button
+				>
+					{{ drink.name }}
+				</button>
+				}
+			</div>
+			<div id="dishes">
+				@for (dish of dishes; track dish){
+				<button
+					(click)="changeSelectedInventory(dish.items)"
+					mat-flat-button
+				>
+					{{ dish.name }}
+				</button>
+				}
+			</div>
 		</aside>
 	</div>
 	<footer>Fußzeile</footer>

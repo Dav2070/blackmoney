@@ -29,7 +29,9 @@ export class BookingComponent {
 		{ name: "Dessert", items: [{ id: 8, price: 6.4, name: "Tiramisu" }] }
 	]
 
-	selectedInventory: Item[] = this.drinks[0].items
+	selectedInventory: Item[] = this.drinks[0].items;
+
+	bookedItems = new Map<Item, number>();
 
 	constructor() {}
 
@@ -38,5 +40,18 @@ export class BookingComponent {
 	//Lade Items zur ausgewählten Kategorie
 	changeSelectedInventory(items: Item[]) {
 		this.selectedInventory = items
+	}
+
+	//Füge Item der Liste an bestellten Artikeln hinzu
+	selectItem(item: Item) {
+		if(this.bookedItems.has(item)){
+			let value=this.bookedItems.get(item)
+			this.bookedItems.set(item,value+1);
+		}
+		else{
+			this.bookedItems.set(item,1);
+		}
+		
+		
 	}
 }

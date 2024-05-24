@@ -2,6 +2,7 @@ import { Component } from "@angular/core"
 import { Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
+import { DataService } from "src/app/services/data-service"
 
 @Component({
 	templateUrl: "./login-page.component.html",
@@ -22,7 +23,8 @@ export class LoginPageComponent {
 	constructor(
 		private router: Router,
 		private apiService: ApiService,
-		private authService: AuthService
+		private authService: AuthService,
+		private dataService: DataService
 	) {}
 
 	ngOnInit() {
@@ -42,6 +44,7 @@ export class LoginPageComponent {
 
 		if (token != null) {
 			this.authService.setAccessToken(token)
+			this.dataService.loadApollo(token)
 
 			// Redirect to tables page
 			this.router.navigate(["tables"])

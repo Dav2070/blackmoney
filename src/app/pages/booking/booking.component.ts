@@ -6,9 +6,10 @@ import { Item } from "src/app/models/item.model"
 	templateUrl: "./booking.component.html",
 	styleUrl: "./booking.component.scss"
 })
+
 export class BookingComponent {
 	drinks: Inventory[] = [
-		{ name: "Alkoholfrei", items: [{ id: 1, price: 4.0, name: "Cola 0,5" }] },
+		{ name: "Alkoholfrei", items: [{ id: 1, price: 5.0, name: "Cola 0,5" }] },
 		{ name: "Bier", items: [{ id: 2, price: 3.7, name: "Pils 0,4" }] },
 		{
 			name: "Wein",
@@ -29,11 +30,19 @@ export class BookingComponent {
 		{ name: "Dessert", items: [{ id: 8, price: 6.4, name: "Tiramisu" }] }
 	]
 
-	selectedInventory: Item[] = this.drinks[0].items;
+	selectedInventory: Item[] = this.drinks[0].items
 
-	bookedItems = new Map<Item, number>();
+	bookedItems = new Map<Item, number>()
 
-	numberpad:number[]= [1,2,3,4,5,6,7,8,9]
+	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+	newItems = new Map<Item, number>()
+
+	endpreise =  new Map<Item, number>()
+
+	bookedendpreise = new Map<Item, number>()
+
+	total: number;
 
 	constructor() {}
 
@@ -44,16 +53,42 @@ export class BookingComponent {
 		this.selectedInventory = items
 	}
 
-	//Füge Item der Liste an bestellten Artikeln hinzu
+	//Füge Item der Liste an neu bestellten Artikeln hinzu
 	selectItem(item: Item) {
-		if(this.bookedItems.has(item)){
-			let value=this.bookedItems.get(item)
-			this.bookedItems.set(item,value+1);
+		if (this.newItems.has(item)) {
+			let value = this.newItems.get(item)
+			this.newItems.set(item, value + 1)
+		} else {
+			this.newItems.set(item, 1)
 		}
-		else{
-			this.bookedItems.set(item,1);
+		this.endpreise.set(item, item.price * (this.newItems.get(item) || 1))
+	}
+
+	//Aktualisiert den Gesamtpreis
+	showTotal(){
+		this.total = 0;
+ 		 for (let preis of this.bookedendpreise.values()) {
+    		this.total += preis;
 		}
-		
-		
+	}
+	
+	//Fügt Items der Liste an bestellten Artikeln hinzu
+	sendOrder() {
+		for (let [key, value] of this.newItems) {
+			if (this.bookedItems.has(key)) {
+				let number = this.bookedItems.get(key)
+				this.bookedItems.set(key, number + value)
+			} else {
+				this.bookedItems.set(key, value)
+			}
+
+			if(this.bookedendpreise.has(key)){
+				this.bookedendpreise.set(key, this.bookedendpreise.get(key) + this.endpreise.get(key))
+			} else {
+				this.bookedendpreise.set(key, this.endpreise.get(key))
+			}
+		}
+		this.newItems.clear();
+		this.showTotal()
 	}
 }

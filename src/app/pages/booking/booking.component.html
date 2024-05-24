@@ -8,24 +8,52 @@
 					<mat-card>
 						<mat-card-content
 							>{{ item.name }}
-							{{ bookedItems.get(item) }}</mat-card-content
-						>
+							{{ bookedItems.get(item) }} Stück
+							{{ bookedendpreise.get(item) }}€
+						</mat-card-content>						
 					</mat-card>
 					}
+					<mat-card>
+						<mat-card-content>Tisch 12</mat-card-content>
+					</mat-card>
+					@for (item of newItems.keys(); track item) {
+						<mat-card>
+							<mat-card-content>
+								{{ item.name }} 
+								{{ newItems.get(item) }} Stück
+								{{ endpreise.get(item) }}€
+							</mat-card-content>
+						</mat-card>
+						}
 				</div>
 			</div>
 			<div id="numpad">
-				@for(number of numberpad; track number){
-				<button mat-flat-button>{{ number }}</button>
-				@if(number==3||number==6||number==9){
-					<br>
-				}
-				}
-				<button mat-flat-button>,</button>
-				<button mat-flat-button>0</button>
-				<button mat-flat-button><-</button>
+				<mat-card>
+					<mat-card-content>
+						{{ total }}
+					</mat-card-content>
+				</mat-card>
+				<div>
+					@for(number of numberpad; track number){
+					<button mat-flat-button>{{ number }}</button>
+					@if(number==3){
+					<button mat-flat-button>X</button>
+					<br />
+					} @if(number==6){
+					<button mat-flat-button>Clear</button>
+					<br />
+					} @if(number==9){
+					<button mat-flat-button>Plus</button>
+					<br />
+					} }
+					<button mat-flat-button>,</button>
+					<button mat-flat-button>0</button>
+					<button mat-flat-button>-</button>
+					<button mat-flat-button>Enter</button>
+					<br/>
+					<button (click)="sendOrder()" mat-flat-button>Send Order</button>
+				</div>
 			</div>
-
 		</nav>
 		<article>
 			<div id="items">

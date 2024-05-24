@@ -29,11 +29,13 @@ export class BookingComponent {
 		{ name: "Dessert", items: [{ id: 8, price: 6.4, name: "Tiramisu" }] }
 	]
 
-	selectedInventory: Item[] = this.drinks[0].items;
+	selectedInventory: Item[] = this.drinks[0].items
 
-	bookedItems = new Map<Item, number>();
+	bookedItems = new Map<Item, number>()
 
-	numberpad:number[]= [1,2,3,4,5,6,7,8,9]
+	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+	newItems = new Map<Item, number>()
 
 	constructor() {}
 
@@ -46,14 +48,23 @@ export class BookingComponent {
 
 	//Füge Item der Liste an bestellten Artikeln hinzu
 	selectItem(item: Item) {
-		if(this.bookedItems.has(item)){
-			let value=this.bookedItems.get(item)
-			this.bookedItems.set(item,value+1);
+		if (this.newItems.has(item)) {
+			let value = this.newItems.get(item)
+			this.newItems.set(item, value + 1)
+		} else {
+			this.newItems.set(item, 1)
 		}
-		else{
-			this.bookedItems.set(item,1);
+	}
+
+	sendOrder() {
+		for (let [key, value] of this.newItems) {
+			if (this.bookedItems.has(key)) {
+				let number = this.bookedItems.get(key)
+				this.bookedItems.set(key, number + value)
+			} else {
+				this.bookedItems.set(key, value)
+			}
 		}
-		
-		
+		this.newItems.clear();
 	}
 }

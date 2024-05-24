@@ -46,7 +46,7 @@ export class BookingComponent {
 		this.selectedInventory = items
 	}
 
-	//Füge Item der Liste an bestellten Artikeln hinzu
+	//Füge Item der Liste an neu bestellten Artikeln hinzu
 	selectItem(item: Item) {
 		if (this.newItems.has(item)) {
 			let value = this.newItems.get(item)
@@ -56,6 +56,7 @@ export class BookingComponent {
 		}
 	}
 
+	//Fügt Items der Liste an bestellten Artikeln hinzu
 	sendOrder() {
 		for (let [key, value] of this.newItems) {
 			if (this.bookedItems.has(key)) {

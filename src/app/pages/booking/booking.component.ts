@@ -6,9 +6,10 @@ import { Item } from "src/app/models/item.model"
 	templateUrl: "./booking.component.html",
 	styleUrl: "./booking.component.scss"
 })
+
 export class BookingComponent {
 	drinks: Inventory[] = [
-		{ name: "Alkoholfrei", items: [{ id: 1, price: 4.0, name: "Cola 0,5" }] },
+		{ name: "Alkoholfrei", items: [{ id: 1, price: 5.0, name: "Cola 0,5" }] },
 		{ name: "Bier", items: [{ id: 2, price: 3.7, name: "Pils 0,4" }] },
 		{
 			name: "Wein",
@@ -37,6 +38,12 @@ export class BookingComponent {
 
 	newItems = new Map<Item, number>()
 
+	endpreise =  new Map<Item, number>()
+
+	bookedendpreise = new Map<Item, number>()
+
+	total: number;
+
 	constructor() {}
 
 	ngOnInit() {}
@@ -54,8 +61,17 @@ export class BookingComponent {
 		} else {
 			this.newItems.set(item, 1)
 		}
+		this.endpreise.set(item, item.price * (this.newItems.get(item) || 1))
 	}
 
+	//Aktualisiert den Gesamtpreis
+	showTotal(){
+		this.total = 0;
+ 		 for (let preis of this.bookedendpreise.values()) {
+    		this.total += preis;
+		}
+	}
+	
 	//Fügt Items der Liste an bestellten Artikeln hinzu
 	sendOrder() {
 		for (let [key, value] of this.newItems) {
@@ -65,7 +81,14 @@ export class BookingComponent {
 			} else {
 				this.bookedItems.set(key, value)
 			}
+
+			if(this.bookedendpreise.has(key)){
+				this.bookedendpreise.set(key, this.bookedendpreise.get(key) + this.endpreise.get(key))
+			} else {
+				this.bookedendpreise.set(key, this.endpreise.get(key))
+			}
 		}
 		this.newItems.clear();
+		this.showTotal()
 	}
 }

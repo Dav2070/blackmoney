@@ -5,21 +5,21 @@
 			<div id="order">
 				<div class="tables">
 					@for (item of bookedItems.keys(); track item) {
-					<mat-card>
-						<mat-card-content
-							>{{ item.name }}
+					<mat-card (click) = "onCardClick(item, 'booked')">
+						<mat-card-content>
+							{{ item.name }}
 							{{ bookedItems.get(item) }} Stück
 							{{ bookedendpreise.get(item) }}€
-						</mat-card-content>						
+						</mat-card-content>			
 					</mat-card>
 					}
 					<mat-card>
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
 					@for (item of newItems.keys(); track item) {
-						<mat-card>
+						<mat-card (click) = "onCardClick(item, 'new')"> 
 							<mat-card-content>
-								{{ item.name }} 
+								{{ item.name }}
 								{{ newItems.get(item) }} Stück
 								{{ endpreise.get(item) }}€
 							</mat-card-content>
@@ -52,6 +52,7 @@
 					<button mat-flat-button>Enter</button>
 					<br/>
 					<button (click)="sendOrder()" mat-flat-button>Send Order</button>
+					<button (click)="deleteItem()" mat-flat-button>Delete</button>
 				</div>
 			</div>
 		</nav>

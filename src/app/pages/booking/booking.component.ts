@@ -42,7 +42,11 @@ export class BookingComponent {
 
 	bookedendpreise = new Map<Item, number>()
 
-	total: number;
+	lastClickedItem: Item | null = null
+
+	lastClickedItemSource: 'new' | 'booked' | null = null;
+
+	total: number
 
 	constructor() {}
 
@@ -62,13 +66,42 @@ export class BookingComponent {
 			this.newItems.set(item, 1)
 		}
 		this.endpreise.set(item, item.price * (this.newItems.get(item) || 1))
+		this.showTotal()
 	}
 
 	//Aktualisiert den Gesamtpreis
 	showTotal(){
-		this.total = 0;
- 		 for (let preis of this.bookedendpreise.values()) {
-    		this.total += preis;
+		this.total = 0
+		let bookedtotal: number = 0
+		let newtotal: number = 0
+		for (let preis of this.endpreise.values()) {
+    		newtotal += preis
+		}
+ 		for (let preisbooked of this.bookedendpreise.values()) {
+    		bookedtotal += preisbooked
+		}
+		this.total = bookedtotal + newtotal
+	}
+
+	//Speichert das zuletzt angeklickte item in einer Variable
+	onCardClick(item: Item, source: 'new' | 'booked') {
+		this.lastClickedItem = item
+		this.lastClickedItemSource = source
+	}
+
+	//Löscht das zuletzt angeklickte item
+	deleteItem() {
+		if (this.lastClickedItem) {
+		  if (this.lastClickedItemSource === 'new') {
+				this.newItems.delete(this.lastClickedItem)
+				this.endpreise.delete(this.lastClickedItem)
+		    } else if (this.lastClickedItemSource === 'booked') {
+				this.bookedItems.delete(this.lastClickedItem)
+				this.bookedendpreise.delete(this.lastClickedItem)
+		    }
+			this.lastClickedItem = null
+			this.lastClickedItemSource = null
+			this.showTotal()
 		}
 	}
 	
@@ -89,6 +122,7 @@ export class BookingComponent {
 			}
 		}
 		this.newItems.clear();
+		this.endpreise.clear()
 		this.showTotal()
 	}
 }

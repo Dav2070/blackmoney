@@ -6,7 +6,6 @@ import { Item } from "src/app/models/item.model"
 	templateUrl: "./booking.component.html",
 	styleUrl: "./booking.component.scss"
 })
-
 export class BookingComponent {
 	drinks: Inventory[] = [
 		{ name: "Alkoholfrei", items: [{ id: 1, price: 5.0, name: "Cola 0,5" }] },
@@ -38,15 +37,13 @@ export class BookingComponent {
 
 	newItems = new Map<Item, number>()
 
-	endpreise =  new Map<Item, number>()
-
-	bookedendpreise = new Map<Item, number>()
+	endpreis: number = 0.0
 
 	lastClickedItem: Item | null = null
 
-	lastClickedItemSource: 'new' | 'booked' | null = null;
+	lastClickedItemSource: "new" | "booked" | null = null
 
-	total: number
+	total: number = 0.0
 
 	constructor() {}
 
@@ -65,26 +62,23 @@ export class BookingComponent {
 		} else {
 			this.newItems.set(item, 1)
 		}
-		this.endpreise.set(item, item.price * (this.newItems.get(item) || 1))
 		this.showTotal()
 	}
 
 	//Aktualisiert den Gesamtpreis
-	showTotal(){
+	showTotal() {
 		this.total = 0
-		let bookedtotal: number = 0
-		let newtotal: number = 0
-		for (let preis of this.endpreise.values()) {
-    		newtotal += preis
+
+		for (let [key, value] of this.newItems) {
+			this.total += key.price * value
 		}
- 		for (let preisbooked of this.bookedendpreise.values()) {
-    		bookedtotal += preisbooked
+		for (let [key, value] of this.bookedItems) {
+			this.total += key.price * value
 		}
-		this.total = bookedtotal + newtotal
 	}
 
 	//Speichert das zuletzt angeklickte item in einer Variable
-	onCardClick(item: Item, source: 'new' | 'booked') {
+	onCardClick(item: Item, source: "new" | "booked") {
 		this.lastClickedItem = item
 		this.lastClickedItemSource = source
 	}
@@ -92,19 +86,17 @@ export class BookingComponent {
 	//Löscht das zuletzt angeklickte item
 	deleteItem() {
 		if (this.lastClickedItem) {
-		  if (this.lastClickedItemSource === 'new') {
+			if (this.lastClickedItemSource === "new") {
 				this.newItems.delete(this.lastClickedItem)
-				this.endpreise.delete(this.lastClickedItem)
-		    } else if (this.lastClickedItemSource === 'booked') {
+			} else if (this.lastClickedItemSource === "booked") {
 				this.bookedItems.delete(this.lastClickedItem)
-				this.bookedendpreise.delete(this.lastClickedItem)
-		    }
+			}
 			this.lastClickedItem = null
 			this.lastClickedItemSource = null
 			this.showTotal()
 		}
 	}
-	
+
 	//Fügt Items der Liste an bestellten Artikeln hinzu
 	sendOrder() {
 		for (let [key, value] of this.newItems) {
@@ -114,15 +106,12 @@ export class BookingComponent {
 			} else {
 				this.bookedItems.set(key, value)
 			}
-
-			if(this.bookedendpreise.has(key)){
-				this.bookedendpreise.set(key, this.bookedendpreise.get(key) + this.endpreise.get(key))
-			} else {
-				this.bookedendpreise.set(key, this.endpreise.get(key))
-			}
 		}
-		this.newItems.clear();
-		this.endpreise.clear()
+		this.newItems.clear()
 		this.showTotal()
+	}
+
+	calculateTotalPrice(price: number, value: number) {
+		return (price * value).toFixed(2)
 	}
 }

@@ -32,7 +32,10 @@ nav {
     min-height: 100%;
 }
 
-
+.clickcolor{
+    box-shadow: 0px 0px 0px 0px rgba(102, 9, 179, 0.2), 0px 0px 0px 0px rgba(240, 9, 9, 0.14), 0px 0px 0px 0px rgb(0, 0, 0, 0.12);
+    --mat-outlined-card-outline-color: #fff;
+}
 
 #drinks {
     flex:1;
@@ -57,7 +60,7 @@ nav {
 
 article { 
     flex: 5; 
-    background-color: orange; 
+    background-color: orange;
 }
 
 aside { 
@@ -74,4 +77,7 @@ footer {
 	background-color: limegreen; 
 }
 
+.selected-card {
+    background-color: rgb(190, 185, 185); 
+}
 

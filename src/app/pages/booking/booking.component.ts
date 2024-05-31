@@ -45,6 +45,9 @@ export class BookingComponent {
 
 	total: number = 0.0
 
+	selectedItemNew: Item | null = null;
+	selectedItemBooked: Item | null = null;
+
 	constructor() {}
 
 	ngOnInit() {}
@@ -81,7 +84,24 @@ export class BookingComponent {
 	onCardClick(item: Item, source: "new" | "booked") {
 		this.lastClickedItem = item
 		this.lastClickedItemSource = source
+		if(source === "new"){
+			this.selectedItemNew = item
+			this.selectedItemBooked = null
+		}else if(source === "booked"){
+			this.selectedItemBooked = item
+			this.selectedItemNew= null
+		}
 	}
+
+	//Gibt true oder false zurück ob ein item aus new angeklickt wurde
+	isSelectedNew(item: Item): boolean {
+        return this.selectedItemNew === item;
+    }
+
+	//Gibt true oder false zurück ob ein item aus booked angeklickt wurde
+	isSelectedBooked(item: Item): boolean {
+        return this.selectedItemBooked === item;
+    }
 
 	//Löscht das zuletzt angeklickte item
 	deleteItem() {
@@ -91,6 +111,8 @@ export class BookingComponent {
 			} else if (this.lastClickedItemSource === "booked") {
 				this.bookedItems.delete(this.lastClickedItem)
 			}
+			this.selectedItemNew = null
+			this.selectedItemBooked = null
 			this.lastClickedItem = null
 			this.lastClickedItemSource = null
 			this.showTotal()
@@ -107,6 +129,8 @@ export class BookingComponent {
 				this.bookedItems.set(key, value)
 			}
 		}
+		this.selectedItemNew = null
+		this.selectedItemBooked = null
 		this.newItems.clear()
 		this.showTotal()
 	}

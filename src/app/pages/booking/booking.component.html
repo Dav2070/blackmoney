@@ -5,8 +5,8 @@
 			<div id="order">
 				<div class="tables">
 					@for (item of bookedItems.keys(); track item) {
-					<mat-card (click)="onCardClick(item, 'booked')">
-						<mat-card-content>
+					<mat-card (click)="onCardClick(item, 'booked')" [ngClass]="{'selected-card': isSelectedNew(item)}">
+						<mat-card-content class="card-content">
 							{{ item.name }}
 							{{ bookedItems.get(item) }} Stück
 							{{
@@ -19,8 +19,8 @@
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
 					@for (item of newItems.keys(); track item) {
-					<mat-card (click)="onCardClick(item, 'new')">
-						<mat-card-content>
+					<mat-card (click)="onCardClick(item, 'new')" [ngClass]="{'selected-card': isSelectedNew(item)}">
+						<mat-card-content class="card-content">
 							{{ item.name }}
 							{{ newItems.get(item) }} Stück
 							{{ calculateTotalPrice(item.price, newItems.get(item)) }}€

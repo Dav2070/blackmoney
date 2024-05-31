@@ -111,6 +111,7 @@ export class BookingComponent {
 		this.showTotal()
 	}
 
+	//Berechnet den Preis der hinzugefügten Items
 	calculateTotalPrice(price: number, value: number) {
 		return (price * value).toFixed(2)
 	}

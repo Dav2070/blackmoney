@@ -9,25 +9,25 @@ import { Variation } from "src/app/models/variation.model"
 })
 export class BookingComponent {
 	drinks: Inventory[] = [
-		{ name: "Alkoholfrei", items: [{ id: 1, price: 5.0, name: "Cola 0,5", variations:[{name: "Pommes", preis: 0 }] }]  },
-		{ name: "Bier", items: [{ id: 2, price: 3.7, name: "Pils 0,4" , variations:[{name: "Pommes", preis: 0 }] }]},
+		{ name: "Alkoholfrei", items: [{ id: 1, price: 5.0, name: "Cola 0,5", variations:[{name: "Pommes", preis: 0 }], pickedVariation:{name: null, preis: null } }]  },
+		{ name: "Bier", items: [{ id: 2, price: 3.7, name: "Pils 0,4" , variations:[{name: "Pommes", preis: 0 }], pickedVariation:{name: null, preis: null } }]},
 		{
 			name: "Wein",
-			items: [{ id: 3, price: 6.7, name: "Grauburunder 0,2", variations:[{name: "Pommes", preis: 0 }] }],
+			items: [{ id: 3, price: 6.7, name: "Grauburunder 0,2", variations:[{name: "Pommes", preis: 0 }], pickedVariation:{name: null, preis: null } }],
 		},
-		{ name: "Schnapps", items: [{ id: 4, price: 3.0, name: "Ouzo", variations:[{name: "Pommes", preis: 0 }] }], }
+		{ name: "Schnapps", items: [{ id: 4, price: 3.0, name: "Ouzo", variations:[{name: "Pommes", preis: 0 }], pickedVariation:{name: null, preis: null } }], }
 	]
 	dishes: Inventory[] = [
 		{
 			name: "Vorspeisen",
-			items: [{ id: 5, price: 14.7, name: "Vorspeisenteller", variations:[{name: "Pommes", preis: 0 }] }]
+			items: [{ id: 5, price: 14.7, name: "Vorspeisenteller", variations:[], pickedVariation:{name: null, preis: null } }]
 		},
 		{
 			name: "Hauptgerichte",
-			items: [{ id: 6, price: 35.7, name: "Rinderfilet", variations:[{name: "Pommes", preis: 0 }] }]
+			items: [{ id: 6, price: 35.7, name: "Rinderfilet", variations:[{name: "Pommes", preis: 0 }], pickedVariation:{name: null, preis: null } }]
 		},
-		{ name: "Beilagen", items: [{ id: 7, price: 4.7, name: "Pommes", variations:[{name: "Pommes", preis: 0 }, {name: "Reis", preis: 1.50 } , {name: "Kroketten", preis: 1.50 }] }] },
-		{ name: "Dessert", items: [{ id: 8, price: 6.4, name: "Tiramisu", variations:[{name: "Pommes", preis: 0 }] }] }
+		{ name: "Beilagen", items: [{ id: 7, price: 4.7, name: "Pommes", variations:[{name: "Pommes", preis: 0 }, {name: "Reis", preis: 1.50 } , {name: "Kroketten", preis: 1.50 }], pickedVariation:{name: null, preis: null } }] },
+		{ name: "Dessert", items: [{ id: 8, price: 6.4, name: "Tiramisu", variations:[{name: "Pommes", preis: 0 }], pickedVariation:{name: null, preis: null } }] }
 	]
 		
 	selectedVariation: Variation[] = this.drinks[0].items[0].variations
@@ -68,17 +68,32 @@ export class BookingComponent {
 
 	//Füge Item der Liste an neu bestellten Artikeln hinzu
 	selectItem(item: Item) {
-		if (this.newItems.has(item)) {
-			let value = this.newItems.get(item)
-			this.newItems.set(item, value + 1)
-		} else {
-			this.newItems.set(item, 1)
+		if(item.variations.length<1){
+			if (this.newItems.has(item)) {
+				let value = this.newItems.get(item)
+				this.newItems.set(item, value + 1)
+			} else {
+				this.newItems.set(item, 1)
+			}
+			this.showTotal()
 		}
+		else{
+			this.lastClickedItem=item;
+			this.toggleItemPopup();
+		}
+	}
+
+	setVariation(pickedVariation:Variation){
+		this.lastClickedItem.pickedVariation=pickedVariation;
+
+		if (this.newItems.has(this.lastClickedItem)) {
+			let value = this.newItems.get(this.lastClickedItem)
+			this.newItems.set(this.lastClickedItem, value + 1)
+		} else {
+			this.newItems.set(this.lastClickedItem, 1)
+		}
+		this.toggleItemPopup();
 		this.showTotal()
-		this.selectedItemNew= null
-		this.selectedItemBooked = null
-		this.lastClickedItem = null
-		this.lastClickedItemSource = null
 	}
 
 	//Aktualisiert den Gesamtpreis
@@ -86,10 +101,10 @@ export class BookingComponent {
 		this.total = 0
 
 		for (let [key, value] of this.newItems) {
-			this.total += key.price * value
+			this.total += (key.price+key.pickedVariation.preis) * value
 		}
 		for (let [key, value] of this.bookedItems) {
-			this.total += key.price * value
+			this.total += (key.price+key.pickedVariation.preis) * value
 		}
 	}
 

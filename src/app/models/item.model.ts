@@ -5,4 +5,5 @@ export class Item {
     price:number;
     name:string;
     variations:Variation[];
+    pickedVariation:Variation;
 }

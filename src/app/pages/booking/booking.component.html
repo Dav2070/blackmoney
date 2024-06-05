@@ -5,13 +5,11 @@
 			<div id="order">
 				<div class="tables">
 					@for (item of bookedItems.keys(); track item) {
-					<mat-card (click)="onCardClick(item, 'booked')" [ngClass]="{'selected-card': isSelectedNew(item)}">
+					<mat-card (click)="onCardClick(item, 'booked')" [ngClass]="{'selected-card': isSelectedBooked(item)}">
 						<mat-card-content class="card-content">
 							{{ item.name }}
 							{{ bookedItems.get(item) }} Stück
-							{{
-								calculateTotalPrice(item.price, bookedItems.get(item))
-							}}€
+							{{ calculateTotalPrice(item.price, bookedItems.get(item)) }}€
 						</mat-card-content>
 					</mat-card>
 					}
@@ -59,9 +57,22 @@
 			</div>
 		</nav>
 		<article>
+			<div class="popup-overlay" [ngClass]="{'visible': isItemPopupVisible}">
+				<div class="popup-content">
+					@if(isItemPopupVisible){
+						@for (item of lastClickedItem.variations; track item){
+							<button mat-flat-button>
+								{{ item.name }}
+							  + {{ item.preis }}
+							</button>
+					}
+				}
+					<button mat-flat-button (click)="toggleItemPopup()">Schließen</button>
+				</div>
+			</div>
 			<div id="items">
 				@for (item of selectedInventory; track item){
-				<button (click)="selectItem(item)" mat-flat-button>
+				<button (click)="selectItem(item)" (click)="toggleItemPopup()" mat-flat-button>
 					{{ item.name }}
 				</button>
 				}

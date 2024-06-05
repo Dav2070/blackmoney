@@ -1,6 +1,7 @@
 import { Component } from "@angular/core"
 import { Inventory } from "src/app/models/inventory.model"
 import { Item } from "src/app/models/item.model"
+import { Variation } from "src/app/models/variation.model"
 
 @Component({
 	templateUrl: "./booking.component.html",
@@ -8,26 +9,28 @@ import { Item } from "src/app/models/item.model"
 })
 export class BookingComponent {
 	drinks: Inventory[] = [
-		{ name: "Alkoholfrei", items: [{ id: 1, price: 5.0, name: "Cola 0,5" }] },
-		{ name: "Bier", items: [{ id: 2, price: 3.7, name: "Pils 0,4" }] },
+		{ name: "Alkoholfrei", items: [{ id: 1, price: 5.0, name: "Cola 0,5", variations:[{name: "Pommes", preis: 0 }] }]  },
+		{ name: "Bier", items: [{ id: 2, price: 3.7, name: "Pils 0,4" , variations:[{name: "Pommes", preis: 0 }] }]},
 		{
 			name: "Wein",
-			items: [{ id: 3, price: 6.7, name: "Grauburunder 0,2" }]
+			items: [{ id: 3, price: 6.7, name: "Grauburunder 0,2", variations:[{name: "Pommes", preis: 0 }] }],
 		},
-		{ name: "Schnapps", items: [{ id: 4, price: 3.0, name: "Ouzo" }] }
+		{ name: "Schnapps", items: [{ id: 4, price: 3.0, name: "Ouzo", variations:[{name: "Pommes", preis: 0 }] }], }
 	]
 	dishes: Inventory[] = [
 		{
 			name: "Vorspeisen",
-			items: [{ id: 5, price: 14.7, name: "Vorspeisenteller" }]
+			items: [{ id: 5, price: 14.7, name: "Vorspeisenteller", variations:[{name: "Pommes", preis: 0 }] }]
 		},
 		{
 			name: "Hauptgerichte",
-			items: [{ id: 6, price: 35.7, name: "Rinderfilet" }]
+			items: [{ id: 6, price: 35.7, name: "Rinderfilet", variations:[{name: "Pommes", preis: 0 }] }]
 		},
-		{ name: "Beilagen", items: [{ id: 7, price: 4.7, name: "Pommes" }] },
-		{ name: "Dessert", items: [{ id: 8, price: 6.4, name: "Tiramisu" }] }
+		{ name: "Beilagen", items: [{ id: 7, price: 4.7, name: "Pommes", variations:[{name: "Pommes", preis: 0 }, {name: "Reis", preis: 1.50 } , {name: "Kroketten", preis: 1.50 }] }] },
+		{ name: "Dessert", items: [{ id: 8, price: 6.4, name: "Tiramisu", variations:[{name: "Pommes", preis: 0 }] }] }
 	]
+		
+	selectedVariation: Variation[] = this.drinks[0].items[0].variations
 
 	selectedInventory: Item[] = this.drinks[0].items
 
@@ -48,6 +51,8 @@ export class BookingComponent {
 	selectedItemNew: Item | null = null;
 	selectedItemBooked: Item | null = null;
 
+	isItemPopupVisible: Boolean = false;
+
 	constructor() {}
 
 	ngOnInit() {}
@@ -55,6 +60,10 @@ export class BookingComponent {
 	//Lade Items zur ausgewählten Kategorie
 	changeSelectedInventory(items: Item[]) {
 		this.selectedInventory = items
+	}
+
+	toggleItemPopup() {
+		this.isItemPopupVisible = !this.isItemPopupVisible
 	}
 
 	//Füge Item der Liste an neu bestellten Artikeln hinzu
@@ -66,6 +75,10 @@ export class BookingComponent {
 			this.newItems.set(item, 1)
 		}
 		this.showTotal()
+		this.selectedItemNew= null
+		this.selectedItemBooked = null
+		this.lastClickedItem = null
+		this.lastClickedItemSource = null
 	}
 
 	//Aktualisiert den Gesamtpreis

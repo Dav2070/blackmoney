@@ -3,12 +3,13 @@ import { HttpHeaders } from "@angular/common/http"
 import { InMemoryCache } from "@apollo/client/core"
 import { Apollo } from "apollo-angular"
 import { HttpLink } from "apollo-angular/http"
-import { Dav } from "dav-js"
+import { Dav, PromiseHolder } from "dav-js"
 import { environment } from "src/environments/environment"
 
 @Injectable()
 export class DataService {
 	dav = Dav
+	userPromiseHolder = new PromiseHolder()
 
 	constructor(private apollo: Apollo, private httpLink: HttpLink) {}
 

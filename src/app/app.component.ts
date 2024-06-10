@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router"
 import { Dav } from "dav-js"
 import { DataService } from "./services/data-service"
 import { environment } from "src/environments/environment"
-import { isClient } from "src/app/utils"
+import { isServer } from "src/app/utils"
 
 @Component({
 	selector: "app-root",
@@ -29,12 +29,24 @@ export class AppComponent {
 	}
 
 	ngOnInit() {
-		if (isClient()) {
-			new Dav({
-				environment: environment.environment,
-				appId: environment.davAppId,
-				tableIds: []
-			})
+		if (isServer()) {
+			this.userLoaded()
+			return
 		}
+
+		new Dav({
+			environment: environment.environment,
+			appId: environment.davAppId,
+			tableIds: [],
+			callbacks: {
+				UserLoaded: () => this.userLoaded()
+			}
+		})
 	}
+
+	//#region dav callback functions
+	userLoaded() {
+		this.dataService.userPromiseHolder.Resolve()
+	}
+	//#endregion
 }

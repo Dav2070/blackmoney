@@ -1,7 +1,7 @@
 import { Component } from "@angular/core"
 import { Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
-import { AuthService } from "src/app/services/auth-service"
+import { DataService } from "src/app/services/data-service"
 import { isServer } from "src/app/utils"
 import { RoomResource } from "src/app/types"
 
@@ -15,15 +15,17 @@ export class TableOverviewPageComponent {
 
 	constructor(
 		private apiService: ApiService,
-		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private dataService: DataService
 	) {}
 
 	async ngOnInit() {
 		if (isServer()) return
 
-		if (this.authService.getAccessToken() == null) {
-			this.router.navigate(["login"])
+		await this.dataService.userPromiseHolder.AwaitResult()
+
+		if (!this.dataService.dav.isLoggedIn) {
+			this.router.navigate([""])
 			return
 		}
 

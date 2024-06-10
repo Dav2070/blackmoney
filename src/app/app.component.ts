@@ -1,6 +1,9 @@
 import { Component } from "@angular/core"
+import { ActivatedRoute } from "@angular/router"
+import { Dav } from "dav-js"
 import { DataService } from "./services/data-service"
-import { AuthService } from "./services/auth-service"
+import { environment } from "src/environments/environment"
+import { isClient } from "src/app/utils"
 
 @Component({
 	selector: "app-root",
@@ -10,14 +13,28 @@ import { AuthService } from "./services/auth-service"
 export class AppComponent {
 	constructor(
 		private dataService: DataService,
-		private authService: AuthService
-	) {}
+		private activatedRoute: ActivatedRoute
+	) {
+		this.activatedRoute.queryParams.subscribe(async params => {
+			if (params["accessToken"]) {
+				// Log in with the access token
+				await this.dataService.dav.Login(params["accessToken"])
+
+				// Reload the page without accessToken in the url
+				let url = new URL(window.location.href)
+				url.searchParams.delete("accessToken")
+				window.location.href = url.toString()
+			}
+		})
+	}
 
 	ngOnInit() {
-		let accessToken = this.authService.getAccessToken()
-
-		if (accessToken != null) {
-			this.dataService.loadApollo(accessToken)
+		if (isClient()) {
+			new Dav({
+				environment: environment.environment,
+				appId: environment.davAppId,
+				tableIds: []
+			})
 		}
 	}
 }

@@ -27,6 +27,7 @@ import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component"
 
 // Pages
+import { LandingPageComponent } from "./pages/landing-page/landing-page.component"
 import { ForgotPasswordPageComponent } from "./pages/forgot-password-page/forgot-password-page.component"
 import { LoginPageComponent } from "./pages/login-page/login-page.component"
 import { TableOverviewPageComponent } from "./pages/table-overview-page/table-overview-page.component"
@@ -42,6 +43,7 @@ import { DataService } from "./services/data-service"
 		// Components
 		AppComponent,
 		// Pages
+		LandingPageComponent,
 		ForgotPasswordPageComponent,
 		LoginPageComponent,
 		TableOverviewPageComponent,

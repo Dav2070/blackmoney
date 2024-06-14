@@ -1,5 +1,9 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
+import { HttpHeaders } from "@angular/common/http"
+import { Apollo } from "apollo-angular"
+import { HttpLink } from "apollo-angular/http"
+import { InMemoryCache } from "@apollo/client/core"
 import { Dav } from "dav-js"
 import { DataService } from "./services/data-service"
 import { environment } from "src/environments/environment"
@@ -13,7 +17,9 @@ import { isServer } from "src/app/utils"
 export class AppComponent {
 	constructor(
 		private dataService: DataService,
-		private activatedRoute: ActivatedRoute
+		private activatedRoute: ActivatedRoute,
+		private apollo: Apollo,
+		private httpLink: HttpLink
 	) {
 		this.activatedRoute.queryParams.subscribe(async params => {
 			if (params["accessToken"]) {
@@ -39,14 +45,37 @@ export class AppComponent {
 			appId: environment.davAppId,
 			tableIds: [],
 			callbacks: {
-				UserLoaded: () => this.userLoaded()
+				UserLoaded: () => this.userLoaded(),
+				AccessTokenRenewed: (accessToken: string) =>
+					this.accessTokenRenewed(accessToken)
 			}
+		})
+	}
+
+	setupApollo(accessToken: string) {
+		this.apollo.removeClient()
+
+		this.apollo.create({
+			cache: new InMemoryCache(),
+			link: this.httpLink.create({
+				uri: environment.apiUrl,
+				headers: new HttpHeaders().set("Authorization", accessToken)
+			})
 		})
 	}
 
 	//#region dav callback functions
 	userLoaded() {
+		if (this.dataService.dav.isLoggedIn) {
+			// Setup the apollo client with the access token
+			this.setupApollo(this.dataService.dav.accessToken)
+		}
+
 		this.dataService.userPromiseHolder.Resolve()
+	}
+
+	accessTokenRenewed(accessToken: string) {
+		this.setupApollo(accessToken)
 	}
 	//#endregion
 }

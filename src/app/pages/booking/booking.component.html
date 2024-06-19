@@ -4,34 +4,58 @@
 		<nav>
 			<div id="order">
 				<div class="tables">
-					@for (item of bookedItems.keys(); track item) {
-					<mat-card (click)="onCardClick(item, 'booked')" [ngClass]="{'selected-card': isSelectedBooked(item)}">
+					@for (item of bookedItems.keys(); track item) { @for(variation of
+					bookedItems.get(item).keys();track variation){
+					<mat-card
+						(click)="onCardClick(item, 'booked')"
+						[ngClass]="{ 'selected-card': isSelectedBooked(item) }"
+					>
 						<mat-card-content class="card-content">
 							{{ item.name }}
-							{{ bookedItems.get(item) }} Stück
-							{{ calculateTotalPrice(item.price+item.pickedVariation.preis, bookedItems.get(item)) }}€
+							@if(variation.name!==null){
+							{{ variation.name }}
+							}
+							{{ bookedItems.get(item).get(variation) }} Stück
+							{{
+								calculateTotalPrice(
+									item.price,
+									variation.preis,
+									bookedItems.get(item).get(variation)
+								)
+							}}€
 						</mat-card-content>
 					</mat-card>
-					}
+					} }
 					<mat-card>
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
-					@for (item of newItems.keys(); track item) {
-					<mat-card (click)="onCardClick(item, 'new')" [ngClass]="{'selected-card': isSelectedNew(item)}">
+					@for (item of newItems.keys(); track item) { @for(variation of
+					newItems.get(item).keys();track variation){
+					<mat-card
+						(click)="onCardClick(item, 'new')"
+						[ngClass]="{ 'selected-card': isSelectedNew(item) }"
+					>
 						<mat-card-content class="card-content">
 							{{ item.name }}
-							{{ newItems.get(item) }} Stück
-							{{ calculateTotalPrice(item.price+item.pickedVariation.preis, newItems.get(item)) }}€
+							@if(variation.name!==null){
+							{{ variation.name }}
+							}
+							{{ newItems.get(item).get(variation) }} Stück
+							{{
+								calculateTotalPrice(
+									item.price,
+									variation.preis,
+									newItems.get(item).get(variation)
+								)
+							}}€
 						</mat-card-content>
 					</mat-card>
-					}
+					} }
 				</div>
 			</div>
 			<div id="numpad">
 				<mat-card>
-					<mat-card-content>
-						{{ total.toFixed(2) }}
-					</mat-card-content>
+					<mat-card-content> {{ total.toFixed(2) }}€ </mat-card-content>
 				</mat-card>
 				<div>
 					@for(number of numberpad; track number){
@@ -57,17 +81,18 @@
 			</div>
 		</nav>
 		<article>
-			<div class="popup-overlay" [ngClass]="{'visible': isItemPopupVisible}">
+			<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
 				<div class="popup-content">
-					@if(isItemPopupVisible){
-						@for (item of lastClickedItem.variations; track item){
-							<button mat-flat-button (click)="setVariation(item)">
-								{{ item.name }}
-							  + {{ item.preis }}
-							</button>
-					}
-				}
-					<button mat-flat-button (click)="toggleItemPopup()">Schließen</button>
+					@if(isItemPopupVisible){ @for (item of
+					lastClickedItem.variations; track item){
+					<button mat-flat-button (click)="setVariation(item)">
+						{{ item.name }}
+						+ {{ item.preis }}
+					</button>
+					} }
+					<button mat-flat-button (click)="toggleItemPopup()">
+						Schließen
+					</button>
 				</div>
 			</div>
 			<div id="items">

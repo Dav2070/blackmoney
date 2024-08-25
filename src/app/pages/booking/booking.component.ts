@@ -2,6 +2,9 @@ import { Component } from "@angular/core"
 import { Inventory } from "src/app/models/inventory.model"
 import { Item } from "src/app/models/item.model"
 import { Variation } from "src/app/models/variation.model"
+import { ApiService } from "src/app/services/api-service"
+import { DataService } from "src/app/services/data-service"
+import { isServer } from "src/app/utils"
 
 @Component({
 	templateUrl: "./booking.component.html",
@@ -136,9 +139,33 @@ export class BookingComponent {
 
 	isItemPopupVisible: Boolean = false
 
-	constructor() {}
+	constructor(
+		private dataService: DataService,
+		private apiService: ApiService
+	) {}
 
-	ngOnInit() {}
+	async ngOnInit() {
+		if (isServer()) return
+
+		await this.dataService.userPromiseHolder.AwaitResult()
+
+		let listCategoriesResult = await this.apiService.listCategories(
+			`
+				total
+				items {
+					name
+					products {
+						total
+						items {
+							name
+						}
+					}
+				}
+			`
+		)
+
+		console.log(listCategoriesResult)
+	}
 
 	//Lade Items zur ausgewählten Kategorie
 	changeSelectedInventory(items: Item[]) {

@@ -1,35 +1,13 @@
 import { Injectable } from "@angular/core"
-import { Apollo, MutationResult, gql } from "apollo-angular"
+import { Apollo, gql } from "apollo-angular"
 import { ApolloQueryResult, ErrorPolicy } from "@apollo/client/core"
-import { List, SessionResource, RoomResource } from "../types"
+import { List, RoomResource, CategoryResource } from "../types"
 
 const errorPolicy: ErrorPolicy = "all"
 
 @Injectable()
 export class ApiService {
 	constructor(private apollo: Apollo) {}
-
-	async createSession(
-		queryData: string,
-		variables: {
-			username: string
-			password: string
-		}
-	): Promise<MutationResult<{ createSession: SessionResource }> | undefined> {
-		return await this.apollo
-			.mutate<{ createSession: SessionResource }>({
-				mutation: gql`
-					mutation CreateSession($username: String!, $password: String!) {
-						createSession(username: $username, password: $password) {
-							${queryData}
-						}
-					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
 
 	async listRooms(
 		queryData: string
@@ -39,6 +17,24 @@ export class ApiService {
 				query: gql`
 					query ListRooms {
 						listRooms {
+							${queryData}
+						}
+					}
+				`,
+				variables: {},
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async listCategories(
+		queryData: string
+	): Promise<ApolloQueryResult<{ listCategories: List<CategoryResource> }>> {
+		return await this.apollo
+			.query<{ listCategories: List<CategoryResource> }>({
+				query: gql`
+					query ListCategories {
+						listCategories {
 							${queryData}
 						}
 					}

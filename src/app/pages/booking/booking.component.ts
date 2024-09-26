@@ -132,7 +132,7 @@ export class BookingComponent {
 
 	lastClickedItemSource: "new" | "booked" | null = null
 
-	total: number = 0.0
+	total: string = "0.0"
 
 	selectedItemNew: Item | null = null
 	selectedItemBooked: Item | null = null
@@ -213,18 +213,19 @@ export class BookingComponent {
 
 	//Aktualisiert den Gesamtpreis
 	showTotal() {
-		this.total = 0
+		var tmpTotal:number = 0;
 
 		for (let [key, value] of this.newItems) {
 			for (let [variation, number] of value) {
-				this.total += (variation.preis + key.price) * number
+				tmpTotal += (variation.preis + key.price) * number
 			}
 		}
 		for (let [key, value] of this.bookedItems) {
 			for (let [variation, number] of value) {
-				this.total += (variation.preis + key.price) * number
+				tmpTotal += (variation.preis + key.price) * number
 			}
 		}
+		this.total= tmpTotal.toFixed(2);
 	}
 
 	//Speichert das zuletzt angeklickte item in einer Variable

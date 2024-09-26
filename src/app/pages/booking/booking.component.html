@@ -55,23 +55,23 @@
 			</div>
 			<div id="numpad">
 				<mat-card>
-					<mat-card-content> {{ total.toFixed(2) }}€ </mat-card-content>
+					<mat-card-content> {{ console }} </mat-card-content>
 				</mat-card>
 				<div>
 					@for(number of numberpad; track number){
-					<button mat-flat-button>{{ number }}</button>
+					<button mat-flat-button (click)="consoleInput(number.toString())">{{ number }}</button>
 					@if(number==3){
 					<button mat-flat-button>X</button>
 					<br />
 					} @if(number==6){
-					<button mat-flat-button>Clear</button>
+					<button mat-flat-button (click)="showTotal()">Clear</button>
 					<br />
 					} @if(number==9){
 					<button mat-flat-button>Plus</button>
 					<br />
 					} }
-					<button mat-flat-button>,</button>
-					<button mat-flat-button>0</button>
+					<button mat-flat-button [disabled]=commaUsed||!consoleActive (click)="consoleInput(',')" (click)="commaUsed=true">,</button>
+					<button mat-flat-button (click)="consoleInput('0')">0</button>
 					<button mat-flat-button>-</button>
 					<button mat-flat-button>Enter</button>
 					<br />

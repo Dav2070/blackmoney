@@ -132,12 +132,16 @@ export class BookingComponent {
 
 	lastClickedItemSource: "new" | "booked" | null = null
 
-	total: number = 0.0
+	console: string = "0.0€"
 
 	selectedItemNew: Item | null = null
 	selectedItemBooked: Item | null = null
 
 	isItemPopupVisible: Boolean = false
+
+	consoleActive: Boolean = false;
+
+	commaUsed: Boolean = false;
 
 	constructor(
 		private dataService: DataService,
@@ -213,18 +217,22 @@ export class BookingComponent {
 
 	//Aktualisiert den Gesamtpreis
 	showTotal() {
-		this.total = 0
+		var tmpTotal:number = 0;
 
 		for (let [key, value] of this.newItems) {
 			for (let [variation, number] of value) {
-				this.total += (variation.preis + key.price) * number
+				tmpTotal += (variation.preis + key.price) * number
 			}
 		}
 		for (let [key, value] of this.bookedItems) {
 			for (let [variation, number] of value) {
-				this.total += (variation.preis + key.price) * number
+				tmpTotal += (variation.preis + key.price) * number
 			}
 		}
+		this.console= tmpTotal.toFixed(2)+"€";
+
+		this.consoleActive=false;
+		this.commaUsed=false;
 	}
 
 	//Speichert das zuletzt angeklickte item in einer Variable
@@ -296,5 +304,14 @@ export class BookingComponent {
 		number: number
 	) {
 		return ((itemPrice + variationPrice) * number).toFixed(2)
+	}
+
+	//Fügt die gedrückte Nummer in die Konsole ein
+	consoleInput(input: string){
+		if(this.consoleActive == false){
+			this.consoleActive =true;
+			this.console="";
+		}
+		this.console+=input;
 	}
 }

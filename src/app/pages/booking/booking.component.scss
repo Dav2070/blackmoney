@@ -108,3 +108,14 @@ footer {
     align-items: center;
     justify-content: center;
   }
+
+  #footerButtonsContainer {
+    display:flex;
+    justify-content: space-around;
+  }
+
+  .footerButton{
+    width: 100%;
+    margin: 25px;
+    height:70px;
+  }

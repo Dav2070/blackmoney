@@ -75,7 +75,6 @@
 					<button mat-flat-button>-</button>
 					<button mat-flat-button>Enter</button>
 					<br />
-					<button (click)="sendOrder()" mat-flat-button>Send Order</button>
 					<button (click)="deleteItem()" mat-flat-button>Delete</button>
 				</div>
 			</div>
@@ -126,5 +125,32 @@
 			</div>
 		</aside>
 	</div>
-	<footer>Fußzeile</footer>
+	<footer>
+		<div id="footerButtonsContainer">
+			<button mat-flat-button class="footerButton" (click)="sendOrder()"> 
+				Bestellung abschicken
+			</button>
+			<button mat-flat-button class="footerButton"> 
+				Umbuchen
+			</button>
+			<button mat-flat-button class="footerButton"> 
+				Tischplan
+			</button>
+			<button mat-flat-button class="footerButton"> 
+				Tisch
+			</button>
+			<button mat-flat-button class="footerButton"> 
+				Rechnungen
+			</button>
+			<button mat-flat-button class="footerButton"> 
+				Bar
+			</button>
+			<button mat-flat-button class="footerButton"> 
+				Karte
+			</button>
+			<button mat-flat-button class="footerButton"> 
+				Getrennt
+			</button>
+		</div>
+	</footer>
 </div>

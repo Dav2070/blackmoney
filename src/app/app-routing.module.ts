@@ -4,7 +4,7 @@ import { LandingPageComponent } from "./pages/landing-page/landing-page.componen
 import { ForgotPasswordPageComponent } from "./pages/forgot-password-page/forgot-password-page.component"
 import { LoginPageComponent } from "./pages/login-page/login-page.component"
 import { TableOverviewPageComponent } from "./pages/table-overview-page/table-overview-page.component"
-import { BookingComponent } from "./pages/booking/booking.component"
+import { BookingPageComponent } from "./pages/booking-page/booking-page.component"
 
 const routes: Routes = [
 	{
@@ -25,7 +25,7 @@ const routes: Routes = [
 	},
 	{
 		path: "booking",
-		component: BookingComponent
+		component: BookingPageComponent
 	}
 ]
 

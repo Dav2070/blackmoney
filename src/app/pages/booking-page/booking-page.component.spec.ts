@@ -1,0 +1,22 @@
+import { ComponentFixture, TestBed } from "@angular/core/testing"
+
+import { BookingPageComponent } from "./booking-page.component"
+
+describe("BookingComponent", () => {
+	let component: BookingPageComponent
+	let fixture: ComponentFixture<BookingPageComponent>
+
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [BookingPageComponent]
+		}).compileComponents()
+
+		fixture = TestBed.createComponent(BookingPageComponent)
+		component = fixture.componentInstance
+		fixture.detectChanges()
+	})
+
+	it("should create", () => {
+		expect(component).toBeTruthy()
+	})
+})

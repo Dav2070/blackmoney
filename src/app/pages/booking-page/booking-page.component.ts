@@ -7,10 +7,10 @@ import { DataService } from "src/app/services/data-service"
 import { isServer } from "src/app/utils"
 
 @Component({
-	templateUrl: "./booking.component.html",
-	styleUrl: "./booking.component.scss"
+	templateUrl: "./booking-page.component.html",
+	styleUrl: "./booking-page.component.scss"
 })
-export class BookingComponent {
+export class BookingPageComponent {
 	drinks: Inventory[] = [
 		{
 			name: "Alkoholfrei",

@@ -4,28 +4,29 @@
 		<nav>
 			<div id="order">
 				<div class="tables">
-					@for (item of bookedItems.keys(); track item) { @for(variation of
-					bookedItems.get(item).keys();track variation){
-					<mat-card
-						(click)="onCardClick(item, 'booked')"
-						[ngClass]="{ 'selected-card': isSelectedBooked(item) }"
-					>
-						<mat-card-content class="card-content">
-							{{ item.name }}
-							@if(variation.name!==null){
-							{{ variation.name }}
-							}
-							{{ bookedItems.get(item).get(variation) }} Stück
-							{{
-								calculateTotalPrice(
-									item.price,
-									variation.preis,
-									bookedItems.get(item).get(variation)
-								)
-							}}€
-						</mat-card-content>
-					</mat-card>
-					} }
+					@for (item of bookedItems.keys(); track item) { 
+						@for(variation of bookedItems.get(item).keys();track variation){
+						<mat-card
+							(click)="onCardClick(item, 'booked')"
+							[ngClass]="{ 'selected-card': isSelectedBooked(item) }"
+						>
+							<mat-card-content class="card-content">
+								{{ item.name }}
+								@if(variation.name!==null){
+								{{ variation.name }}
+								}
+								{{ bookedItems.get(item).get(variation) }} Stück
+								{{
+									calculateTotalPrice(
+										item.price,
+										variation.preis,
+										bookedItems.get(item).get(variation)
+									)
+								}}€
+							</mat-card-content>
+						</mat-card>
+						} 
+					}
 					<mat-card>
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>

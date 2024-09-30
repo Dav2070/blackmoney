@@ -1,4 +1,5 @@
 import { Component } from "@angular/core"
+import { ActivatedRoute } from "@angular/router"
 import { Inventory } from "src/app/models/inventory.model"
 import { Item } from "src/app/models/item.model"
 import { Variation } from "src/app/models/variation.model"
@@ -142,16 +143,19 @@ export class BookingPageComponent {
 	consoleActive: Boolean = false
 
 	commaUsed: Boolean = false
+	tableUuid: string = ""
 
 	constructor(
 		private dataService: DataService,
-		private apiService: ApiService
+		private apiService: ApiService,
+		private activatedRoute: ActivatedRoute
 	) {}
 
 	async ngOnInit() {
 		if (isServer()) return
 
 		await this.dataService.userPromiseHolder.AwaitResult()
+		this.tableUuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 
 		let listCategoriesResult = await this.apiService.listCategories(
 			`

@@ -16,15 +16,15 @@ const routes: Routes = [
 		component: LoginPageComponent
 	},
 	{
-		path: "tables",
-		component: TableOverviewPageComponent
-	},
-	{
 		path: "forgot-password",
 		component: ForgotPasswordPageComponent
 	},
 	{
-		path: "booking",
+		path: "tables",
+		component: TableOverviewPageComponent
+	},
+	{
+		path: "tables/:uuid",
 		component: BookingPageComponent
 	}
 ]

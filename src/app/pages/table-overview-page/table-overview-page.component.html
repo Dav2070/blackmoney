@@ -10,7 +10,7 @@
 		@if (selected != null) { @for (table of selected.tables.items; track table) {
 		<mat-card>
 			<mat-card-content>{{ table.name }}</mat-card-content>
-			<a href="/tables/{{ table.name }}" class="card-link"></a>
+			<a [routerLink]="[table.uuid]" class="card-link"></a>
 		</mat-card>
 		} }
 	</div>

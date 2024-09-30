@@ -35,6 +35,7 @@ export class TableOverviewPageComponent {
 					name
 					tables {
 						items {
+							uuid
 							name
 						}
 					}

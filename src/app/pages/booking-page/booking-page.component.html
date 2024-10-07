@@ -12,7 +12,7 @@
 						<mat-card-content class="card-content">
 							@if (bookedItems.get(item).size > 0) {
 							{{ getTotalQuantity(bookedItems.get(item)) }}x
-							{{ item.name }}^
+							{{ item.name }}
 							{{
 								(
 									item.price * getTotalQuantity(bookedItems.get(item))

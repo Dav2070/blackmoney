@@ -4,53 +4,81 @@
 		<nav>
 			<div id="order">
 				<div class="tables">
-					@for (item of bookedItems.keys(); track item) { @for(variation of
-					bookedItems.get(item).keys();track variation){
+					@for (item of bookedItems.keys(); track item) {
 					<mat-card
 						(click)="onCardClick(item, 'booked')"
 						[ngClass]="{ 'selected-card': isSelectedBooked(item) }"
 					>
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							@if(variation.name!==null){
-							{{ variation.name }}
-							}
-							{{ bookedItems.get(item).get(variation) }} Stück
+							@if (bookedItems.get(item).size > 0) {
+							{{ getTotalQuantity(bookedItems.get(item)) }}x
+							{{ item.name }}^
 							{{
-								calculateTotalPrice(
-									item.price,
-									variation.preis,
-									bookedItems.get(item).get(variation)
-								)
-							}}€
+								(
+									item.price * getTotalQuantity(bookedItems.get(item))
+								).toFixed(2)
+							}}€ @for (variation of bookedItems.get(item).keys(); track
+							variation) {
+							<div>
+								@if (variation.name !== null) {
+								{{ bookedItems.get(item).get(variation) }} mit
+								{{ variation.name }}
+								({{
+									(
+										variation.preis *
+										bookedItems.get(item).get(variation)
+									).toFixed(2)
+								}}€) }
+							</div>
+							} } @else { {{ getTotalQuantity(bookedItems.get(item)) }}x
+							{{ item.name }}
+							{{
+								(
+									item.price * getTotalQuantity(bookedItems.get(item))
+								).toFixed(2)
+							}}€ }
 						</mat-card-content>
 					</mat-card>
-					} }
+					}
 					<mat-card>
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
-					@for (item of newItems.keys(); track item) { @for(variation of
-					newItems.get(item).keys();track variation){
+					@for (item of newItems.keys(); track item) {
 					<mat-card
 						(click)="onCardClick(item, 'new')"
 						[ngClass]="{ 'selected-card': isSelectedNew(item) }"
 					>
 						<mat-card-content class="card-content">
+							@if (newItems.get(item).size > 0) {
+							{{ getTotalQuantity(newItems.get(item)) }}x
 							{{ item.name }}
-							@if(variation.name!==null){
-							{{ variation.name }}
-							}
-							{{ newItems.get(item).get(variation) }} Stück
 							{{
-								calculateTotalPrice(
-									item.price,
-									variation.preis,
-									newItems.get(item).get(variation)
-								)
-							}}€
+								(
+									item.price * getTotalQuantity(newItems.get(item))
+								).toFixed(2)
+							}}€ @for (variation of newItems.get(item).keys(); track
+							variation) {
+							<div>
+								@if (variation.name !== null) {
+								{{ newItems.get(item).get(variation) }} mit
+								{{ variation.name }}
+								({{
+									(
+										variation.preis *
+										newItems.get(item).get(variation)
+									).toFixed(2)
+								}}€) }
+							</div>
+							} } @else { {{ getTotalQuantity(newItems.get(item)) }}x
+							{{ item.name }}
+							{{
+								(
+									item.price * getTotalQuantity(newItems.get(item))
+								).toFixed(2)
+							}}€ }
 						</mat-card-content>
 					</mat-card>
-					} }
+					}
 				</div>
 			</div>
 			<div id="numpad">
@@ -59,7 +87,12 @@
 				</mat-card>
 				<div>
 					@for(number of numberpad; track number){
-					<button mat-flat-button (click)="consoleInput(number.toString())">{{ number }}</button>
+					<button
+						mat-flat-button
+						(click)="consoleInput(number.toString())"
+					>
+						{{ number }}
+					</button>
 					@if(number==3){
 					<button mat-flat-button>X</button>
 					<br />
@@ -70,7 +103,14 @@
 					<button mat-flat-button>Plus</button>
 					<br />
 					} }
-					<button mat-flat-button [disabled]=commaUsed||!consoleActive (click)="consoleInput(',')" (click)="commaUsed=true">,</button>
+					<button
+						mat-flat-button
+						[disabled]="commaUsed || !consoleActive"
+						(click)="consoleInput(',')"
+						(click)="commaUsed = true"
+					>
+						,
+					</button>
 					<button mat-flat-button (click)="consoleInput('0')">0</button>
 					<button mat-flat-button>-</button>
 					<button mat-flat-button>Enter</button>
@@ -127,30 +167,16 @@
 	</div>
 	<footer>
 		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton" (click)="sendOrder()"> 
+			<button mat-flat-button class="footerButton" (click)="sendOrder()">
 				Bestellung abschicken
 			</button>
-			<button mat-flat-button class="footerButton"> 
-				Umbuchen
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Tischplan
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Tisch
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Rechnungen
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Bar
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Karte
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Getrennt
-			</button>
+			<button mat-flat-button class="footerButton">Umbuchen</button>
+			<button mat-flat-button class="footerButton">Tischplan</button>
+			<button mat-flat-button class="footerButton">Tisch</button>
+			<button mat-flat-button class="footerButton">Rechnungen</button>
+			<button mat-flat-button class="footerButton">Bar</button>
+			<button mat-flat-button class="footerButton">Karte</button>
+			<button mat-flat-button class="footerButton">Getrennt</button>
 		</div>
 	</footer>
 </div>

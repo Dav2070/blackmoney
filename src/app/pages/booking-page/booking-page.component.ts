@@ -304,10 +304,13 @@ export class BookingPageComponent {
 	//Berechnet den Preis der hinzugefügten Items
 	calculateTotalPrice(
 		itemPrice: number,
-		variationPrice: number,
-		number: number
-	) {
-		return ((itemPrice + variationPrice) * number).toFixed(2)
+		variations: Map<Variation, number>
+	): number {
+		let totalPrice = itemPrice
+		variations.forEach((quantity, variation) => {
+			totalPrice += variation.preis * quantity
+		})
+		return totalPrice
 	}
 
 	//Fügt die gedrückte Nummer in die Konsole ein
@@ -317,5 +320,14 @@ export class BookingPageComponent {
 			this.console = ""
 		}
 		this.console += input
+	}
+
+	// Gibt die Anzahl eines Items zurück
+	getTotalQuantity(variations: Map<Variation, number>): number {
+		let totalQuantity = 0
+		variations.forEach(quantity => {
+			totalQuantity += quantity
+		})
+		return totalQuantity
 	}
 }

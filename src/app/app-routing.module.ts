@@ -29,7 +29,7 @@ const routes: Routes = [
 		component: BookingPageComponent
 	},
 	{
-		path: "tables/:uuid/transfer",
+		path: "tables/:uuid/:console",
 		component: TransferPageComponent
 	}
 ]

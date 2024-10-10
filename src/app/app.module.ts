@@ -37,6 +37,7 @@ import { BookingPageComponent } from "./pages/booking-page/booking-page.componen
 import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { DataService } from "./services/data-service"
+import { TransferPageComponent } from "./pages/transfer-page/transfer-page.component"
 
 @NgModule({
 	declarations: [
@@ -47,7 +48,8 @@ import { DataService } from "./services/data-service"
 		ForgotPasswordPageComponent,
 		LoginPageComponent,
 		TableOverviewPageComponent,
-		BookingPageComponent
+		BookingPageComponent,
+		TransferPageComponent
 	],
 	imports: [
 		BrowserModule,

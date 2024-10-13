@@ -7,20 +7,21 @@
 					<mat-card>
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
-					@for (item of bookedItems.keys(); track item) { @for(variation of
-					bookedItems.get(item).keys();track variation){
+					@for (item of bookedItemsLeft.keys(); track item) {
+					@for(variation of bookedItemsLeft.get(item).keys();track
+					variation){
 					<mat-card>
 						<mat-card-content class="card-content">
 							{{ item.name }}
 							@if(variation.name!==null){
 							{{ variation.name }}
 							}
-							{{ bookedItems.get(item).get(variation) }} Stück
+							{{ bookedItemsLeft.get(item).get(variation) }} Stück
 							{{
 								calculateTotalPrice(
 									item.price,
 									variation.preis,
-									bookedItems.get(item).get(variation)
+									bookedItemsLeft.get(item).get(variation)
 								)
 							}}€
 						</mat-card-content>
@@ -30,7 +31,9 @@
 			</div>
 			<div>
 				<mat-card class="price">
-					<mat-card-content> 20€ </mat-card-content>
+					<mat-card-content>
+						{{ showTotal(bookedItemsLeft) }}
+					</mat-card-content>
 				</mat-card>
 			</div>
 		</nav>
@@ -65,20 +68,21 @@
 					<mat-card>
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
-					@for (item of bookedItems.keys(); track item) { @for(variation of
-					bookedItems.get(item).keys();track variation){
+					@for (item of bookedItemsRight.keys(); track item) {
+					@for(variation of bookedItemsRight.get(item).keys();track
+					variation){
 					<mat-card>
 						<mat-card-content class="card-content">
 							{{ item.name }}
 							@if(variation.name!==null){
 							{{ variation.name }}
 							}
-							{{ bookedItems.get(item).get(variation) }} Stück
+							{{ bookedItemsRight.get(item).get(variation) }} Stück
 							{{
 								calculateTotalPrice(
 									item.price,
 									variation.preis,
-									bookedItems.get(item).get(variation)
+									bookedItemsRight.get(item).get(variation)
 								)
 							}}€
 						</mat-card-content>
@@ -88,7 +92,9 @@
 			</div>
 			<div>
 				<mat-card class="price">
-					<mat-card-content> 20€ </mat-card-content>
+					<mat-card-content>
+						{{ showTotal(bookedItemsRight) }}
+					</mat-card-content>
 				</mat-card>
 			</div>
 		</aside>

@@ -1,0 +1,133 @@
+<div id="wrapper">
+	<header>Bediener 1 Tisch 1</header>
+	<div id="mehrspaltig">
+		<nav>
+			<div class="items">
+				<div>
+					<mat-card>
+						<mat-card-content>{{ tableLeftUuid }}</mat-card-content>
+					</mat-card>
+					@for (item of bookedItemsLeft.keys(); track item) {
+					@for(variation of bookedItemsLeft.get(item).keys();track
+					variation){
+					<mat-card>
+						<mat-card-content class="card-content">
+							{{ item.name }}
+							@if(variation.name!==null){
+							{{ variation.name }}
+							}
+							{{ bookedItemsLeft.get(item).get(variation) }} Stück
+							{{
+								calculateTotalPrice(
+									item.price,
+									variation.preis,
+									bookedItemsLeft.get(item).get(variation)
+								)
+							}}€
+						</mat-card-content>
+					</mat-card>
+					} }
+				</div>
+			</div>
+			<div>
+				<mat-card class="price">
+					<mat-card-content>
+						{{ showTotal(bookedItemsLeft) }}
+					</mat-card-content>
+				</mat-card>
+			</div>
+		</nav>
+		<article>
+			<div id="top">
+				<button mat-flat-button>Alles umbuchen -></button>
+				<button mat-flat-button>{{ "<" }}- Alles umbuchen</button>
+			</div>
+			<div id="bottom">
+				<mat-card style="width: 30%; margin-bottom: 2px">
+					<mat-card-content> {{ console }} </mat-card-content>
+				</mat-card>
+				<div>
+					@for(number of numberpad; track number){
+					<button
+						mat-flat-button
+						(click)="consoleInput(number.toString())"
+					>
+						{{ number }}
+					</button>
+					@if(number==3){
+					<br />
+					} @if(number==6){
+					<br />
+					} @if(number==9){
+					<br />
+					} }
+				</div>
+				<div>
+					<button mat-flat-button (click)="clearInput()">clear</button>
+					<button mat-flat-button (click)="consoleInput('0')">0</button>
+				</div>
+			</div>
+		</article>
+		<aside>
+			<div class="items">
+				<div>
+					<mat-card>
+						<mat-card-content>{{ tableRightUuid }}</mat-card-content>
+					</mat-card>
+					@for (item of bookedItemsRight.keys(); track item) {
+					@for(variation of bookedItemsRight.get(item).keys();track
+					variation){
+					<mat-card>
+						<mat-card-content class="card-content">
+							{{ item.name }}
+							@if(variation.name!==null){
+							{{ variation.name }}
+							}
+							{{ bookedItemsRight.get(item).get(variation) }} Stück
+							{{
+								calculateTotalPrice(
+									item.price,
+									variation.preis,
+									bookedItemsRight.get(item).get(variation)
+								)
+							}}€
+						</mat-card-content>
+					</mat-card>
+					} }
+				</div>
+			</div>
+			<div>
+				<mat-card class="price">
+					<mat-card-content>
+						{{ showTotal(bookedItemsRight) }}
+					</mat-card-content>
+				</mat-card>
+			</div>
+		</aside>
+	</div>
+	<footer>
+		<div id="footerButtonsContainer">
+			<button mat-flat-button class="footerButton" [routerLink]="['../']">
+				Tisch {{ tableLeftUuid }}
+			</button>
+			<button mat-flat-button class="footerButton" [routerLink]="['../../']">
+				Tischplan
+			</button>
+			<button
+				mat-flat-button
+				class="footerButton"
+				[disabled]="!consoleActive"
+				[routerLink]="['../../' + console]"
+			>
+				Tisch
+			</button>
+			<button
+				mat-flat-button
+				class="footerButton"
+				[routerLink]="['../../' + tableRightUuid]"
+			>
+				Tisch {{ tableRightUuid }}
+			</button>
+		</div>
+	</footer>
+</div>

@@ -59,7 +59,12 @@
 				</mat-card>
 				<div>
 					@for(number of numberpad; track number){
-					<button mat-flat-button (click)="consoleInput(number.toString())">{{ number }}</button>
+					<button
+						mat-flat-button
+						(click)="consoleInput(number.toString())"
+					>
+						{{ number }}
+					</button>
 					@if(number==3){
 					<button mat-flat-button>X</button>
 					<br />
@@ -70,7 +75,14 @@
 					<button mat-flat-button>Plus</button>
 					<br />
 					} }
-					<button mat-flat-button [disabled]=commaUsed||!consoleActive (click)="consoleInput(',')" (click)="commaUsed=true">,</button>
+					<button
+						mat-flat-button
+						[disabled]="commaUsed || !consoleActive"
+						(click)="consoleInput(',')"
+						(click)="commaUsed = true"
+					>
+						,
+					</button>
 					<button mat-flat-button (click)="consoleInput('0')">0</button>
 					<button mat-flat-button>-</button>
 					<button mat-flat-button>Enter</button>
@@ -127,30 +139,23 @@
 	</div>
 	<footer>
 		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton" (click)="sendOrder()"> 
+			<button mat-flat-button class="footerButton" (click)="sendOrder()">
 				Bestellung abschicken
 			</button>
-			<button mat-flat-button class="footerButton"> 
+			<a
+				mat-flat-button
+				class="footerButton"
+				[routerLink]="[console]"
+				[disabled]="commaUsed || !consoleActive || tableUuid == console"
+			>
 				Umbuchen
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Tischplan
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Tisch
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Rechnungen
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Bar
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Karte
-			</button>
-			<button mat-flat-button class="footerButton"> 
-				Getrennt
-			</button>
+			</a>
+			<button mat-flat-button class="footerButton">Tischplan</button>
+			<button mat-flat-button class="footerButton">Tisch</button>
+			<button mat-flat-button class="footerButton">Rechnungen</button>
+			<button mat-flat-button class="footerButton">Bar</button>
+			<button mat-flat-button class="footerButton">Karte</button>
+			<button mat-flat-button class="footerButton">Getrennt</button>
 		</div>
 	</footer>
 </div>

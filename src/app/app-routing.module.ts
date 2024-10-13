@@ -5,6 +5,7 @@ import { ForgotPasswordPageComponent } from "./pages/forgot-password-page/forgot
 import { LoginPageComponent } from "./pages/login-page/login-page.component"
 import { TableOverviewPageComponent } from "./pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/booking-page/booking-page.component"
+import { TransferPageComponent } from "./pages/transfer-page/transfer-page.component"
 
 const routes: Routes = [
 	{
@@ -26,6 +27,10 @@ const routes: Routes = [
 	{
 		path: "tables/:uuid",
 		component: BookingPageComponent
+	},
+	{
+		path: "tables/:uuid/:console",
+		component: TransferPageComponent
 	}
 ]
 

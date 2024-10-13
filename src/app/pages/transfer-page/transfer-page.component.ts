@@ -1,4 +1,5 @@
 import { Component } from "@angular/core"
+import { ActivatedRoute } from "@angular/router"
 import { Item } from "src/app/models/item.model"
 import { Variation } from "src/app/models/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
@@ -11,10 +12,20 @@ export class TransferPageComponent {
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 	bookedItemsLeft = new Map<Item, Map<Variation, number>>()
 	bookedItemsRight = new Map<Item, Map<Variation, number>>()
+	tableLeftUuid: number
+	tableRightUuid: number
+	console: string
+	consoleActive: boolean = false
 
-	constructor(private hardcodeService: HardcodeService) {}
+	constructor(
+		private hardcodeService: HardcodeService,
+		private activatedRoute: ActivatedRoute
+	) {}
 
 	async ngOnInit() {
+		this.tableLeftUuid = +this.activatedRoute.snapshot.paramMap.get("uuid")
+		this.tableRightUuid =
+			+this.activatedRoute.snapshot.paramMap.get("console")
 		this.bookedItemsLeft = this.hardcodeService.getItemsofTable(40)
 		this.bookedItemsRight = this.hardcodeService.getItemsofTable(50)
 	}
@@ -38,5 +49,19 @@ export class TransferPageComponent {
 			}
 		}
 		return tmpTotal.toFixed(2) + "€"
+	}
+
+	//Fügt die gedrückte Nummer in die Konsole ein
+	consoleInput(input: string) {
+		if (this.consoleActive == false) {
+			this.consoleActive = true
+			this.console = ""
+		}
+		this.console += input
+	}
+
+	clearInput() {
+		this.console = ""
+		this.consoleActive = false
 	}
 }

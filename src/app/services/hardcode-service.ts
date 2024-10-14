@@ -15,8 +15,7 @@ export class HardcodeService {
 				id: 7,
 				price: 4.7,
 				name: "Pommes",
-				variations: [],
-				pickedVariation: { name: null, preis: null }
+				variations: []
 			},
 			new Map<Variation, number>([[{ name: null, preis: null }, 4]])
 		)
@@ -30,8 +29,7 @@ export class HardcodeService {
 					{ name: "Pommes", preis: 0 },
 					{ name: "Reis", preis: 1 },
 					{ name: "Kroketten", preis: 1.5 }
-				],
-				pickedVariation: { name: null, preis: null }
+				]
 			},
 			new Map<Variation, number>([
 				[{ name: "Pommes", preis: 0 }, 4],

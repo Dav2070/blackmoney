@@ -1,7 +1,9 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
+import { AllItemHandler } from "src/app/models/all-item-handler.model"
 import { Inventory } from "src/app/models/inventory.model"
 import { Item } from "src/app/models/item.model"
+import { PickedItem } from "src/app/models/picked-item.model"
 import { Variation } from "src/app/models/variation.model"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
@@ -19,9 +21,7 @@ export class BookingPageComponent {
 				{
 					id: 1,
 					price: 5.0,
-					name: "Cola 0,5",
-					variations: [],
-					pickedVariation: { name: null, preis: null }
+					name: "Cola 0,5"
 				}
 			]
 		},
@@ -31,9 +31,7 @@ export class BookingPageComponent {
 				{
 					id: 2,
 					price: 3.7,
-					name: "Pils 0,4",
-					variations: [],
-					pickedVariation: { name: null, preis: null }
+					name: "Pils 0,4"
 				}
 			]
 		},
@@ -43,9 +41,7 @@ export class BookingPageComponent {
 				{
 					id: 3,
 					price: 6.7,
-					name: "Grauburunder 0,2",
-					variations: [],
-					pickedVariation: { name: null, preis: null }
+					name: "Grauburunder 0,2"
 				}
 			]
 		},
@@ -55,9 +51,7 @@ export class BookingPageComponent {
 				{
 					id: 4,
 					price: 3.0,
-					name: "Ouzo",
-					variations: [],
-					pickedVariation: { name: null, preis: null }
+					name: "Ouzo"
 				}
 			]
 		}
@@ -69,9 +63,7 @@ export class BookingPageComponent {
 				{
 					id: 5,
 					price: 14.7,
-					name: "Vorspeisenteller",
-					variations: [],
-					pickedVariation: { name: null, preis: null }
+					name: "Vorspeisenteller"
 				}
 			]
 		},
@@ -83,11 +75,10 @@ export class BookingPageComponent {
 					price: 35.7,
 					name: "Rinderfilet",
 					variations: [
-						{ name: "Pommes", preis: 0 },
-						{ name: "Reis", preis: 1 },
-						{ name: "Kroketten", preis: 1.5 }
-					],
-					pickedVariation: { name: null, preis: null }
+						{ id: 1, name: "Pommes", preis: 0 },
+						{ id: 2, name: "Reis", preis: 1 },
+						{ id: 3, name: "Kroketten", preis: 1.5 }
+					]
 				}
 			]
 		},
@@ -97,9 +88,7 @@ export class BookingPageComponent {
 				{
 					id: 7,
 					price: 4.7,
-					name: "Pommes",
-					variations: [],
-					pickedVariation: { name: null, preis: null }
+					name: "Pommes"
 				}
 			]
 		},
@@ -109,23 +98,22 @@ export class BookingPageComponent {
 				{
 					id: 8,
 					price: 6.4,
-					name: "Tiramisu",
-					variations: [],
-					pickedVariation: { name: null, preis: null }
+					name: "Tiramisu"
 				}
 			]
 		}
 	]
 
-	selectedVariation: Variation[] = this.drinks[0].items[0].variations
+	//selectedVariation: Variation[] = this.drinks[0].items[0].variations
 
 	selectedInventory: Item[] = this.drinks[0].items
 
-	bookedItems = new Map<Item, Map<Variation, number>>()
-
+	//bookedItems = new Map<Item, Map<Variation, number>>()
+	bookedItems = new AllItemHandler()
+	stagedItems = new AllItemHandler()
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-	newItems = new Map<Item, Map<Variation, number>>()
+	//newItems = new Map<Item, Map<Variation, number>>()
 
 	endpreis: number = 0.0
 
@@ -180,60 +168,37 @@ export class BookingPageComponent {
 		this.selectedInventory = items
 	}
 
+	//Zeige Variations-Popup an
 	toggleItemPopup() {
 		this.isItemPopupVisible = !this.isItemPopupVisible
 	}
 
-	clickedItemHandler(itemMap: Map<Item, Map<Variation, number>>, item: Item) {
-		if (itemMap.has(item)) {
-			let map = itemMap.get(item)
-			if (map.has(item.pickedVariation)) {
-				let value = map.get(item.pickedVariation)
-				map.set(item.pickedVariation, value + 1)
-			} else {
-				map.set(item.pickedVariation, 1)
-			}
-		} else {
-			itemMap.set(
-				item,
-				new Map<Variation, number>([[item.pickedVariation, 1]])
-			)
-		}
-		this.showTotal()
-	}
-
-	//Füge Item der Liste an neu bestellten Artikeln hinzu
-	selectItem(item: Item) {
-		if (item.variations.length < 1) {
-			this.clickedItemHandler(this.newItems, item)
+	//Füge item zu stagedItems hinzu
+	clickItem(item: Item) {
+		if (item.variations == undefined) {
+			this.stagedItems.pushNewItem(item)
+			this.showTotal()
 		} else {
 			this.lastClickedItem = item
-			this.toggleItemPopup()
+			this.isItemPopupVisible = true
 		}
 	}
 
-	setVariation(pickedVariation: Variation) {
-		this.lastClickedItem.pickedVariation = pickedVariation
-
-		this.clickedItemHandler(this.newItems, this.lastClickedItem)
-		this.toggleItemPopup()
+	//Füge item mit Variation zu stagedItems hinzu
+	clickVariation(variation: Variation) {
+		let tmpPickedItem = new PickedItem()
+		tmpPickedItem = this.lastClickedItem
+		tmpPickedItem.pickedVariation = variation
+		this.stagedItems.pushNewItem(tmpPickedItem)
+		this.isItemPopupVisible = false
 	}
 
 	//Aktualisiert den Gesamtpreis
 	showTotal() {
-		var tmpTotal: number = 0
-
-		for (let [key, value] of this.newItems) {
-			for (let [variation, number] of value) {
-				tmpTotal += (variation.preis + key.price) * number
-			}
-		}
-		for (let [key, value] of this.bookedItems) {
-			for (let [variation, number] of value) {
-				tmpTotal += (variation.preis + key.price) * number
-			}
-		}
-		this.console = tmpTotal.toFixed(2) + "€"
+		this.console =
+			(
+				this.bookedItems.calculatTotal() + this.stagedItems.calculatTotal()
+			).toFixed(2) + "€"
 
 		this.consoleActive = false
 		this.commaUsed = false
@@ -264,7 +229,7 @@ export class BookingPageComponent {
 
 	//Löscht das zuletzt angeklickte item
 	deleteItem() {
-		if (this.lastClickedItem) {
+		/*if (this.lastClickedItem) {
 			if (this.lastClickedItemSource === "new") {
 				this.newItems.delete(this.lastClickedItem)
 			} else if (this.lastClickedItemSource === "booked") {
@@ -275,29 +240,12 @@ export class BookingPageComponent {
 			this.lastClickedItem = null
 			this.lastClickedItemSource = null
 			this.showTotal()
-		}
+		}*/
 	}
 
 	//Fügt Items der Liste an bestellten Artikeln hinzu
 	sendOrder() {
-		for (let [key, value] of this.newItems) {
-			if (this.bookedItems.has(key)) {
-				let map = this.bookedItems.get(key)
-				for (let [variation, number] of value) {
-					if (map.has(variation)) {
-						let numberOfBookedVariations = map.get(variation)
-						map.set(variation, numberOfBookedVariations + number)
-					} else {
-						map.set(variation, number)
-					}
-				}
-			} else {
-				this.bookedItems.set(key, value)
-			}
-		}
-		this.selectedItemNew = null
-		this.selectedItemBooked = null
-		this.newItems.clear()
+		this.bookedItems.transferAllItems(this.stagedItems)
 		this.showTotal()
 	}
 

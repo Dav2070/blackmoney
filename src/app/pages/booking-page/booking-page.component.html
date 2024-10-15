@@ -4,53 +4,29 @@
 		<nav>
 			<div id="order">
 				<div class="tables">
-					@for (item of bookedItems.keys(); track item) { @for(variation of
-					bookedItems.get(item).keys();track variation){
-					<mat-card
-						(click)="onCardClick(item, 'booked')"
-						[ngClass]="{ 'selected-card': isSelectedBooked(item) }"
-					>
+					@for (item of bookedItems.getAllPickedItems().values(); track
+					item) {
+					<mat-card>
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							@if(variation.name!==null){
-							{{ variation.name }}
-							}
-							{{ bookedItems.get(item).get(variation) }} Stück
-							{{
-								calculateTotalPrice(
-									item.price,
-									variation.preis,
-									bookedItems.get(item).get(variation)
-								)
-							}}€
+							{{ item[0].name }}
+							{{ item.length }} Stück
+							{{ (item[0].price * item.length).toFixed(2) }}€
 						</mat-card-content>
 					</mat-card>
-					} }
+					}
 					<mat-card>
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
-					@for (item of newItems.keys(); track item) { @for(variation of
-					newItems.get(item).keys();track variation){
-					<mat-card
-						(click)="onCardClick(item, 'new')"
-						[ngClass]="{ 'selected-card': isSelectedNew(item) }"
-					>
+					@for (item of stagedItems.getAllPickedItems().values(); track
+					item) {
+					<mat-card>
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							@if(variation.name!==null){
-							{{ variation.name }}
-							}
-							{{ newItems.get(item).get(variation) }} Stück
-							{{
-								calculateTotalPrice(
-									item.price,
-									variation.preis,
-									newItems.get(item).get(variation)
-								)
-							}}€
+							{{ item[0].name }}
+							{{ item.length }} Stück
+							{{ (item[0].price * item.length).toFixed(2) }}€
 						</mat-card-content>
 					</mat-card>
-					} }
+					}
 				</div>
 			</div>
 			<div id="numpad">
@@ -94,11 +70,11 @@
 		<article>
 			<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
 				<div class="popup-content">
-					@if(isItemPopupVisible){ @for (item of
-					lastClickedItem.variations; track item){
-					<button mat-flat-button (click)="setVariation(item)">
-						{{ item.name }}
-						+ {{ item.preis }}
+					@if(isItemPopupVisible){ @for (variation of
+					lastClickedItem.variations; track variation){
+					<button mat-flat-button (click)="clickVariation(variation)">
+						{{ variation.name }}
+						+ {{ variation.preis }}
 					</button>
 					} }
 					<button mat-flat-button (click)="toggleItemPopup()">
@@ -108,7 +84,7 @@
 			</div>
 			<div id="items">
 				@for (item of selectedInventory; track item){
-				<button (click)="selectItem(item)" mat-flat-button>
+				<button (click)="clickItem(item)" mat-flat-button>
 					{{ item.name }}
 				</button>
 				}

@@ -75,9 +75,9 @@ export class BookingPageComponent {
 					price: 35.7,
 					name: "Rinderfilet",
 					variations: [
-						{ name: "Pommes", preis: 0 },
-						{ name: "Reis", preis: 1 },
-						{ name: "Kroketten", preis: 1.5 }
+						{ id: 1, name: "Pommes", preis: 0 },
+						{ id: 2, name: "Reis", preis: 1 },
+						{ id: 3, name: "Kroketten", preis: 1.5 }
 					]
 				}
 			]
@@ -168,56 +168,33 @@ export class BookingPageComponent {
 		this.selectedInventory = items
 	}
 
+	//Zeige Variations-Popup an
 	toggleItemPopup() {
 		this.isItemPopupVisible = !this.isItemPopupVisible
 	}
 
-	clickedItemHandler(itemMap: Map<Item, Map<Variation, number>>, item: Item) {
-		/*if (itemMap.has(item)) {
-			let map = itemMap.get(item)
-			if (map.has(item.pickedVariation)) {
-				let value = map.get(item.pickedVariation)
-				map.set(item.pickedVariation, value + 1)
-			} else {
-				map.set(item.pickedVariation, 1)
-			}
+	//Füge item zu stagedItems hinzu
+	clickItem(item: Item) {
+		if (item.variations == undefined) {
+			this.stagedItems.pushNewItem(item)
+			this.showTotal()
 		} else {
-			itemMap.set(
-				item,
-				new Map<Variation, number>([[item.pickedVariation, 1]])
-			)
+			this.lastClickedItem = item
+			this.isItemPopupVisible = true
 		}
-		this.showTotal()*/
 	}
 
-	setVariation(pickedVariation: Variation) {
-		/*this.lastClickedItem.pickedVariation = pickedVariation
-
-		this.clickedItemHandler(this.newItems, this.lastClickedItem)
-		this.toggleItemPopup()*/
-	}
-
-	//Füge item zu stagedItrms hinzu
-	clickItem(item: PickedItem) {
-		this.stagedItems.pushNewItem(item.id, item)
-		this.showTotal()
+	//Füge item mit Variation zu stagedItems hinzu
+	clickVariation(variation: Variation) {
+		let tmpPickedItem = new PickedItem()
+		tmpPickedItem = this.lastClickedItem
+		tmpPickedItem.pickedVariation = variation
+		this.stagedItems.pushNewItem(tmpPickedItem)
+		this.isItemPopupVisible = false
 	}
 
 	//Aktualisiert den Gesamtpreis
 	showTotal() {
-		/*var tmpTotal: number = 0
-
-		for (let [key, value] of this.newItems) {
-			for (let [variation, number] of value) {
-				tmpTotal += (variation.preis + key.price) * number
-			}
-		}
-		for (let [key, value] of this.bookedItems) {
-			for (let [variation, number] of value) {
-				tmpTotal += (variation.preis + key.price) * number
-			}
-		}*/
-
 		this.console =
 			(
 				this.bookedItems.calculatTotal() + this.stagedItems.calculatTotal()
@@ -268,26 +245,6 @@ export class BookingPageComponent {
 
 	//Fügt Items der Liste an bestellten Artikeln hinzu
 	sendOrder() {
-		/*for (let [key, value] of this.newItems) {
-			if (this.bookedItems.has(key)) {
-				let map = this.bookedItems.get(key)
-				for (let [variation, number] of value) {
-					if (map.has(variation)) {
-						let numberOfBookedVariations = map.get(variation)
-						map.set(variation, numberOfBookedVariations + number)
-					} else {
-						map.set(variation, number)
-					}
-				}
-			} else {
-				this.bookedItems.set(key, value)
-			}
-		}
-		this.selectedItemNew = null
-		this.selectedItemBooked = null
-		this.newItems.clear()
-		this.showTotal()*/
-
 		this.bookedItems.transferAllItems(this.stagedItems)
 		this.showTotal()
 	}

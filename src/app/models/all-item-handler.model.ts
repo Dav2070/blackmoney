@@ -9,7 +9,8 @@ export class AllItemHandler {
 		return this.allPickedItems
 	}
 
-	pushNewItem(id: number, pickedItem: PickedItem) {
+	pushNewItem(pickedItem: PickedItem) {
+		let id = pickedItem.id
 		if (this.allPickedItems.has(id)) {
 			this.allPickedItems.get(id).push(pickedItem)
 		} else {
@@ -20,7 +21,7 @@ export class AllItemHandler {
 	transferAllItems(itemHandler: AllItemHandler) {
 		for (let items of itemHandler.getAllPickedItems().values()) {
 			for (let item of items) {
-				this.pushNewItem(item.id, item)
+				this.pushNewItem(item)
 			}
 		}
 		itemHandler.getAllPickedItems().clear()

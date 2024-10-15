@@ -14,10 +14,11 @@ export class HardcodeService {
 			{
 				id: 7,
 				price: 4.7,
-				name: "Pommes",
-				variations: []
+				name: "Pommes"
 			},
-			new Map<Variation, number>([[{ name: null, preis: null }, 4]])
+			new Map<Variation, number>([
+				[{ id: null, name: null, preis: null }, 4]
+			])
 		)
 
 		tmpMap.set(
@@ -26,15 +27,15 @@ export class HardcodeService {
 				price: 35.7,
 				name: "Rinderfilet",
 				variations: [
-					{ name: "Pommes", preis: 0 },
-					{ name: "Reis", preis: 1 },
-					{ name: "Kroketten", preis: 1.5 }
+					{ id: 1, name: "Pommes", preis: 0 },
+					{ id: 2, name: "Reis", preis: 1 },
+					{ id: 3, name: "Kroketten", preis: 1.5 }
 				]
 			},
 			new Map<Variation, number>([
-				[{ name: "Pommes", preis: 0 }, 4],
-				[{ name: "Reis", preis: 1 }, 3],
-				[{ name: "Kroketten", preis: 1.5 }, 1]
+				[{ id: 1, name: "Pommes", preis: 0 }, 4],
+				[{ id: 2, name: "Reis", preis: 1 }, 3],
+				[{ id: 3, name: "Kroketten", preis: 1.5 }, 1]
 			])
 		)
 

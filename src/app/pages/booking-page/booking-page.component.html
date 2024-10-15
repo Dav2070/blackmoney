@@ -70,11 +70,11 @@
 		<article>
 			<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
 				<div class="popup-content">
-					@if(isItemPopupVisible){ @for (item of
-					lastClickedItem.variations; track item){
-					<button mat-flat-button (click)="setVariation(item)">
-						{{ item.name }}
-						+ {{ item.preis }}
+					@if(isItemPopupVisible){ @for (variation of
+					lastClickedItem.variations; track variation){
+					<button mat-flat-button (click)="clickVariation(variation)">
+						{{ variation.name }}
+						+ {{ variation.preis }}
 					</button>
 					} }
 					<button mat-flat-button (click)="toggleItemPopup()">

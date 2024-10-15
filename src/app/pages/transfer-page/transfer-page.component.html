@@ -7,26 +7,16 @@
 					<mat-card>
 						<mat-card-content>{{ tableLeftUuid }}</mat-card-content>
 					</mat-card>
-					@for (item of bookedItemsLeft.keys(); track item) {
-					@for(variation of bookedItemsLeft.get(item).keys();track
-					variation){
+					@for (item of bookedItemsLeft.getAllPickedItems().values(); track
+					item) {
 					<mat-card>
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							@if(variation.name!==null){
-							{{ variation.name }}
-							}
-							{{ bookedItemsLeft.get(item).get(variation) }} Stück
-							{{
-								calculateTotalPrice(
-									item.price,
-									variation.preis,
-									bookedItemsLeft.get(item).get(variation)
-								)
-							}}€
+							{{ item[0].name }}
+							{{ item.length }} Stück
+							{{ (item[0].price * item.length).toFixed(2) }}€
 						</mat-card-content>
 					</mat-card>
-					} }
+					}
 				</div>
 			</div>
 			<div>
@@ -74,26 +64,16 @@
 					<mat-card>
 						<mat-card-content>{{ tableRightUuid }}</mat-card-content>
 					</mat-card>
-					@for (item of bookedItemsRight.keys(); track item) {
-					@for(variation of bookedItemsRight.get(item).keys();track
-					variation){
+					@for (item of bookedItemsRight.getAllPickedItems().values();
+					track item) {
 					<mat-card>
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							@if(variation.name!==null){
-							{{ variation.name }}
-							}
-							{{ bookedItemsRight.get(item).get(variation) }} Stück
-							{{
-								calculateTotalPrice(
-									item.price,
-									variation.preis,
-									bookedItemsRight.get(item).get(variation)
-								)
-							}}€
+							{{ item[0].name }}
+							{{ item.length }} Stück
+							{{ (item[0].price * item.length).toFixed(2) }}€
 						</mat-card-content>
 					</mat-card>
-					} }
+					}
 				</div>
 			</div>
 			<div>

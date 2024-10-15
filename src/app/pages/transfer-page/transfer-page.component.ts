@@ -1,5 +1,6 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
+import { AllItemHandler } from "src/app/models/all-item-handler.model"
 import { Item } from "src/app/models/item.model"
 import { Variation } from "src/app/models/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
@@ -10,8 +11,8 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 })
 export class TransferPageComponent {
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-	bookedItemsLeft = new Map<Item, Map<Variation, number>>()
-	bookedItemsRight = new Map<Item, Map<Variation, number>>()
+	bookedItemsLeft = new AllItemHandler()
+	bookedItemsRight = new AllItemHandler()
 	tableLeftUuid: number
 	tableRightUuid: number
 	console: string
@@ -30,25 +31,9 @@ export class TransferPageComponent {
 		this.bookedItemsRight = this.hardcodeService.getItemsofTable(50)
 	}
 
-	//Berechnet den Preis der hinzugefügten Items
-	calculateTotalPrice(
-		itemPrice: number,
-		variationPrice: number,
-		number: number
-	) {
-		return ((itemPrice + variationPrice) * number).toFixed(2)
-	}
-
 	//Berechnet den Preis aller Items eines Tisches
-	showTotal(bookedItem: Map<Item, Map<Variation, number>>) {
-		var tmpTotal: number = 0
-
-		for (let [key, value] of bookedItem) {
-			for (let [variation, number] of value) {
-				tmpTotal += (variation.preis + key.price) * number
-			}
-		}
-		return tmpTotal.toFixed(2) + "€"
+	showTotal(bookedItems: AllItemHandler) {
+		return bookedItems.calculatTotal().toFixed(2) + "€"
 	}
 
 	//Fügt die gedrückte Nummer in die Konsole ein

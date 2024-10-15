@@ -9,6 +9,7 @@ export class AllItemHandler {
 		return this.allPickedItems
 	}
 
+	//Füge neues Item in die Map hinzu
 	pushNewItem(pickedItem: PickedItem) {
 		let id = pickedItem.id
 		if (this.allPickedItems.has(id)) {
@@ -18,6 +19,7 @@ export class AllItemHandler {
 		}
 	}
 
+	//Übertrage alle Items aus einer anderen Map in diese
 	transferAllItems(itemHandler: AllItemHandler) {
 		for (let items of itemHandler.getAllPickedItems().values()) {
 			for (let item of items) {
@@ -27,6 +29,7 @@ export class AllItemHandler {
 		itemHandler.getAllPickedItems().clear()
 	}
 
+	//Berechne Total Preis von items mit der selben ID
 	calculatTotal() {
 		let total = 0
 		for (let items of this.allPickedItems.values()) {

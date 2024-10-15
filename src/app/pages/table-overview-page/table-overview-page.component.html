@@ -1,22 +1,43 @@
 <div class="wrapper">
-	<mat-form-field>
-		<mat-select [(value)]="selected">
-			@for (room of rooms; track room.name) {
-			<mat-option [value]="room">{{ room.name }}</mat-option>
-			}
-		</mat-select>
-	</mat-form-field>
-	<div class="tables">
-		@if (selected != null) { @for (table of selected.tables.items; track
-		table) {
-		<mat-card>
-			<mat-card-content>{{ table.name }}</mat-card-content>
-			<a [routerLink]="[table.uuid]" class="card-link"></a>
-		</mat-card>
-		} }
+	<div class="header">
+		<div id="headerContainer">
+			<p>{{ bediener }}</p>
+			<h2>BMKS</h2>
+			<p>{{ date }}</p>
+		</div>
+		<button
+			mat-mini-fab
+			style="float: right; margin-bottom: 10px; margin-right: 5px"
+		>
+			<mat-icon>settings</mat-icon>
+		</button>
 	</div>
-
-	<mat-toolbar class="bottom">
-		<span>My Application</span>
-	</mat-toolbar>
+	<div class="main">
+		<mat-form-field>
+			<mat-select [(value)]="selected">
+				@for (room of rooms; track room.name) {
+				<mat-option [value]="room">{{ room.name }}</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+		<div class="tables">
+			@if (selected != null) { @for (table of selected.tables.items; track
+			table) {
+			<mat-card class="table">
+				<mat-card-content>{{ table.name }}</mat-card-content>
+				<a [routerLink]="[table.uuid]" class="card-link"></a>
+			</mat-card>
+			} }
+		</div>
+	</div>
+	<footer class="bottom">
+		<div id="footerButtonsContainer">
+			<button mat-flat-button class="footerButton">Reservierungen</button>
+			<button mat-flat-button class="footerButton">Auszüge</button>
+			<button mat-flat-button class="footerButton">Take-Away</button>
+			<button mat-flat-button class="footerButton">Warenwirtschaft</button>
+			<button mat-flat-button class="footerButton">Mitarbeiter</button>
+			<button mat-flat-button class="footerButton">Rechnungen</button>
+		</div>
+	</footer>
 </div>

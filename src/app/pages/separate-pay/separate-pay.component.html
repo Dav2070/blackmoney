@@ -29,7 +29,9 @@
 		</nav>
 		<article>
 			<div id="top">
-				<button mat-flat-button>Rechnung hinzufügen</button>
+				<button mat-flat-button (click)="addBill()">
+					Rechnung hinzufügen
+				</button>
 				<button mat-flat-button>Rechnung entfernen</button>
 			</div>
 			<div id="bottom">
@@ -61,11 +63,11 @@
 		<aside>
 			<div class="items">
 				<div>
-					@for (bill of bills; track bill) {
+					@for (bill of bills; track bill; let index = $index) {
 					<mat-card>
-						<mat-card-content>Rechnung 1 </mat-card-content>
+						<mat-card-content>Rechnung {{ index + 1 }}</mat-card-content>
 					</mat-card>
-					@for (item of bill.getAllPickedItems().values(); track item) {
+					@for (item of bill.getAllPickedItems().values(); track item;) {
 					<mat-card>
 						<mat-card-content class="card-content">
 							{{ item[0].name }}
@@ -79,7 +81,7 @@
 			<div>
 				<mat-card class="price">
 					<mat-card-content>
-						{{ showTotal(bills[0]) }}
+						{{ calculateTotalBills() }}
 					</mat-card-content>
 				</mat-card>
 			</div>

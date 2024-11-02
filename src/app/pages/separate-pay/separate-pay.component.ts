@@ -43,4 +43,16 @@ export class SeparatePayComponent {
 		this.console = ""
 		this.consoleActive = false
 	}
+
+	addBill() {
+		this.bills.push(new AllItemHandler())
+	}
+
+	calculateTotalBills() {
+		let tmpTotal = 0
+		for (let bill of this.bills) {
+			tmpTotal += bill.calculatTotal()
+		}
+		return tmpTotal.toFixed(2) + "€"
+	}
 }

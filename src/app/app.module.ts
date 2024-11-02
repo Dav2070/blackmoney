@@ -38,6 +38,7 @@ import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { DataService } from "./services/data-service"
 import { TransferPageComponent } from "./pages/transfer-page/transfer-page.component"
+import { SeparatePayComponent } from "./pages/separate-pay/separate-pay.component"
 
 @NgModule({
 	declarations: [
@@ -49,7 +50,8 @@ import { TransferPageComponent } from "./pages/transfer-page/transfer-page.compo
 		LoginPageComponent,
 		TableOverviewPageComponent,
 		BookingPageComponent,
-		TransferPageComponent
+		TransferPageComponent,
+		SeparatePayComponent
 	],
 	imports: [
 		BrowserModule,

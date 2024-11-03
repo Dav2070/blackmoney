@@ -1,4 +1,5 @@
 import { PickedItem } from "./picked-item.model"
+import { Variation } from "./variation.model"
 
 export class AllItemHandler {
 	private allPickedItems = new Map<number, PickedItem[]>()
@@ -75,6 +76,63 @@ export class AllItemHandler {
 				}
 			}
 			total += item.price * item.anzahl
+		}
+		return total
+	}
+
+	//Gibt alle Variationen zurück
+	getVariations(id: number) {
+		let displayVariations: Variation[] = []
+		let items = this.allPickedItems.get(id)
+		for (let item of items) {
+			for (let variation of item.pickedVariation) {
+				if (
+					this.checkIfVariationIsNotIncluded(variation, displayVariations)
+				) {
+					displayVariations.push(variation)
+				}
+			}
+		}
+		return displayVariations
+	}
+
+	//Checkt ob Variation in der Liste vorhanden ist
+	checkIfVariationIsNotIncluded(
+		pickedVariation: Variation,
+		displayVariations: Variation[]
+	) {
+		for (let variation of displayVariations) {
+			if (variation.id === pickedVariation.id) {
+				return false
+			}
+		}
+		return true
+	}
+
+	//Gibt die Anzahl einer Variation zurück
+	getNumberOfVariation(variationId: number, itemId: number) {
+		let number = 0
+		let items = this.allPickedItems.get(itemId)
+		for (let item of items) {
+			for (let variation of item.pickedVariation) {
+				if (variation.id === variationId) {
+					number += variation.anzahl
+				}
+			}
+		}
+		return number
+	}
+
+	//Gibt die Anzahl einer Variation zurück
+	getPriceOfVariation(variationId: number, itemId: number) {
+		let total = 0
+		let items = this.allPickedItems.get(itemId)
+		for (let item of items) {
+			for (let variation of item.pickedVariation) {
+				if (variation.id === variationId) {
+					total += variation.preis * variation.anzahl
+				}
+			}
 		}
 		return total
 	}

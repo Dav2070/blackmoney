@@ -14,6 +14,8 @@ import { isServer } from "src/app/utils"
 	styleUrl: "./booking-page.component.scss"
 })
 export class BookingPageComponent {
+	date: String = new Date().toLocaleString("de-DE")
+	bediener: String = "Bediener 1"
 	drinks: Inventory[] = [
 		{
 			name: "Alkoholfrei",
@@ -140,6 +142,7 @@ export class BookingPageComponent {
 	) {}
 
 	async ngOnInit() {
+		
 		if (isServer()) return
 
 		await this.dataService.userPromiseHolder.AwaitResult()

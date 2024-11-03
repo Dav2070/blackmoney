@@ -8,6 +8,9 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 	styleUrl: "./separate-pay.component.scss"
 })
 export class SeparatePayComponent {
+	date: String = new Date().toLocaleString("de-DE")
+	bediener: String = "Bediener 1"
+
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 	bookedItems = new AllItemHandler()
 	bills: AllItemHandler[] = [new AllItemHandler()]

@@ -176,7 +176,7 @@ export class BookingPageComponent {
 	//Füge item zu stagedItems hinzu
 	clickItem(item: Item) {
 		if (item.variations == undefined) {
-			this.stagedItems.pushNewItem(item)
+			this.stagedItems.pushNewItem(new PickedItem(item, 1))
 			this.showTotal()
 		} else {
 			this.lastClickedItem = item
@@ -186,11 +186,11 @@ export class BookingPageComponent {
 
 	//Füge item mit Variation zu stagedItems hinzu
 	clickVariation(variation: Variation) {
-		let tmpPickedItem = new PickedItem()
-		tmpPickedItem = this.lastClickedItem
-		tmpPickedItem.pickedVariation = variation
-		this.stagedItems.pushNewItem(tmpPickedItem)
+		this.stagedItems.pushNewItem(
+			new PickedItem(this.lastClickedItem, 1, variation)
+		)
 		this.isItemPopupVisible = false
+		this.showTotal()
 	}
 
 	//Aktualisiert den Gesamtpreis

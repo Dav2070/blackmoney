@@ -34,8 +34,43 @@ export class AllItemHandler {
 		let total = 0
 		for (let items of this.allPickedItems.values()) {
 			for (let item of items) {
-				total += item.price
+				if (item.pickedVariation) {
+					total += item.pickedVariation.preis * item.anzahl
+				}
+				total += item.price * item.anzahl
 			}
+		}
+		return total
+	}
+
+	//Gib Liste mit jedem Item zurück
+	getItems() {
+		let displayedItems: PickedItem[] = []
+		for (let item of this.allPickedItems.values()) {
+			displayedItems.push(item[0])
+		}
+		return displayedItems
+	}
+
+	//Berechne wie viele Items es von einem gewählten Item gibt
+	calculateNumberOfItems(id: number) {
+		let number = 0
+		let items = this.allPickedItems.get(id)
+		for (let item of items) {
+			number += item.anzahl
+		}
+		return number
+	}
+
+	//Berechne Preis einem Item in der Liste
+	calculatePriceofItem(id: number) {
+		let total = 0
+		let items = this.allPickedItems.get(id)
+		for (let item of items) {
+			if (item.pickedVariation) {
+				total += item.pickedVariation.preis * item.anzahl
+			}
+			total += item.price * item.anzahl
 		}
 		return total
 	}

@@ -4,26 +4,24 @@
 		<nav>
 			<div id="order">
 				<div class="tables">
-					@for (item of bookedItems.getAllPickedItems().values(); track
-					item) {
+					@for (item of bookedItems.getItems(); track item) {
 					<mat-card>
 						<mat-card-content class="card-content">
-							{{ item[0].name }}
-							{{ item.length }} Stück
-							{{ (item[0].price * item.length).toFixed(2) }}€
+							{{ item.name }}
+							{{ bookedItems.calculateNumberOfItems(item.id) }} Stück
+							{{ bookedItems.calculatePriceofItem(item.id).toFixed(2) }}€
 						</mat-card-content>
 					</mat-card>
 					}
 					<mat-card>
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
-					@for (item of stagedItems.getAllPickedItems().values(); track
-					item) {
+					@for (item of stagedItems.getItems(); track item) {
 					<mat-card>
 						<mat-card-content class="card-content">
-							{{ item[0].name }}
-							{{ item.length }} Stück
-							{{ (item[0].price * item.length).toFixed(2) }}€
+							{{ item.name }}
+							{{ stagedItems.calculateNumberOfItems(item.id) }} Stück
+							{{ stagedItems.calculatePriceofItem(item.id).toFixed(2) }}€
 						</mat-card-content>
 					</mat-card>
 					}

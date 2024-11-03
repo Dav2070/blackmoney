@@ -28,4 +28,6 @@ export class HardcodeService {
 
 		return tmpMap
 	}
+
+	
 }

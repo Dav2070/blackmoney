@@ -35,7 +35,9 @@ export class AllItemHandler {
 		for (let items of this.allPickedItems.values()) {
 			for (let item of items) {
 				if (item.pickedVariation) {
-					total += item.pickedVariation.preis * item.anzahl
+					for (let variation of item.pickedVariation) {
+						total += variation.preis * variation.anzahl
+					}
 				}
 				total += item.price * item.anzahl
 			}
@@ -68,7 +70,9 @@ export class AllItemHandler {
 		let items = this.allPickedItems.get(id)
 		for (let item of items) {
 			if (item.pickedVariation) {
-				total += item.pickedVariation.preis * item.anzahl
+				for (let variation of item.pickedVariation) {
+					total += variation.preis * variation.anzahl
+				}
 			}
 			total += item.price * item.anzahl
 		}

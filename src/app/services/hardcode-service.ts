@@ -22,7 +22,7 @@ export class HardcodeService {
 			id: 6,
 			price: 35.7,
 			name: "Rinderfilet",
-			pickedVariation: { id: 2, name: "Reis", preis: 1 },
+			pickedVariation: [{ id: 2, name: "Reis", preis: 1, anzahl: 1 }],
 			anzahl: 1
 		})
 

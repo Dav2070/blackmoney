@@ -7,13 +7,13 @@ export class PickedItem {
 	price: number
 	name: string
 	anzahl: number
-	pickedVariation?: Variation
+	pickedVariation?: Variation[]
 	note?: string
 
 	constructor(
 		item: Item,
 		anzahl: number,
-		pickedVariation?: Variation,
+		pickedVariation?: Variation[],
 		note?: string
 	) {
 		this.id = item.id

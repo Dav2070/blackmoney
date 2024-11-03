@@ -186,8 +186,9 @@ export class BookingPageComponent {
 
 	//Füge item mit Variation zu stagedItems hinzu
 	clickVariation(variation: Variation) {
+		variation.anzahl = 1
 		this.stagedItems.pushNewItem(
-			new PickedItem(this.lastClickedItem, 1, variation)
+			new PickedItem(this.lastClickedItem, 1, [variation])
 		)
 		this.isItemPopupVisible = false
 		this.showTotal()

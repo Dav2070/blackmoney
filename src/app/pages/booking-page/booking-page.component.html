@@ -14,19 +14,15 @@
 					<mat-card>
 						<mat-card-content class="card-content">
 							{{ item.name }}
-							{{ bookedItems.calculateNumberOfItems(item.id) }} Stück
-							{{ bookedItems.calculatePriceofItem(item.id).toFixed(2) }}€
+							{{ item.anzahl }} Stück
+							{{ (item.price * item.anzahl).toFixed(2) }}€
 						</mat-card-content>
 						@if(item.pickedVariation){ @for(variation of
-						bookedItems.getVariations(item.id); track variation){
+						item.pickedVariation.values(); track variation){
 						<mat-card-content>
 							{{ variation.name }}
-							{{
-								bookedItems.getNumberOfVariation(variation.id, item.id)
-							}}
-							{{
-								bookedItems.getPriceOfVariation(variation.id, item.id)
-							}}€
+							{{ variation.anzahl }}
+							{{ (variation.preis * variation.anzahl).toFixed(2) }}€
 						</mat-card-content>
 						} }
 					</mat-card>
@@ -38,19 +34,15 @@
 					<mat-card>
 						<mat-card-content class="card-content">
 							{{ item.name }}
-							{{ stagedItems.calculateNumberOfItems(item.id) }} Stück
-							{{ stagedItems.calculatePriceofItem(item.id).toFixed(2) }}€
+							{{ item.anzahl }} Stück
+							{{ (item.price * item.anzahl).toFixed(2) }}€
 						</mat-card-content>
 						@if(item.pickedVariation){ @for(variation of
-						stagedItems.getVariations(item.id); track variation){
+						item.pickedVariation.values(); track variation){
 						<mat-card-content>
 							{{ variation.name }}
-							{{
-								stagedItems.getNumberOfVariation(variation.id, item.id)
-							}}
-							{{
-								stagedItems.getPriceOfVariation(variation.id, item.id)
-							}}€
+							{{ variation.anzahl }}
+							{{ (variation.preis * variation.anzahl).toFixed(2) }}€
 						</mat-card-content>
 						} }
 					</mat-card>

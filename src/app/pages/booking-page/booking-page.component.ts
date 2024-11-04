@@ -196,13 +196,11 @@ export class BookingPageComponent {
 	//Füge item mit Variation zu stagedItems hinzu
 	sendVariation() {
 		let number = 0
-		let variations = []
 		for (let variation of this.tmpVariations.values()) {
 			number += variation.anzahl
-			variations.push(variation)
 		}
 		this.stagedItems.pushNewItem(
-			new PickedItem(this.lastClickedItem, number, variations)
+			new PickedItem(this.lastClickedItem, number, this.tmpVariations)
 		)
 		this.lastClickedItem = undefined
 		this.tmpVariations.clear()

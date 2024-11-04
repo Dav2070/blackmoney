@@ -1,58 +1,30 @@
 <div id="wrapper">
-	<div class="header">
-		<div id="headerContainer">
-			<p>{{ bediener }}</p>
-			<h2>BMKS</h2>
-			<p>{{ date }}</p>
-		</div>
-	</div>
+	<header>Bediener 1 Tisch 1</header>
 	<div id="mehrspaltig">
 		<nav>
 			<div id="order">
 				<div class="tables">
-					@for (item of bookedItems.getItems(); track item) {
+					@for (item of bookedItems.getAllPickedItems().values(); track
+					item) {
 					<mat-card>
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							{{ bookedItems.calculateNumberOfItems(item.id) }} Stück
-							{{ bookedItems.calculatePriceofItem(item.id).toFixed(2) }}€
+							{{ item[0].name }}
+							{{ item.length }} Stück
+							{{ (item[0].price * item.length).toFixed(2) }}€
 						</mat-card-content>
-						@if(item.pickedVariation){ @for(variation of
-						bookedItems.getVariations(item.id); track variation){
-						<mat-card-content>
-							{{ variation.name }}
-							{{
-								bookedItems.getNumberOfVariation(variation.id, item.id)
-							}}
-							{{
-								bookedItems.getPriceOfVariation(variation.id, item.id)
-							}}€
-						</mat-card-content>
-						} }
 					</mat-card>
 					}
 					<mat-card>
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
-					@for (item of stagedItems.getItems(); track item) {
+					@for (item of stagedItems.getAllPickedItems().values(); track
+					item) {
 					<mat-card>
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							{{ stagedItems.calculateNumberOfItems(item.id) }} Stück
-							{{ stagedItems.calculatePriceofItem(item.id).toFixed(2) }}€
+							{{ item[0].name }}
+							{{ item.length }} Stück
+							{{ (item[0].price * item.length).toFixed(2) }}€
 						</mat-card-content>
-						@if(item.pickedVariation){ @for(variation of
-						stagedItems.getVariations(item.id); track variation){
-						<mat-card-content>
-							{{ variation.name }}
-							{{
-								stagedItems.getNumberOfVariation(variation.id, item.id)
-							}}
-							{{
-								stagedItems.getPriceOfVariation(variation.id, item.id)
-							}}€
-						</mat-card-content>
-						} }
 					</mat-card>
 					}
 				</div>
@@ -100,35 +72,13 @@
 				<div class="popup-content">
 					@if(isItemPopupVisible){ @for (variation of
 					lastClickedItem.variations; track variation){
-					<div>
-						<button
-							[disabled]="
-								!tmpVariations.has(variation.id) ||
-								tmpVariations.get(variation.id).anzahl === 0
-							"
-							mat-mini-fab
-							(click)="removeVariation(variation)"
-						>
-							<mat-icon>remove</mat-icon>
-						</button>
-						<b>
-							@if(tmpVariations.has(variation.id)){
-							{{ tmpVariations.get(variation.id).anzahl }}
-							} @else(){ 0 } x
-							{{ variation.name }} + {{ variation.preis }}
-						</b>
-
-						<button mat-mini-fab (click)="addVariation(variation)">
-							<mat-icon>add</mat-icon>
-						</button>
-					</div>
-
-					} }
-					<button mat-flat-button (click)="closeItemPopup()">
-						Schließen
+					<button mat-flat-button (click)="clickVariation(variation)">
+						{{ variation.name }}
+						+ {{ variation.preis }}
 					</button>
-					<button mat-flat-button (click)="sendVariation()">
-						Auswählen
+					} }
+					<button mat-flat-button (click)="toggleItemPopup()">
+						Schließen
 					</button>
 				</div>
 			</div>

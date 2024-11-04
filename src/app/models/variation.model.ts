@@ -1,6 +1,5 @@
 export class Variation {
-	id: number
-	name: string
-	preis: number
-	anzahl?: number
+    id:number;
+    name:string;
+    preis:number;
 }

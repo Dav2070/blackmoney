@@ -10,9 +10,6 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 	styleUrl: "./transfer-page.component.scss"
 })
 export class TransferPageComponent {
-	date: String = new Date().toLocaleString("de-DE")
-	bediener: String = "Bediener 1"
-
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 	bookedItemsLeft = new AllItemHandler()
 	bookedItemsRight = new AllItemHandler()

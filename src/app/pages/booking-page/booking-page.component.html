@@ -100,13 +100,35 @@
 				<div class="popup-content">
 					@if(isItemPopupVisible){ @for (variation of
 					lastClickedItem.variations; track variation){
-					<button mat-flat-button (click)="clickVariation(variation)">
-						{{ variation.name }}
-						+ {{ variation.preis }}
-					</button>
+					<div>
+						<button
+							[disabled]="
+								!tmpVariations.has(variation.id) ||
+								tmpVariations.get(variation.id).anzahl === 0
+							"
+							mat-mini-fab
+							(click)="removeVariation(variation)"
+						>
+							<mat-icon>remove</mat-icon>
+						</button>
+						<b>
+							@if(tmpVariations.has(variation.id)){
+							{{ tmpVariations.get(variation.id).anzahl }}
+							} @else(){ 0 } x
+							{{ variation.name }} + {{ variation.preis }}
+						</b>
+
+						<button mat-mini-fab (click)="addVariation(variation)">
+							<mat-icon>add</mat-icon>
+						</button>
+					</div>
+
 					} }
-					<button mat-flat-button (click)="toggleItemPopup()">
+					<button mat-flat-button (click)="closeItemPopup()">
 						Schließen
+					</button>
+					<button mat-flat-button (click)="sendVariation()">
+						Auswählen
 					</button>
 				</div>
 			</div>

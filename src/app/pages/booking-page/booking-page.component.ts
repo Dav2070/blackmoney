@@ -289,8 +289,8 @@ export class BookingPageComponent {
 		if (this.tmpVariations.has(variation.id)) {
 			this.tmpVariations.get(variation.id).anzahl += 1
 		} else {
-			variation.anzahl = 1
-			this.tmpVariations.set(variation.id, variation)
+			const newVariation = { ...variation, anzahl: 1 }
+			this.tmpVariations.set(variation.id, newVariation)
 		}
 	}
 

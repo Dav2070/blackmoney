@@ -14,6 +14,8 @@ import { isServer } from "src/app/utils"
 	styleUrl: "./booking-page.component.scss"
 })
 export class BookingPageComponent {
+	date: String = new Date().toLocaleString("de-DE")
+	bediener: String = "Bediener 1"
 	drinks: Inventory[] = [
 		{
 			name: "Alkoholfrei",
@@ -133,6 +135,8 @@ export class BookingPageComponent {
 	commaUsed: Boolean = false
 	tableUuid: string = ""
 
+	tmpVariations = new Map<number, Variation>()
+
 	constructor(
 		private dataService: DataService,
 		private apiService: ApiService,
@@ -173,10 +177,15 @@ export class BookingPageComponent {
 		this.isItemPopupVisible = !this.isItemPopupVisible
 	}
 
+	closeItemPopup() {
+		this.isItemPopupVisible = !this.isItemPopupVisible
+		this.tmpVariations.clear()
+	}
+
 	//Füge item zu stagedItems hinzu
 	clickItem(item: Item) {
 		if (item.variations == undefined) {
-			this.stagedItems.pushNewItem(item)
+			this.stagedItems.pushNewItem(new PickedItem(item, 1))
 			this.showTotal()
 		} else {
 			this.lastClickedItem = item
@@ -185,12 +194,20 @@ export class BookingPageComponent {
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu
-	clickVariation(variation: Variation) {
-		let tmpPickedItem = new PickedItem()
-		tmpPickedItem = this.lastClickedItem
-		tmpPickedItem.pickedVariation = variation
-		this.stagedItems.pushNewItem(tmpPickedItem)
+	sendVariation() {
+		let number = 0
+		let variations = []
+		for (let variation of this.tmpVariations.values()) {
+			number += variation.anzahl
+			variations.push(variation)
+		}
+		this.stagedItems.pushNewItem(
+			new PickedItem(this.lastClickedItem, number, variations)
+		)
+		this.lastClickedItem = undefined
+		this.tmpVariations.clear()
 		this.isItemPopupVisible = false
+		this.showTotal()
 	}
 
 	//Aktualisiert den Gesamtpreis
@@ -265,5 +282,24 @@ export class BookingPageComponent {
 			this.console = ""
 		}
 		this.console += input
+	}
+
+	//Erhöht eine Variation um eins
+	addVariation(variation: Variation) {
+		if (this.tmpVariations.has(variation.id)) {
+			this.tmpVariations.get(variation.id).anzahl += 1
+		} else {
+			const newVariation = { ...variation, anzahl: 1 }
+			this.tmpVariations.set(variation.id, newVariation)
+		}
+	}
+
+	//Verringert eine Variation um eins oder entfernt diese
+	removeVariation(variation: Variation) {
+		if (this.tmpVariations.get(variation.id).anzahl === 1) {
+			this.tmpVariations.delete(variation.id)
+		} else {
+			this.tmpVariations.get(variation.id).anzahl -= 1
+		}
 	}
 }

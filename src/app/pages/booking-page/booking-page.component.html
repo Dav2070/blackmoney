@@ -15,28 +15,31 @@
 						<mat-card-content class="card-content">
 							<span class="total-price">
 								@if(item.pickedVariation){
-									{{ (item.price * item.anzahl + getTotalVariationPrice(item.pickedVariation)).toFixed(2) }}€
-								}@else {
-									{{ (item.price * item.anzahl).toFixed(2) }}€
-								}
+								{{
+									(
+										item.price * item.anzahl +
+										bookedItems.getTotalVariationPrice(
+											item.pickedVariation
+										)
+									).toFixed(2)
+								}}€ }@else {
+								{{ (item.price * item.anzahl).toFixed(2) }}€ }
 							</span>
 							<strong>
 								{{ item.anzahl }} x
 								{{ item.name }}
-								{{ (item.price * item.anzahl).toFixed(2) }}€
-								</strong>				
+								{{ item.price.toFixed(2) }}€
+							</strong>
 						</mat-card-content>
 						@if(item.pickedVariation){ @for(variation of
 						item.pickedVariation.values(); track variation){
 						<mat-card-content>
-							{{ variation.anzahl }}x
-							mit {{ variation.name }}
-							+{{ (variation.preis * variation.anzahl).toFixed(2) }}€
+							{{ variation.anzahl }}x mit {{ variation.name }} +{{
+								variation.preis.toFixed(2)
+							}}€
 						</mat-card-content>
 						} }
-						<mat-card-content>
-							#{{ item.id }}
-						</mat-card-content>
+						<mat-card-content> #{{ item.id }} </mat-card-content>
 					</mat-card>
 					}
 					<mat-card>
@@ -47,29 +50,31 @@
 						<mat-card-content class="card-content">
 							<span class="total-price">
 								@if(item.pickedVariation){
-									{{ (item.price * item.anzahl + getTotalVariationPrice(item.pickedVariation)).toFixed(2) }}€
-								}@else {
-									{{ (item.price * item.anzahl).toFixed(2) }}€
-								}
+								{{
+									(
+										item.price * item.anzahl +
+										stagedItems.getTotalVariationPrice(
+											item.pickedVariation
+										)
+									).toFixed(2)
+								}}€ }@else { {{ item.price.toFixed(2) }}€ }
 							</span>
 							<strong>
-							{{ item.anzahl }} x
-							{{ item.name }}
-							{{ (item.price * item.anzahl).toFixed(2) }}€
+								{{ item.anzahl }} x
+								{{ item.name }}
+								{{ item.price.toFixed(2) }}€
 							</strong>
 						</mat-card-content>
-						
+
 						@if(item.pickedVariation){ @for(variation of
 						item.pickedVariation.values(); track variation){
 						<mat-card-content>
-							{{ variation.anzahl }}x
-							mit {{ variation.name }}
-							+{{ (variation.preis * variation.anzahl).toFixed(2) }}€
+							{{ variation.anzahl }}x mit {{ variation.name }} +{{
+								variation.preis.toFixed(2)
+							}}€
 						</mat-card-content>
 						} }
-						<mat-card-content>
-							#{{ item.id }}
-						</mat-card-content>
+						<mat-card-content> #{{ item.id }} </mat-card-content>
 					</mat-card>
 					}
 				</div>
@@ -89,7 +94,9 @@
 					@if(number==3){
 					<button
 						mat-flat-button
-						[disabled]="commaUsed || !consoleActive || checkforZero()"
+						[disabled]="
+							commaUsed || !consoleActive || checkforZero() || xUsed
+						"
 						(click)="setAnzahl()"
 					>
 						X
@@ -99,12 +106,20 @@
 					<button mat-flat-button (click)="showTotal()">Clear</button>
 					<br />
 					} @if(number==9){
-					<button mat-flat-button>Plus</button>
+					<button
+						mat-flat-button
+						[disabled]="
+							!consoleActive || commaUsed || checkArticleNumber()
+						"
+						(click)="bookById()"
+					>
+						Artikel
+					</button>
 					<br />
 					} }
 					<button
 						mat-flat-button
-						[disabled]="commaUsed || !consoleActive"
+						[disabled]="commaUsed || !consoleActive || xUsed"
 						(click)="consoleInput(',')"
 						(click)="commaUsed = true"
 					>
@@ -122,7 +137,7 @@
 			<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
 				<div class="popup-content">
 					<h2>
-						@if(lastClickedItem) { 
+						@if(lastClickedItem) {
 						{{ returnTmpVariationCount() }} x
 						{{ lastClickedItem.name }}
 						}
@@ -131,7 +146,10 @@
 					lastClickedItem.variations; track variation){
 					<div class="popup-content-dish">
 						<button
-							[disabled]="!tmpVariations.has(variation.id) || tmpVariations.get(variation.id).anzahl === 0"
+							[disabled]="
+								!tmpVariations.has(variation.id) ||
+								tmpVariations.get(variation.id).anzahl === 0
+							"
 							mat-mini-fab
 							(click)="removeVariation(variation)"
 						>
@@ -139,10 +157,9 @@
 						</button>
 						<b>
 							@if(tmpVariations.has(variation.id)){
-								{{ tmpVariations.get(variation.id).anzahl }}
-							} @else(){ 0 } x
-							mit {{ variation.name }}
-							<br>
+							{{ tmpVariations.get(variation.id).anzahl }}
+							} @else(){ 0 } x mit {{ variation.name }}
+							<br />
 							+ {{ variation.preis }}€
 						</b>
 						<button
@@ -211,7 +228,8 @@
 					commaUsed ||
 					!consoleActive ||
 					tableUuid == console ||
-					checkforZero()
+					checkforZero() ||
+					xUsed
 				"
 			>
 				Umbuchen
@@ -227,7 +245,8 @@
 					commaUsed ||
 					!consoleActive ||
 					tableUuid == console ||
-					checkforZero()
+					checkforZero() ||
+					xUsed
 				"
 			>
 				Tisch

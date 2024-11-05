@@ -66,4 +66,14 @@ export class AllItemHandler {
 	getItems() {
 		return this.allPickedItems.values()
 	}
+
+	//Gibt den Gesamtpreis der Variationen zurück
+	getTotalVariationPrice(pickedVariation: any): number {
+		let total = 0
+			for (let variation of pickedVariation.values()) {
+				total += variation.preis * variation.anzahl
+			}
+		
+		return total
+	}
 }

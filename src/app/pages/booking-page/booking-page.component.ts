@@ -134,6 +134,7 @@ export class BookingPageComponent {
 
 	commaUsed: Boolean = false
 	tableUuid: string = ""
+	xUsed: Boolean = false
 
 	tmpVariations = new Map<number, Variation>()
 
@@ -229,6 +230,7 @@ export class BookingPageComponent {
 		this.consoleActive = false
 		this.commaUsed = false
 		this.tmpAnzahl = 0
+		this.xUsed = false
 	}
 
 	//Speichert das zuletzt angeklickte item in einer Variable
@@ -303,12 +305,12 @@ export class BookingPageComponent {
 		}
 	}
 
-	returnTmpVariationCount(){
+	returnTmpVariationCount() {
 		let total = 0
 		for (let variation of this.tmpVariations.values()) {
-			total += variation.anzahl;
+			total += variation.anzahl
 		}
-		return total;
+		return total
 	}
 
 	//Verringert eine Variation um eins oder entfernt diese
@@ -335,7 +337,7 @@ export class BookingPageComponent {
 		this.tmpAnzahl = parseInt(this.console)
 		this.console += "x"
 		//damit andere Buttons gesperrt werden
-		this.commaUsed = true
+		this.xUsed = true
 	}
 
 	//Checkt ob Limit der Anzahl erreicht ist
@@ -372,14 +374,39 @@ export class BookingPageComponent {
 		return true
 	}
 
-	//Gibt den Gesamtpreis der Variationen zurück
-	getTotalVariationPrice(pickedVariation: any): number {
-		let total = 0;
-		if (pickedVariation) {
-			for (let variation of pickedVariation.values()) {
-				total += variation.preis * variation.anzahl;
+	
+	//Bucht Artikel mit Artikelnummer
+	bookById() {
+		let pickedItem: Item = undefined
+		let id = this.console
+		if (this.xUsed) {
+			id = this.console.split("x")[1]
+		}
+		for (let dish of this.dishes) {
+			for (let item of dish.items) {
+				if (id === item.id.toString()) pickedItem = item
 			}
 		}
-		return total;
+		for (let drink of this.drinks) {
+			for (let item of drink.items) {
+				if (id === item.id.toString()) pickedItem = item
+			}
+		}
+		if (pickedItem) {
+			this.clickItem(pickedItem)
+		} else {
+			window.alert("Item gibt es nicht")
+		}
+	}
+
+	//Prüft ob nach dem x eine Nummer einegeben wurde
+	checkArticleNumber() {
+		if (this.xUsed) {
+			if (this.console.split("x")[1]) {
+				return false
+			}
+			return true
+		}
+		return false
 	}
 }

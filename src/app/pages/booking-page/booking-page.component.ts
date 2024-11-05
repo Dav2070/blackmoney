@@ -196,13 +196,15 @@ export class BookingPageComponent {
 	//Füge item mit Variation zu stagedItems hinzu
 	sendVariation() {
 		let number = 0
-		let variations = []
 		for (let variation of this.tmpVariations.values()) {
 			number += variation.anzahl
-			variations.push(variation)
 		}
 		this.stagedItems.pushNewItem(
-			new PickedItem(this.lastClickedItem, number, variations)
+			new PickedItem(
+				this.lastClickedItem,
+				number,
+				new Map(this.tmpVariations)
+			)
 		)
 		this.lastClickedItem = undefined
 		this.tmpVariations.clear()
@@ -289,8 +291,7 @@ export class BookingPageComponent {
 		if (this.tmpVariations.has(variation.id)) {
 			this.tmpVariations.get(variation.id).anzahl += 1
 		} else {
-			const newVariation = { ...variation, anzahl: 1 }
-			this.tmpVariations.set(variation.id, newVariation)
+			this.tmpVariations.set(variation.id, { ...variation, anzahl: 1 })
 		}
 	}
 

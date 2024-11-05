@@ -303,6 +303,14 @@ export class BookingPageComponent {
 		}
 	}
 
+	returnTmpVariationCount(){
+		let total = 0
+		for (let variation of this.tmpVariations.values()) {
+			total += variation.anzahl;
+		}
+		return total;
+	}
+
 	//Verringert eine Variation um eins oder entfernt diese
 	removeVariation(variation: Variation) {
 		if (this.tmpVariations.get(variation.id).anzahl === 1) {
@@ -362,5 +370,16 @@ export class BookingPageComponent {
 			}
 		}
 		return true
+	}
+
+	//Gibt den Gesamtpreis der Variationen zurück
+	getTotalVariationPrice(pickedVariation: any): number {
+		let total = 0;
+		if (pickedVariation) {
+			for (let variation of pickedVariation.values()) {
+				total += variation.preis * variation.anzahl;
+			}
+		}
+		return total;
 	}
 }

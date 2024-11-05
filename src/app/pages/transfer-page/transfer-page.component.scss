@@ -13,8 +13,14 @@ body {
 	min-height: 100%;
 }
 
-header {
+.header {
+	flex: 1;
 	background-color: deepskyblue;
+}
+
+#headerContainer {
+	display: flex;
+	justify-content: space-around;
 }
 
 #mehrspaltig {

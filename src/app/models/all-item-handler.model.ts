@@ -38,7 +38,6 @@ export class AllItemHandler {
 			// Neues Item hinzufügen
 			this.allPickedItems.set(id, pickedItem)
 		}
-		console.log(pickedItem)
 	}
 
 	//Übertrage alle Items aus einer anderen Map in diese

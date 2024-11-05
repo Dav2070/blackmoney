@@ -62,7 +62,13 @@
 						{{ number }}
 					</button>
 					@if(number==3){
-					<button mat-flat-button>X</button>
+					<button
+						mat-flat-button
+						[disabled]="commaUsed || !consoleActive || checkforZero()"
+						(click)="setAnzahl()"
+					>
+						X
+					</button>
 					<br />
 					} @if(number==6){
 					<button mat-flat-button (click)="showTotal()">Clear</button>
@@ -110,7 +116,11 @@
 							{{ variation.name }} + {{ variation.preis }}
 						</b>
 
-						<button mat-mini-fab (click)="addVariation(variation)">
+						<button
+							mat-mini-fab
+							[disabled]="checkLimitAnzahl()"
+							(click)="addVariation(variation)"
+						>
 							<mat-icon>add</mat-icon>
 						</button>
 					</div>
@@ -119,7 +129,11 @@
 					<button mat-flat-button (click)="closeItemPopup()">
 						Schließen
 					</button>
-					<button mat-flat-button (click)="sendVariation()">
+					<button
+						mat-flat-button
+						[disabled]="checkPickedVariation()"
+						(click)="sendVariation()"
+					>
 						Auswählen
 					</button>
 				</div>
@@ -164,7 +178,12 @@
 				mat-flat-button
 				class="footerButton"
 				[routerLink]="[console]"
-				[disabled]="commaUsed || !consoleActive || tableUuid == console"
+				[disabled]="
+					commaUsed ||
+					!consoleActive ||
+					tableUuid == console ||
+					checkforZero()
+				"
 			>
 				Umbuchen
 			</a>
@@ -175,7 +194,12 @@
 				mat-flat-button
 				class="footerButton"
 				[routerLink]="['../' + console]"
-				[disabled]="commaUsed || !consoleActive || tableUuid == console"
+				[disabled]="
+					commaUsed ||
+					!consoleActive ||
+					tableUuid == console ||
+					checkforZero()
+				"
 			>
 				Tisch
 			</button>

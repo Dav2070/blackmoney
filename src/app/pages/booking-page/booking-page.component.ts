@@ -137,6 +137,8 @@ export class BookingPageComponent {
 
 	tmpVariations = new Map<number, Variation>()
 
+	tmpAnzahl = 0
+
 	constructor(
 		private dataService: DataService,
 		private apiService: ApiService,
@@ -185,7 +187,12 @@ export class BookingPageComponent {
 	//Füge item zu stagedItems hinzu
 	clickItem(item: Item) {
 		if (item.variations == undefined) {
-			this.stagedItems.pushNewItem(new PickedItem(item, 1))
+			if (this.tmpAnzahl > 0) {
+				this.stagedItems.pushNewItem(new PickedItem(item, this.tmpAnzahl))
+			} else {
+				this.stagedItems.pushNewItem(new PickedItem(item, 1))
+			}
+
 			this.showTotal()
 		} else {
 			this.lastClickedItem = item
@@ -221,6 +228,7 @@ export class BookingPageComponent {
 
 		this.consoleActive = false
 		this.commaUsed = false
+		this.tmpAnzahl = 0
 	}
 
 	//Speichert das zuletzt angeklickte item in einer Variable
@@ -302,5 +310,57 @@ export class BookingPageComponent {
 		} else {
 			this.tmpVariations.get(variation.id).anzahl -= 1
 		}
+	}
+
+	//Prüft ob am Anfang des Strings eine 0 eingefügt ist
+	checkforZero() {
+		if (this.consoleActive) {
+			if (this.console.charAt(0) === "0") {
+				return true
+			}
+		}
+		return false
+	}
+
+	//Setze die Anzahl der Items die gebucht werden sollen
+	setAnzahl() {
+		this.tmpAnzahl = parseInt(this.console)
+		this.console += "x"
+		//damit andere Buttons gesperrt werden
+		this.commaUsed = true
+	}
+
+	//Checkt ob Limit der Anzahl erreicht ist
+	checkLimitAnzahl() {
+		if (this.tmpAnzahl > 0) {
+			let anzahl = 0
+			for (let variation of this.tmpVariations.values()) {
+				anzahl += variation.anzahl
+			}
+			if (anzahl === this.tmpAnzahl) {
+				return true
+			}
+		}
+		return false
+	}
+
+	//Checkt ob mindestens eine Variation ausgewählt wurde oder die Anzahl an Variationen ausgewählt wurde die man buchen möchte
+	checkPickedVariation() {
+		if (this.tmpAnzahl > 0) {
+			let anzahl = 0
+			for (let variation of this.tmpVariations.values()) {
+				anzahl += variation.anzahl
+			}
+			if (anzahl === this.tmpAnzahl) {
+				return false
+			}
+		} else {
+			for (let variation of this.tmpVariations.values()) {
+				if (variation.anzahl > 0) {
+					return false
+				}
+			}
+		}
+		return true
 	}
 }

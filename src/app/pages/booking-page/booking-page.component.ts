@@ -374,16 +374,7 @@ export class BookingPageComponent {
 		return true
 	}
 
-	//Gibt den Gesamtpreis der Variationen zurück
-	getTotalVariationPrice(pickedVariation: any): number {
-		let total = 0
-		if (pickedVariation) {
-			for (let variation of pickedVariation.values()) {
-				total += variation.preis * variation.anzahl
-			}
-		}
-		return total
-	}
+	
 	//Bucht Artikel mit Artikelnummer
 	bookById() {
 		let pickedItem: Item = undefined

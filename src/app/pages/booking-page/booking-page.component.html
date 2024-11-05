@@ -18,7 +18,9 @@
 								{{
 									(
 										item.price * item.anzahl +
-										getTotalVariationPrice(item.pickedVariation)
+										bookedItems.getTotalVariationPrice(
+											item.pickedVariation
+										)
 									).toFixed(2)
 								}}€ }@else {
 								{{ (item.price * item.anzahl).toFixed(2) }}€ }
@@ -26,14 +28,14 @@
 							<strong>
 								{{ item.anzahl }} x
 								{{ item.name }}
-								{{ (item.price * item.anzahl).toFixed(2) }}€
+								{{ item.price.toFixed(2) }}€
 							</strong>
 						</mat-card-content>
 						@if(item.pickedVariation){ @for(variation of
 						item.pickedVariation.values(); track variation){
 						<mat-card-content>
 							{{ variation.anzahl }}x mit {{ variation.name }} +{{
-								(variation.preis * variation.anzahl).toFixed(2)
+								variation.preis.toFixed(2)
 							}}€
 						</mat-card-content>
 						} }
@@ -51,15 +53,16 @@
 								{{
 									(
 										item.price * item.anzahl +
-										getTotalVariationPrice(item.pickedVariation)
+										stagedItems.getTotalVariationPrice(
+											item.pickedVariation
+										)
 									).toFixed(2)
-								}}€ }@else {
-								{{ (item.price * item.anzahl).toFixed(2) }}€ }
+								}}€ }@else { {{ item.price.toFixed(2) }}€ }
 							</span>
 							<strong>
 								{{ item.anzahl }} x
 								{{ item.name }}
-								{{ (item.price * item.anzahl).toFixed(2) }}€
+								{{ item.price.toFixed(2) }}€
 							</strong>
 						</mat-card-content>
 
@@ -67,7 +70,7 @@
 						item.pickedVariation.values(); track variation){
 						<mat-card-content>
 							{{ variation.anzahl }}x mit {{ variation.name }} +{{
-								(variation.preis * variation.anzahl).toFixed(2)
+								variation.preis.toFixed(2)
 							}}€
 						</mat-card-content>
 						} }

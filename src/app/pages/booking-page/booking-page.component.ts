@@ -126,7 +126,6 @@ export class BookingPageComponent {
 	console: string = "0.0€"
 
 	selectedItemNew: Item | null = null
-	selectedItemBooked: Item | null = null
 
 	isItemPopupVisible: Boolean = false
 
@@ -139,6 +138,8 @@ export class BookingPageComponent {
 	tmpVariations = new Map<number, Variation>()
 
 	tmpAnzahl = 0
+
+	selectedItem: PickedItem = undefined
 
 	constructor(
 		private dataService: DataService,
@@ -231,29 +232,7 @@ export class BookingPageComponent {
 		this.commaUsed = false
 		this.tmpAnzahl = 0
 		this.xUsed = false
-	}
-
-	//Speichert das zuletzt angeklickte item in einer Variable
-	onCardClick(item: Item, source: "new" | "booked") {
-		this.lastClickedItem = item
-		this.lastClickedItemSource = source
-		if (source === "new") {
-			this.selectedItemNew = item
-			this.selectedItemBooked = null
-		} else if (source === "booked") {
-			this.selectedItemBooked = item
-			this.selectedItemNew = null
-		}
-	}
-
-	//Gibt true oder false zurück ob ein item aus new angeklickt wurde
-	isSelectedNew(item: Item): boolean {
-		return this.selectedItemNew === item
-	}
-
-	//Gibt true oder false zurück ob ein item aus booked angeklickt wurde
-	isSelectedBooked(item: Item): boolean {
-		return this.selectedItemBooked === item
+		this.selectedItem = undefined
 	}
 
 	//Löscht das zuletzt angeklickte item
@@ -374,7 +353,6 @@ export class BookingPageComponent {
 		return true
 	}
 
-	
 	//Bucht Artikel mit Artikelnummer
 	bookById() {
 		let pickedItem: Item = undefined
@@ -408,5 +386,27 @@ export class BookingPageComponent {
 			return true
 		}
 		return false
+	}
+
+	//Selektiert das Item in der Liste
+	selectItem(pickedItem: PickedItem) {
+		this.selectedItem = pickedItem
+	}
+
+	//Füge selektiertes Item hinzu
+	addSelectedItem() {
+		let pickedItem: Item = undefined
+		let id = this.selectedItem.id
+		for (let dish of this.dishes) {
+			for (let item of dish.items) {
+				if (id === item.id) pickedItem = item
+			}
+		}
+		for (let drink of this.drinks) {
+			for (let item of drink.items) {
+				if (id === item.id) pickedItem = item
+			}
+		}
+		this.clickItem(pickedItem)
 	}
 }

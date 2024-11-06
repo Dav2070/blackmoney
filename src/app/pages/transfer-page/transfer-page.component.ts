@@ -2,6 +2,7 @@ import { Component } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/all-item-handler.model"
 import { Item } from "src/app/models/item.model"
+import { PickedItem } from "src/app/models/picked-item.model"
 import { Variation } from "src/app/models/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
 
@@ -51,5 +52,36 @@ export class TransferPageComponent {
 	clearInput() {
 		this.console = ""
 		this.consoleActive = false
+	}
+
+	transferItem(
+		item: PickedItem,
+		send: AllItemHandler,
+		receiving: AllItemHandler
+	) {
+		let anzahl = 0
+		if (this.consoleActive) {
+			anzahl = parseInt(this.console)
+		}
+		if (item.pickedVariation) {
+		} else {
+			if (anzahl === 0) {
+				anzahl = 1
+			}
+			if (anzahl > item.anzahl) {
+				window.alert(
+					"Es können nur maximal " + item.anzahl + " übertragen werden"
+				)
+			} else {
+				send.reduceItem(item, anzahl)
+				receiving.pushNewItem(
+					new PickedItem(
+						{ id: item.id, price: item.price, name: item.name },
+						anzahl
+					)
+				)
+			}
+		}
+		this.clearInput()
 	}
 }

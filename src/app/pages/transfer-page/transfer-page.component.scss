@@ -93,8 +93,13 @@ footer {
 #bottom {
 	flex: 2;
 	background-color: orange;
-    display:flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+}
+
+.total-price {
+	float: right;
+	font-weight: bold;
 }

@@ -70,10 +70,19 @@ export class AllItemHandler {
 	//Gibt den Gesamtpreis der Variationen zurück
 	getTotalVariationPrice(pickedVariation: any): number {
 		let total = 0
-			for (let variation of pickedVariation.values()) {
-				total += variation.preis * variation.anzahl
-			}
-		
+		for (let variation of pickedVariation.values()) {
+			total += variation.preis * variation.anzahl
+		}
+
 		return total
+	}
+
+	//Reduziere Item oder Lösche es wenn Item = 0
+	reduceItem(item: PickedItem, anzahl: number) {
+		if (item.anzahl - anzahl === 0) {
+			this.allPickedItems.delete(item.id)
+		} else {
+			item.anzahl -= anzahl
+		}
 	}
 }

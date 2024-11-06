@@ -11,7 +11,13 @@
 			<div id="order">
 				<div class="tables">
 					@for (item of bookedItems.getItems(); track item) {
-					<mat-card>
+					<mat-card
+						(click)="selectItem(item)"
+						style="cursor: pointer"
+						[style.background-color]="
+							selectedItem === item ? 'rgba(27, 167, 251, 255)' : 'white'
+						"
+					>
 						<mat-card-content class="card-content">
 							<span class="total-price">
 								@if(item.pickedVariation){
@@ -46,7 +52,13 @@
 						<mat-card-content>Tisch 12</mat-card-content>
 					</mat-card>
 					@for (item of stagedItems.getItems(); track item) {
-					<mat-card>
+					<mat-card
+						(click)="selectItem(item)"
+						style="cursor: pointer"
+						[style.background-color]="
+							selectedItem === item ? 'rgba(27, 167, 251, 255)' : 'white'
+						"
+					>
 						<mat-card-content class="card-content">
 							<span class="total-price">
 								@if(item.pickedVariation){
@@ -128,7 +140,7 @@
 					</button>
 					<button mat-flat-button (click)="consoleInput('0')">0</button>
 					<button mat-flat-button>-</button>
-					<button mat-flat-button>Enter</button>
+					<button mat-flat-button>+</button>
 					<br />
 					<button (click)="deleteItem()" mat-flat-button>Delete</button>
 				</div>

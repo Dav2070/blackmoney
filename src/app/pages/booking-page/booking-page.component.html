@@ -57,7 +57,8 @@
 											item.pickedVariation
 										)
 									).toFixed(2)
-								}}€ }@else { {{ item.price.toFixed(2) }}€ }
+								}}€ }@else {
+								{{ (item.price * item.anzahl).toFixed(2) }}€ }
 							</span>
 							<strong>
 								{{ item.anzahl }} x

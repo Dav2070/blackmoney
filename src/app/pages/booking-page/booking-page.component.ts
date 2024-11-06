@@ -139,7 +139,7 @@ export class BookingPageComponent {
 
 	tmpAnzahl = 0
 
-	selectedItem: PickedItem
+	selectedItem: PickedItem = undefined
 
 	constructor(
 		private dataService: DataService,
@@ -391,5 +391,22 @@ export class BookingPageComponent {
 	//Selektiert das Item in der Liste
 	selectItem(pickedItem: PickedItem) {
 		this.selectedItem = pickedItem
+	}
+
+	//Füge selektiertes Item hinzu
+	addSelectedItem() {
+		let pickedItem: Item = undefined
+		let id = this.selectedItem.id
+		for (let dish of this.dishes) {
+			for (let item of dish.items) {
+				if (id === item.id) pickedItem = item
+			}
+		}
+		for (let drink of this.drinks) {
+			for (let item of drink.items) {
+				if (id === item.id) pickedItem = item
+			}
+		}
+		this.clickItem(pickedItem)
 	}
 }

@@ -79,10 +79,35 @@ export class AllItemHandler {
 
 	//Reduziere Item oder Lösche es wenn Item = 0
 	reduceItem(item: PickedItem, anzahl: number) {
-		if (item.anzahl - anzahl === 0) {
-			this.allPickedItems.delete(item.id)
+		if (item.pickedVariation) {
+			for (let variation of item.pickedVariation.values()) {
+				if (
+					this.allPickedItems
+						.get(item.id)
+						.pickedVariation.get(variation.id).anzahl -
+						variation.anzahl ===
+					0
+				) {
+					this.allPickedItems
+						.get(item.id)
+						.pickedVariation.delete(variation.id)
+				} else {
+					this.allPickedItems
+						.get(item.id)
+						.pickedVariation.get(variation.id).anzahl -= 1
+				}
+			}
+			if (this.allPickedItems.get(item.id).anzahl - anzahl === 0) {
+				this.allPickedItems.delete(item.id)
+			} else {
+				this.allPickedItems.get(item.id).anzahl -= anzahl
+			}
 		} else {
-			item.anzahl -= anzahl
+			if (item.anzahl - anzahl === 0) {
+				this.allPickedItems.delete(item.id)
+			} else {
+				item.anzahl -= anzahl
+			}
 		}
 	}
 }

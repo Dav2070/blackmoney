@@ -176,4 +176,52 @@
 			</button>
 		</div>
 	</footer>
+	<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
+		<div class="popup-content">
+			<h2>
+				@if(lastClickedItem) {
+				{{ lastClickedItem.anzahl }} x
+				{{ lastClickedItem.name }}
+				}
+			</h2>
+			@if(isItemPopupVisible){ @for (variation of
+			lastClickedItem.pickedVariation.values(); track variation){
+			<div class="popup-content-dish">
+				<button
+					[disabled]="
+						!tmpVariations.has(variation.id) ||
+						tmpVariations.get(variation.id).anzahl === 0
+					"
+					mat-mini-fab
+					(click)="removeVariation(variation)"
+				>
+					<mat-icon>remove</mat-icon>
+				</button>
+				<b>
+					@if(tmpVariations.has(variation.id)){
+					{{ tmpVariations.get(variation.id).anzahl }}
+					} @else(){ 0 } x mit {{ variation.name }}
+					<br />
+					+ {{ variation.preis }}€
+				</b>
+				<button
+					mat-mini-fab
+					[disabled]="checkLimitAnzahl(variation.id)"
+					(click)="addVariation(variation)"
+				>
+					<mat-icon>add</mat-icon>
+				</button>
+			</div>
+
+			} }
+			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
+			<button
+				mat-flat-button
+				[disabled]="checkPickedVariation()"
+				(click)="sendVariation()"
+			>
+				Auswählen
+			</button>
+		</div>
+	</div>
 </div>

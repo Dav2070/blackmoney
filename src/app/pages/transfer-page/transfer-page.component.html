@@ -62,8 +62,18 @@
 		</nav>
 		<article>
 			<div id="top">
-				<button mat-flat-button>Alles umbuchen -></button>
-				<button mat-flat-button>{{ "<" }}- Alles umbuchen</button>
+				<button
+					mat-flat-button
+					(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+				>
+					Alles umbuchen ->
+				</button>
+				<button
+					mat-flat-button
+					(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+				>
+					{{ "<" }}- Alles umbuchen
+				</button>
 			</div>
 			<div id="bottom">
 				<mat-card style="width: 30%; margin-bottom: 2px">

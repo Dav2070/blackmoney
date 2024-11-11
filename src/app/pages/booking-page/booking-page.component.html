@@ -12,7 +12,7 @@
 				<div class="tables">
 					@for (item of bookedItems.getItems(); track item) {
 					<mat-card
-						(click)="selectItem(item)"
+						(click)="selectItem(item, bookedItems)"
 						style="cursor: pointer"
 						[style.background-color]="
 							selectedItem === item ? 'rgba(27, 167, 251, 255)' : 'white'
@@ -53,7 +53,7 @@
 					</mat-card>
 					@for (item of stagedItems.getItems(); track item) {
 					<mat-card
-						(click)="selectItem(item)"
+						(click)="selectItem(item, stagedItems)"
 						style="cursor: pointer"
 						[style.background-color]="
 							selectedItem === item ? 'rgba(27, 167, 251, 255)' : 'white'
@@ -139,7 +139,7 @@
 						,
 					</button>
 					<button mat-flat-button (click)="consoleInput('0')">0</button>
-					<button mat-flat-button>-</button>
+					<button  (click)="substractitem()" mat-flat-button>-</button>
 					<button
 						mat-flat-button
 						[disabled]="!selectedItem"

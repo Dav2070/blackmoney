@@ -76,4 +76,22 @@ export class AllItemHandler {
 		
 		return total
 	}
+
+	//Entferne Item aus der Map
+	deleteItem(pickedItem: any):  void{	
+		this.allPickedItems.delete(pickedItem.id)
+	}
+
+	deleteVariation(pickedItem: any):  void{	
+		this.allPickedItems.get(pickedItem.id).pickedVariation.delete(pickedItem.id)
+	}
+
+	getItem(id: number): PickedItem | undefined {
+        return this.allPickedItems.get(id)
+    }
+
+	 // Prüfen, ob ein bestimmtes Item in der Map enthalten ist
+	includes(pickedItem: PickedItem): boolean {
+        return this.allPickedItems.has(pickedItem.id)
+    }
 }

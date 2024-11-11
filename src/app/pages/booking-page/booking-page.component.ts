@@ -134,12 +134,14 @@ export class BookingPageComponent {
 	commaUsed: Boolean = false
 	tableUuid: string = ""
 	xUsed: Boolean = false
+	minusUsed: Boolean = false
 
 	tmpVariations = new Map<number, Variation>()
 
 	tmpAnzahl = 0
 
 	selectedItem: PickedItem = undefined
+	tmpAllItemHandler: AllItemHandler = undefined
 
 	constructor(
 		private dataService: DataService,
@@ -202,23 +204,83 @@ export class BookingPageComponent {
 		}
 	}
 
+	substractitem() {
+		if(this.selectedItem.pickedVariation){ //Wenn Item Variationen enthält
+				this.minusUsed = true
+				this.isItemPopupVisible = true
+				this.lastClickedItem = this.selectedItem
+				this.lastClickedItem.variations = Array.from(this.selectedItem.pickedVariation.values())
+				//this.lastClickedItem.name = this.selectedItem.name
+				this.tmpVariations = new Map<number, Variation>(
+					Array.from(this.selectedItem.pickedVariation.entries()).map(([id, variation]) => [id, { ...variation }])
+				);
+				
+		}else{
+			if (this.tmpAnzahl > 0) { //Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+				if(this.selectedItem.anzahl > this.tmpAnzahl){
+				this.selectedItem.anzahl -= this.tmpAnzahl
+				}else if(this.selectedItem.anzahl === this.tmpAnzahl){
+					if(this.tmpAllItemHandler === this.bookedItems){
+						this.bookedItems.deleteItem(this.selectedItem)
+					}else{
+						this.stagedItems.deleteItem(this.selectedItem)
+					}
+				}else{
+					window.alert("Anzahl ist zu hoch")
+				}
+				this.showTotal()
+			}else{	//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
+				if (this.selectedItem.anzahl > 1){
+				this.selectedItem.anzahl -= 1
+				}else{
+					this.stagedItems.deleteItem(this.selectedItem)
+				}
+				this.showTotal()
+			}
+		}
+	}
+
 	//Füge item mit Variation zu stagedItems hinzu
 	sendVariation() {
-		let number = 0
+		console.log("sendVariation called");
+		let totalVariationAmount = 0;
 		for (let variation of this.tmpVariations.values()) {
-			number += variation.anzahl
+			totalVariationAmount += variation.anzahl;
 		}
-		this.stagedItems.pushNewItem(
-			new PickedItem(
+	
+		if (this.minusUsed) {
+			// Setze die Anzahl der Variation von dem ausgewählten items in die stagedItems
+			for (let variation of this.selectedItem.pickedVariation.values()) {
+				if (this.tmpVariations.get(variation.id) === undefined) {
+					this.selectedItem.pickedVariation.delete(variation.id);
+				} else {
+					this.selectedItem.pickedVariation.get(variation.id).anzahl = this.tmpVariations.get(variation.id).anzahl;
+				}
+			}
+			// Wenn alle Variationen gelöscht wurden, lösche das Item
+			if (this.selectedItem.pickedVariation.size === 0 && this.tmpAllItemHandler === this.bookedItems) {
+				this.bookedItems.deleteItem(this.selectedItem);
+			}else if(this.selectedItem.pickedVariation.size === 0 && this.tmpAllItemHandler === this.stagedItems) {
+				this.stagedItems.deleteItem(this.selectedItem);
+			} else {
+				// Die Summe des Items ist die Summe der Variationen
+				this.selectedItem.anzahl = totalVariationAmount;
+			}
+		
+			this.minusUsed = false;
+		} else {
+			const newItem = new PickedItem(
 				this.lastClickedItem,
-				number,
+				totalVariationAmount,
 				new Map(this.tmpVariations)
-			)
-		)
-		this.lastClickedItem = undefined
-		this.tmpVariations.clear()
-		this.isItemPopupVisible = false
-		this.showTotal()
+			);
+			this.stagedItems.pushNewItem(newItem);
+		}
+	
+		this.lastClickedItem = undefined;
+		this.tmpVariations.clear();
+		this.isItemPopupVisible = false;
+		this.showTotal();
 	}
 
 	//Aktualisiert den Gesamtpreis
@@ -294,10 +356,12 @@ export class BookingPageComponent {
 
 	//Verringert eine Variation um eins oder entfernt diese
 	removeVariation(variation: Variation) {
-		if (this.tmpVariations.get(variation.id).anzahl === 1) {
-			this.tmpVariations.delete(variation.id)
-		} else {
-			this.tmpVariations.get(variation.id).anzahl -= 1
+		if (this.tmpVariations.has(variation.id)) {
+			if (this.tmpVariations.get(variation.id).anzahl > 1) {
+				this.tmpVariations.get(variation.id).anzahl -= 1
+			} else {
+				this.tmpVariations.delete(variation.id)
+			}
 		}
 	}
 
@@ -322,19 +386,22 @@ export class BookingPageComponent {
 	//Checkt ob Limit der Anzahl erreicht ist
 	checkLimitAnzahl() {
 		if (this.tmpAnzahl > 0) {
-			let anzahl = 0
-			for (let variation of this.tmpVariations.values()) {
-				anzahl += variation.anzahl
-			}
-			if (anzahl === this.tmpAnzahl) {
-				return true
-			}
+				let anzahl = 0
+				for (let variation of this.tmpVariations.values()) {
+					anzahl += variation.anzahl
+				}
+				if (anzahl === this.tmpAnzahl) {
+					return true
+				}				
 		}
 		return false
 	}
 
 	//Checkt ob mindestens eine Variation ausgewählt wurde oder die Anzahl an Variationen ausgewählt wurde die man buchen möchte
 	checkPickedVariation() {
+		if (this.minusUsed) {
+			return false;
+		}
 		if (this.tmpAnzahl > 0) {
 			let anzahl = 0
 			for (let variation of this.tmpVariations.values()) {
@@ -389,8 +456,9 @@ export class BookingPageComponent {
 	}
 
 	//Selektiert das Item in der Liste
-	selectItem(pickedItem: PickedItem) {
+	selectItem(pickedItem: PickedItem, AllItemHandler: AllItemHandler) {
 		this.selectedItem = pickedItem
+		this.tmpAllItemHandler = AllItemHandler
 	}
 
 	//Füge selektiertes Item hinzu

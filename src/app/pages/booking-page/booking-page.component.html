@@ -139,7 +139,13 @@
 						,
 					</button>
 					<button mat-flat-button (click)="consoleInput('0')">0</button>
-					<button  (click)="substractitem()" mat-flat-button>-</button>
+					<button
+						[disabled]="!selectedItem"
+						(click)="substractitem()"
+						mat-flat-button
+					>
+						-
+					</button>
 					<button
 						mat-flat-button
 						[disabled]="!selectedItem"
@@ -147,8 +153,6 @@
 					>
 						+
 					</button>
-					<br />
-					<button (click)="deleteItem()" mat-flat-button>Delete</button>
 				</div>
 			</div>
 		</nav>
@@ -167,7 +171,8 @@
 						<button
 							[disabled]="
 								!tmpVariations.has(variation.id) ||
-								tmpVariations.get(variation.id).anzahl === 0
+								tmpVariations.get(variation.id).anzahl === 0 ||
+								checkForMinus('reduce')
 							"
 							mat-mini-fab
 							(click)="removeVariation(variation)"
@@ -183,7 +188,9 @@
 						</b>
 						<button
 							mat-mini-fab
-							[disabled]="checkLimitAnzahl()"
+							[disabled]="
+								checkLimitAnzahl() || checkForMinus('increase')
+							"
 							(click)="addVariation(variation)"
 						>
 							<mat-icon>add</mat-icon>

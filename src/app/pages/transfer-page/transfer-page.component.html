@@ -14,20 +14,40 @@
 						<mat-card-content>{{ tableLeftUuid }}</mat-card-content>
 					</mat-card>
 					@for (item of bookedItemsLeft.getItems(); track item) {
-					<mat-card>
+					<mat-card
+						(click)="
+							transferItem(item, bookedItemsLeft, bookedItemsRight)
+						"
+						style="cursor: pointer"
+					>
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							{{ item.anzahl }} Stück
-							{{ (item.price * item.anzahl).toFixed(2) }}€
+							<span class="total-price">
+								@if(item.pickedVariation){
+								{{
+									(
+										item.price * item.anzahl +
+										bookedItemsLeft.getTotalVariationPrice(
+											item.pickedVariation
+										)
+									).toFixed(2)
+								}}€ }@else {
+								{{ (item.price * item.anzahl).toFixed(2) }}€ }
+							</span>
+							<strong>
+								{{ item.anzahl }} x
+								{{ item.name }}
+								{{ item.price.toFixed(2) }}€
+							</strong>
 						</mat-card-content>
 						@if(item.pickedVariation){ @for(variation of
 						item.pickedVariation.values(); track variation){
 						<mat-card-content>
-							{{ variation.name }}
-							{{ variation.anzahl }}
-							{{ (variation.preis * variation.anzahl).toFixed(2) }}€
+							{{ variation.anzahl }}x mit {{ variation.name }} +{{
+								variation.preis.toFixed(2)
+							}}€
 						</mat-card-content>
 						} }
+						<mat-card-content> #{{ item.id }} </mat-card-content>
 					</mat-card>
 					}
 				</div>
@@ -42,8 +62,18 @@
 		</nav>
 		<article>
 			<div id="top">
-				<button mat-flat-button>Alles umbuchen -></button>
-				<button mat-flat-button>{{ "<" }}- Alles umbuchen</button>
+				<button
+					mat-flat-button
+					(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+				>
+					Alles umbuchen ->
+				</button>
+				<button
+					mat-flat-button
+					(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+				>
+					{{ "<" }}- Alles umbuchen
+				</button>
 			</div>
 			<div id="bottom">
 				<mat-card style="width: 30%; margin-bottom: 2px">
@@ -67,7 +97,13 @@
 				</div>
 				<div>
 					<button mat-flat-button (click)="clearInput()">clear</button>
-					<button mat-flat-button (click)="consoleInput('0')">0</button>
+					<button
+						mat-flat-button
+						[disabled]="!consoleActive"
+						(click)="consoleInput('0')"
+					>
+						0
+					</button>
 				</div>
 			</div>
 		</article>
@@ -78,20 +114,40 @@
 						<mat-card-content>{{ tableRightUuid }}</mat-card-content>
 					</mat-card>
 					@for (item of bookedItemsRight.getItems(); track item) {
-					<mat-card>
+					<mat-card
+						(click)="
+							transferItem(item, bookedItemsRight, bookedItemsLeft)
+						"
+						style="cursor: pointer"
+					>
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							{{ item.anzahl }} Stück
-							{{ (item.price * item.anzahl).toFixed(2) }}€
+							<span class="total-price">
+								@if(item.pickedVariation){
+								{{
+									(
+										item.price * item.anzahl +
+										bookedItemsRight.getTotalVariationPrice(
+											item.pickedVariation
+										)
+									).toFixed(2)
+								}}€ }@else {
+								{{ (item.price * item.anzahl).toFixed(2) }}€ }
+							</span>
+							<strong>
+								{{ item.anzahl }} x
+								{{ item.name }}
+								{{ item.price.toFixed(2) }}€
+							</strong>
 						</mat-card-content>
 						@if(item.pickedVariation){ @for(variation of
 						item.pickedVariation.values(); track variation){
 						<mat-card-content>
-							{{ variation.name }}
-							{{ variation.anzahl }}
-							{{ (variation.preis * variation.anzahl).toFixed(2) }}€
+							{{ variation.anzahl }}x mit {{ variation.name }} +{{
+								variation.preis.toFixed(2)
+							}}€
 						</mat-card-content>
 						} }
+						<mat-card-content> #{{ item.id }} </mat-card-content>
 					</mat-card>
 					}
 				</div>
@@ -130,4 +186,52 @@
 			</button>
 		</div>
 	</footer>
+	<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
+		<div class="popup-content">
+			<h2>
+				@if(lastClickedItem) {
+				{{ lastClickedItem.anzahl }} x
+				{{ lastClickedItem.name }}
+				}
+			</h2>
+			@if(isItemPopupVisible){ @for (variation of
+			lastClickedItem.pickedVariation.values(); track variation){
+			<div class="popup-content-dish">
+				<button
+					[disabled]="
+						!tmpVariations.has(variation.id) ||
+						tmpVariations.get(variation.id).anzahl === 0
+					"
+					mat-mini-fab
+					(click)="removeVariation(variation)"
+				>
+					<mat-icon>remove</mat-icon>
+				</button>
+				<b>
+					@if(tmpVariations.has(variation.id)){
+					{{ tmpVariations.get(variation.id).anzahl }}
+					} @else(){ 0 } x mit {{ variation.name }}
+					<br />
+					+ {{ variation.preis }}€
+				</b>
+				<button
+					mat-mini-fab
+					[disabled]="checkLimitAnzahl(variation.id)"
+					(click)="addVariation(variation)"
+				>
+					<mat-icon>add</mat-icon>
+				</button>
+			</div>
+
+			} }
+			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
+			<button
+				mat-flat-button
+				[disabled]="checkPickedVariation()"
+				(click)="sendVariation()"
+			>
+				Auswählen
+			</button>
+		</div>
+	</div>
 </div>

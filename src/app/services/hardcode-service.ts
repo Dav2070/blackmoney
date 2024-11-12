@@ -22,13 +22,13 @@ export class HardcodeService {
 			id: 6,
 			price: 35.7,
 			name: "Rinderfilet",
-			pickedVariation: new Map<number, Variation>().set(6, {
+			pickedVariation: new Map<number, Variation>().set(2, {
 				id: 2,
 				name: "Reis",
 				preis: 1,
-				anzahl: 1
+				anzahl: 2
 			}),
-			anzahl: 1
+			anzahl: 2
 		})
 
 		return tmpMap

@@ -70,10 +70,10 @@ export class AllItemHandler {
 	//Gibt den Gesamtpreis der Variationen zurück
 	getTotalVariationPrice(pickedVariation: any): number {
 		let total = 0
-			for (let variation of pickedVariation.values()) {
-				total += variation.preis * variation.anzahl
-			}
-		
+		for (let variation of pickedVariation.values()) {
+			total += variation.preis * variation.anzahl
+		}
+
 		return total
 	}
 
@@ -94,4 +94,39 @@ export class AllItemHandler {
 	includes(pickedItem: PickedItem): boolean {
         return this.allPickedItems.has(pickedItem.id)
     }
+}
+=======
+	//Reduziere Item oder Lösche es wenn Item = 0
+	reduceItem(item: PickedItem, anzahl: number) {
+		if (item.pickedVariation) {
+			for (let variation of item.pickedVariation.values()) {
+				if (
+					this.allPickedItems
+						.get(item.id)
+						.pickedVariation.get(variation.id).anzahl -
+						variation.anzahl ===
+					0
+				) {
+					this.allPickedItems
+						.get(item.id)
+						.pickedVariation.delete(variation.id)
+				} else {
+					this.allPickedItems
+						.get(item.id)
+						.pickedVariation.get(variation.id).anzahl -= 1
+				}
+			}
+			if (this.allPickedItems.get(item.id).anzahl - anzahl === 0) {
+				this.allPickedItems.delete(item.id)
+			} else {
+				this.allPickedItems.get(item.id).anzahl -= anzahl
+			}
+		} else {
+			if (item.anzahl - anzahl === 0) {
+				this.allPickedItems.delete(item.id)
+			} else {
+				item.anzahl -= anzahl
+			}
+		}
+	}
 }

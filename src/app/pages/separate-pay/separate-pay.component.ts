@@ -18,6 +18,8 @@ export class SeparatePayComponent {
 	console: string
 	consoleActive: boolean = false
 
+	activeBill: AllItemHandler = this.bills[0]
+
 	constructor(
 		private hardcodeService: HardcodeService,
 		private activatedRoute: ActivatedRoute
@@ -57,5 +59,8 @@ export class SeparatePayComponent {
 			tmpTotal += bill.calculatTotal()
 		}
 		return tmpTotal.toFixed(2) + "€"
+	}
+	setActiveBill(bill: AllItemHandler) {
+		this.activeBill = bill
 	}
 }

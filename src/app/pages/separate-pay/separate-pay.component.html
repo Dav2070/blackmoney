@@ -14,20 +14,35 @@
 						<mat-card-content>{{ tableUuid }}</mat-card-content>
 					</mat-card>
 					@for (item of bookedItems.getItems(); track item) {
-					<mat-card>
+					<mat-card style="cursor: pointer">
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							{{ item.anzahl }} Stück
-							{{ (item.price * item.anzahl).toFixed(2) }}€
+							<span class="total-price">
+								@if(item.pickedVariation){
+								{{
+									(
+										item.price * item.anzahl +
+										bookedItems.getTotalVariationPrice(
+											item.pickedVariation
+										)
+									).toFixed(2)
+								}}€ }@else {
+								{{ (item.price * item.anzahl).toFixed(2) }}€ }
+							</span>
+							<strong>
+								{{ item.anzahl }} x
+								{{ item.name }}
+								{{ item.price.toFixed(2) }}€
+							</strong>
 						</mat-card-content>
 						@if(item.pickedVariation){ @for(variation of
 						item.pickedVariation.values(); track variation){
 						<mat-card-content>
-							{{ variation.name }}
-							{{ variation.anzahl }}
-							{{ (variation.preis * variation.anzahl).toFixed(2) }}€
+							{{ variation.anzahl }}x mit {{ variation.name }} +{{
+								variation.preis.toFixed(2)
+							}}€
 						</mat-card-content>
 						} }
+						<mat-card-content> #{{ item.id }} </mat-card-content>
 					</mat-card>
 					}
 				</div>
@@ -77,24 +92,43 @@
 			<div class="items">
 				<div>
 					@for (bill of bills; track bill; let index = $index) {
-					<mat-card>
+					<mat-card
+						(click)="setActiveBill(bill)"
+						style="cursor: pointer"
+						[style.background-color]="
+							activeBill === bill ? 'rgba(27, 167, 251, 255)' : 'white'
+						"
+					>
 						<mat-card-content>Rechnung {{ index + 1 }}</mat-card-content>
 					</mat-card>
 					@for (item of bill.getItems(); track item) {
-					<mat-card>
+					<mat-card style="cursor: pointer">
 						<mat-card-content class="card-content">
-							{{ item.name }}
-							{{ item.anzahl }} Stück
-							{{ (item.price * item.anzahl).toFixed(2) }}€
+							<span class="total-price">
+								@if(item.pickedVariation){
+								{{
+									(
+										item.price * item.anzahl +
+										bill.getTotalVariationPrice(item.pickedVariation)
+									).toFixed(2)
+								}}€ }@else {
+								{{ (item.price * item.anzahl).toFixed(2) }}€ }
+							</span>
+							<strong>
+								{{ item.anzahl }} x
+								{{ item.name }}
+								{{ item.price.toFixed(2) }}€
+							</strong>
 						</mat-card-content>
 						@if(item.pickedVariation){ @for(variation of
 						item.pickedVariation.values(); track variation){
 						<mat-card-content>
-							{{ variation.name }}
-							{{ variation.anzahl }}
-							{{ (variation.preis * variation.anzahl).toFixed(2) }}€
+							{{ variation.anzahl }}x mit {{ variation.name }} +{{
+								variation.preis.toFixed(2)
+							}}€
 						</mat-card-content>
 						} }
+						<mat-card-content> #{{ item.id }} </mat-card-content>
 					</mat-card>
 					} }
 				</div>

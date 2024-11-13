@@ -14,7 +14,10 @@
 						<mat-card-content>{{ tableUuid }}</mat-card-content>
 					</mat-card>
 					@for (item of bookedItems.getItems(); track item) {
-					<mat-card style="cursor: pointer">
+					<mat-card
+						style="cursor: pointer"
+						(click)="transferItem(item, bookedItems, activeBill)"
+					>
 						<mat-card-content class="card-content">
 							<span class="total-price">
 								@if(item.pickedVariation){
@@ -65,7 +68,7 @@
 					Rechnung hinzufügen
 				</button>
 				<button
-					[disabled]="bills.length === 0"
+					[disabled]="bills.length === 1"
 					(click)="deleteBill()"
 					mat-flat-button
 				>
@@ -118,7 +121,10 @@
 						<mat-card-content>Rechnung {{ index + 1 }}</mat-card-content>
 					</mat-card>
 					@for (item of bill.getItems(); track item) {
-					<mat-card style="cursor: pointer">
+					<mat-card
+						style="cursor: pointer"
+						(click)="transferItem(item, bill, bookedItems)"
+					>
 						<mat-card-content class="card-content">
 							<span class="total-price">
 								@if(item.pickedVariation){
@@ -178,4 +184,52 @@
 			<button mat-flat-button class="footerButton">Karte</button>
 		</div>
 	</footer>
+	<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
+		<div class="popup-content">
+			<h2>
+				@if(lastClickedItem) {
+				{{ lastClickedItem.anzahl }} x
+				{{ lastClickedItem.name }}
+				}
+			</h2>
+			@if(isItemPopupVisible){ @for (variation of
+			lastClickedItem.pickedVariation.values(); track variation){
+			<div class="popup-content-dish">
+				<button
+					[disabled]="
+						!tmpVariations.has(variation.id) ||
+						tmpVariations.get(variation.id).anzahl === 0
+					"
+					mat-mini-fab
+					(click)="removeVariation(variation)"
+				>
+					<mat-icon>remove</mat-icon>
+				</button>
+				<b>
+					@if(tmpVariations.has(variation.id)){
+					{{ tmpVariations.get(variation.id).anzahl }}
+					} @else(){ 0 } x mit {{ variation.name }}
+					<br />
+					+ {{ variation.preis }}€
+				</b>
+				<button
+					mat-mini-fab
+					[disabled]="checkLimitAnzahl(variation.id)"
+					(click)="addVariation(variation)"
+				>
+					<mat-icon>add</mat-icon>
+				</button>
+			</div>
+
+			} }
+			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
+			<button
+				mat-flat-button
+				[disabled]="checkPickedVariation()"
+				(click)="sendVariation()"
+			>
+				Auswählen
+			</button>
+		</div>
+	</div>
 </div>

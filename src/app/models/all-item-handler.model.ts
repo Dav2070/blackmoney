@@ -130,4 +130,14 @@ export class AllItemHandler {
 			}
 		}
 	}
+
+	//Gibt die Anzahl von allen Items zurück
+	getNumberOfItems() {
+		let number = 0
+		for (let item of this.allPickedItems.values()) {
+			number += item.anzahl
+		}
+
+		return number
+	}
 }

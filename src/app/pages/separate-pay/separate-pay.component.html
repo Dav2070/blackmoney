@@ -57,10 +57,20 @@
 		</nav>
 		<article>
 			<div id="top">
-				<button mat-flat-button (click)="addBill()">
+				<button
+					mat-flat-button
+					[disabled]="checkMaxBills()"
+					(click)="addBill()"
+				>
 					Rechnung hinzufügen
 				</button>
-				<button mat-flat-button>Rechnung entfernen</button>
+				<button
+					[disabled]="bills.length === 0"
+					(click)="deleteBill()"
+					mat-flat-button
+				>
+					Rechnung entfernen
+				</button>
 			</div>
 			<div id="bottom">
 				<mat-card style="width: 30%; margin-bottom: 2px">
@@ -84,7 +94,13 @@
 				</div>
 				<div>
 					<button mat-flat-button (click)="clearInput()">clear</button>
-					<button mat-flat-button (click)="consoleInput('0')">0</button>
+					<button
+						mat-flat-button
+						[disabled]="!consoleActive"
+						(click)="consoleInput('0')"
+					>
+						0
+					</button>
 				</div>
 			</div>
 		</article>

@@ -51,6 +51,7 @@ export class SeparatePayComponent {
 
 	addBill() {
 		this.bills.push(new AllItemHandler())
+		this.activeBill = this.bills[this.bills.length - 1]
 	}
 
 	calculateTotalBills() {
@@ -60,7 +61,29 @@ export class SeparatePayComponent {
 		}
 		return tmpTotal.toFixed(2) + "€"
 	}
+
 	setActiveBill(bill: AllItemHandler) {
 		this.activeBill = bill
+	}
+
+	deleteBill() {
+		let index = this.bills.indexOf(this.activeBill)
+
+		this.bills.splice(index, 1)
+		//Setze die nächste aktive Rechnung
+		if (this.bills.length > 0) {
+			if (index === this.bills.length) {
+				this.activeBill = this.bills[index - 1]
+			} else {
+				this.activeBill = this.bills[index]
+			}
+		}
+	}
+
+	checkMaxBills() {
+		if (this.bookedItems.getNumberOfItems() <= this.bills.length) {
+			return true
+		}
+		return false
 	}
 }

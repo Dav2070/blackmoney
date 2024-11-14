@@ -140,4 +140,13 @@ export class AllItemHandler {
 
 		return number
 	}
+
+	//Entfertn alle Items aus Map
+	clearItems() {
+		this.allPickedItems.clear()
+	}
+
+	isEmpty() {
+		return this.allPickedItems.size == 0
+	}
 }

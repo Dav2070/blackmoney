@@ -1,6 +1,7 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/all-item-handler.model"
+import { Bill } from "src/app/models/bill.model"
 import { PickedItem } from "src/app/models/picked-item.model"
 import { Variation } from "src/app/models/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
@@ -231,5 +232,21 @@ export class SeparatePayComponent {
 			number
 		)
 		this.closeItemPopup()
+	}
+
+	createBill(payment: string) {
+		let bill = new Bill(
+			"Bediener 1",
+			this.tableUuid,
+			this.bookedItems,
+			new Date(),
+			payment,
+			true
+		)
+		this.activeBill.clearItems()
+
+		if (this.bills.length > 1) {
+			this.deleteBill()
+		}
 	}
 }

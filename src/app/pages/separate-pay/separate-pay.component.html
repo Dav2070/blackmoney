@@ -180,8 +180,22 @@
 			>
 				Tisch
 			</button>
-			<button mat-flat-button class="footerButton">Bar</button>
-			<button mat-flat-button class="footerButton">Karte</button>
+			<button
+				mat-flat-button
+				class="footerButton"
+				[disabled]="activeBill.isEmpty()"
+				(click)="createBill('Bar')"
+			>
+				Bar
+			</button>
+			<button
+				mat-flat-button
+				class="footerButton"
+				[disabled]="activeBill.isEmpty()"
+				(click)="createBill('Karte')"
+			>
+				Karte
+			</button>
 		</div>
 	</footer>
 	<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">

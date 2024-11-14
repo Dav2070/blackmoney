@@ -147,7 +147,6 @@ export class AllItemHandler {
 	}
 
 	isEmpty() {
-		console.log(this.allPickedItems.size)
 		return this.allPickedItems.size == 0
 	}
 }

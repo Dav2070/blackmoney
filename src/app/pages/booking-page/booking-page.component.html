@@ -298,6 +298,7 @@
 				mat-flat-button
 				class="footerButton"
 				[routerLink]="['separate']"
+				[disabled]="bookedItems.isEmpty()"
 			>
 				Getrennt
 			</button>

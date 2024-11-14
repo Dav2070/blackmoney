@@ -278,8 +278,22 @@
 				Tisch
 			</button>
 			<button mat-flat-button class="footerButton">Rechnungen</button>
-			<button mat-flat-button class="footerButton">Bar</button>
-			<button mat-flat-button class="footerButton">Karte</button>
+			<button
+				mat-flat-button
+				class="footerButton"
+				(click)="createBill('Bar')"
+				[disabled]="bookedItems.isEmpty()"
+			>
+				Bar
+			</button>
+			<button
+				mat-flat-button
+				class="footerButton"
+				(click)="createBill('Karte')"
+				[disabled]="bookedItems.isEmpty()"
+			>
+				Karte
+			</button>
 			<button
 				mat-flat-button
 				class="footerButton"

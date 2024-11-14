@@ -1,6 +1,7 @@
-import { Component } from "@angular/core"
+import { Component, ComponentFactoryResolver } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/all-item-handler.model"
+import { Bill } from "src/app/models/bill.model"
 import { Inventory } from "src/app/models/inventory.model"
 import { Item } from "src/app/models/item.model"
 import { PickedItem } from "src/app/models/picked-item.model"
@@ -525,5 +526,17 @@ export class BookingPageComponent {
 			}
 		}
 		this.clickItem(pickedItem)
+	}
+
+	createBill(payment: string) {
+		let bill = new Bill(
+			"Bediener 1",
+			parseInt(this.tableUuid),
+			this.bookedItems,
+			new Date(),
+			payment,
+			false
+		)
+		this.bookedItems.clearItems()
 	}
 }

@@ -277,7 +277,13 @@
 			>
 				Tisch
 			</button>
-			<button mat-flat-button class="footerButton">Rechnungen</button>
+			<button
+				mat-flat-button
+				class="footerButton"
+				(click)="isBillPopupVisible = !isBillPopupVisible"
+			>
+				Rechnungen
+			</button>
 			<button
 				mat-flat-button
 				class="footerButton"
@@ -304,4 +310,198 @@
 			</button>
 		</div>
 	</footer>
+
+	<!--Rechnungen-->
+	<div class="bill-popup-overlay bill-visible">
+		<div class="bill-popup-content">
+			<!-- Rechnungsübersicht links -->
+			<div class="bill-list">
+				<div class="bill-item bill-selected">
+					<span>Tisch 40</span>
+					<span>Bar</span>
+					<span>22:10 Uhr</span>
+					<span>49,00€</span>
+				</div>
+				<div class="bill-item">
+					<span>Tisch 41</span>
+					<span>Getrennt</span>
+					<span>22:02 Uhr</span>
+					<span>146,00€</span>
+				</div>
+				<div class="bill-item">
+					<span>Tisch 45</span>
+					<span>Karte</span>
+					<span>21:50 Uhr</span>
+					<span>102,00€</span>
+				</div>
+				<div class="bill-item">
+					<span>Tisch 40</span>
+					<span>Karte</span>
+					<span>21:15 Uhr</span>
+					<span>83,00€</span>
+				</div>
+				<!-- Weitere Rechnungen... -->
+				<div class="bill-item">
+					<span>Tisch 40</span>
+					<span>Karte</span>
+					<span>21:15 Uhr</span>
+					<span>83,00€</span>
+				</div>
+				<div class="bill-item">
+					<span>Tisch 40</span>
+					<span>Karte</span>
+					<span>21:15 Uhr</span>
+					<span>83,00€</span>
+				</div>
+				<div class="bill-item">
+					<span>Tisch 40</span>
+					<span>Karte</span>
+					<span>21:15 Uhr</span>
+					<span>83,00€</span>
+				</div>
+				<div class="bill-item">
+					<span>Tisch 40</span>
+					<span>Karte</span>
+					<span>21:15 Uhr</span>
+					<span>83,00€</span>
+				</div>
+			</div>
+
+			<!-- Details für ausgewählte Rechnung rechts -->
+			<div class="bill-details">
+				<h2>Tisch 40 <span class="bill-time">22:10:23</span></h2>
+				<div class="bill-items">
+					<div class="bill-item-detail">
+						<span>1x Zigeunerschnitzel mit Pommes</span>
+						<span>20€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>1x Schnitzel Wiener Art mit Kroketten</span>
+						<span>20€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>Kroketten</span>
+						<span>1€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<!-- Weitere Details... -->
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+					<div class="bill-item-detail">
+						<span>2x Cola Zero 0,5</span>
+						<span>8€</span>
+					</div>
+				</div>
+				<div class="bill-total">
+					<span>Gesamt</span>
+					<span>49€</span>
+				</div>
+				<div class="bill-buttons">
+					<button class="bill-back-button">Tisch zurückholen</button>
+					<button class="bill-close-button">Schließen</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

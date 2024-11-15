@@ -144,6 +144,7 @@ export class BookingPageComponent {
 	selectedItem: PickedItem = undefined
 	tmpAllItemHandler: AllItemHandler = undefined
 
+	isBillPopupVisible: boolean = false
 	constructor(
 		private dataService: DataService,
 		private apiService: ApiService,

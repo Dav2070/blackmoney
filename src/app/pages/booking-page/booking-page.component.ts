@@ -8,6 +8,7 @@ import { PickedItem } from "src/app/models/picked-item.model"
 import { Variation } from "src/app/models/variation.model"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
+import { HardcodeService } from "src/app/services/hardcode-service"
 import { isServer } from "src/app/utils"
 
 @Component({
@@ -145,10 +146,16 @@ export class BookingPageComponent {
 	tmpAllItemHandler: AllItemHandler = undefined
 
 	isBillPopupVisible: boolean = false
+
+	bills: Bill[] = []
+
+	pickedBill: Bill = undefined
+
 	constructor(
 		private dataService: DataService,
 		private apiService: ApiService,
-		private activatedRoute: ActivatedRoute
+		private activatedRoute: ActivatedRoute,
+		private hardCodedService: HardcodeService
 	) {}
 
 	async ngOnInit() {
@@ -539,5 +546,17 @@ export class BookingPageComponent {
 			false
 		)
 		this.bookedItems.clearItems()
+	}
+
+	openBills() {
+		this.bills = this.hardCodedService.getBillsOfTable(20)
+		this.pickedBill = this.bills[0]
+		this.isBillPopupVisible = !this.isBillPopupVisible
+	}
+
+	closeBills() {
+		this.isBillPopupVisible = !this.isBillPopupVisible
+		this.bills = []
+		this.pickedBill = undefined
 	}
 }

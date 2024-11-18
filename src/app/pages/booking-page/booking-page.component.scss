@@ -157,10 +157,10 @@ footer {
 	display: none;
 	align-items: center;
 	justify-content: center;
-}
 
-.bill-popup-overlay.bill-visible {
-	display: flex;
+	&.visible {
+		display: flex;
+	}
 }
 
 .bill-popup-content {

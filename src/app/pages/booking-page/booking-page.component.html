@@ -277,7 +277,9 @@
 			>
 				Tisch
 			</button>
-			<button mat-flat-button class="footerButton">Rechnungen</button>
+			<button mat-flat-button class="footerButton" (click)="openBills()">
+				Rechnungen
+			</button>
 			<button
 				mat-flat-button
 				class="footerButton"
@@ -304,4 +306,69 @@
 			</button>
 		</div>
 	</footer>
+
+	<!--Rechnungen-->
+	<div class="bill-popup-overlay" [ngClass]="{ visible: isBillPopupVisible }">
+		@if(pickedBill){
+		<div class="bill-popup-content">
+			<!-- Rechnungsübersicht links -->
+			<div class="bill-list">
+				@for(bill of bills; track bill){
+				<div
+					class="bill-item"
+					(click)="pickedBill = bill"
+					[class.bill-selected]="pickedBill === bill"
+				>
+					<span>Tisch {{ bill.table }}</span>
+					<span>{{ bill.payment }}</span>
+					<span
+						>{{
+							bill.time.toLocaleTimeString([], {
+								hour: "2-digit",
+								minute: "2-digit"
+							})
+						}}
+						Uhr</span
+					>
+					<span>{{ bill.items.calculatTotal().toFixed(2) }}€</span>
+				</div>
+				}
+			</div>
+
+			<!-- Details für ausgewählte Rechnung rechts -->
+			<div class="bill-details">
+				<h2>
+					Tisch {{ pickedBill.table }}
+					<span class="bill-time">{{
+						pickedBill.time.toLocaleTimeString("de-DE")
+					}}</span>
+				</h2>
+				<div class="bill-items">
+					@for(item of pickedBill.items.getItems(); track item){
+					<div class="bill-item-detail">
+						<span>{{ item.anzahl }}x {{ item.name }}</span>
+						<span>{{ item.anzahl * item.price }}€</span>
+					</div>
+					@if(item.pickedVariation){ @for(variation of
+					item.pickedVariation.values(); track variation){
+					<div class="bill-item-detail">
+						<span>{{ variation.anzahl }}x mit {{ variation.name }}</span>
+						<span>{{ variation.anzahl * variation.preis }}€</span>
+					</div>
+					} } }
+				</div>
+				<div class="bill-total">
+					<span>Gesamt</span>
+					<span>{{ pickedBill.items.calculatTotal().toFixed(2) }}€</span>
+				</div>
+				<div class="bill-buttons">
+					<button class="bill-back-button">Tisch zurückholen</button>
+					<button class="bill-close-button" (click)="closeBills()">
+						Schließen
+					</button>
+				</div>
+			</div>
+		</div>
+		}
+	</div>
 </div>

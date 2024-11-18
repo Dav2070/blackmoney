@@ -20,13 +20,14 @@ export class TableOverviewPageComponent {
 		private router: Router,
 		private dataService: DataService
 	) {
-		setInterval(() => {
-			this.date = new Date().toLocaleString("de-DE")
-		}, 1000)
 	}
 
 	async ngOnInit() {
 		if (isServer()) return
+
+		setInterval(() => {
+			this.date = new Date().toLocaleString("de-DE")
+		}, 1000)
 
 		await this.dataService.userPromiseHolder.AwaitResult()
 

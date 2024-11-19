@@ -213,7 +213,6 @@ export class BookingPageComponent {
 			this.lastClickedItem.variations = Array.from(
 				this.selectedItem.pickedVariation.values()
 			)
-			//this.lastClickedItem.name = this.selectedItem.name
 			this.tmpVariations = new Map<number, Variation>(
 				Array.from(this.selectedItem.pickedVariation.entries()).map(
 					([id, variation]) => [id, { ...variation }]
@@ -227,8 +226,10 @@ export class BookingPageComponent {
 				} else if (this.selectedItem.anzahl === this.tmpAnzahl) {
 					if (this.tmpAllItemHandler === this.bookedItems) {
 						this.bookedItems.deleteItem(this.selectedItem)
+						this.selectedItem = undefined
 					} else {
 						this.stagedItems.deleteItem(this.selectedItem)
+						this.selectedItem = undefined
 					}
 				} else {
 					window.alert("Anzahl ist zu hoch")
@@ -239,7 +240,13 @@ export class BookingPageComponent {
 				if (this.selectedItem.anzahl > 1) {
 					this.selectedItem.anzahl -= 1
 				} else {
+					if(this.tmpAllItemHandler === this.bookedItems) {
+						this.bookedItems.deleteItem(this.selectedItem)
+						this.selectedItem = undefined
+					} else {
 					this.stagedItems.deleteItem(this.selectedItem)
+					this.selectedItem = undefined
+					}
 				}
 				this.showTotal()
 			}
@@ -337,7 +344,6 @@ export class BookingPageComponent {
 		this.commaUsed = false
 		this.tmpAnzahl = 0
 		this.xUsed = false
-		this.selectedItem = undefined
 	}
 
 	//Fügt Items der Liste an bestellten Artikeln hinzu
@@ -508,6 +514,7 @@ export class BookingPageComponent {
 	selectItem(pickedItem: PickedItem, AllItemHandler: AllItemHandler) {
 		this.selectedItem = pickedItem
 		this.tmpAllItemHandler = AllItemHandler
+		this.selectedItemNew = pickedItem
 	}
 
 	//Füge selektiertes Item hinzu

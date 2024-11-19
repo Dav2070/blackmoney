@@ -35,13 +35,12 @@ export class LoginPageComponent {
 	}
 
 	async login() {
-		/*
-		let result = await this.apiService.createSession("token", {
-			username: this.username,
+		let result = await this.apiService.login("uuid", {
+			userName: this.username,
 			password: this.password
 		})
 
-		let token = result?.data?.createSession.token
+		let token = result?.data?.login.uuid
 
 		if (token != null) {
 			this.authService.setAccessToken(token)
@@ -50,7 +49,6 @@ export class LoginPageComponent {
 			// Redirect to tables page
 			this.router.navigate(["tables"])
 		}
-		*/
 	}
 
 	register() {

@@ -9,22 +9,15 @@ import { DataService } from "src/app/services/data-service"
 	styleUrl: "./login-page.component.scss"
 })
 export class LoginPageComponent {
-	username = ""
-	password = ""
-
-	showRegistrationForm = false
-
-	name = ""
-	email = ""
-	restaurantName = ""
-	address = ""
-	roomCount = 0
+	username: string = ""
+	password: string = ""
+	errorMessage: string = ""
 
 	constructor(
 		private router: Router,
+		public dataService: DataService,
 		private apiService: ApiService,
-		private authService: AuthService,
-		private dataService: DataService
+		private authService: AuthService
 	) {}
 
 	ngOnInit() {
@@ -35,35 +28,23 @@ export class LoginPageComponent {
 	}
 
 	async login() {
-		let result = await this.apiService.login("uuid", {
+		this.errorMessage = ""
+
+		let loginResponse = await this.apiService.login("uuid", {
 			userName: this.username,
 			password: this.password
 		})
 
-		let token = result?.data?.login.uuid
+		let accessToken = loginResponse?.data?.login.uuid
 
-		if (token != null) {
-			this.authService.setAccessToken(token)
-			this.dataService.loadApollo(token)
+		if (accessToken != null) {
+			this.authService.setAccessToken(accessToken)
+			this.dataService.loadApollo(accessToken)
 
 			// Redirect to tables page
 			this.router.navigate(["tables"])
+		} else {
+			this.errorMessage = "Login failed"
 		}
-	}
-
-	register() {
-		// Hier implementieren Sie Ihre Registrierungslogik
-		// Zum Beispiel, Sie könnten eine HTTP-Anfrage an Ihren Server senden, um den Benutzer zu registrieren
-		// Wenn die Registrierung erfolgreich ist, könnten Sie den Benutzer weiterleiten oder eine Erfolgsmeldung anzeigen
-	}
-
-	cancelRegistration() {
-		this.showRegistrationForm = false
-		// Optional: Zurücksetzen der Registrierungsformulardaten
-		this.name = ""
-		this.email = ""
-		this.restaurantName = ""
-		this.address = ""
-		this.roomCount = 0
 	}
 }

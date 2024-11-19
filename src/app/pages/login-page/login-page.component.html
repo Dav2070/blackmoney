@@ -1,14 +1,16 @@
 <div class="container">
-	<div class="form-container" *ngIf="!showRegistrationForm">
+	<div class="form-container">
 		<div class="input-container">
+			@if (dataService.company != null) {
 			<mat-form-field>
-				<input
-					matInput
-					placeholder="Nutzername"
-					type="text"
-					[(ngModel)]="username"
-				/>
+				<mat-label>User</mat-label>
+				<mat-select [(value)]="username">
+					@for (user of dataService.company.users.items; track user.name) {
+					<mat-option [value]="user.name">{{ user.name }}</mat-option>
+					}
+				</mat-select>
 			</mat-form-field>
+			}
 		</div>
 		<div class="input-container">
 			<mat-form-field>
@@ -20,85 +22,14 @@
 				/>
 			</mat-form-field>
 		</div>
+		@if (errorMessage.length > 0) {
+		<div class="error-message-container">
+			<p>{{ errorMessage }}</p>
+		</div>
+		}
 		<div class="button-container">
 			<button mat-raised-button color="primary" (click)="login()">
 				Anmelden
-			</button>
-			<button
-				mat-raised-button
-				color="accent"
-				(click)="showRegistrationForm = true"
-			>
-				Registrieren
-			</button>
-		</div>
-		<div class="button-container">
-			<a href="/forgot-password">Passwort vergessen?</a>
-		</div>
-	</div>
-
-	<div class="form-container" *ngIf="showRegistrationForm">
-		<div class="input-container">
-			<mat-form-field>
-				<input matInput placeholder="Name" type="text" [(ngModel)]="name" />
-			</mat-form-field>
-		</div>
-		<div class="input-container">
-			<mat-form-field>
-				<input
-					matInput
-					placeholder="E-Mail"
-					type="email"
-					[(ngModel)]="email"
-				/>
-			</mat-form-field>
-		</div>
-		<div class="input-container">
-			<mat-form-field>
-				<input
-					matInput
-					placeholder="Passwort"
-					type="password"
-					[(ngModel)]="password"
-				/>
-			</mat-form-field>
-		</div>
-		<div class="input-container">
-			<mat-form-field>
-				<input
-					matInput
-					placeholder="Name des Restaurants"
-					type="text"
-					[(ngModel)]="restaurantName"
-				/>
-			</mat-form-field>
-		</div>
-		<div class="input-container">
-			<mat-form-field>
-				<input
-					matInput
-					placeholder="Adresse"
-					type="text"
-					[(ngModel)]="address"
-				/>
-			</mat-form-field>
-		</div>
-		<div class="input-container">
-			<mat-form-field>
-				<input
-					matInput
-					placeholder="Anzahl der Räume"
-					type="number"
-					[(ngModel)]="roomCount"
-				/>
-			</mat-form-field>
-		</div>
-		<div class="button-container">
-			<button mat-raised-button color="primary" (click)="register()">
-				Registrieren
-			</button>
-			<button mat-raised-button color="warn" (click)="cancelRegistration()">
-				Abbrechen
 			</button>
 		</div>
 	</div>

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Apollo, gql, MutationResult } from "apollo-angular"
 import { ApolloQueryResult, ErrorPolicy } from "@apollo/client/core"
-import { List, RoomResource, CategoryResource } from "../types"
+import { List, RoomResource, CategoryResource, CompanyResource } from "../types"
 
 const errorPolicy: ErrorPolicy = "all"
 
@@ -32,6 +32,24 @@ export class ApiService {
 					}
 				`,
 				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveCompany(
+		queryData: string
+	): Promise<ApolloQueryResult<{ retrieveCompany: CompanyResource }>> {
+		return await this.apollo
+			.query<{ retrieveCompany: CompanyResource }>({
+				query: gql`
+					query RetrieveCompany {
+						retrieveCompany {
+							${queryData}
+						}
+					}
+				`,
+				variables: {},
 				errorPolicy
 			})
 			.toPromise()

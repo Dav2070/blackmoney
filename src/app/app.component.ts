@@ -1,11 +1,12 @@
 import { Component } from "@angular/core"
-import { ActivatedRoute } from "@angular/router"
+import { Router, ActivatedRoute } from "@angular/router"
 import { HttpHeaders } from "@angular/common/http"
 import { Apollo } from "apollo-angular"
 import { HttpLink } from "apollo-angular/http"
 import { InMemoryCache } from "@apollo/client/core"
 import { Dav } from "dav-js"
 import { DataService } from "./services/data-service"
+import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { environment } from "src/environments/environment"
 import { isServer } from "src/app/utils"
@@ -18,7 +19,9 @@ import { isServer } from "src/app/utils"
 export class AppComponent {
 	constructor(
 		private dataService: DataService,
+		private apiService: ApiService,
 		private authService: AuthService,
+		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private apollo: Apollo,
 		private httpLink: HttpLink
@@ -36,7 +39,7 @@ export class AppComponent {
 		})
 	}
 
-	ngOnInit() {
+	async ngOnInit() {
 		if (isServer()) {
 			this.userLoaded()
 			return
@@ -57,6 +60,30 @@ export class AppComponent {
 
 		if (accessToken != null) {
 			this.setupApollo(accessToken)
+		} else {
+			await this.dataService.userPromiseHolder.AwaitResult()
+
+			// Get the company
+			let retrieveCompanyResponse = await this.apiService.retrieveCompany(
+				`
+					uuid
+					users {
+						items {
+							name
+						}
+					}
+				`
+			)
+
+			let retrieveCompanyResponseData =
+				retrieveCompanyResponse.data.retrieveCompany
+
+			if (retrieveCompanyResponseData != null) {
+				this.dataService.company = retrieveCompanyResponseData
+
+				// Redirect to the login page
+				this.router.navigate(["/login"])
+			}
 		}
 	}
 

@@ -3,6 +3,17 @@ export interface List<T> {
 	items: T[]
 }
 
+export interface CompanyResource {
+	uuid: string
+	name: string
+	users: List<UserResource>
+}
+
+export interface UserResource {
+	uuid: string
+	name: string
+}
+
 export interface RoomResource {
 	name: string
 	tables: List<TableResource>

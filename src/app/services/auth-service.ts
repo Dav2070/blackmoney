@@ -5,7 +5,7 @@ const accessTokenKey = "ACCESS_TOKEN"
 
 @Injectable()
 export class AuthService {
-	accessToken: string = null
+	private accessToken: string = null
 
 	getAccessToken() {
 		if (isServer()) return null

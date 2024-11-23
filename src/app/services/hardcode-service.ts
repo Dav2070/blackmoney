@@ -8,38 +8,19 @@ import { Bill } from "../models/bill.model"
 	providedIn: "root"
 })
 export class HardcodeService {
-	private tmpMap = new AllItemHandler()
-	constructor() {
-		this.tmpMap.pushNewItem({
-			id: 7,
-			price: 4.7,
-			name: "Pommes",
-			anzahl: 1
-		})
-
-		this.tmpMap.pushNewItem({
-			id: 6,
-			price: 35.7,
-			name: "Rinderfilet",
-			pickedVariation: new Map<number, Variation>().set(2, {
-				id: 2,
-				name: "Reis",
-				preis: 1,
-				anzahl: 2
-			}),
-			anzahl: 2
-		})
-	}
+	constructor() {}
 
 	getItemsofTable(tablenumber: number) {
-		this.tmpMap.pushNewItem({
+		let tmpMap = new AllItemHandler()
+
+		tmpMap.pushNewItem({
 			id: 7,
 			price: 4.7,
 			name: "Pommes",
 			anzahl: 1
 		})
 
-		this.tmpMap.pushNewItem({
+		tmpMap.pushNewItem({
 			id: 6,
 			price: 35.7,
 			name: "Rinderfilet",
@@ -52,17 +33,31 @@ export class HardcodeService {
 			anzahl: 2
 		})
 
-		return this.tmpMap
+		return tmpMap
 	}
 
 	getBillsOfTable(tablenumber: number) {
 		let bills: Bill[] = []
 
 		bills.push(
-			new Bill("Bediener1", 20, this.tmpMap, new Date(), "Bar", false)
+			new Bill(
+				"Bediener1",
+				20,
+				this.getItemsofTable(tablenumber),
+				new Date(),
+				"Bar",
+				false
+			)
 		)
 		bills.push(
-			new Bill("Bediener1", 21, this.tmpMap, new Date(), "Bar", false)
+			new Bill(
+				"Bediener1",
+				21,
+				this.getItemsofTable(tablenumber),
+				new Date(),
+				"Bar",
+				false
+			)
 		)
 		return bills
 	}

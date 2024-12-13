@@ -207,12 +207,15 @@ export class BookingPageComponent {
 			}
 
 			this.showTotal()
-		} else {
+		}
+		//Öffnet Popup für Variationen
+		else {
 			this.lastClickedItem = item
 			this.isItemPopupVisible = true
 		}
 	}
 
+	//Verringert Item um 1 oder Anzahl in Konsole
 	substractitem() {
 		if (this.selectedItem.pickedVariation) {
 			//Wenn Item Variationen enthält
@@ -222,7 +225,6 @@ export class BookingPageComponent {
 			this.lastClickedItem.variations = Array.from(
 				this.selectedItem.pickedVariation.values()
 			)
-			//this.lastClickedItem.name = this.selectedItem.name
 			this.tmpVariations = new Map<number, Variation>(
 				Array.from(this.selectedItem.pickedVariation.entries()).map(
 					([id, variation]) => [id, { ...variation }]
@@ -234,11 +236,7 @@ export class BookingPageComponent {
 				if (this.selectedItem.anzahl > this.tmpAnzahl) {
 					this.selectedItem.anzahl -= this.tmpAnzahl
 				} else if (this.selectedItem.anzahl === this.tmpAnzahl) {
-					if (this.tmpAllItemHandler === this.bookedItems) {
-						this.bookedItems.deleteItem(this.selectedItem)
-					} else {
-						this.stagedItems.deleteItem(this.selectedItem)
-					}
+					this.tmpAllItemHandler.deleteItem(this.selectedItem)
 				} else {
 					window.alert("Anzahl ist zu hoch")
 				}
@@ -248,7 +246,7 @@ export class BookingPageComponent {
 				if (this.selectedItem.anzahl > 1) {
 					this.selectedItem.anzahl -= 1
 				} else {
-					this.stagedItems.deleteItem(this.selectedItem)
+					this.tmpAllItemHandler.deleteItem(this.selectedItem)
 				}
 				this.showTotal()
 			}
@@ -274,16 +272,8 @@ export class BookingPageComponent {
 				}
 			}
 			// Wenn alle Variationen gelöscht wurden, lösche das Item
-			if (
-				this.selectedItem.pickedVariation.size === 0 &&
-				this.tmpAllItemHandler === this.bookedItems
-			) {
-				this.bookedItems.deleteItem(this.selectedItem)
-			} else if (
-				this.selectedItem.pickedVariation.size === 0 &&
-				this.tmpAllItemHandler === this.stagedItems
-			) {
-				this.stagedItems.deleteItem(this.selectedItem)
+			if (this.selectedItem.pickedVariation.size === 0) {
+				this.tmpAllItemHandler.deleteItem(this.selectedItem)
 			} else {
 				// Die Summe des Items ist die Summe der Variationen
 				this.selectedItem.anzahl = totalVariationAmount

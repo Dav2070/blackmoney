@@ -12,22 +12,15 @@ import { RoomResource } from "src/app/types"
 export class TableOverviewPageComponent {
 	rooms: RoomResource[] = []
 	selected: RoomResource = null
-	date: String
-	bediener: String = "Bediener 1"
 
 	constructor(
 		private apiService: ApiService,
 		private router: Router,
 		private dataService: DataService
-	) {
-	}
+	) {}
 
 	async ngOnInit() {
 		if (isServer()) return
-
-		setInterval(() => {
-			this.date = new Date().toLocaleString("de-DE")
-		}, 1000)
 
 		await this.dataService.userPromiseHolder.AwaitResult()
 

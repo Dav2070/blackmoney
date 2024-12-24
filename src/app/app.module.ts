@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core"
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
 import {
 	BrowserModule,
 	provideClientHydration
@@ -39,11 +39,13 @@ import { AuthService } from "./services/auth-service"
 import { DataService } from "./services/data-service"
 import { TransferPageComponent } from "./pages/transfer-page/transfer-page.component"
 import { SeparatePayComponent } from "./pages/separate-pay/separate-pay.component"
+import { HeaderComponent } from "./components/header/header.component"
 
 @NgModule({
 	declarations: [
 		// Components
 		AppComponent,
+		HeaderComponent,
 		// Pages
 		LandingPageComponent,
 		ForgotPasswordPageComponent,
@@ -70,6 +72,7 @@ import { SeparatePayComponent } from "./pages/separate-pay/separate-pay.componen
 		MatSelectModule,
 		MatToolbarModule
 	],
+	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	providers: [ApiService, AuthService, DataService, provideClientHydration()],
 	bootstrap: [AppComponent]
 })

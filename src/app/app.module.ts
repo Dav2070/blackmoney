@@ -14,6 +14,9 @@ import { MatFormFieldModule } from "@angular/material/form-field"
 import { MatCardModule } from "@angular/material/card"
 import { MatSelectModule } from "@angular/material/select"
 import { MatToolbarModule } from "@angular/material/toolbar"
+import { MatSidenavModule } from "@angular/material/sidenav"
+import { MatMenuModule } from "@angular/material/menu"
+import { MatListModule } from "@angular/material/list"
 
 // Apollo
 import { HttpClientModule } from "@angular/common/http"
@@ -25,6 +28,7 @@ import { AppRoutingModule } from "./app-routing.module"
 
 // Components
 import { AppComponent } from "./app.component"
+import { SettingsBarComponent } from "./components/settings-bar/settings-bar.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-page/landing-page.component"
@@ -40,12 +44,14 @@ import { DataService } from "./services/data-service"
 import { TransferPageComponent } from "./pages/transfer-page/transfer-page.component"
 import { SeparatePayComponent } from "./pages/separate-pay/separate-pay.component"
 import { HeaderComponent } from "./components/header/header.component"
+import { MenuePageComponent } from "./settings_pages/menue-page/menue-page.component"
 
 @NgModule({
 	declarations: [
 		// Components
 		AppComponent,
 		HeaderComponent,
+		SettingsBarComponent,
 		// Pages
 		LandingPageComponent,
 		ForgotPasswordPageComponent,
@@ -53,7 +59,9 @@ import { HeaderComponent } from "./components/header/header.component"
 		TableOverviewPageComponent,
 		BookingPageComponent,
 		TransferPageComponent,
-		SeparatePayComponent
+		SeparatePayComponent,
+		//Settings-Pages
+		MenuePageComponent
 	],
 	imports: [
 		BrowserModule,
@@ -70,7 +78,10 @@ import { HeaderComponent } from "./components/header/header.component"
 		MatFormFieldModule,
 		MatCardModule,
 		MatSelectModule,
-		MatToolbarModule
+		MatToolbarModule,
+		MatSidenavModule,
+		MatListModule,
+		MatMenuModule
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	providers: [ApiService, AuthService, DataService, provideClientHydration()],

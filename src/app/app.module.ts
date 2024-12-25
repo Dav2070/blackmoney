@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, isDevMode } from "@angular/core"
 import {
 	BrowserModule,
 	provideClientHydration
@@ -40,6 +40,7 @@ import { DataService } from "./services/data-service"
 import { TransferPageComponent } from "./pages/transfer-page/transfer-page.component"
 import { SeparatePayComponent } from "./pages/separate-pay/separate-pay.component"
 import { HeaderComponent } from "./components/header/header.component"
+import { ServiceWorkerModule } from "@angular/service-worker"
 
 @NgModule({
 	declarations: [
@@ -71,7 +72,13 @@ import { HeaderComponent } from "./components/header/header.component"
 		MatFormFieldModule,
 		MatCardModule,
 		MatSelectModule,
-		MatToolbarModule
+		MatToolbarModule,
+		ServiceWorkerModule.register("ngsw-worker.js", {
+			enabled: !isDevMode(),
+			// Register the ServiceWorker as soon as the application is stable
+			// or after 30 seconds (whichever comes first).
+			registrationStrategy: "registerWhenStable:30000"
+		})
 	],
 	providers: [
 		ApiService,

@@ -9,8 +9,15 @@ import { TableOverviewPageComponent } from "./pages/table-overview-page/table-ov
 import { BookingPageComponent } from "./pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/transfer-page/transfer-page.component"
 import { SeparatePayComponent } from "./pages/separate-pay/separate-pay.component"
+import { MenuePageComponent } from "./settings_pages/menue-page/menue-page.component"
 
 const routes: Routes = [
+	//Settings-Pages
+	{
+		path: "tables/settings",
+		component: MenuePageComponent
+	},
+	//Cash-Register Pages
 	{
 		path: "",
 		component: LandingPageComponent,

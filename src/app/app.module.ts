@@ -14,6 +14,9 @@ import { MatFormFieldModule } from "@angular/material/form-field"
 import { MatCardModule } from "@angular/material/card"
 import { MatSelectModule } from "@angular/material/select"
 import { MatToolbarModule } from "@angular/material/toolbar"
+import { MatSidenavModule } from "@angular/material/sidenav"
+import { MatMenuModule } from "@angular/material/menu"
+import { MatListModule } from "@angular/material/list"
 
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
@@ -25,6 +28,7 @@ import { AppRoutingModule } from "./app-routing.module"
 
 // Components
 import { AppComponent } from "./app.component"
+import { SettingsBarComponent } from "./components/settings-bar/settings-bar.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-page/landing-page.component"
@@ -43,12 +47,14 @@ import { TransferPageComponent } from "./pages/transfer-page/transfer-page.compo
 import { SeparatePayComponent } from "./pages/separate-pay/separate-pay.component"
 import { HeaderComponent } from "./components/header/header.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
+import { MenuePageComponent } from "./settings_pages/menue-page/menue-page.component"
 
 @NgModule({
 	declarations: [
 		// Components
 		AppComponent,
 		HeaderComponent,
+		SettingsBarComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -58,7 +64,9 @@ import { ServiceWorkerModule } from "@angular/service-worker"
 		TableOverviewPageComponent,
 		BookingPageComponent,
 		TransferPageComponent,
-		SeparatePayComponent
+		SeparatePayComponent,
+		//Settings-Pages
+		MenuePageComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],
@@ -77,6 +85,9 @@ import { ServiceWorkerModule } from "@angular/service-worker"
 		MatCardModule,
 		MatSelectModule,
 		MatToolbarModule,
+		MatSidenavModule,
+		MatListModule,
+		MatMenuModule,
 		ServiceWorkerModule.register("ngsw-worker.js", {
 			enabled: !isDevMode(),
 			// Register the ServiceWorker as soon as the application is stable

@@ -16,7 +16,7 @@ import { MatSelectModule } from "@angular/material/select"
 import { MatToolbarModule } from "@angular/material/toolbar"
 
 // Apollo
-import { HttpClientModule } from "@angular/common/http"
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { ApolloModule } from "apollo-angular"
 
 // Local modules
@@ -55,11 +55,12 @@ import { HeaderComponent } from "./components/header/header.component"
 		TransferPageComponent,
 		SeparatePayComponent
 	],
+	schemas: [CUSTOM_ELEMENTS_SCHEMA],
+	bootstrap: [AppComponent],
 	imports: [
 		BrowserModule,
 		BrowserAnimationsModule,
 		FormsModule,
-		HttpClientModule,
 		ApolloModule,
 		GraphQLModule,
 		AppRoutingModule,
@@ -72,8 +73,12 @@ import { HeaderComponent } from "./components/header/header.component"
 		MatSelectModule,
 		MatToolbarModule
 	],
-	schemas: [CUSTOM_ELEMENTS_SCHEMA],
-	providers: [ApiService, AuthService, DataService, provideClientHydration()],
-	bootstrap: [AppComponent]
+	providers: [
+		ApiService,
+		AuthService,
+		DataService,
+		provideClientHydration(),
+		provideHttpClient(withInterceptorsFromDi())
+	]
 })
 export class AppModule {}

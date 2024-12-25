@@ -42,6 +42,4 @@ testem.log
 Thumbs.db
 .vscode/settings.json
 
-# Angular files
-angular.json
 

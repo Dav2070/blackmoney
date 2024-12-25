@@ -8,7 +8,8 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 
 @Component({
 	templateUrl: "./separate-pay.component.html",
-	styleUrl: "./separate-pay.component.scss"
+	styleUrl: "./separate-pay.component.scss",
+	standalone: false
 })
 export class SeparatePayComponent {
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]

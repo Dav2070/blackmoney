@@ -13,7 +13,8 @@ import { isServer } from "src/app/utils"
 
 @Component({
 	templateUrl: "./booking-page.component.html",
-	styleUrl: "./booking-page.component.scss"
+	styleUrl: "./booking-page.component.scss",
+	standalone: false
 })
 export class BookingPageComponent {
 	drinks: Inventory[] = [

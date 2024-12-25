@@ -7,7 +7,8 @@ import { RoomResource } from "src/app/types"
 
 @Component({
 	templateUrl: "./table-overview-page.component.html",
-	styleUrl: "./table-overview-page.component.scss"
+	styleUrl: "./table-overview-page.component.scss",
+	standalone: false
 })
 export class TableOverviewPageComponent {
 	rooms: RoomResource[] = []

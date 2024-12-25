@@ -6,7 +6,8 @@ import { DataService } from "src/app/services/data-service"
 
 @Component({
 	templateUrl: "./login-page.component.html",
-	styleUrl: "./login-page.component.scss"
+	styleUrl: "./login-page.component.scss",
+	standalone: false
 })
 export class LoginPageComponent {
 	username: string = ""

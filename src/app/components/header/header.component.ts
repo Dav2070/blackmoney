@@ -5,7 +5,8 @@ import { TimeService } from "src/app/services/time.service"
 @Component({
 	selector: "app-header",
 	templateUrl: "./header.component.html",
-	styleUrl: "./header.component.scss"
+	styleUrl: "./header.component.scss",
+	standalone: false
 })
 export class HeaderComponent {
 	@Input()

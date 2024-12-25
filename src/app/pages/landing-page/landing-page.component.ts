@@ -6,7 +6,8 @@ import { environment } from "src/environments/environment"
 
 @Component({
 	templateUrl: "./landing-page.component.html",
-	styleUrl: "./landing-page.component.scss"
+	styleUrl: "./landing-page.component.scss",
+	standalone: false
 })
 export class LandingPageComponent {
 	constructor(private dataService: DataService, private router: Router) {}

@@ -8,7 +8,8 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 
 @Component({
 	templateUrl: "./transfer-page.component.html",
-	styleUrl: "./transfer-page.component.scss"
+	styleUrl: "./transfer-page.component.scss",
+	standalone: false
 })
 export class TransferPageComponent {
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]

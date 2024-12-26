@@ -5,6 +5,7 @@ import { Apollo } from "apollo-angular"
 import { HttpLink } from "apollo-angular/http"
 import { InMemoryCache } from "@apollo/client/core"
 import { Dav } from "dav-js"
+import * as DavUIComponents from "dav-ui-components"
 import { DataService } from "./services/data-service"
 import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
@@ -27,6 +28,9 @@ export class AppComponent {
 		private apollo: Apollo,
 		private httpLink: HttpLink
 	) {
+		DavUIComponents.setLocale("de")
+		DavUIComponents.setTheme(DavUIComponents.Theme.dark)
+
 		this.activatedRoute.queryParams.subscribe(async params => {
 			if (params["accessToken"]) {
 				// Log in with the access token

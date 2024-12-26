@@ -1,9 +1,3 @@
-.container {
-	height: 100vh;
-	padding: 0 16px;
-	background-color: black;
-}
-
 .navbar {
 	display: flex;
 	position: fixed;
@@ -52,16 +46,4 @@
 .navbar-tab-bar-container {
 	display: flex;
 	align-items: center;
-}
-
-.section-1-container {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	height: 100%;
-}
-
-h1 {
-	color: white;
 }

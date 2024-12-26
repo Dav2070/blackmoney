@@ -1,0 +1,17 @@
+.container {
+	height: 100vh;
+	padding: 0 16px;
+	background-color: black;
+}
+
+.section-1-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
+h1 {
+	color: white;
+}

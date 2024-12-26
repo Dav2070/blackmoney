@@ -28,6 +28,8 @@ import { AppComponent } from "./app.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-page/landing-page.component"
+import { LandingOverviewPageComponent } from "./pages/landing-overview-page/landing-overview-page.component"
+import { LandingPricingPageComponent } from "./pages/landing-pricing-page/landing-pricing-page.component"
 import { ForgotPasswordPageComponent } from "./pages/forgot-password-page/forgot-password-page.component"
 import { LoginPageComponent } from "./pages/login-page/login-page.component"
 import { TableOverviewPageComponent } from "./pages/table-overview-page/table-overview-page.component"
@@ -49,6 +51,8 @@ import { ServiceWorkerModule } from "@angular/service-worker"
 		HeaderComponent,
 		// Pages
 		LandingPageComponent,
+		LandingOverviewPageComponent,
+		LandingPricingPageComponent,
 		ForgotPasswordPageComponent,
 		LoginPageComponent,
 		TableOverviewPageComponent,

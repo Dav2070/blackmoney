@@ -24,12 +24,29 @@
 	border: none;
 	cursor: pointer;
 	text-decoration: none;
+	font-family: 'Geist Mono', sans-serif;
 }
 
-.navbar-header > span {
+.navbar-header-text-container {
 	display: flex;
-	align-self: center;
+	flex-direction: column;
+	margin-top: 8px;
 	margin-left: 10px;
+}
+
+.navbar-header-text-1 {
+	font-size: 32px;
+	line-height: 34px;
+}
+
+.navbar-header-text-2 {
+	font-size: 12.5px;
+}
+
+.navbar-content {
+	display: flex;
+	width: 100%;
+	margin-left: 4%;
 }
 
 .navbar-tab-bar-container {

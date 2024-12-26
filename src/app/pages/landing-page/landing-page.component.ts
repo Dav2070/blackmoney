@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { Router } from "@angular/router"
+import { Router, NavigationEnd } from "@angular/router"
 import { Dav } from "dav-js"
 import { DataService } from "src/app/services/data-service"
 import { environment } from "src/environments/environment"
@@ -10,7 +10,17 @@ import { environment } from "src/environments/environment"
 	standalone: false
 })
 export class LandingPageComponent {
-	constructor(private dataService: DataService, private router: Router) {}
+	overviewTabActive: boolean = false
+	pricingTabActive: boolean = false
+
+	constructor(private dataService: DataService, private router: Router) {
+		this.router.events.forEach((data: any) => {
+			if (data instanceof NavigationEnd) {
+				this.overviewTabActive = data.url == "/"
+				this.pricingTabActive = data.url.startsWith("/pricing")
+			}
+		})
+	}
 
 	async ngOnInit() {
 		await this.dataService.userPromiseHolder.AwaitResult()
@@ -19,6 +29,14 @@ export class LandingPageComponent {
 			this.router.navigate(["tables"])
 			return
 		}
+	}
+
+	navigateToOverviewPage() {
+		this.router.navigate(["/"])
+	}
+
+	navigateToPricingPage() {
+		this.router.navigate(["/pricing"])
 	}
 
 	navigateToLoginPage() {

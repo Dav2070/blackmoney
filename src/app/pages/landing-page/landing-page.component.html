@@ -12,9 +12,19 @@
 	<div class="navbar-content">
 		<div class="navbar-tab-bar-container">
 			<dav-tab-bar>
-				<dav-tab-bar-item>Übersicht</dav-tab-bar-item>
+				<dav-tab-bar-item
+					[active]="overviewTabActive"
+					(click)="navigateToOverviewPage()"
+				>
+					Übersicht
+				</dav-tab-bar-item>
 
-				<dav-tab-bar-item>Preise</dav-tab-bar-item>
+				<dav-tab-bar-item
+					[active]="pricingTabActive"
+					(click)="navigateToPricingPage()"
+				>
+					Preise
+				</dav-tab-bar-item>
 			</dav-tab-bar>
 		</div>
 	</div>

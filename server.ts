@@ -47,7 +47,7 @@ export function app(): express.Express {
 }
 
 function run(): void {
-	const port = process.env["SSR_PORT"] || 2001
+	const port = process.env["PORT"] || 2001
 
 	// Start up the Node server
 	const server = app()

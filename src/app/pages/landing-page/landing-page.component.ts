@@ -1,8 +1,6 @@
 import { Component } from "@angular/core"
 import { Router, NavigationEnd } from "@angular/router"
-import { Dav } from "dav-js"
 import { DataService } from "src/app/services/data-service"
-import { environment } from "src/environments/environment"
 
 @Component({
 	templateUrl: "./landing-page.component.html",
@@ -37,9 +35,5 @@ export class LandingPageComponent {
 
 	navigateToPricingPage() {
 		this.router.navigate(["/pricing"])
-	}
-
-	navigateToLoginPage() {
-		Dav.ShowLoginPage(environment.davApiKey, window.location.origin)
 	}
 }

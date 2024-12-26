@@ -9,10 +9,12 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	gap: 24px;
 	height: 100%;
 	font-family: 'Geist Mono', sans-serif;
 }
 
 h1 {
+	margin: 0;
 	color: white;
 }

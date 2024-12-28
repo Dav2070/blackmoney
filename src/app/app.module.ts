@@ -17,6 +17,7 @@ import { MatToolbarModule } from "@angular/material/toolbar"
 import { MatSidenavModule } from "@angular/material/sidenav"
 import { MatMenuModule } from "@angular/material/menu"
 import { MatListModule } from "@angular/material/list"
+import { MatTabsModule } from "@angular/material/tabs"
 
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
@@ -29,6 +30,7 @@ import { AppRoutingModule } from "./app-routing.module"
 // Components
 import { AppComponent } from "./app.component"
 import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
+import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -47,8 +49,6 @@ import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page
 import { SeparatePayComponent } from "./pages/cash-register-pages/separate-pay/separate-pay.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
-import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component";
-import { SidenavItemsComponent } from './components/settings/sidenav-items/sidenav-items.component'
 
 @NgModule({
 	declarations: [
@@ -67,8 +67,7 @@ import { SidenavItemsComponent } from './components/settings/sidenav-items/siden
 		TransferPageComponent,
 		SeparatePayComponent,
 		//Settings-Pages
-		MenuePageComponent,
-  SidenavItemsComponent
+		MenuePageComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],
@@ -90,6 +89,9 @@ import { SidenavItemsComponent } from './components/settings/sidenav-items/siden
 		MatSidenavModule,
 		MatListModule,
 		MatMenuModule,
+		MatTabsModule,
+
+		//ServiceWorker
 		ServiceWorkerModule.register("ngsw-worker.js", {
 			enabled: !isDevMode(),
 			// Register the ServiceWorker as soon as the application is stable
@@ -97,6 +99,7 @@ import { SidenavItemsComponent } from './components/settings/sidenav-items/siden
 			registrationStrategy: "registerWhenStable:30000"
 		})
 	],
+
 	providers: [
 		ApiService,
 		AuthService,

@@ -10,11 +10,16 @@ import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/b
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { SeparatePayComponent } from "./pages/cash-register-pages/separate-pay/separate-pay.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
+import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 
 const routes: Routes = [
 	//Settings-Pages
 	{
 		path: "tables/settings",
+		component: SettingsPageComponent
+	},
+	{
+		path: "tables/settings/menue",
 		component: MenuePageComponent
 	},
 	//Cash-Register Pages

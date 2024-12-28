@@ -49,6 +49,7 @@ import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page
 import { SeparatePayComponent } from "./pages/cash-register-pages/separate-pay/separate-pay.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
+import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 
 @NgModule({
 	declarations: [
@@ -67,6 +68,7 @@ import { ServiceWorkerModule } from "@angular/service-worker"
 		TransferPageComponent,
 		SeparatePayComponent,
 		//Settings-Pages
+		SettingsPageComponent,
 		MenuePageComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],

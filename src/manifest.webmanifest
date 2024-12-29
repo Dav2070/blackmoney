@@ -1,8 +1,8 @@
 {
-	"name": "blackmoney",
-	"short_name": "blackmoney",
-	"theme_color": "#1976d2",
-	"background_color": "#fafafa",
+	"name": "black Kassensysteme",
+	"short_name": "black",
+	"theme_color": "#000000",
+	"background_color": "#000000",
 	"display": "standalone",
 	"scope": "/",
 	"start_url": "/",

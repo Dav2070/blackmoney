@@ -49,7 +49,11 @@ import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page
 import { SeparatePayComponent } from "./pages/cash-register-pages/separate-pay/separate-pay.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
-import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
+import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component";
+import { ItemsTableComponent } from './components/settings/items-table/items-table.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort'
 
 @NgModule({
 	declarations: [
@@ -69,7 +73,8 @@ import { SettingsPageComponent } from "./pages/settings-pages/settings-page/sett
 		SeparatePayComponent,
 		//Settings-Pages
 		SettingsPageComponent,
-		MenuePageComponent
+		MenuePageComponent,
+  ItemsTableComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],
@@ -99,7 +104,10 @@ import { SettingsPageComponent } from "./pages/settings-pages/settings-page/sett
 			// Register the ServiceWorker as soon as the application is stable
 			// or after 30 seconds (whichever comes first).
 			registrationStrategy: "registerWhenStable:30000"
-		})
+		}),
+   MatTableModule,
+   MatPaginatorModule,
+   MatSortModule
 	],
 
 	providers: [

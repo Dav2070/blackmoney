@@ -1,9 +1,9 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
-import { AllItemHandler } from "src/app/models/all-item-handler.model"
-import { Bill } from "src/app/models/bill.model"
-import { PickedItem } from "src/app/models/picked-item.model"
-import { Variation } from "src/app/models/variation.model"
+import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
+import { Bill } from "src/app/models/cash-register/bill.model"
+import { PickedItem } from "src/app/models/cash-register/picked-item.model"
+import { Variation } from "src/app/models/cash-register/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
 
 @Component({

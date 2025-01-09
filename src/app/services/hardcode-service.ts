@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
-import { Item } from "../models/item.model"
-import { Variation } from "../models/variation.model"
-import { AllItemHandler } from "../models/all-item-handler.model"
-import { Bill } from "../models/bill.model"
+import { Item } from "../models/cash-register/item.model"
+import { Variation } from "../models/cash-register/variation.model"
+import { AllItemHandler } from "../models/cash-register/all-item-handler.model"
+import { Bill } from "../models/cash-register/bill.model"
 
 @Injectable({
 	providedIn: "root"

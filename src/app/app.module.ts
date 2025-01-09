@@ -53,7 +53,8 @@ import { SettingsPageComponent } from "./pages/settings-pages/settings-page/sett
 import { ItemsTableComponent } from './components/settings/items-table/items-table.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort'
+import { MatSortModule } from '@angular/material/sort';
+import { VariationsTableComponent } from './components/settings/variations-table/variations-table.component'
 
 @NgModule({
 	declarations: [
@@ -74,7 +75,8 @@ import { MatSortModule } from '@angular/material/sort'
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,
-  ItemsTableComponent
+  ItemsTableComponent,
+  VariationsTableComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

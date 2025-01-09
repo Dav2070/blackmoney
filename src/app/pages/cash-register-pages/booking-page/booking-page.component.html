@@ -93,14 +93,14 @@
 					<mat-card-content> {{ console }} </mat-card-content>
 				</mat-card>
 				<div>
-					@for(number of numberpad; track number){
+					@for (number of numberpad; track number) {
 					<button
 						mat-flat-button
 						(click)="consoleInput(number.toString())"
 					>
 						{{ number }}
 					</button>
-					@if(number==3){
+					@if (number == 3) {
 					<button
 						mat-flat-button
 						[disabled]="
@@ -111,10 +111,10 @@
 						X
 					</button>
 					<br />
-					} @if(number==6){
+					} @if(number == 6) {
 					<button mat-flat-button (click)="showTotal()">Clear</button>
 					<br />
-					} @if(number==9){
+					} @if(number == 9) {
 					<button
 						mat-flat-button
 						[disabled]="
@@ -162,7 +162,7 @@
 						}
 					</h2>
 					@if(isItemPopupVisible){ @for (variation of
-					lastClickedItem.variations; track variation){
+					lastClickedItem.variations; track variation) {
 					<div class="popup-content-dish">
 						<button
 							[disabled]="
@@ -207,7 +207,7 @@
 				</div>
 			</div>
 			<div id="items">
-				@for (item of selectedInventory; track item){
+				@for (item of selectedInventory; track item) {
 				<button (click)="clickItem(item)" mat-flat-button>
 					{{ item.name }}
 				</button>
@@ -216,24 +216,26 @@
 		</article>
 		<aside>
 			<div id="drinks">
-				@for (drink of drinks; track drink){
+				@for (category of categories; track category.uuid){ @if
+				(category.type == "DRINK") {
 				<button
-					(click)="changeSelectedInventory(drink.items)"
+					(click)="changeSelectedInventory(category.products.items)"
 					mat-flat-button
 				>
-					{{ drink.name }}
+					{{ category.name }}
 				</button>
-				}
+				} }
 			</div>
 			<div id="dishes">
-				@for (dish of dishes; track dish){
+				@for (category of categories; track category.uuid) { @if
+				(category.type == "FOOD") {
 				<button
-					(click)="changeSelectedInventory(dish.items)"
+					(click)="changeSelectedInventory(category.products.items)"
 					mat-flat-button
 				>
-					{{ dish.name }}
+					{{ category.name }}
 				</button>
-				}
+				} }
 			</div>
 		</aside>
 	</div>

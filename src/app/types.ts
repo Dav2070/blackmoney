@@ -29,5 +29,10 @@ export interface ProductResource {
 }
 
 export interface CategoryResource {
+	uuid: string
 	name: string
+	type: CategoryType
+	products: List<ProductResource>
 }
+
+export type CategoryType = "FOOD" | "DRINK"

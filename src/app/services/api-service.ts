@@ -90,4 +90,31 @@ export class ApiService {
 			})
 			.toPromise()
 	}
+
+	async addProductsToOrder(
+		queryData: string,
+		variables: {
+			uuid: string
+			products: {
+				uuid: string
+				count: number
+			}[]
+		}
+	): Promise<MutationResult<{ addProductsToOrder: { uuid: string } }>> {
+		return await this.apollo
+			.mutate<{ addProductsToOrder: { uuid: string } }>({
+				mutation: gql`
+					mutation AddProductsToOrder(
+						$products: [ProductInput!]!
+					) {
+						addProductsToOrder(products: $products) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
 }

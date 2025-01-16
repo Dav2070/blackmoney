@@ -5,6 +5,7 @@ import { Bill } from "src/app/models/cash-register/bill.model"
 import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
+import { ProductResource } from "src/app/types"
 
 @Component({
 	templateUrl: "./separate-pay.component.html",
@@ -41,7 +42,7 @@ export class SeparatePayComponent {
 
 	//Berechnet den Preis aller Items eines Tisches
 	showTotal(bookedItems: AllItemHandler) {
-		return bookedItems.calculatTotal().toFixed(2) + "€"
+		// return bookedItems.calculatTotal().toFixed(2) + "€"
 	}
 
 	//Fügt die gedrückte Nummer in die Konsole ein
@@ -64,11 +65,11 @@ export class SeparatePayComponent {
 	}
 
 	calculateTotalBills() {
-		let tmpTotal = 0
-		for (let bill of this.bills) {
-			tmpTotal += bill.calculatTotal()
-		}
-		return tmpTotal.toFixed(2) + "€"
+		// let tmpTotal = 0
+		// for (let bill of this.bills) {
+		// 	tmpTotal += bill.calculatTotal()
+		// }
+		// return tmpTotal.toFixed(2) + "€"
 	}
 
 	setActiveBill(bill: AllItemHandler) {
@@ -102,48 +103,47 @@ export class SeparatePayComponent {
 	}
 
 	transferItem(
-		item: PickedItem,
+		item: ProductResource,
 		send: AllItemHandler,
 		receiving: AllItemHandler
 	) {
-		let anzahl = 0
-		if (this.consoleActive) {
-			anzahl = parseInt(this.console)
-		}
-		if (item.pickedVariation) {
-			if (anzahl > item.anzahl) {
-				window.alert(
-					"Es können maximal " + item.anzahl + " Items übertragen werden"
-				)
-			} else {
-				this.lastClickedItem = { ...item }
-				this.tmpSend = send
-				this.tmpReceiver = receiving
-
-				this.isItemPopupVisible = true
-				if (anzahl > 0) {
-					this.tmpAnzahl = anzahl
-				}
-			}
-		} else {
-			if (anzahl === 0) {
-				anzahl = 1
-			}
-			if (anzahl > item.anzahl) {
-				window.alert(
-					"Es können nur maximal " + item.anzahl + " übertragen werden"
-				)
-			} else {
-				send.reduceItem(item, anzahl)
-				receiving.pushNewItem(
-					new PickedItem(
-						{ id: item.id, price: item.price, name: item.name },
-						anzahl
-					)
-				)
-			}
-		}
-		this.clearInput()
+		// let anzahl = 0
+		// if (this.consoleActive) {
+		// 	anzahl = parseInt(this.console)
+		// }
+		// if (item.pickedVariation) {
+		// 	if (anzahl > item.anzahl) {
+		// 		window.alert(
+		// 			"Es können maximal " + item.anzahl + " Items übertragen werden"
+		// 		)
+		// 	} else {
+		// 		this.lastClickedItem = { ...item }
+		// 		this.tmpSend = send
+		// 		this.tmpReceiver = receiving
+		// 		this.isItemPopupVisible = true
+		// 		if (anzahl > 0) {
+		// 			this.tmpAnzahl = anzahl
+		// 		}
+		// 	}
+		// } else {
+		// 	if (anzahl === 0) {
+		// 		anzahl = 1
+		// 	}
+		// 	if (anzahl > item.anzahl) {
+		// 		window.alert(
+		// 			"Es können nur maximal " + item.anzahl + " übertragen werden"
+		// 		)
+		// 	} else {
+		// 		send.reduceItem(item, anzahl)
+		// 		receiving.pushNewItem(
+		// 			new PickedItem(
+		// 				{ id: item.id, price: item.price, name: item.name },
+		// 				anzahl
+		// 			)
+		// 		)
+		// 	}
+		// }
+		// this.clearInput()
 	}
 
 	//Entfernt eine Variation
@@ -210,26 +210,26 @@ export class SeparatePayComponent {
 
 	//Fügt die ausgewählten Items mit Variationen zum anderen Tisch
 	sendVariation() {
-		let number = 0
-		for (let variation of this.tmpVariations.values()) {
-			number += variation.anzahl
-		}
-		this.tmpReceiver.pushNewItem(
-			new PickedItem(
-				this.lastClickedItem,
-				number,
-				new Map(this.tmpVariations)
-			)
-		)
-		this.tmpSend.reduceItem(
-			new PickedItem(
-				this.lastClickedItem,
-				number,
-				new Map(this.tmpVariations)
-			),
-			number
-		)
-		this.closeItemPopup()
+		// let number = 0
+		// for (let variation of this.tmpVariations.values()) {
+		// 	number += variation.anzahl
+		// }
+		// this.tmpReceiver.pushNewItem(
+		// 	new PickedItem(
+		// 		this.lastClickedItem,
+		// 		number,
+		// 		new Map(this.tmpVariations)
+		// 	)
+		// )
+		// this.tmpSend.reduceItem(
+		// 	new PickedItem(
+		// 		this.lastClickedItem,
+		// 		number,
+		// 		new Map(this.tmpVariations)
+		// 	),
+		// 	number
+		// )
+		// this.closeItemPopup()
 	}
 
 	createBill(payment: string) {

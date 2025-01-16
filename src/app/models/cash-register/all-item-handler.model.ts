@@ -1,42 +1,42 @@
-import { PickedItem } from "./picked-item.model"
-import { Variation } from "./variation.model"
+import { ProductResource, VariationResource } from "../../types"
 
 export class AllItemHandler {
-	private allPickedItems = new Map<number, PickedItem>()
-
-	constructor() {}
+	private allPickedItems = new Map<string, ProductResource>()
 
 	getAllPickedItems() {
 		return this.allPickedItems
 	}
 
 	//Füge neues Item in die Map hinzu
-	pushNewItem(pickedItem: PickedItem) {
-		const id = pickedItem.id
+	pushNewItem(pickedItem: ProductResource) {
+		const uuid = pickedItem.uuid
 
 		// Prüfen, ob das Item bereits existiert
-		if (this.allPickedItems.has(id)) {
-			const item = this.allPickedItems.get(id)
+		if (this.allPickedItems.has(uuid)) {
+			const item = this.allPickedItems.get(uuid)
 
 			// Anzahl des bestehenden Items erhöhen
-			item.anzahl += pickedItem.anzahl
+			item.count += pickedItem.count
 
 			// Falls Variationen vorhanden sind, diese ebenfalls aktualisieren
-			if (pickedItem.pickedVariation) {
-				for (const variation of pickedItem.pickedVariation.values()) {
-					if (item.pickedVariation.has(variation.id)) {
+			if (pickedItem.variations != null) {
+				for (const variationItem of pickedItem.variations.items) {
+					let variation = item.variations.items.find(
+						v => v.uuid == variationItem.uuid
+					)
+
+					if (variation != null) {
 						// Existierende Variation aktualisieren
-						item.pickedVariation.get(variation.id).anzahl +=
-							variation.anzahl
+						variation.count += variationItem.count
 					} else {
 						// Neue Variation hinzufügen
-						item.pickedVariation.set(variation.id, variation)
+						item.variations.items.push(variationItem)
 					}
 				}
 			}
 		} else {
 			// Neues Item hinzufügen
-			this.allPickedItems.set(id, pickedItem)
+			this.allPickedItems.set(uuid, pickedItem)
 		}
 	}
 
@@ -45,20 +45,24 @@ export class AllItemHandler {
 		for (let item of itemHandler.getItems()) {
 			this.pushNewItem(item)
 		}
+
 		itemHandler.getAllPickedItems().clear()
 	}
 
 	//Berechne Total Preis von items mit der selben ID
-	calculatTotal() {
+	calculateTotal() {
 		let total = 0
+
 		for (let item of this.allPickedItems.values()) {
-			if (item.pickedVariation) {
-				for (let variation of item.pickedVariation.values()) {
-					total += variation.preis * variation.anzahl
+			if (item.variations != null) {
+				for (let variation of item.variations.items) {
+					total += variation.price * variation.count
 				}
 			}
-			total += item.price * item.anzahl
+
+			total += item.price * item.count
 		}
+
 		return total
 	}
 
@@ -68,74 +72,77 @@ export class AllItemHandler {
 	}
 
 	//Gibt den Gesamtpreis der Variationen zurück
-	getTotalVariationPrice(pickedVariation: any): number {
+	getTotalVariationPrice(pickedVariation: VariationResource[]): number {
 		let total = 0
-		for (let variation of pickedVariation.values()) {
-			total += variation.preis * variation.anzahl
+
+		for (let variation of pickedVariation) {
+			total += variation.price * variation.count
 		}
 
 		return total
 	}
 
 	//Entferne Item aus der Map
-	deleteItem(pickedItem: any): void {
-		this.allPickedItems.delete(pickedItem.id)
+	deleteItem(pickedItem: ProductResource): void {
+		this.allPickedItems.delete(pickedItem.uuid)
 	}
 
-	deleteVariation(pickedItem: any): void {
+	deleteVariation(pickedItem: ProductResource): void {
+		/*
 		this.allPickedItems
-			.get(pickedItem.id)
-			.pickedVariation.delete(pickedItem.id)
+			.get(pickedItem.uuid)
+			.variations.items.delete(pickedItem.id)
+		*/
 	}
 
-	getItem(id: number): PickedItem | undefined {
-		return this.allPickedItems.get(id)
+	getItem(uuid: string): ProductResource {
+		return this.allPickedItems.get(uuid)
 	}
 
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
-	includes(pickedItem: PickedItem): boolean {
-		return this.allPickedItems.has(pickedItem.id)
+	includes(pickedItem: ProductResource): boolean {
+		return this.allPickedItems.has(pickedItem.uuid)
 	}
 
 	//Reduziere Item oder Lösche es wenn Item = 0
-	reduceItem(item: PickedItem, anzahl: number) {
-		if (item.pickedVariation) {
-			for (let variation of item.pickedVariation.values()) {
-				if (
-					this.allPickedItems
-						.get(item.id)
-						.pickedVariation.get(variation.id).anzahl -
-						variation.anzahl ===
-					0
-				) {
-					this.allPickedItems
-						.get(item.id)
-						.pickedVariation.delete(variation.id)
-				} else {
-					this.allPickedItems
-						.get(item.id)
-						.pickedVariation.get(variation.id).anzahl -= 1
-				}
-			}
-			if (this.allPickedItems.get(item.id).anzahl - anzahl === 0) {
-				this.allPickedItems.delete(item.id)
-			} else {
-				this.allPickedItems.get(item.id).anzahl -= anzahl
-			}
-		} else {
-			if (item.anzahl - anzahl === 0) {
-				this.allPickedItems.delete(item.id)
-			} else {
-				item.anzahl -= anzahl
-			}
-		}
+	reduceItem(item: ProductResource, anzahl: number) {
+		// if (item.variations != null) {
+		// 	for (let variation of item.variations.items) {
+		// 		if (
+		// 			this.allPickedItems
+		// 				.get(item.uuid)
+		// 				.variations.items.find(v => variation.uuid)?.count -
+		// 				variation.count ===
+		// 			0
+		// 		) {
+		// 			this.allPickedItems
+		// 				.get(item.id)
+		// 				.pickedVariation.delete(variation.id)
+		// 		} else {
+		// 			this.allPickedItems
+		// 				.get(item.id)
+		// 				.pickedVariation.get(variation.id).anzahl -= 1
+		// 		}
+		// 	}
+		// 	if (this.allPickedItems.get(item.id).anzahl - anzahl === 0) {
+		// 		this.allPickedItems.delete(item.id)
+		// 	} else {
+		// 		this.allPickedItems.get(item.id).anzahl -= anzahl
+		// 	}
+		// } else {
+		// 	if (item.anzahl - anzahl === 0) {
+		// 		this.allPickedItems.delete(item.id)
+		// 	} else {
+		// 		item.anzahl -= anzahl
+		// 	}
+		// }
 	}
 
 	//Gibt die Anzahl von allen Items zurück
 	getNumberOfItems() {
 		let number = 0
 		for (let item of this.allPickedItems.values()) {
-			number += item.anzahl
+			number += item.count
 		}
 
 		return number

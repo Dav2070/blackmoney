@@ -1,6 +1,4 @@
 import { Injectable } from "@angular/core"
-import { Item } from "../models/cash-register/item.model"
-import { Variation } from "../models/cash-register/variation.model"
 import { AllItemHandler } from "../models/cash-register/all-item-handler.model"
 import { Bill } from "../models/cash-register/bill.model"
 
@@ -14,23 +12,29 @@ export class HardcodeService {
 		let tmpMap = new AllItemHandler()
 
 		tmpMap.pushNewItem({
-			id: 7,
+			uuid: "7",
 			price: 4.7,
 			name: "Pommes",
-			anzahl: 1
+			count: 1,
+			variations: null
 		})
 
 		tmpMap.pushNewItem({
-			id: 6,
+			uuid: "6",
+			count: 2,
 			price: 35.7,
 			name: "Rinderfilet",
-			pickedVariation: new Map<number, Variation>().set(2, {
-				id: 2,
-				name: "Reis",
-				preis: 1,
-				anzahl: 2
-			}),
-			anzahl: 2
+			variations: {
+				total: 0,
+				items: [
+					{
+						uuid: "2",
+						name: "Reis",
+						price: 1,
+						count: 2
+					}
+				]
+			}
 		})
 
 		return tmpMap

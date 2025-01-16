@@ -2,14 +2,15 @@ import { Component } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { Bill } from "src/app/models/cash-register/bill.model"
-import { Item } from "src/app/models/cash-register/item.model"
-import { PickedItem } from "src/app/models/cash-register/picked-item.model"
-import { Variation } from "src/app/models/cash-register/variation.model"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { HardcodeService } from "src/app/services/hardcode-service"
 import { isServer } from "src/app/utils"
-import { CategoryResource, ProductResource } from "src/app/types"
+import {
+	CategoryResource,
+	ProductResource,
+	VariationResource
+} from "src/app/types"
 
 @Component({
 	templateUrl: "./booking-page.component.html",
@@ -29,13 +30,13 @@ export class BookingPageComponent {
 
 	endpreis: number = 0.0
 
-	lastClickedItem: Item | null = null
+	lastClickedItem: ProductResource = null
 
 	lastClickedItemSource: "new" | "booked" | null = null
 
-	console: string = "0.0€"
+	console: string = "0.00 €"
 
-	selectedItemNew: Item | null = null
+	selectedItemNew: ProductResource = null
 
 	isItemPopupVisible: Boolean = false
 
@@ -46,11 +47,11 @@ export class BookingPageComponent {
 	xUsed: Boolean = false
 	minusUsed: Boolean = false
 
-	tmpVariations = new Map<number, Variation>()
+	tmpVariations = new Map<string, VariationResource>()
 
 	tmpAnzahl = 0
 
-	selectedItem: PickedItem = undefined
+	selectedItem: ProductResource = undefined
 	tmpAllItemHandler: AllItemHandler = undefined
 
 	isBillPopupVisible: boolean = false
@@ -82,14 +83,41 @@ export class BookingPageComponent {
 					products {
 						total
 						items {
+							uuid
 							name
+							price
 						}
 					}
 				}
 			`
 		)
 
-		this.categories = listCategoriesResult.data.listCategories.items
+		this.categories = []
+
+		for (let item of listCategoriesResult.data.listCategories.items) {
+			let category: CategoryResource = {
+				uuid: item.uuid,
+				name: item.name,
+				type: item.type,
+				products: {
+					total: item.products.total,
+					items: item.products.items.map(product => {
+						return {
+							uuid: product.uuid,
+							count: 0,
+							name: product.name,
+							price: product.price,
+							variations: {
+								total: 0,
+								items: [] as VariationResource[]
+							}
+						}
+					})
+				}
+			}
+
+			this.categories.push(category)
+		}
 
 		if (this.categories.length > 0) {
 			this.selectedInventory = this.categories[0].products.items
@@ -113,114 +141,113 @@ export class BookingPageComponent {
 
 	//Füge item zu stagedItems hinzu
 	clickItem(product: ProductResource) {
-		/*
-		if (item.variations == undefined) {
+		if (product.variations?.items.length === 0) {
 			if (this.tmpAnzahl > 0) {
-				this.stagedItems.pushNewItem(new PickedItem(item, this.tmpAnzahl))
+				//this.stagedItems.pushNewItem(new PickedItem(item, this.tmpAnzahl))
+				product.count = this.tmpAnzahl
+				this.stagedItems.pushNewItem(product)
 			} else {
-				this.stagedItems.pushNewItem(new PickedItem(item, 1))
+				product.count = 1
+				this.stagedItems.pushNewItem(product)
 			}
 
 			this.showTotal()
 		} else {
 			// Öffnet Popup für Variationen
-			this.lastClickedItem = item
+			this.lastClickedItem = product
 			this.isItemPopupVisible = true
 		}
-		*/
 	}
 
 	//Verringert Item um 1 oder Anzahl in Konsole
 	substractitem() {
-		if (this.selectedItem.pickedVariation) {
-			//Wenn Item Variationen enthält
-			this.minusUsed = true
-			this.isItemPopupVisible = true
-			this.lastClickedItem = this.selectedItem
-			this.lastClickedItem.variations = Array.from(
-				this.selectedItem.pickedVariation.values()
-			)
-			this.tmpVariations = new Map<number, Variation>(
-				Array.from(this.selectedItem.pickedVariation.entries()).map(
-					([id, variation]) => [id, { ...variation }]
-				)
-			)
-		} else {
-			if (this.tmpAnzahl > 0) {
-				//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
-				if (this.selectedItem.anzahl > this.tmpAnzahl) {
-					this.selectedItem.anzahl -= this.tmpAnzahl
-				} else if (this.selectedItem.anzahl === this.tmpAnzahl) {
-					this.tmpAllItemHandler.deleteItem(this.selectedItem)
-				} else {
-					window.alert("Anzahl ist zu hoch")
-				}
-				this.showTotal()
-			} else {
-				//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
-				if (this.selectedItem.anzahl > 1) {
-					this.selectedItem.anzahl -= 1
-				} else {
-					this.tmpAllItemHandler.deleteItem(this.selectedItem)
-				}
-				this.showTotal()
-			}
-		}
+		// if (this.selectedItem.variations != null) {
+		// 	//Wenn Item Variationen enthält
+		// 	this.minusUsed = true
+		// 	this.isItemPopupVisible = true
+		// 	this.lastClickedItem = this.selectedItem
+		// 	this.lastClickedItem.variations = {
+		// 		total: 0,
+		// 		items: Array.from(this.selectedItem.variations.items)
+		// 	}
+		// 	this.tmpVariations = new Map<string, Variation>(
+		// 		Array.from(this.selectedItem.pickedVariation.entries()).map(
+		// 			([id, variation]) => [id, { ...variation }]
+		// 		)
+		// 	)
+		// } else {
+		// 	if (this.tmpAnzahl > 0) {
+		// 		//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+		// 		if (this.selectedItem.anzahl > this.tmpAnzahl) {
+		// 			this.selectedItem.anzahl -= this.tmpAnzahl
+		// 		} else if (this.selectedItem.anzahl === this.tmpAnzahl) {
+		// 			this.tmpAllItemHandler.deleteItem(this.selectedItem)
+		// 		} else {
+		// 			window.alert("Anzahl ist zu hoch")
+		// 		}
+		// 		this.showTotal()
+		// 	} else {
+		// 		//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
+		// 		if (this.selectedItem.anzahl > 1) {
+		// 			this.selectedItem.anzahl -= 1
+		// 		} else {
+		// 			this.tmpAllItemHandler.deleteItem(this.selectedItem)
+		// 		}
+		// 		this.showTotal()
+		// 	}
+		// }
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu
 	sendVariation() {
-		console.log("sendVariation called")
-		let totalVariationAmount = 0
-		for (let variation of this.tmpVariations.values()) {
-			totalVariationAmount += variation.anzahl
-		}
-
-		if (this.minusUsed) {
-			// Setze die Anzahl der Variation von dem ausgewählten items in die stagedItems
-			for (let variation of this.selectedItem.pickedVariation.values()) {
-				if (this.tmpVariations.get(variation.id) === undefined) {
-					this.selectedItem.pickedVariation.delete(variation.id)
-				} else {
-					this.selectedItem.pickedVariation.get(variation.id).anzahl =
-						this.tmpVariations.get(variation.id).anzahl
-				}
-			}
-			// Wenn alle Variationen gelöscht wurden, lösche das Item
-			if (this.selectedItem.pickedVariation.size === 0) {
-				this.tmpAllItemHandler.deleteItem(this.selectedItem)
-			} else {
-				// Die Summe des Items ist die Summe der Variationen
-				this.selectedItem.anzahl = totalVariationAmount
-			}
-
-			this.minusUsed = false
-		} else {
-			const newItem = new PickedItem(
-				this.lastClickedItem,
-				totalVariationAmount,
-				new Map(this.tmpVariations)
-			)
-			this.stagedItems.pushNewItem(newItem)
-		}
-
-		this.lastClickedItem = undefined
-		this.tmpVariations.clear()
-		this.isItemPopupVisible = false
-		this.showTotal()
+		// console.log("sendVariation called")
+		// let totalVariationAmount = 0
+		// for (let variation of this.tmpVariations.values()) {
+		// 	totalVariationAmount += variation.anzahl
+		// }
+		// if (this.minusUsed) {
+		// 	// Setze die Anzahl der Variation von dem ausgewählten items in die stagedItems
+		// 	for (let variation of this.selectedItem.pickedVariation.values()) {
+		// 		if (this.tmpVariations.get(variation.id) === undefined) {
+		// 			this.selectedItem.pickedVariation.delete(variation.id)
+		// 		} else {
+		// 			this.selectedItem.pickedVariation.get(variation.id).anzahl =
+		// 				this.tmpVariations.get(variation.id).anzahl
+		// 		}
+		// 	}
+		// 	// Wenn alle Variationen gelöscht wurden, lösche das Item
+		// 	if (this.selectedItem.pickedVariation.size === 0) {
+		// 		this.tmpAllItemHandler.deleteItem(this.selectedItem)
+		// 	} else {
+		// 		// Die Summe des Items ist die Summe der Variationen
+		// 		this.selectedItem.anzahl = totalVariationAmount
+		// 	}
+		// 	this.minusUsed = false
+		// } else {
+		// 	const newItem = new PickedItem(
+		// 		this.lastClickedItem,
+		// 		totalVariationAmount,
+		// 		new Map(this.tmpVariations)
+		// 	)
+		// 	this.stagedItems.pushNewItem(newItem)
+		// }
+		// this.lastClickedItem = undefined
+		// this.tmpVariations.clear()
+		// this.isItemPopupVisible = false
+		// this.showTotal()
 	}
 
-	checkForMinus(variable: String) {
+	checkForMinus(variable: string) {
 		if (this.minusUsed) {
 			if (variable === "reduce") {
 				if (this.tmpAnzahl > 0) {
 					let tmpVariationsAnzahl = 0
 					for (let variation of this.tmpVariations.values()) {
-						tmpVariationsAnzahl += variation.anzahl
+						tmpVariationsAnzahl += variation.count
 					}
 					if (
 						this.tmpAnzahl ===
-						this.selectedItem.anzahl - tmpVariationsAnzahl
+						this.selectedItem.count - tmpVariationsAnzahl
 					) {
 						return true
 					}
@@ -229,9 +256,9 @@ export class BookingPageComponent {
 			if (variable === "increase") {
 				let tmpVariationsAnzahl = 0
 				for (let variation of this.tmpVariations.values()) {
-					tmpVariationsAnzahl += variation.anzahl
+					tmpVariationsAnzahl += variation.count
 				}
-				if (tmpVariationsAnzahl >= this.selectedItem.anzahl - 1) {
+				if (tmpVariationsAnzahl >= this.selectedItem.count - 1) {
 					return true
 				}
 			}
@@ -244,8 +271,10 @@ export class BookingPageComponent {
 	showTotal() {
 		this.console =
 			(
-				this.bookedItems.calculatTotal() + this.stagedItems.calculatTotal()
-			).toFixed(2) + "€"
+				(this.bookedItems.calculateTotal() +
+					this.stagedItems.calculateTotal()) /
+				100
+			).toFixed(2) + " €"
 
 		this.consoleActive = false
 		this.commaUsed = false
@@ -279,29 +308,29 @@ export class BookingPageComponent {
 	}
 
 	//Erhöht eine Variation um eins
-	addVariation(variation: Variation) {
-		if (this.tmpVariations.has(variation.id)) {
-			this.tmpVariations.get(variation.id).anzahl += 1
+	addVariation(variation: VariationResource) {
+		if (this.tmpVariations.has(variation.uuid)) {
+			this.tmpVariations.get(variation.uuid).count += 1
 		} else {
-			this.tmpVariations.set(variation.id, { ...variation, anzahl: 1 })
+			this.tmpVariations.set(variation.uuid, variation)
 		}
 	}
 
 	returnTmpVariationCount() {
 		let total = 0
 		for (let variation of this.tmpVariations.values()) {
-			total += variation.anzahl
+			total += variation.count
 		}
 		return total
 	}
 
 	//Verringert eine Variation um eins oder entfernt diese
-	removeVariation(variation: Variation) {
-		if (this.tmpVariations.has(variation.id)) {
-			if (this.tmpVariations.get(variation.id).anzahl > 1) {
-				this.tmpVariations.get(variation.id).anzahl -= 1
+	removeVariation(variation: VariationResource) {
+		if (this.tmpVariations.has(variation.uuid)) {
+			if (this.tmpVariations.get(variation.uuid).count > 1) {
+				this.tmpVariations.get(variation.uuid).count -= 1
 			} else {
-				this.tmpVariations.delete(variation.id)
+				this.tmpVariations.delete(variation.uuid)
 			}
 		}
 	}
@@ -330,7 +359,7 @@ export class BookingPageComponent {
 			if (this.tmpAnzahl > 0) {
 				let anzahl = 0
 				for (let variation of this.tmpVariations.values()) {
-					anzahl += variation.anzahl
+					anzahl += variation.count
 				}
 				if (anzahl === this.tmpAnzahl) {
 					return true
@@ -347,17 +376,17 @@ export class BookingPageComponent {
 			if (this.tmpAnzahl > 0) {
 				let anzahl = 0
 				for (let variation of this.tmpVariations.values()) {
-					anzahl += variation.anzahl
+					anzahl += variation.count
 				}
-				if (anzahl === this.selectedItem.anzahl - this.tmpAnzahl) {
+				if (anzahl === this.selectedItem.count - this.tmpAnzahl) {
 					return false
 				}
 			} else {
 				let anzahl = 0
 				for (let variation of this.tmpVariations.values()) {
-					anzahl += variation.anzahl
+					anzahl += variation.count
 				}
-				if (anzahl < this.selectedItem.anzahl) {
+				if (anzahl < this.selectedItem.count) {
 					return false
 				}
 			}
@@ -366,14 +395,14 @@ export class BookingPageComponent {
 			if (this.tmpAnzahl > 0) {
 				let anzahl = 0
 				for (let variation of this.tmpVariations.values()) {
-					anzahl += variation.anzahl
+					anzahl += variation.count
 				}
 				if (anzahl === this.tmpAnzahl) {
 					return false
 				}
 			} else {
 				for (let variation of this.tmpVariations.values()) {
-					if (variation.anzahl > 0) {
+					if (variation.count > 0) {
 						return false
 					}
 				}
@@ -424,7 +453,7 @@ export class BookingPageComponent {
 	}
 
 	//Selektiert das Item in der Liste
-	selectItem(pickedItem: PickedItem, AllItemHandler: AllItemHandler) {
+	selectItem(pickedItem: ProductResource, AllItemHandler: AllItemHandler) {
 		this.selectedItem = pickedItem
 		this.tmpAllItemHandler = AllItemHandler
 	}

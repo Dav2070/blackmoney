@@ -25,7 +25,18 @@ export interface TableResource {
 }
 
 export interface ProductResource {
+	uuid: string
+	count: number
 	name: string
+	price: number
+	variations: List<VariationResource>
+}
+
+export interface VariationResource {
+	uuid: string
+	count: number
+	name: string
+	price: number
 }
 
 export interface CategoryResource {

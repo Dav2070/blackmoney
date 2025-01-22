@@ -36,8 +36,9 @@ export class AllItemHandler {
 			}
 		} else {
 			// Neues Item hinzufügen
-			this.allPickedItems.set(uuid, pickedItem)
+			this.allPickedItems.set(uuid, { ...pickedItem })
 		}
+		
 	}
 
 	//Übertrage alle Items aus einer anderen Map in diese

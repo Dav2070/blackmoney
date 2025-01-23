@@ -1,7 +1,13 @@
 import { Injectable } from "@angular/core"
 import { Apollo, gql, MutationResult } from "apollo-angular"
 import { ApolloQueryResult, ErrorPolicy } from "@apollo/client/core"
-import { List, RoomResource, CategoryResource, CompanyResource } from "../types"
+import {
+	List,
+	RoomResource,
+	CategoryResource,
+	CompanyResource,
+	TableResource
+} from "../types"
 
 const errorPolicy: ErrorPolicy = "all"
 
@@ -86,6 +92,27 @@ export class ApiService {
 					}
 				`,
 				variables: {},
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveTable(
+		queryData: string,
+		variables: { uuid: string; paid?: boolean }
+	): Promise<ApolloQueryResult<{ retrieveTable: TableResource }>> {
+		let paidParam = queryData.includes("paid") ? "$paid: Boolean" : ""
+
+		return await this.apollo
+			.query<{ retrieveTable: TableResource }>({
+				query: gql`
+					query retrieveTable($uuid:String!,${paidParam}) {
+						retrieveTable(uuid:$uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
 				errorPolicy
 			})
 			.toPromise()

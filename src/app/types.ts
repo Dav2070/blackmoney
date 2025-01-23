@@ -22,6 +22,7 @@ export interface RoomResource {
 export interface TableResource {
 	uuid: string
 	name: string
+	orders: List<OrderResource>
 }
 
 export interface ProductResource {
@@ -44,6 +45,10 @@ export interface CategoryResource {
 	name: string
 	type: CategoryType
 	products: List<ProductResource>
+}
+
+export interface OrderResource {
+	uuid: string
 }
 
 export type CategoryType = "FOOD" | "DRINK"

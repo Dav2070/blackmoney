@@ -44,6 +44,8 @@ export class BookingPageComponent {
 
 	commaUsed: Boolean = false
 	tableUuid: string = ""
+	orderUuid: string = ""
+
 	xUsed: Boolean = false
 	minusUsed: Boolean = false
 
@@ -72,6 +74,25 @@ export class BookingPageComponent {
 
 		await this.dataService.userPromiseHolder.AwaitResult()
 		this.tableUuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+		console.log(this.tableUuid)
+
+		let order = await this.apiService.retrieveTable(
+			`
+				orders(paid:$paid){
+					items {
+						uuid
+					}
+				}
+			`,
+			{
+				uuid: this.tableUuid,
+				paid: false
+			}
+		)
+
+		if (order.data.retrieveTable.orders.total > 0) {
+			this.orderUuid = order.data.retrieveTable.orders.items[0].uuid
+		}
 
 		let listCategoriesResult = await this.apiService.listCategories(
 			`
@@ -285,7 +306,16 @@ export class BookingPageComponent {
 
 	//Fügt Items der Liste an bestellten Artikeln hinzu
 	sendOrder() {
-		this.bookedItems.transferAllItems(this.stagedItems)
+		//this.bookedItems.transferAllItems(this.stagedItems)
+		let tmpProductArray = []
+		for (let values of this.stagedItems.getAllPickedItems().values()) {
+			tmpProductArray.push({ uuid: values.uuid, count: values.count })
+		}
+		this.apiService.addProductsToOrder("uuid", {
+			uuid: this.orderUuid,
+			products: tmpProductArray
+		})
+
 		this.showTotal()
 	}
 

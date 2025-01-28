@@ -182,41 +182,38 @@ export class BookingPageComponent {
 
 	//Verringert Item um 1 oder Anzahl in Konsole
 	substractitem() {
-		// if (this.selectedItem.variations != null) {
-		// 	//Wenn Item Variationen enthält
-		// 	this.minusUsed = true
-		// 	this.isItemPopupVisible = true
-		// 	this.lastClickedItem = this.selectedItem
-		// 	this.lastClickedItem.variations = {
-		// 		total: 0,
-		// 		items: Array.from(this.selectedItem.variations.items)
-		// 	}
-		// 	this.tmpVariations = new Map<string, Variation>(
-		// 		Array.from(this.selectedItem.pickedVariation.entries()).map(
-		// 			([id, variation]) => [id, { ...variation }]
-		// 		)
-		// 	)
-		// } else {
-		// 	if (this.tmpAnzahl > 0) {
-		// 		//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
-		// 		if (this.selectedItem.anzahl > this.tmpAnzahl) {
-		// 			this.selectedItem.anzahl -= this.tmpAnzahl
-		// 		} else if (this.selectedItem.anzahl === this.tmpAnzahl) {
-		// 			this.tmpAllItemHandler.deleteItem(this.selectedItem)
-		// 		} else {
-		// 			window.alert("Anzahl ist zu hoch")
-		// 		}
-		// 		this.showTotal()
-		// 	} else {
-		// 		//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
-		// 		if (this.selectedItem.anzahl > 1) {
-		// 			this.selectedItem.anzahl -= 1
-		// 		} else {
-		// 			this.tmpAllItemHandler.deleteItem(this.selectedItem)
-		// 		}
-		// 		this.showTotal()
-		// 	}
-		// }
+		 if (this.selectedItem.variations.total > 0) {
+		 	//Wenn Item Variationen enthält
+			this.minusUsed = true
+		 	this.isItemPopupVisible = true
+		 	this.lastClickedItem = this.selectedItem
+		 	this.lastClickedItem.variations = {
+		 		total: 0,
+		 		items: Array.from(this.selectedItem.variations.items)
+		 	}
+		 	this.tmpVariations = new Map<string, VariationResource>(
+		 	)
+		 } else {
+		 	if (this.tmpAnzahl > 0) {
+		 		//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+		 		if (this.selectedItem.count > this.tmpAnzahl) {
+		 			this.selectedItem.count -= this.tmpAnzahl
+		 		} else if (this.selectedItem.count === this.tmpAnzahl) {
+		 			this.tmpAllItemHandler.deleteItem(this.selectedItem)
+		 		} else {
+					window.alert("Anzahl ist zu hoch")
+		 		}
+		 		this.showTotal()
+		 	} else {
+		 		//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
+		 		if (this.selectedItem.count > 1) {
+		 			this.selectedItem.count -= 1
+		 		} else {
+		 			this.tmpAllItemHandler.deleteItem(this.selectedItem)
+		 		}
+		 		this.showTotal()
+		 	}
+		 }
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu

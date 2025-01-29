@@ -487,21 +487,19 @@ export class BookingPageComponent {
 
 	//Füge selektiertes Item hinzu
 	addSelectedItem() {
-		/*
-		let pickedItem: Item = undefined
-		let id = this.selectedItem.id
-		for (let dish of this.dishes) {
-			for (let item of dish.items) {
-				if (id === item.id) pickedItem = item
+		let pickedItem: ProductResource = undefined
+		let id = this.selectedItem.uuid
+		for (let dish of this.categories) {
+			for (let item of dish.products.items) {
+				if (id === item.uuid) pickedItem = item
 			}
 		}
-		for (let drink of this.drinks) {
-			for (let item of drink.items) {
-				if (id === item.id) pickedItem = item
+		for (let drink of this.categories) {
+			for (let item of drink.products.items) {	
+				if (id === item.uuid) pickedItem = item
 			}
 		}
-		this.clickItem(pickedItem)
-		*/
+		this.clickItem(pickedItem)	
 	}
 
 	createBill(payment: string) {

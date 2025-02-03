@@ -132,9 +132,13 @@ export class ApiService {
 			.mutate<{ addProductsToOrder: { uuid: string } }>({
 				mutation: gql`
 					mutation AddProductsToOrder(
-						$products: [ProductInput!]!
+						$uuid: String!
+						$products: [AddProductsInput!]!
 					) {
-						addProductsToOrder(products: $products) {
+						addProductsToOrder(
+							uuid: $uuid
+							products: $products
+						) {
 							${queryData}
 						}
 					}

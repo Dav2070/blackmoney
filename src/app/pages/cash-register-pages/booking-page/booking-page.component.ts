@@ -75,34 +75,9 @@ export class BookingPageComponent {
 		await this.dataService.userPromiseHolder.AwaitResult()
 		this.tableUuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 
-		let order = await this.apiService.retrieveTable(
-			`
-				orders(paid: $paid) {
-					total
-					items {
-						uuid
-						totalPrice
-						products {
-							total
-							items {
-								uuid
-								count
-								name
-								price
-							}
-						}
-					}
-				}
-			`,
-			{
-				uuid: this.tableUuid,
-				paid: false
-			}
-		)
-
-		if (order.data.retrieveTable.orders.total > 0) {
-			this.orderUuid = order.data.retrieveTable.orders.items[0].uuid
-		}
+		//Hole Items aus DB und aktualsiere Preis
+		await this.retrieveOrders()
+		this.showTotal()
 
 		let listCategoriesResult = await this.apiService.listCategories(
 			`
@@ -192,38 +167,37 @@ export class BookingPageComponent {
 
 	//Verringert Item um 1 oder Anzahl in Konsole
 	substractitem() {
-		 if (this.selectedItem.variations.total > 0) {
-		 	//Wenn Item Variationen enthält
+		if (this.selectedItem.variations.total > 0) {
+			//Wenn Item Variationen enthält
 			this.minusUsed = true
-		 	this.isItemPopupVisible = true
-		 	this.lastClickedItem = this.selectedItem
-		 	this.lastClickedItem.variations = {
-		 		total: 0,
-		 		items: Array.from(this.selectedItem.variations.items)
-		 	}
-		 	this.tmpVariations = new Map<string, VariationResource>(
-		 	)
-		 } else {
-		 	if (this.tmpAnzahl > 0) {
-		 		//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
-		 		if (this.selectedItem.count > this.tmpAnzahl) {
-		 			this.selectedItem.count -= this.tmpAnzahl
-		 		} else if (this.selectedItem.count === this.tmpAnzahl) {
-		 			this.tmpAllItemHandler.deleteItem(this.selectedItem)
-		 		} else {
+			this.isItemPopupVisible = true
+			this.lastClickedItem = this.selectedItem
+			this.lastClickedItem.variations = {
+				total: 0,
+				items: Array.from(this.selectedItem.variations.items)
+			}
+			this.tmpVariations = new Map<string, VariationResource>()
+		} else {
+			if (this.tmpAnzahl > 0) {
+				//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+				if (this.selectedItem.count > this.tmpAnzahl) {
+					this.selectedItem.count -= this.tmpAnzahl
+				} else if (this.selectedItem.count === this.tmpAnzahl) {
+					this.tmpAllItemHandler.deleteItem(this.selectedItem)
+				} else {
 					window.alert("Anzahl ist zu hoch")
-		 		}
-		 		this.showTotal()
-		 	} else {
-		 		//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
-		 		if (this.selectedItem.count > 1) {
-		 			this.selectedItem.count -= 1
-		 		} else {
-		 			this.tmpAllItemHandler.deleteItem(this.selectedItem)
-		 		}
-		 		this.showTotal()
-		 	}
-		 }
+				}
+				this.showTotal()
+			} else {
+				//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
+				if (this.selectedItem.count > 1) {
+					this.selectedItem.count -= 1
+				} else {
+					this.tmpAllItemHandler.deleteItem(this.selectedItem)
+				}
+				this.showTotal()
+			}
+		}
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu
@@ -295,8 +269,47 @@ export class BookingPageComponent {
 		return false
 	}
 
+	//Aktualisiere Bestellungen aus DB
+	async retrieveOrders() {
+		let order = await this.apiService.retrieveTable(
+			`
+				orders(paid: $paid) {
+					total
+					items {
+						uuid
+						totalPrice
+						products {
+							total
+							items {
+								uuid
+								count
+								name
+								price
+							}
+						}
+					}
+				}
+			`,
+			{
+				uuid: this.tableUuid,
+				paid: false
+			}
+		)
+
+		if (order.data.retrieveTable.orders.total > 0) {
+			if (this.orderUuid === "") {
+				this.orderUuid = order.data.retrieveTable.orders.items[0].uuid
+			}
+			this.bookedItems.clearItems()
+			for (let item of order.data.retrieveTable.orders.items[0].products
+				.items) {
+				this.bookedItems.pushNewItem(item)
+			}
+		}
+	}
+
 	//Aktualisiert den Gesamtpreis
-	showTotal() {
+	async showTotal() {
 		this.console =
 			(
 				(this.bookedItems.calculateTotal() +
@@ -312,7 +325,7 @@ export class BookingPageComponent {
 	}
 
 	//Fügt Items der Liste an bestellten Artikeln hinzu
-	sendOrder() {
+	async sendOrder() {
 		//this.bookedItems.transferAllItems(this.stagedItems)
 		let tmpProductArray = []
 
@@ -320,10 +333,35 @@ export class BookingPageComponent {
 			tmpProductArray.push({ uuid: values.uuid, count: values.count })
 		}
 
-		this.apiService.addProductsToOrder("uuid", {
-			uuid: this.orderUuid,
-			products: tmpProductArray
-		})
+		let items = await this.apiService.addProductsToOrder(
+			`
+				
+					
+						products {
+							total
+							items {
+								uuid
+								count
+								name
+								price
+							}
+						}
+					
+				
+			`,
+			{
+				uuid: this.orderUuid,
+				products: tmpProductArray
+			}
+		)
+
+		this.bookedItems.clearItems()
+
+		for (let item of items.data.addProductsToOrder.products.items) {
+			this.bookedItems.pushNewItem(item)
+		}
+
+		this.stagedItems.clearItems()
 
 		this.showTotal()
 	}
@@ -507,11 +545,11 @@ export class BookingPageComponent {
 			}
 		}
 		for (let drink of this.categories) {
-			for (let item of drink.products.items) {	
+			for (let item of drink.products.items) {
 				if (id === item.uuid) pickedItem = item
 			}
 		}
-		this.clickItem(pickedItem)	
+		this.clickItem(pickedItem)
 	}
 
 	createBill(payment: string) {

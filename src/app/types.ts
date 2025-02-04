@@ -49,6 +49,8 @@ export interface CategoryResource {
 
 export interface OrderResource {
 	uuid: string
+	totalPrice: number
+	products: List<ProductResource>
 }
 
 export type CategoryType = "FOOD" | "DRINK"

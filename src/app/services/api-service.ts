@@ -6,7 +6,8 @@ import {
 	RoomResource,
 	CategoryResource,
 	CompanyResource,
-	TableResource
+	TableResource,
+	OrderResource
 } from "../types"
 
 const errorPolicy: ErrorPolicy = "all"
@@ -127,9 +128,9 @@ export class ApiService {
 				count: number
 			}[]
 		}
-	): Promise<MutationResult<{ addProductsToOrder: { uuid: string } }>> {
+	): Promise<MutationResult<{ addProductsToOrder: OrderResource }>> {
 		return await this.apollo
-			.mutate<{ addProductsToOrder: { uuid: string } }>({
+			.mutate<{ addProductsToOrder: OrderResource }>({
 				mutation: gql`
 					mutation AddProductsToOrder(
 						$uuid: String!

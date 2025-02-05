@@ -166,8 +166,39 @@ export class BookingPageComponent {
 	}
 
 	//Verringert Item um 1 oder Anzahl in Konsole
-	substractitem() {
-		if (this.selectedItem.variations.total > 0) {
+	async subtractitem() {
+		if (this.tmpAllItemHandler === this.bookedItems) {
+			let items = await this.apiService.removeProductsFromOrder(
+				`
+					products {
+						total
+						items {
+							uuid
+							count
+							name
+							price
+						}
+					}
+				`,
+				{
+					uuid: this.orderUuid,
+					products: [
+						{
+							uuid: this.selectedItem.uuid,
+							count: this.tmpAnzahl == 0 ? 1 : this.tmpAnzahl
+						}
+					]
+				}
+			)
+
+			this.bookedItems.clearItems()
+
+			for (let item of items.data.removeProductsFromOrder.products.items) {
+				this.bookedItems.pushNewItem(item)
+			}
+
+			this.showTotal()
+		} else if (this.selectedItem.variations.total > 0) {
 			//Wenn Item Variationen enthält
 			this.minusUsed = true
 			this.isItemPopupVisible = true
@@ -177,26 +208,24 @@ export class BookingPageComponent {
 				items: Array.from(this.selectedItem.variations.items)
 			}
 			this.tmpVariations = new Map<string, VariationResource>()
-		} else {
-			if (this.tmpAnzahl > 0) {
-				//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
-				if (this.selectedItem.count > this.tmpAnzahl) {
-					this.selectedItem.count -= this.tmpAnzahl
-				} else if (this.selectedItem.count === this.tmpAnzahl) {
-					this.tmpAllItemHandler.deleteItem(this.selectedItem)
-				} else {
-					window.alert("Anzahl ist zu hoch")
-				}
-				this.showTotal()
+		} else if (this.tmpAnzahl > 0) {
+			//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+			if (this.selectedItem.count > this.tmpAnzahl) {
+				this.selectedItem.count -= this.tmpAnzahl
+			} else if (this.selectedItem.count === this.tmpAnzahl) {
+				this.tmpAllItemHandler.deleteItem(this.selectedItem)
 			} else {
-				//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
-				if (this.selectedItem.count > 1) {
-					this.selectedItem.count -= 1
-				} else {
-					this.tmpAllItemHandler.deleteItem(this.selectedItem)
-				}
-				this.showTotal()
+				window.alert("Anzahl ist zu hoch")
 			}
+			this.showTotal()
+		} else {
+			//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
+			if (this.selectedItem.count > 1) {
+				this.selectedItem.count -= 1
+			} else {
+				this.tmpAllItemHandler.deleteItem(this.selectedItem)
+			}
+			this.showTotal()
 		}
 	}
 
@@ -335,19 +364,15 @@ export class BookingPageComponent {
 
 		let items = await this.apiService.addProductsToOrder(
 			`
-				
-					
-						products {
-							total
-							items {
-								uuid
-								count
-								name
-								price
-							}
-						}
-					
-				
+				products {
+					total
+					items {
+						uuid
+						count
+						name
+						price
+					}
+				}
 			`,
 			{
 				uuid: this.orderUuid,

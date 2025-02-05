@@ -149,4 +149,35 @@ export class ApiService {
 			})
 			.toPromise()
 	}
+
+	async removeProductsFromOrder(
+		queryData: string,
+		variables: {
+			uuid: string
+			products: {
+				uuid: string
+				count: number
+			}[]
+		}
+	): Promise<MutationResult<{ removeProductsFromOrder: OrderResource }>> {
+		return await this.apollo
+			.mutate<{ removeProductsFromOrder: OrderResource }>({
+				mutation: gql`
+					mutation RemoveProductsFromOrder(
+						$uuid: String!
+						$products: [AddProductsInput!]!
+					) {
+						removeProductsFromOrder(
+							uuid: $uuid
+							products: $products
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
 }

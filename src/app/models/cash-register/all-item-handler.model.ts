@@ -19,18 +19,31 @@ export class AllItemHandler {
 			item.count += pickedItem.count
 
 			// Falls Variationen vorhanden sind, diese ebenfalls aktualisieren
-			if (pickedItem.variations != null) {
-				for (const variationItem of pickedItem.variations.items) {
-					let variation = item.variations.items.find(
-						v => v.uuid == variationItem.uuid
+			if (pickedItem.variations.total != 0) {
+				for (const variation of pickedItem.variations.items) {
+					let existingVariation = item.variations.items.find(
+						v => v.uuid == variation.uuid
 					)
 
-					if (variation != null) {
+					if (existingVariation != null) {
 						// Existierende Variation aktualisieren
-						variation.count += variationItem.count
+						for (const variationItem of variation.variationItems.items) {
+							let existingVariationItem =
+								variation.variationItems.items.find(
+									vi => vi.uuid == variationItem.uuid
+								)
+							if (existingVariationItem != null) {
+								existingVariationItem.count += variationItem.count
+							} else {
+								// Neues VariationItem hinzufügen
+								variation.variationItems.items.push(variationItem)
+								variation.variationItems.total =
+									variation.variationItems.items.length
+							}
+						}
 					} else {
 						// Neue Variation hinzufügen
-						item.variations.items.push(variationItem)
+						item.variations.items.push(existingVariation)
 					}
 				}
 			}
@@ -38,7 +51,6 @@ export class AllItemHandler {
 			// Neues Item hinzufügen
 			this.allPickedItems.set(uuid, { ...pickedItem })
 		}
-		
 	}
 
 	//Übertrage alle Items aus einer anderen Map in diese
@@ -57,7 +69,9 @@ export class AllItemHandler {
 		for (let item of this.allPickedItems.values()) {
 			if (item.variations != null) {
 				for (let variation of item.variations.items) {
-					total += variation.price * variation.count
+					for (let variationItem of variation.variationItems.items) {
+						total += variationItem.price * variationItem.count
+					}
 				}
 			}
 
@@ -77,7 +91,9 @@ export class AllItemHandler {
 		let total = 0
 
 		for (let variation of pickedVariation) {
-			total += variation.price * variation.count
+			for (let variationItem of variation.variationItems.items) {
+				total += variationItem.price * variationItem.count
+			}
 		}
 
 		return total

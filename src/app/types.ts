@@ -34,10 +34,18 @@ export interface ProductResource {
 }
 
 export interface VariationResource {
+	id: number
 	uuid: string
-	count: number
+	name: string
+	variationItems: List<VariationItemResource>
+}
+
+export interface VariationItemResource {
+	id: number
+	uuid: string
 	name: string
 	price: number
+	count: number
 }
 
 export interface CategoryResource {

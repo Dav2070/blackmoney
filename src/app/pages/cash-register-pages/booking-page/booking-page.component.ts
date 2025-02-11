@@ -134,7 +134,7 @@ export class BookingPageComponent {
 			uuid: "1",
 			count: 0,
 			name: "Schnitzel",
-			price: 207,
+			price: 2070,
 			variations: {
 				total: 0,
 				items: [
@@ -166,6 +166,105 @@ export class BookingPageComponent {
 						id: 2,
 						uuid: "1234534",
 						name: "Beilage",
+						variationItems: {
+							total: 4,
+							items: [
+								{
+									id: 4,
+									uuid: "123142131313",
+									name: "Pommes",
+									price: 0,
+									count: 0
+								},
+								{
+									id: 5,
+									uuid: "12314213",
+									name: "Reis",
+									price: 100,
+									count: 0
+								},
+								{
+									id: 6,
+									uuid: "12314213add",
+									name: "Kartoffeln",
+									price: 100,
+									count: 0
+								},
+								{
+									id: 7,
+									uuid: "12314213sdv",
+									name: "Salat",
+									price: 200,
+									count: 0
+								}
+							]
+						}
+					}
+				]
+			}
+		})
+
+		this.categories[4].products.items.push({
+			uuid: "1",
+			count: 0,
+			name: "Schnitzel klein",
+			price: 2070,
+			variations: {
+				total: 1,
+				items: [
+					{
+						id: 1,
+						uuid: "12345",
+						name: "Beilagen",
+						variationItems: {
+							total: 4,
+							items: [
+								{
+									id: 4,
+									uuid: "123142131313",
+									name: "Pommes",
+									price: 0,
+									count: 0
+								},
+								{
+									id: 5,
+									uuid: "12314213",
+									name: "Reis",
+									price: 100,
+									count: 0
+								},
+								{
+									id: 6,
+									uuid: "12314213add",
+									name: "Kartoffeln",
+									price: 100,
+									count: 0
+								},
+								{
+									id: 7,
+									uuid: "12314213sdv",
+									name: "Salat",
+									price: 200,
+									count: 0
+								}
+							]
+						}
+					}
+				]
+			}
+		})
+		this.categories[4].products.items.push({
+			uuid: "1",
+			count: 0,
+			name: "Schnitzel groß",
+			price: 2470,
+			variations: {
+				total: 1,
+				items: [
+					{
+						id: 1,
+						uuid: "12345",
+						name: "Beilagen",
 						variationItems: {
 							total: 4,
 							items: [
@@ -527,10 +626,15 @@ export class BookingPageComponent {
 		return this.lastClickedItem.variations.items[index + 1]
 	}
 
-	getCurrentVariationFromTmpVariations(variation: VariationResource, variationItem: VariationItemResource) {
+	getCurrentVariationFromTmpVariations(
+		variation: VariationResource,
+		variationItem: VariationItemResource
+	) {
 		let index = this.tmpVariations.findIndex(v => v.uuid === variation.uuid)
 		if (index === -1) return undefined
-		let itemIndex = this.tmpVariations[index].variationItems.items.findIndex(v => v.uuid === variationItem.uuid)
+		let itemIndex = this.tmpVariations[index].variationItems.items.findIndex(
+			v => v.uuid === variationItem.uuid
+		)
 		if (itemIndex === -1) return undefined
 		return this.tmpVariations[index].variationItems.items[itemIndex]
 	}

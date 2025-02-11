@@ -169,35 +169,83 @@
 						{{ lastClickedItem.name }}
 						}
 					</h2>
-					@if(isItemPopupVisible){ @for (variation of
-					lastClickedItem.variations.items; track variation.uuid) {
+					@if(isItemPopupVisible){ @for (variations of
+					lastClickedItem.variations.items; track variations.uuid) {
+					@if(lastClickedItem.variations.items[0].uuid == variations.uuid){
+					<b>
+						{{ variations.name }}
+					</b>
+					@for(variation of variations.variationItems.items; track
+					variation.uuid){
 					<div class="popup-content-dish">
 						<button mat-mini-fab (click)="removeVariation(variation)">
 							<mat-icon>remove</mat-icon>
 						</button>
 						<b>
+							@if(getCurrentVariationFromTmpVariations(variations,variation)){
+							{{
+								getCurrentVariationFromTmpVariations(
+									variations,
+									variation
+								).count
+							}}
+							x }
 							{{ variation.name }}
 						</b>
 						<button
 							mat-mini-fab
-							[disabled]="
-								checkLimitAnzahl() || checkForMinus('increase')
+							(click)="
+								addVariation(
+									lastClickedItem.variations.items[0],
+									variation
+								)
 							"
-							(click)="addVariation(variation)"
 						>
 							<mat-icon>add</mat-icon>
 						</button>
 					</div>
-
-					} }
+					} } @else if(lastClickedItem.variations.items.length > 1 &&
+					tmpVariations.length != 0 ){ @for(pickedVariations of
+					tmpVariations; track pickedVariations.uuid){
+					@if(getNextVariations(pickedVariations)){ @for(pickedVariation of
+					pickedVariations.variationItems.items;track
+					pickedVariation.uuid){
+					<b>{{ pickedVariation.name }}</b>
+					@for(variation of
+					getNextVariations(pickedVariations).variationItems.items; track
+					variation.uuid){
+					<div class="popup-content-dish">
+						<button mat-mini-fab (click)="removeVariation(variation)">
+							<mat-icon>remove</mat-icon>
+						</button>
+						<b>
+							@if(getCurrentVariationFromTmpVariations(getNextVariations(pickedVariations),variation)){
+							{{
+								getCurrentVariationFromTmpVariations(
+									getNextVariations(pickedVariations),
+									variation
+								).count
+							}}
+							x }
+							{{ variation.name }}
+						</b>
+						<button
+							mat-mini-fab
+							(click)="
+								addVariation(
+									getNextVariations(pickedVariations),
+									variation
+								)
+							"
+						>
+							<mat-icon>add</mat-icon>
+						</button>
+					</div>
+					} } } } } } }
 					<button mat-flat-button (click)="closeItemPopup()">
 						Schließen
 					</button>
-					<button
-						mat-flat-button
-						[disabled]="checkPickedVariation()"
-						(click)="sendVariation()"
-					>
+					<button mat-flat-button (click)="sendVariation()">
 						Auswählen
 					</button>
 				</div>

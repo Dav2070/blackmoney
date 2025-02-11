@@ -9,6 +9,7 @@ import { isServer } from "src/app/utils"
 import {
 	CategoryResource,
 	ProductResource,
+	VariationItemResource,
 	VariationResource
 } from "src/app/types"
 
@@ -49,7 +50,7 @@ export class BookingPageComponent {
 	xUsed: Boolean = false
 	minusUsed: Boolean = false
 
-	tmpVariations = new Map<string, VariationResource>()
+	tmpVariations: VariationResource[] = []
 
 	tmpAnzahl = 0
 
@@ -146,7 +147,7 @@ export class BookingPageComponent {
 							items: [
 								{
 									id: 1,
-									uuid: "12314213",
+									uuid: "12314213s",
 									name: "Klein",
 									price: 0,
 									count: 0
@@ -216,7 +217,7 @@ export class BookingPageComponent {
 
 	closeItemPopup() {
 		this.isItemPopupVisible = !this.isItemPopupVisible
-		this.tmpVariations.clear()
+		//this.tmpVariations.clear()
 	}
 
 	//Füge item zu stagedItems hinzu
@@ -281,7 +282,7 @@ export class BookingPageComponent {
 				total: 0,
 				items: Array.from(this.selectedItem.variations.items)
 			}
-			this.tmpVariations = new Map<string, VariationResource>()
+			//this.tmpVariations = new Map<string, VariationResource>()
 		} else if (this.tmpAnzahl > 0) {
 			//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
 			if (this.selectedItem.count > this.tmpAnzahl) {
@@ -485,12 +486,53 @@ export class BookingPageComponent {
 	}
 
 	//Erhöht eine Variation um eins
-	addVariation(variation: VariationResource) {
-		/*if (this.tmpVariations.has(variation.uuid)) {
-			this.tmpVariations.get(variation.uuid).count += 1
+	addVariation(
+		variation: VariationResource,
+		variationItem: VariationItemResource
+	) {
+		let index = this.tmpVariations.findIndex(v => v.uuid === variation.uuid)
+		if (index === -1) {
+			// Variation existiert nicht, füge sie mit dem VariationItem hinzu
+			this.tmpVariations.push({
+				...variation,
+				variationItems: {
+					total: 1,
+					items: [{ ...variationItem, count: 1 }]
+				}
+			})
 		} else {
-			this.tmpVariations.set(variation.uuid, variation)
-		}*/
+			// Variation existiert, prüfe das VariationItem
+			let itemIndex = this.tmpVariations[
+				index
+			].variationItems.items.findIndex(v => v.uuid === variationItem.uuid)
+			if (itemIndex === -1) {
+				// VariationItem existiert nicht, füge es hinzu
+				this.tmpVariations[index].variationItems.items.push({
+					...variationItem,
+					count: 1
+				})
+			} else {
+				// VariationItem existiert, erhöhe den count
+				this.tmpVariations[index].variationItems.items[itemIndex].count += 1
+			}
+		}
+		console.log(this.tmpVariations)
+	}
+
+	//Gibt liste vom nächsten variations-items zurück
+	getNextVariations(variaton: VariationResource) {
+		let index = this.lastClickedItem.variations.items.findIndex(
+			v => v.uuid === variaton.uuid
+		)
+		return this.lastClickedItem.variations.items[index + 1]
+	}
+
+	getCurrentVariationFromTmpVariations(variation: VariationResource, variationItem: VariationItemResource) {
+		let index = this.tmpVariations.findIndex(v => v.uuid === variation.uuid)
+		if (index === -1) return undefined
+		let itemIndex = this.tmpVariations[index].variationItems.items.findIndex(v => v.uuid === variationItem.uuid)
+		if (itemIndex === -1) return undefined
+		return this.tmpVariations[index].variationItems.items[itemIndex]
 	}
 
 	returnTmpVariationCount() {
@@ -502,7 +544,7 @@ export class BookingPageComponent {
 	}
 
 	//Verringert eine Variation um eins oder entfernt diese
-	removeVariation(variation: VariationResource) {
+	removeVariation(variation: VariationItemResource) {
 		/*if (this.tmpVariations.has(variation.uuid)) {
 			if (this.tmpVariations.get(variation.uuid).count > 1) {
 				this.tmpVariations.get(variation.uuid).count -= 1

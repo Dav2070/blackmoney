@@ -128,6 +128,80 @@ export class BookingPageComponent {
 		if (this.categories.length > 0) {
 			this.selectedInventory = this.categories[0].products.items
 		}
+
+		this.categories[4].products.items.push({
+			uuid: "1",
+			count: 0,
+			name: "Schnitzel",
+			price: 207,
+			variations: {
+				total: 0,
+				items: [
+					{
+						id: 1,
+						uuid: "12345",
+						name: "Größe",
+						variationItems: {
+							total: 2,
+							items: [
+								{
+									id: 1,
+									uuid: "12314213",
+									name: "Klein",
+									price: 0,
+									count: 0
+								},
+								{
+									id: 2,
+									uuid: "12314213",
+									name: "Groß",
+									price: 400,
+									count: 0
+								}
+							]
+						}
+					},
+					{
+						id: 2,
+						uuid: "1234534",
+						name: "Beilage",
+						variationItems: {
+							total: 4,
+							items: [
+								{
+									id: 4,
+									uuid: "123142131313",
+									name: "Pommes",
+									price: 0,
+									count: 0
+								},
+								{
+									id: 5,
+									uuid: "12314213",
+									name: "Reis",
+									price: 100,
+									count: 0
+								},
+								{
+									id: 6,
+									uuid: "12314213add",
+									name: "Kartoffeln",
+									price: 100,
+									count: 0
+								},
+								{
+									id: 7,
+									uuid: "12314213sdv",
+									name: "Salat",
+									price: 200,
+									count: 0
+								}
+							]
+						}
+					}
+				]
+			}
+		})
 	}
 
 	//Lade Items zur ausgewählten Kategorie
@@ -269,7 +343,7 @@ export class BookingPageComponent {
 	}
 
 	checkForMinus(variable: string) {
-		if (this.minusUsed) {
+		/*if (this.minusUsed) {
 			if (variable === "reduce") {
 				if (this.tmpAnzahl > 0) {
 					let tmpVariationsAnzahl = 0
@@ -295,7 +369,8 @@ export class BookingPageComponent {
 			}
 		}
 
-		return false
+		return false*/
+		return true
 	}
 
 	//Aktualisiere Bestellungen aus DB
@@ -411,30 +486,30 @@ export class BookingPageComponent {
 
 	//Erhöht eine Variation um eins
 	addVariation(variation: VariationResource) {
-		if (this.tmpVariations.has(variation.uuid)) {
+		/*if (this.tmpVariations.has(variation.uuid)) {
 			this.tmpVariations.get(variation.uuid).count += 1
 		} else {
 			this.tmpVariations.set(variation.uuid, variation)
-		}
+		}*/
 	}
 
 	returnTmpVariationCount() {
-		let total = 0
+		/*let total = 0
 		for (let variation of this.tmpVariations.values()) {
 			total += variation.count
 		}
-		return total
+		return total*/
 	}
 
 	//Verringert eine Variation um eins oder entfernt diese
 	removeVariation(variation: VariationResource) {
-		if (this.tmpVariations.has(variation.uuid)) {
+		/*if (this.tmpVariations.has(variation.uuid)) {
 			if (this.tmpVariations.get(variation.uuid).count > 1) {
 				this.tmpVariations.get(variation.uuid).count -= 1
 			} else {
 				this.tmpVariations.delete(variation.uuid)
 			}
-		}
+		}*/
 	}
 
 	//Prüft ob am Anfang des Strings eine 0 eingefügt ist
@@ -457,7 +532,7 @@ export class BookingPageComponent {
 
 	//Checkt ob Limit der Anzahl erreicht ist
 	checkLimitAnzahl() {
-		if (!this.minusUsed) {
+		/*if (!this.minusUsed) {
 			if (this.tmpAnzahl > 0) {
 				let anzahl = 0
 				for (let variation of this.tmpVariations.values()) {
@@ -469,12 +544,13 @@ export class BookingPageComponent {
 			}
 		}
 
-		return false
+		return false*/
+		return true
 	}
 
 	//Checkt ob mindestens eine Variation ausgewählt wurde oder die Anzahl an Variationen ausgewählt wurde die man buchen möchte
 	checkPickedVariation() {
-		if (this.minusUsed) {
+		/*if (this.minusUsed) {
 			if (this.tmpAnzahl > 0) {
 				let anzahl = 0
 				for (let variation of this.tmpVariations.values()) {
@@ -510,7 +586,7 @@ export class BookingPageComponent {
 				}
 			}
 		}
-
+		*/
 		return true
 	}
 

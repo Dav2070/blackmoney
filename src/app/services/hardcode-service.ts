@@ -19,24 +19,6 @@ export class HardcodeService {
 			variations: null
 		})
 
-		tmpMap.pushNewItem({
-			uuid: "6",
-			count: 2,
-			price: 35.7,
-			name: "Rinderfilet",
-			variations: {
-				total: 0,
-				items: [
-					{
-						uuid: "2",
-						name: "Reis",
-						price: 1,
-						count: 2
-					}
-				]
-			}
-		})
-
 		return tmpMap
 	}
 

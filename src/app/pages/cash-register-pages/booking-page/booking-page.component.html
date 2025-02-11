@@ -19,12 +19,15 @@
 								@if (item.variations != null) {
 								{{
 									(
-										(item.price * (item.count +
-										bookedItems.getTotalVariationPrice(
-											item.variations.items
-										)) / 100)
+										(item.price *
+											(item.count +
+												bookedItems.getTotalVariationPrice(
+													item.variations.items
+												))) /
+										100
 									).toFixed(2)
-								}} € } @else {
+								}}
+								€ } @else {
 								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
 							</span>
 							<strong>
@@ -35,12 +38,13 @@
 						</mat-card-content>
 						@if (item.variations != null) { @for (variation of
 						item.variations.items; track variation.uuid){
+						@for(variationItem of variation.variationItems.items; track
+						variationItem.uuid){
 						<mat-card-content>
-							{{ variation.count }}x mit {{ variation.name }} +{{
-								(variation.price / 100).toFixed(2)
-							}} €
+							{{ variationItem.count }}x mit {{ variationItem.name }} +
+							{{ (variationItem.price / 100).toFixed(2) }} €
 						</mat-card-content>
-						} }
+						} } }
 						<mat-card-content> #{{ item.uuid }} </mat-card-content>
 					</mat-card>
 					}
@@ -60,12 +64,15 @@
 								@if (item.variations != null) {
 								{{
 									(
-										(item.price * (item.count +
-										stagedItems.getTotalVariationPrice(
-											item.variations.items
-										)) / 100)
+										(item.price *
+											(item.count +
+												stagedItems.getTotalVariationPrice(
+													item.variations.items
+												))) /
+										100
 									).toFixed(2)
-								}} € } @else {
+								}}
+								€ } @else {
 								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
 							</span>
 							<strong>
@@ -75,14 +82,15 @@
 							</strong>
 						</mat-card-content>
 
-						@if(item.variations != null){ @for(variation of
-						item.variations.items; track variation){
+						@if (item.variations != null) { @for (variation of
+						item.variations.items; track variation.uuid){
+						@for(variationItem of variation.variationItems.items; track
+						variationItem.uuid){
 						<mat-card-content>
-							{{ variation.count }}x mit {{ variation.name }} + {{
-								(variation.price / 100).toFixed(2)
-							}} €
+							{{ variationItem.count }}x mit {{ variationItem.name }} +
+							{{ (variationItem.price / 100).toFixed(2) }} €
 						</mat-card-content>
-						} }
+						} } }
 						<mat-card-content> #{{ item.uuid }} </mat-card-content>
 					</mat-card>
 					}
@@ -164,23 +172,11 @@
 					@if(isItemPopupVisible){ @for (variation of
 					lastClickedItem.variations.items; track variation.uuid) {
 					<div class="popup-content-dish">
-						<button
-							[disabled]="
-								!tmpVariations.has(variation.uuid) ||
-								tmpVariations.get(variation.uuid).count === 0 ||
-								checkForMinus('reduce')
-							"
-							mat-mini-fab
-							(click)="removeVariation(variation)"
-						>
+						<button mat-mini-fab (click)="removeVariation(variation)">
 							<mat-icon>remove</mat-icon>
 						</button>
 						<b>
-							@if (tmpVariations.has(variation.uuid)){
-							{{ tmpVariations.get(variation.uuid).count }}
-							} @else { 0 } x mit {{ variation.name }}
-							<br />
-							+ {{ (variation.price / 100).toFixed(2) }} €
+							{{ variation.name }}
 						</b>
 						<button
 							mat-mini-fab
@@ -328,7 +324,9 @@
 						}}
 						Uhr</span
 					>
-					<span>{{ (bill.items.calculateTotal() / 100).toFixed(2) }} €</span>
+					<span
+						>{{ (bill.items.calculateTotal() / 100).toFixed(2) }} €</span
+					>
 				</div>
 				}
 			</div>
@@ -345,19 +343,23 @@
 					@for(item of pickedBill.items.getItems(); track item){
 					<div class="bill-item-detail">
 						<span>{{ item.count }}x {{ item.name }}</span>
-						<span>{{ ((item.count * item.price) / 100).toFixed(2) }} €</span>
+						<span
+							>{{ ((item.count * item.price) / 100).toFixed(2) }} €</span
+						>
 					</div>
 					@if(item.variations != null){ @for(variation of
 					item.variations.items; track variation){
-					<div class="bill-item-detail">
-						<span>{{ variation.count }}x mit {{ variation.name }}</span>
-						<span>{{ ((variation.count * variation.price) / 100).toFixed(2) }} €</span>
-					</div>
+					<div class="bill-item-detail">></div>
 					} } }
 				</div>
 				<div class="bill-total">
 					<span>Gesamt</span>
-					<span>{{ (pickedBill.items.calculateTotal() / 100).toFixed(2) }} €</span>
+					<span
+						>{{
+							(pickedBill.items.calculateTotal() / 100).toFixed(2)
+						}}
+						€</span
+					>
 				</div>
 				<div class="bill-buttons">
 					<button class="bill-back-button">Tisch zurückholen</button>

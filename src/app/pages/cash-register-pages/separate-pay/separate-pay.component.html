@@ -15,6 +15,7 @@
 						(click)="transferItem(item, bookedItems, activeBill)"
 					>
 						<mat-card-content class="card-content">
+							<!--
 							<span class="total-price">
 								@if(item.variations != null){
 								{{
@@ -32,6 +33,7 @@
 								{{ item.name }}
 								{{ item.price.toFixed(2) }}€
 							</strong>
+						-->
 						</mat-card-content>
 						@if(item.variations != null){ @for(variation of
 						item.variations.items; track variation){
@@ -120,6 +122,7 @@
 						(click)="transferItem(item, bill, bookedItems)"
 					>
 						<mat-card-content class="card-content">
+							<!--
 							<span class="total-price">
 								@if(item.variations != null){
 								{{
@@ -135,6 +138,7 @@
 								{{ item.name }}
 								{{ item.price.toFixed(2) }}€
 							</strong>
+							-->
 						</mat-card-content>
 						@if(item.variations != null){ @for(variation of
 						item.variations.items; track variation.uuid){

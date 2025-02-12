@@ -16,7 +16,7 @@ export class AllItemHandler {
 			const item = this.allPickedItems.get(uuid)
 
 			// Anzahl des bestehenden Items erhöhen
-			item.count += pickedItem.count
+			//item.count += pickedItem.count
 
 			// Falls Variationen vorhanden sind, diese ebenfalls aktualisieren
 			if (pickedItem.variations.total != 0) {
@@ -33,7 +33,7 @@ export class AllItemHandler {
 									vi => vi.uuid == variationItem.uuid
 								)
 							if (existingVariationItem != null) {
-								existingVariationItem.count += variationItem.count
+								//existingVariationItem.count += variationItem.count
 							} else {
 								// Neues VariationItem hinzufügen
 								variation.variationItems.items.push(variationItem)
@@ -70,12 +70,12 @@ export class AllItemHandler {
 			if (item.variations != null) {
 				for (let variation of item.variations.items) {
 					for (let variationItem of variation.variationItems.items) {
-						total += variationItem.price * variationItem.count
+						//total += variationItem.price * variationItem.count
 					}
 				}
 			}
 
-			total += item.price * item.count
+			//total += item.price * item.count
 		}
 
 		return total
@@ -92,7 +92,7 @@ export class AllItemHandler {
 
 		for (let variation of pickedVariation) {
 			for (let variationItem of variation.variationItems.items) {
-				total += variationItem.price * variationItem.count
+				//total += variationItem.price * variationItem.count
 			}
 		}
 
@@ -158,8 +158,9 @@ export class AllItemHandler {
 	//Gibt die Anzahl von allen Items zurück
 	getNumberOfItems() {
 		let number = 0
+
 		for (let item of this.allPickedItems.values()) {
-			number += item.count
+			//number += item.count
 		}
 
 		return number

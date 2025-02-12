@@ -93,14 +93,29 @@ export class BookingPageComponent {
 							uuid
 							name
 							price
+							variations {
+								total
+								items {
+									uuid
+									name
+									variationItems {
+										total
+										items {
+											uuid
+											name
+										}
+									}
+								}
+							}
 						}
 					}
 				}
 			`
 		)
 
-		this.categories = []
+		this.categories = listCategoriesResult.data.listCategories.items
 
+		/*
 		for (let item of listCategoriesResult.data.listCategories.items) {
 			let category: CategoryResource = {
 				uuid: item.uuid,
@@ -125,6 +140,7 @@ export class BookingPageComponent {
 
 			this.categories.push(category)
 		}
+		*/
 
 		if (this.categories.length > 0) {
 			this.selectedInventory = this.categories[0].products.items
@@ -132,7 +148,7 @@ export class BookingPageComponent {
 
 		this.categories[4].products.items.push({
 			uuid: "1",
-			count: 0,
+			//count: 0,
 			name: "Schnitzel",
 			price: 2070,
 			variations: {
@@ -149,15 +165,13 @@ export class BookingPageComponent {
 									id: 1,
 									uuid: "12314213s",
 									name: "Klein",
-									price: 0,
-									count: 0
+									additionalCost: 0
 								},
 								{
 									id: 2,
 									uuid: "12314213",
 									name: "Groß",
-									price: 400,
-									count: 0
+									additionalCost: 400
 								}
 							]
 						}
@@ -173,29 +187,25 @@ export class BookingPageComponent {
 									id: 4,
 									uuid: "123142131313",
 									name: "Pommes",
-									price: 0,
-									count: 0
+									additionalCost: 0
 								},
 								{
 									id: 5,
 									uuid: "12314213",
 									name: "Reis",
-									price: 100,
-									count: 0
+									additionalCost: 100
 								},
 								{
 									id: 6,
 									uuid: "12314213add",
 									name: "Kartoffeln",
-									price: 100,
-									count: 0
+									additionalCost: 100
 								},
 								{
 									id: 7,
 									uuid: "12314213sdv",
 									name: "Salat",
-									price: 200,
-									count: 0
+									additionalCost: 200
 								}
 							]
 						}
@@ -206,7 +216,7 @@ export class BookingPageComponent {
 
 		this.categories[4].products.items.push({
 			uuid: "1",
-			count: 0,
+			//count: 0,
 			name: "Schnitzel klein",
 			price: 2070,
 			variations: {
@@ -223,29 +233,25 @@ export class BookingPageComponent {
 									id: 4,
 									uuid: "123142131313",
 									name: "Pommes",
-									price: 0,
-									count: 0
+									additionalCost: 0
 								},
 								{
 									id: 5,
 									uuid: "12314213",
 									name: "Reis",
-									price: 100,
-									count: 0
+									additionalCost: 100
 								},
 								{
 									id: 6,
 									uuid: "12314213add",
 									name: "Kartoffeln",
-									price: 100,
-									count: 0
+									additionalCost: 100
 								},
 								{
 									id: 7,
 									uuid: "12314213sdv",
 									name: "Salat",
-									price: 200,
-									count: 0
+									additionalCost: 200
 								}
 							]
 						}
@@ -255,7 +261,7 @@ export class BookingPageComponent {
 		})
 		this.categories[4].products.items.push({
 			uuid: "1",
-			count: 0,
+			//count: 0,
 			name: "Schnitzel groß",
 			price: 2470,
 			variations: {
@@ -272,29 +278,25 @@ export class BookingPageComponent {
 									id: 4,
 									uuid: "123142131313",
 									name: "Pommes",
-									price: 0,
-									count: 0
+									additionalCost: 0
 								},
 								{
 									id: 5,
 									uuid: "12314213",
 									name: "Reis",
-									price: 100,
-									count: 0
+									additionalCost: 100
 								},
 								{
 									id: 6,
 									uuid: "12314213add",
 									name: "Kartoffeln",
-									price: 100,
-									count: 0
+									additionalCost: 100
 								},
 								{
 									id: 7,
 									uuid: "12314213sdv",
 									name: "Salat",
-									price: 200,
-									count: 0
+									additionalCost: 200
 								}
 							]
 						}
@@ -324,10 +326,10 @@ export class BookingPageComponent {
 		if (product.variations?.items.length === 0) {
 			if (this.tmpAnzahl > 0) {
 				//this.stagedItems.pushNewItem(new PickedItem(item, this.tmpAnzahl))
-				product.count = this.tmpAnzahl
+				//product.count = this.tmpAnzahl
 				this.stagedItems.pushNewItem(product)
 			} else {
-				product.count = 1
+				//product.count = 1
 				this.stagedItems.pushNewItem(product)
 			}
 
@@ -348,7 +350,6 @@ export class BookingPageComponent {
 						total
 						items {
 							uuid
-							count
 							name
 							price
 						}
@@ -384,6 +385,7 @@ export class BookingPageComponent {
 			//this.tmpVariations = new Map<string, VariationResource>()
 		} else if (this.tmpAnzahl > 0) {
 			//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+			/*
 			if (this.selectedItem.count > this.tmpAnzahl) {
 				this.selectedItem.count -= this.tmpAnzahl
 			} else if (this.selectedItem.count === this.tmpAnzahl) {
@@ -391,14 +393,17 @@ export class BookingPageComponent {
 			} else {
 				window.alert("Anzahl ist zu hoch")
 			}
+			*/
 			this.showTotal()
 		} else {
 			//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
+			/*
 			if (this.selectedItem.count > 1) {
 				this.selectedItem.count -= 1
 			} else {
 				this.tmpAllItemHandler.deleteItem(this.selectedItem)
 			}
+			*/
 			this.showTotal()
 		}
 	}
@@ -486,7 +491,6 @@ export class BookingPageComponent {
 							total
 							items {
 								uuid
-								count
 								name
 								price
 							}
@@ -531,10 +535,13 @@ export class BookingPageComponent {
 	//Fügt Items der Liste an bestellten Artikeln hinzu
 	async sendOrder() {
 		//this.bookedItems.transferAllItems(this.stagedItems)
-		let tmpProductArray = []
+		let tmpProductArray: {
+			uuid: string
+			count: number
+		}[] = []
 
 		for (let values of this.stagedItems.getAllPickedItems().values()) {
-			tmpProductArray.push({ uuid: values.uuid, count: values.count })
+			//tmpProductArray.push({ uuid: values.uuid, count: values.count })
 		}
 
 		let items = await this.apiService.addProductsToOrder(
@@ -543,7 +550,6 @@ export class BookingPageComponent {
 					total
 					items {
 						uuid
-						count
 						name
 						price
 					}
@@ -596,7 +602,12 @@ export class BookingPageComponent {
 				...variation,
 				variationItems: {
 					total: 1,
-					items: [{ ...variationItem, count: 1 }]
+					items: [
+						{
+							...variationItem
+							//count: 1
+						}
+					]
 				}
 			})
 		} else {
@@ -607,12 +618,12 @@ export class BookingPageComponent {
 			if (itemIndex === -1) {
 				// VariationItem existiert nicht, füge es hinzu
 				this.tmpVariations[index].variationItems.items.push({
-					...variationItem,
-					count: 1
+					...variationItem
+					//count: 1
 				})
 			} else {
 				// VariationItem existiert, erhöhe den count
-				this.tmpVariations[index].variationItems.items[itemIndex].count += 1
+				//this.tmpVariations[index].variationItems.items[itemIndex].count += 1
 			}
 		}
 		console.log(this.tmpVariations)

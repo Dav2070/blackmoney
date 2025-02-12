@@ -17,6 +17,7 @@
 						style="cursor: pointer"
 					>
 						<mat-card-content class="card-content">
+							<!--
 							<span class="total-price">
 								@if(item.variations != null){
 								{{
@@ -34,12 +35,11 @@
 								{{ item.name }}
 								{{ item.price.toFixed(2) }}€
 							</strong>
+						-->
 						</mat-card-content>
 						@if(item.variations != null){ @for(variation of
 						item.variations.items; track variation){
-						<mat-card-content>
-							
-						</mat-card-content>
+						<mat-card-content> </mat-card-content>
 						} }
 						<mat-card-content> #{{ item.uuid }} </mat-card-content>
 					</mat-card>
@@ -115,6 +115,7 @@
 						style="cursor: pointer"
 					>
 						<mat-card-content class="card-content">
+							<!--
 							<span class="total-price">
 								@if(item.variations != null){
 								{{
@@ -124,20 +125,19 @@
 											item.variations.items
 										)
 									).toFixed(2)
-								}}€ }@else {
-								{{ (item.price * item.count).toFixed(2) }}€ }
+								}}€ }@else { {{ (item.price * item.count).toFixed(2) }}€
+								}
 							</span>
 							<strong>
 								{{ item.count }} x
 								{{ item.name }}
 								{{ item.price.toFixed(2) }}€
 							</strong>
+							-->
 						</mat-card-content>
 						@if(item.variations != null){ @for(variation of
 						item.variations.items; track variation){
-						<mat-card-content>
-							
-						</mat-card-content>
+						<mat-card-content> </mat-card-content>
 						} }
 						<mat-card-content> #{{ item.uuid }} </mat-card-content>
 					</mat-card>

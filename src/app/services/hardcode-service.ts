@@ -15,7 +15,7 @@ export class HardcodeService {
 			uuid: "7",
 			price: 4.7,
 			name: "Pommes",
-			count: 1,
+			//count: 1,
 			variations: null
 		})
 

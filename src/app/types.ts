@@ -27,7 +27,6 @@ export interface TableResource {
 
 export interface ProductResource {
 	uuid: string
-	count: number
 	name: string
 	price: number
 	variations: List<VariationResource>
@@ -44,8 +43,7 @@ export interface VariationItemResource {
 	id: number
 	uuid: string
 	name: string
-	price: number
-	count: number
+	additionalCost: number
 }
 
 export interface CategoryResource {

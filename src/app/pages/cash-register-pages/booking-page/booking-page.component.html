@@ -15,6 +15,7 @@
 						"
 					>
 						<mat-card-content class="card-content">
+							<!--
 							<span class="total-price">
 								@if (item.variations != null) {
 								{{
@@ -35,14 +36,17 @@
 								{{ item.name }}
 								{{ (item.price / 100).toFixed(2) }} €
 							</strong>
+							-->
 						</mat-card-content>
 						@if (item.variations != null) { @for (variation of
 						item.variations.items; track variation.uuid){
 						@for(variationItem of variation.variationItems.items; track
 						variationItem.uuid){
 						<mat-card-content>
+							<!--
 							{{ variationItem.count }}x mit {{ variationItem.name }} +
 							{{ (variationItem.price / 100).toFixed(2) }} €
+							-->
 						</mat-card-content>
 						} } }
 						<mat-card-content> #{{ item.uuid }} </mat-card-content>
@@ -60,6 +64,7 @@
 						"
 					>
 						<mat-card-content class="card-content">
+							<!--
 							<span class="total-price">
 								@if (item.variations != null) {
 								{{
@@ -80,16 +85,19 @@
 								{{ item.name }}
 								{{ (item.price / 100).toFixed(2) }} €
 							</strong>
+							-->
 						</mat-card-content>
 
 						@if (item.variations != null) { @for (variation of
 						item.variations.items; track variation.uuid){
 						@for(variationItem of variation.variationItems.items; track
 						variationItem.uuid){
+						<!--
 						<mat-card-content>
 							{{ variationItem.count }}x mit {{ variationItem.name }} +
 							{{ (variationItem.price / 100).toFixed(2) }} €
 						</mat-card-content>
+						-->
 						} } }
 						<mat-card-content> #{{ item.uuid }} </mat-card-content>
 					</mat-card>
@@ -182,6 +190,7 @@
 							<mat-icon>remove</mat-icon>
 						</button>
 						<b>
+							<!--
 							@if(getCurrentVariationFromTmpVariations(variations,variation)){
 							{{
 								getCurrentVariationFromTmpVariations(
@@ -191,6 +200,7 @@
 							}}
 							x }
 							{{ variation.name }}
+							-->
 						</b>
 						<button
 							mat-mini-fab
@@ -219,6 +229,7 @@
 							<mat-icon>remove</mat-icon>
 						</button>
 						<b>
+							<!--
 							@if(getCurrentVariationFromTmpVariations(getNextVariations(pickedVariations),variation)){
 							{{
 								getCurrentVariationFromTmpVariations(
@@ -228,6 +239,7 @@
 							}}
 							x }
 							{{ variation.name }}
+							-->
 						</b>
 						<button
 							mat-mini-fab
@@ -390,10 +402,12 @@
 				<div class="bill-items">
 					@for(item of pickedBill.items.getItems(); track item){
 					<div class="bill-item-detail">
+						<!--
 						<span>{{ item.count }}x {{ item.name }}</span>
 						<span
 							>{{ ((item.count * item.price) / 100).toFixed(2) }} €</span
 						>
+						-->
 					</div>
 					@if(item.variations != null){ @for(variation of
 					item.variations.items; track variation){

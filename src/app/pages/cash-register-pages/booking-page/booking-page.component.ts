@@ -8,6 +8,7 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 import { isServer } from "src/app/utils"
 import {
 	CategoryResource,
+	ItemResource,
 	ProductResource,
 	VariationItemResource,
 	VariationResource
@@ -54,7 +55,7 @@ export class BookingPageComponent {
 
 	tmpAnzahl = 0
 
-	selectedItem: ProductResource = undefined
+	selectedItem: ItemResource = undefined
 	tmpAllItemHandler: AllItemHandler = undefined
 
 	isBillPopupVisible: boolean = false
@@ -145,165 +146,6 @@ export class BookingPageComponent {
 		if (this.categories.length > 0) {
 			this.selectedInventory = this.categories[0].products.items
 		}
-
-		this.categories[4].products.items.push({
-			uuid: "1",
-			//count: 0,
-			name: "Schnitzel",
-			price: 2070,
-			variations: {
-				total: 0,
-				items: [
-					{
-						id: 1,
-						uuid: "12345",
-						name: "Größe",
-						variationItems: {
-							total: 2,
-							items: [
-								{
-									id: 1,
-									uuid: "12314213s",
-									name: "Klein",
-									additionalCost: 0
-								},
-								{
-									id: 2,
-									uuid: "12314213",
-									name: "Groß",
-									additionalCost: 400
-								}
-							]
-						}
-					},
-					{
-						id: 2,
-						uuid: "1234534",
-						name: "Beilage",
-						variationItems: {
-							total: 4,
-							items: [
-								{
-									id: 4,
-									uuid: "123142131313",
-									name: "Pommes",
-									additionalCost: 0
-								},
-								{
-									id: 5,
-									uuid: "12314213",
-									name: "Reis",
-									additionalCost: 100
-								},
-								{
-									id: 6,
-									uuid: "12314213add",
-									name: "Kartoffeln",
-									additionalCost: 100
-								},
-								{
-									id: 7,
-									uuid: "12314213sdv",
-									name: "Salat",
-									additionalCost: 200
-								}
-							]
-						}
-					}
-				]
-			}
-		})
-
-		this.categories[4].products.items.push({
-			uuid: "1",
-			//count: 0,
-			name: "Schnitzel klein",
-			price: 2070,
-			variations: {
-				total: 1,
-				items: [
-					{
-						id: 1,
-						uuid: "12345",
-						name: "Beilagen",
-						variationItems: {
-							total: 4,
-							items: [
-								{
-									id: 4,
-									uuid: "123142131313",
-									name: "Pommes",
-									additionalCost: 0
-								},
-								{
-									id: 5,
-									uuid: "12314213",
-									name: "Reis",
-									additionalCost: 100
-								},
-								{
-									id: 6,
-									uuid: "12314213add",
-									name: "Kartoffeln",
-									additionalCost: 100
-								},
-								{
-									id: 7,
-									uuid: "12314213sdv",
-									name: "Salat",
-									additionalCost: 200
-								}
-							]
-						}
-					}
-				]
-			}
-		})
-		this.categories[4].products.items.push({
-			uuid: "1",
-			//count: 0,
-			name: "Schnitzel groß",
-			price: 2470,
-			variations: {
-				total: 1,
-				items: [
-					{
-						id: 1,
-						uuid: "12345",
-						name: "Beilagen",
-						variationItems: {
-							total: 4,
-							items: [
-								{
-									id: 4,
-									uuid: "123142131313",
-									name: "Pommes",
-									additionalCost: 0
-								},
-								{
-									id: 5,
-									uuid: "12314213",
-									name: "Reis",
-									additionalCost: 100
-								},
-								{
-									id: 6,
-									uuid: "12314213add",
-									name: "Kartoffeln",
-									additionalCost: 100
-								},
-								{
-									id: 7,
-									uuid: "12314213sdv",
-									name: "Salat",
-									additionalCost: 200
-								}
-							]
-						}
-					}
-				]
-			}
-		})
 	}
 
 	//Lade Items zur ausgewählten Kategorie
@@ -323,14 +165,21 @@ export class BookingPageComponent {
 
 	//Füge item zu stagedItems hinzu
 	clickItem(product: ProductResource) {
-		if (product.variations?.items.length === 0) {
+		if (product.variations.items.length === 0) {
+			let newItemResource:ItemResource;
+				newItemResource.name=product.name
+				newItemResource.uuid=product.uuid;
+				newItemResource.price=product.price;
 			if (this.tmpAnzahl > 0) {
 				//this.stagedItems.pushNewItem(new PickedItem(item, this.tmpAnzahl))
 				//product.count = this.tmpAnzahl
-				this.stagedItems.pushNewItem(product)
+				newItemResource.total=this.tmpAnzahl;
+				
+				this.stagedItems.pushNewItem(newItemResource)
 			} else {
 				//product.count = 1
-				this.stagedItems.pushNewItem(product)
+				newItemResource.total=1;
+				this.stagedItems.pushNewItem(newItemResource)
 			}
 
 			this.showTotal()
@@ -373,15 +222,15 @@ export class BookingPageComponent {
 			}
 
 			this.showTotal()
-		} else if (this.selectedItem.variations.total > 0) {
+		} else if (this.selectedItem.pickedVariations.length > 0) {
 			//Wenn Item Variationen enthält
 			this.minusUsed = true
 			this.isItemPopupVisible = true
-			this.lastClickedItem = this.selectedItem
-			this.lastClickedItem.variations = {
+			//this.lastClickedItem = this.selectedItem
+			/*this.lastClickedItem.variations = {
 				total: 0,
 				items: Array.from(this.selectedItem.variations.items)
-			}
+			}*/
 			//this.tmpVariations = new Map<string, VariationResource>()
 		} else if (this.tmpAnzahl > 0) {
 			//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
@@ -511,6 +360,7 @@ export class BookingPageComponent {
 			this.bookedItems.clearItems()
 			for (let item of order.data.retrieveTable.orders.items[0].products
 				.items) {
+				console.log(item)
 				this.bookedItems.pushNewItem(item)
 			}
 		}
@@ -788,7 +638,7 @@ export class BookingPageComponent {
 	}
 
 	//Selektiert das Item in der Liste
-	selectItem(pickedItem: ProductResource, AllItemHandler: AllItemHandler) {
+	selectItem(pickedItem: ItemResource, AllItemHandler: AllItemHandler) {
 		this.selectedItem = pickedItem
 		this.tmpAllItemHandler = AllItemHandler
 	}

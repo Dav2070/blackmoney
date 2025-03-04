@@ -1,14 +1,14 @@
-import { ProductResource, VariationResource } from "../../types"
+import { ItemResource, ProductResource, VariationResource } from "../../types"
 
 export class AllItemHandler {
-	private allPickedItems = new Map<string, ProductResource>()
+	private allPickedItems = new Map<string, ItemResource>()
 
 	getAllPickedItems() {
 		return this.allPickedItems
 	}
 
 	//Füge neues Item in die Map hinzu
-	pushNewItem(pickedItem: ProductResource) {
+	pushNewItem(pickedItem: ItemResource) {
 		const uuid = pickedItem.uuid
 
 		// Prüfen, ob das Item bereits existiert
@@ -19,8 +19,8 @@ export class AllItemHandler {
 			//item.count += pickedItem.count
 
 			// Falls Variationen vorhanden sind, diese ebenfalls aktualisieren
-			if (pickedItem.variations.total != 0) {
-				for (const variation of pickedItem.variations.items) {
+			/*if (pickedItem.pickedVariations.length != 0) {
+				for (const variation of pickedItem.pickedVariations) {
 					let existingVariation = item.variations.items.find(
 						v => v.uuid == variation.uuid
 					)
@@ -46,7 +46,7 @@ export class AllItemHandler {
 						item.variations.items.push(existingVariation)
 					}
 				}
-			}
+			}*/
 		} else {
 			// Neues Item hinzufügen
 			this.allPickedItems.set(uuid, { ...pickedItem })
@@ -66,7 +66,7 @@ export class AllItemHandler {
 	calculateTotal() {
 		let total = 0
 
-		for (let item of this.allPickedItems.values()) {
+		/*for (let item of this.allPickedItems.values()) {
 			if (item.variations != null) {
 				for (let variation of item.variations.items) {
 					for (let variationItem of variation.variationItems.items) {
@@ -76,7 +76,7 @@ export class AllItemHandler {
 			}
 
 			//total += item.price * item.count
-		}
+		}*/
 
 		return total
 	}
@@ -100,11 +100,11 @@ export class AllItemHandler {
 	}
 
 	//Entferne Item aus der Map
-	deleteItem(pickedItem: ProductResource): void {
+	deleteItem(pickedItem: ItemResource): void {
 		this.allPickedItems.delete(pickedItem.uuid)
 	}
 
-	deleteVariation(pickedItem: ProductResource): void {
+	deleteVariation(pickedItem: ItemResource): void {
 		/*
 		this.allPickedItems
 			.get(pickedItem.uuid)
@@ -112,17 +112,17 @@ export class AllItemHandler {
 		*/
 	}
 
-	getItem(uuid: string): ProductResource {
+	getItem(uuid: string): ItemResource {
 		return this.allPickedItems.get(uuid)
 	}
 
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
-	includes(pickedItem: ProductResource): boolean {
+	includes(pickedItem: ItemResource): boolean {
 		return this.allPickedItems.has(pickedItem.uuid)
 	}
 
 	//Reduziere Item oder Lösche es wenn Item = 0
-	reduceItem(item: ProductResource, anzahl: number) {
+	reduceItem(item: ItemResource, anzahl: number) {
 		// if (item.variations != null) {
 		// 	for (let variation of item.variations.items) {
 		// 		if (

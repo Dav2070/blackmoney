@@ -38,10 +38,9 @@
 							</strong>
 							-->
 						</mat-card-content>
-						@if (item.variations != null) { @for (variation of
-						item.variations.items; track variation.uuid){
-						@for(variationItem of variation.variationItems.items; track
-						variationItem.uuid){
+						@if (item.pickedVariations) { @for (variation of
+						item.pickedVariations; track variation){ @for(variationItem of
+						variation.variations; track variationItem.uuid){
 						<mat-card-content>
 							<!--
 							{{ variationItem.count }}x mit {{ variationItem.name }} +
@@ -88,10 +87,9 @@
 							-->
 						</mat-card-content>
 
-						@if (item.variations != null) { @for (variation of
-						item.variations.items; track variation.uuid){
-						@for(variationItem of variation.variationItems.items; track
-						variationItem.uuid){
+						@if (item.pickedVariations) { @for (variation of
+						item.pickedVariations; track variation){ @for(variationItem of
+						variation.variations; track variationItem.uuid){
 						<!--
 						<mat-card-content>
 							{{ variationItem.count }}x mit {{ variationItem.name }} +
@@ -409,8 +407,8 @@
 						>
 						-->
 					</div>
-					@if(item.variations != null){ @for(variation of
-					item.variations.items; track variation){
+					@if(item.pickedVariations){ @for(variation of
+					item.pickedVariations; track variation){
 					<div class="bill-item-detail">></div>
 					} } }
 				</div>

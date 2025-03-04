@@ -4,7 +4,7 @@ import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.mo
 import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
-import { ProductResource } from "src/app/types"
+import { ItemResource, ProductResource } from "src/app/types"
 
 @Component({
 	templateUrl: "./transfer-page.component.html",
@@ -36,8 +36,8 @@ export class TransferPageComponent {
 		this.tableLeftUuid = +this.activatedRoute.snapshot.paramMap.get("uuid")
 		this.tableRightUuid =
 			+this.activatedRoute.snapshot.paramMap.get("console")
-		this.bookedItemsLeft = this.hardcodeService.getItemsofTable(40)
-		this.bookedItemsRight = this.hardcodeService.getItemsofTable(50)
+		//this.bookedItemsLeft = this.hardcodeService.getItemsofTable(40)
+		//this.bookedItemsRight = this.hardcodeService.getItemsofTable(50)
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
@@ -60,7 +60,7 @@ export class TransferPageComponent {
 	}
 
 	transferItem(
-		item: ProductResource,
+		item: ItemResource,
 		send: AllItemHandler,
 		receiving: AllItemHandler
 	) {

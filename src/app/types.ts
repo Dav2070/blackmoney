@@ -56,7 +56,20 @@ export interface CategoryResource {
 export interface OrderResource {
 	uuid: string
 	totalPrice: number
-	products: List<ProductResource>
+	products: List<ItemResource>
+}
+
+export interface ItemResource {
+	uuid: string
+	name: string
+	price: number
+	total: number
+	pickedVariations: PickedVariationResource[]
+}
+
+export interface PickedVariationResource {
+	total: number
+	variations: VariationItemResource[]
 }
 
 export type CategoryType = "FOOD" | "DRINK"

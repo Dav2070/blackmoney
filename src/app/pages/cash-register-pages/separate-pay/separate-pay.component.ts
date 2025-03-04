@@ -5,7 +5,7 @@ import { Bill } from "src/app/models/cash-register/bill.model"
 import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
-import { ProductResource } from "src/app/types"
+import { ItemResource, ProductResource } from "src/app/types"
 
 @Component({
 	templateUrl: "./separate-pay.component.html",
@@ -37,7 +37,7 @@ export class SeparatePayComponent {
 
 	async ngOnInit() {
 		this.tableUuid = +this.activatedRoute.snapshot.paramMap.get("uuid")
-		this.bookedItems = this.hardcodeService.getItemsofTable(40)
+		//this.bookedItems = this.hardcodeService.getItemsofTable(40)
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
@@ -103,7 +103,7 @@ export class SeparatePayComponent {
 	}
 
 	transferItem(
-		item: ProductResource,
+		item: ItemResource,
 		send: AllItemHandler,
 		receiving: AllItemHandler
 	) {

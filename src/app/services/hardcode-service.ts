@@ -8,7 +8,7 @@ import { Bill } from "../models/cash-register/bill.model"
 export class HardcodeService {
 	constructor() {}
 
-	getItemsofTable(tablenumber: number) {
+	/*getItemsofTable(tablenumber: number) {
 		let tmpMap = new AllItemHandler()
 
 		tmpMap.pushNewItem({
@@ -16,35 +16,17 @@ export class HardcodeService {
 			price: 4.7,
 			name: "Pommes",
 			//count: 1,
-			variations: null
+			pickedVariations: []
 		})
 
 		return tmpMap
-	}
+	}*/
 
 	getBillsOfTable(tablenumber: number) {
 		let bills: Bill[] = []
 
-		bills.push(
-			new Bill(
-				"Bediener1",
-				20,
-				this.getItemsofTable(tablenumber),
-				new Date(),
-				"Bar",
-				false
-			)
-		)
-		bills.push(
-			new Bill(
-				"Bediener1",
-				21,
-				this.getItemsofTable(tablenumber),
-				new Date(),
-				"Bar",
-				false
-			)
-		)
+		bills.push(new Bill("Bediener1", 20, null, new Date(), "Bar", false))
+		bills.push(new Bill("Bediener1", 21, null, new Date(), "Bar", false))
 		return bills
 	}
 }

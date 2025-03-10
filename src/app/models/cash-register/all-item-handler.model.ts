@@ -1,14 +1,14 @@
-import { ItemResource, ProductResource, VariationResource } from "../../types"
+import { OrderItemResource, ProductResource, VariationResource } from "../../types"
 
 export class AllItemHandler {
-	private allPickedItems = new Map<string, ItemResource>()
+	private allPickedItems = new Map<string, OrderItemResource>()
 
 	getAllPickedItems() {
 		return this.allPickedItems
 	}
 
 	//Füge neues Item in die Map hinzu
-	pushNewItem(pickedItem: ItemResource) {
+	pushNewItem(pickedItem: OrderItemResource) {
 		const uuid = pickedItem.uuid
 
 		// Prüfen, ob das Item bereits existiert
@@ -100,11 +100,11 @@ export class AllItemHandler {
 	}
 
 	//Entferne Item aus der Map
-	deleteItem(pickedItem: ItemResource): void {
+	deleteItem(pickedItem: OrderItemResource): void {
 		this.allPickedItems.delete(pickedItem.uuid)
 	}
 
-	deleteVariation(pickedItem: ItemResource): void {
+	deleteVariation(pickedItem: OrderItemResource): void {
 		/*
 		this.allPickedItems
 			.get(pickedItem.uuid)
@@ -112,17 +112,17 @@ export class AllItemHandler {
 		*/
 	}
 
-	getItem(uuid: string): ItemResource {
+	getItem(uuid: string): OrderItemResource {
 		return this.allPickedItems.get(uuid)
 	}
 
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
-	includes(pickedItem: ItemResource): boolean {
+	includes(pickedItem: OrderItemResource): boolean {
 		return this.allPickedItems.has(pickedItem.uuid)
 	}
 
 	//Reduziere Item oder Lösche es wenn Item = 0
-	reduceItem(item: ItemResource, anzahl: number) {
+	reduceItem(item: OrderItemResource, anzahl: number) {
 		// if (item.variations != null) {
 		// 	for (let variation of item.variations.items) {
 		// 		if (

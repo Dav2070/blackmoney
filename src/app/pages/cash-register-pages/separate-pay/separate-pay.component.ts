@@ -5,7 +5,7 @@ import { Bill } from "src/app/models/cash-register/bill.model"
 import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
-import { ItemResource, ProductResource } from "src/app/types"
+import { OrderItemResource, ProductResource } from "src/app/types"
 
 @Component({
 	templateUrl: "./separate-pay.component.html",
@@ -103,7 +103,7 @@ export class SeparatePayComponent {
 	}
 
 	transferItem(
-		item: ItemResource,
+		item: OrderItemResource,
 		send: AllItemHandler,
 		receiving: AllItemHandler
 	) {

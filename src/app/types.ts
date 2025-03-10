@@ -56,14 +56,14 @@ export interface CategoryResource {
 export interface OrderResource {
 	uuid: string
 	totalPrice: number
-	products: List<ItemResource>
+	orderItems: List<OrderItemResource>
 }
 
-export interface ItemResource {
+export interface OrderItemResource {
 	uuid: string
-	name: string
-	price: number
-	total: number
+	order: OrderResource
+	product: ProductResource
+	count: number
 	pickedVariations: PickedVariationResource[]
 }
 

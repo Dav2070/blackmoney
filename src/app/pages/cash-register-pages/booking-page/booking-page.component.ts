@@ -8,7 +8,7 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 import { isServer } from "src/app/utils"
 import {
 	CategoryResource,
-	ItemResource,
+	OrderItemResource,
 	ProductResource,
 	VariationItemResource,
 	VariationResource
@@ -55,7 +55,7 @@ export class BookingPageComponent {
 
 	tmpAnzahl = 0
 
-	selectedItem: ItemResource = undefined
+	selectedItem: OrderItemResource = undefined
 	tmpAllItemHandler: AllItemHandler = undefined
 
 	isBillPopupVisible: boolean = false
@@ -115,6 +115,7 @@ export class BookingPageComponent {
 		)
 
 		this.categories = listCategoriesResult.data.listCategories.items
+		console.log
 
 		/*
 		for (let item of listCategoriesResult.data.listCategories.items) {
@@ -166,19 +167,18 @@ export class BookingPageComponent {
 	//Füge item zu stagedItems hinzu
 	clickItem(product: ProductResource) {
 		if (product.variations.items.length === 0) {
-			let newItemResource:ItemResource;
-				newItemResource.name=product.name
-				newItemResource.uuid=product.uuid;
-				newItemResource.price=product.price;
+			let newItemResource: OrderItemResource = <OrderItemResource>{}
+			newItemResource.product = product
+			//newItemResource.order = this.orderUuid
 			if (this.tmpAnzahl > 0) {
 				//this.stagedItems.pushNewItem(new PickedItem(item, this.tmpAnzahl))
 				//product.count = this.tmpAnzahl
-				newItemResource.total=this.tmpAnzahl;
-				
+				newItemResource.count = this.tmpAnzahl
+
 				this.stagedItems.pushNewItem(newItemResource)
 			} else {
 				//product.count = 1
-				newItemResource.total=1;
+				newItemResource.count = 1
 				this.stagedItems.pushNewItem(newItemResource)
 			}
 
@@ -217,7 +217,7 @@ export class BookingPageComponent {
 
 			this.bookedItems.clearItems()
 
-			for (let item of items.data.removeProductsFromOrder.products.items) {
+			for (let item of items.data.removeProductsFromOrder.orderItems.items) {
 				this.bookedItems.pushNewItem(item)
 			}
 
@@ -336,12 +336,17 @@ export class BookingPageComponent {
 					items {
 						uuid
 						totalPrice
-						products {
+						orderItems{
 							total
 							items {
 								uuid
-								name
-								price
+		            			order{uuid}
+		            			product{
+										uuid
+										name
+										price
+									}
+		            			count
 							}
 						}
 					}
@@ -358,7 +363,7 @@ export class BookingPageComponent {
 				this.orderUuid = order.data.retrieveTable.orders.items[0].uuid
 			}
 			this.bookedItems.clearItems()
-			for (let item of order.data.retrieveTable.orders.items[0].products
+			for (let item of order.data.retrieveTable.orders.items[0].orderItems
 				.items) {
 				console.log(item)
 				this.bookedItems.pushNewItem(item)
@@ -413,7 +418,7 @@ export class BookingPageComponent {
 
 		this.bookedItems.clearItems()
 
-		for (let item of items.data.addProductsToOrder.products.items) {
+		for (let item of items.data.addProductsToOrder.orderItems.items) {
 			this.bookedItems.pushNewItem(item)
 		}
 
@@ -476,7 +481,6 @@ export class BookingPageComponent {
 				//this.tmpVariations[index].variationItems.items[itemIndex].count += 1
 			}
 		}
-		console.log(this.tmpVariations)
 	}
 
 	//Gibt liste vom nächsten variations-items zurück
@@ -638,7 +642,7 @@ export class BookingPageComponent {
 	}
 
 	//Selektiert das Item in der Liste
-	selectItem(pickedItem: ItemResource, AllItemHandler: AllItemHandler) {
+	selectItem(pickedItem: OrderItemResource, AllItemHandler: AllItemHandler) {
 		this.selectedItem = pickedItem
 		this.tmpAllItemHandler = AllItemHandler
 	}

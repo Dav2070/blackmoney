@@ -31,12 +31,12 @@
 								€ } @else {
 								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
 							</span>
+							-->
 							<strong>
 								{{ item.count }} x
-								{{ item.name }}
-								{{ (item.price / 100).toFixed(2) }} €
+								{{ item.product.name }}
+								{{ (item.product.price / 100).toFixed(2) }} €
 							</strong>
-							-->
 						</mat-card-content>
 						@if (item.pickedVariations) { @for (variation of
 						item.pickedVariations; track variation){ @for(variationItem of
@@ -79,12 +79,12 @@
 								€ } @else {
 								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
 							</span>
+							-->
 							<strong>
 								{{ item.count }} x
-								{{ item.name }}
-								{{ (item.price / 100).toFixed(2) }} €
+								{{ item.product.name }}
+								{{ (item.product.price / 100).toFixed(2) }} €
 							</strong>
-							-->
 						</mat-card-content>
 
 						@if (item.pickedVariations) { @for (variation of
@@ -175,12 +175,14 @@
 						{{ lastClickedItem.name }}
 						}
 					</h2>
-					@if(isItemPopupVisible){ @for (variations of
+					@if(isItemPopupVisible){ 
+					@for (variations of
 					lastClickedItem.variations.items; track variations.uuid) {
 					@if(lastClickedItem.variations.items[0].uuid == variations.uuid){
 					<b>
 						{{ variations.name }}
 					</b>
+
 					@for(variation of variations.variationItems.items; track
 					variation.uuid){
 					<div class="popup-content-dish">

@@ -53,7 +53,7 @@ export class AppComponent {
 		new Dav({
 			environment: environment.environment,
 			appId: environment.davAppId,
-			tableIds: [],
+			tableNames: [],
 			callbacks: {
 				UserLoaded: () => this.userLoaded(),
 				AccessTokenRenewed: (accessToken: string) =>

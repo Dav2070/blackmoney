@@ -9,10 +9,13 @@ import { isServer } from "src/app/utils"
 import {
 	CategoryResource,
 	OrderItemResource,
+	PickedVariationResource,
 	ProductResource,
 	VariationItemResource,
 	VariationResource
 } from "src/app/types"
+import { TmpVariations } from "src/app/models/cash-register/tmp-variations.model"
+import { ThisReceiver } from "@angular/compiler"
 
 @Component({
 	templateUrl: "./booking-page.component.html",
@@ -51,8 +54,6 @@ export class BookingPageComponent {
 	xUsed: Boolean = false
 	minusUsed: Boolean = false
 
-	tmpVariations: VariationResource[] = []
-
 	tmpAnzahl = 0
 
 	selectedItem: OrderItemResource = undefined
@@ -63,6 +64,10 @@ export class BookingPageComponent {
 	bills: Bill[] = []
 
 	pickedBill: Bill = undefined
+
+	tmpCountVariations: number = 0
+
+	tmpPickedVariationResource: Map<number, TmpVariations[]>[] = []
 
 	constructor(
 		private dataService: DataService,
@@ -115,7 +120,7 @@ export class BookingPageComponent {
 		)
 
 		this.categories = listCategoriesResult.data.listCategories.items
-		console.log
+		console.log(this.categories)
 
 		/*
 		for (let item of listCategoriesResult.data.listCategories.items) {
@@ -186,6 +191,24 @@ export class BookingPageComponent {
 		} else {
 			// Öffnet Popup für Variationen
 			this.lastClickedItem = product
+
+			let count = 0
+			for (let variationItem of this.lastClickedItem.variations.items[
+				this.tmpCountVariations
+			].variationItems.items) {
+				this.tmpPickedVariationResource.push(
+					new Map<number, TmpVariations[]>().set(count, [
+						{
+							count: 0,
+							combination: variationItem.name,
+							display: variationItem.name,
+							pickedVariation: [variationItem]
+						}
+					])
+				)
+				count += 1
+			}
+
 			this.isItemPopupVisible = true
 		}
 	}
@@ -259,6 +282,64 @@ export class BookingPageComponent {
 
 	//Füge item mit Variation zu stagedItems hinzu
 	sendVariation() {
+		//Check ob es noch eine weitere Variation gibt
+		if (
+			this.lastClickedItem.variations.items[this.tmpCountVariations + 1] !=
+			undefined
+		) {
+			for (let variationMap of this.tmpPickedVariationResource) {
+				console.log(variationMap)
+				let variationArray = variationMap.get(this.tmpCountVariations)
+				variationArray = variationMap
+					.get(this.tmpCountVariations)
+					.filter(variation => variation.count > 0)
+
+				variationMap.set(this.tmpCountVariations, variationArray)
+
+				let newVariations: TmpVariations[] = []
+
+				for (let pickedVariation of variationArray) {
+					for (let variationItem of this.lastClickedItem.variations.items[
+						this.tmpCountVariations + 1
+					].variationItems.items) {
+						let tmpArray = pickedVariation.pickedVariation
+						tmpArray.push(variationItem)
+						newVariations.push({
+							count: 0,
+							combination:
+								pickedVariation.display + " " + variationItem.name,
+							display: variationItem.name,
+							pickedVariation: tmpArray
+						})
+					}
+				}
+				variationMap.set(this.tmpCountVariations + 1, newVariations)
+			}
+			this.tmpCountVariations += 1
+		} else {
+			let pickedVariations: PickedVariationResource[] = []
+
+			for (let variationMap of this.tmpPickedVariationResource) {
+				let variationArray = variationMap.get(this.tmpCountVariations)
+				variationArray = variationMap
+					.get(this.tmpCountVariations)
+					.filter(variation => variation.count > 0)
+
+				variationMap.set(this.tmpCountVariations, variationArray)
+
+				for (let pickedVariation of variationArray) {
+					pickedVariations.push({
+						total: pickedVariation.count,
+						variations: pickedVariation.pickedVariation
+					})
+				}
+			}
+
+			//TODO create item to add in stageItems
+
+			//console.log(pickedVariations)
+		}
+
 		// console.log("sendVariation called")
 		// let totalVariationAmount = 0
 		// for (let variation of this.tmpVariations.values()) {
@@ -365,7 +446,6 @@ export class BookingPageComponent {
 			this.bookedItems.clearItems()
 			for (let item of order.data.retrieveTable.orders.items[0].orderItems
 				.items) {
-				console.log(item)
 				this.bookedItems.pushNewItem(item)
 			}
 		}
@@ -446,62 +526,9 @@ export class BookingPageComponent {
 	}
 
 	//Erhöht eine Variation um eins
-	addVariation(
-		variation: VariationResource,
-		variationItem: VariationItemResource
-	) {
-		let index = this.tmpVariations.findIndex(v => v.uuid === variation.uuid)
-		if (index === -1) {
-			// Variation existiert nicht, füge sie mit dem VariationItem hinzu
-			this.tmpVariations.push({
-				...variation,
-				variationItems: {
-					total: 1,
-					items: [
-						{
-							...variationItem
-							//count: 1
-						}
-					]
-				}
-			})
-		} else {
-			// Variation existiert, prüfe das VariationItem
-			let itemIndex = this.tmpVariations[
-				index
-			].variationItems.items.findIndex(v => v.uuid === variationItem.uuid)
-			if (itemIndex === -1) {
-				// VariationItem existiert nicht, füge es hinzu
-				this.tmpVariations[index].variationItems.items.push({
-					...variationItem
-					//count: 1
-				})
-			} else {
-				// VariationItem existiert, erhöhe den count
-				//this.tmpVariations[index].variationItems.items[itemIndex].count += 1
-			}
-		}
-	}
-
-	//Gibt liste vom nächsten variations-items zurück
-	getNextVariations(variaton: VariationResource) {
-		let index = this.lastClickedItem.variations.items.findIndex(
-			v => v.uuid === variaton.uuid
-		)
-		return this.lastClickedItem.variations.items[index + 1]
-	}
-
-	getCurrentVariationFromTmpVariations(
-		variation: VariationResource,
-		variationItem: VariationItemResource
-	) {
-		let index = this.tmpVariations.findIndex(v => v.uuid === variation.uuid)
-		if (index === -1) return undefined
-		let itemIndex = this.tmpVariations[index].variationItems.items.findIndex(
-			v => v.uuid === variationItem.uuid
-		)
-		if (itemIndex === -1) return undefined
-		return this.tmpVariations[index].variationItems.items[itemIndex]
+	addVariation(variationItem: TmpVariations) {
+		//this.tmpPickedVariationResource.push({total:1,variations:[variationItem]})
+		variationItem.count += 1
 	}
 
 	returnTmpVariationCount() {
@@ -513,7 +540,10 @@ export class BookingPageComponent {
 	}
 
 	//Verringert eine Variation um eins oder entfernt diese
-	removeVariation(variation: VariationItemResource) {
+	removeVariation(variation: TmpVariations) {
+		if (variation.count > 0) {
+			variation.count -= 1
+		}
 		/*if (this.tmpVariations.has(variation.uuid)) {
 			if (this.tmpVariations.get(variation.uuid).count > 1) {
 				this.tmpVariations.get(variation.uuid).count -= 1

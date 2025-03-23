@@ -169,91 +169,51 @@
 		<article>
 			<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
 				<div class="popup-content">
+					@if(lastClickedItem!=null){
 					<h2>
-						@if(lastClickedItem) {
-						{{ returnTmpVariationCount() }} x
-						{{ lastClickedItem.name }}
-						}
+						{{
+							lastClickedItem.variations.items[tmpCountVariations].name
+						}}
 					</h2>
-					@if(isItemPopupVisible){ 
-					@for (variations of
-					lastClickedItem.variations.items; track variations.uuid) {
-					@if(lastClickedItem.variations.items[0].uuid == variations.uuid){
-					<b>
-						{{ variations.name }}
-					</b>
-
-					@for(variation of variations.variationItems.items; track
-					variation.uuid){
+					@for(variationMap of tmpPickedVariationResource; track
+					variationMap ){ @if(tmpCountVariations ==0){ @for(variation of
+					variationMap.values();track variation){
+					<div class="popup-content-dish">
+						<button
+							mat-mini-fab
+							(click)="removeVariation(variation[tmpCountVariations])"
+						>
+							<mat-icon>remove</mat-icon>
+						</button>
+						<b>
+							{{ variation[tmpCountVariations].count }}x
+							{{ variation[tmpCountVariations].display }}
+						</b>
+						<button
+							mat-mini-fab
+							(click)="addVariation(variation[tmpCountVariations])"
+						>
+							<mat-icon>add</mat-icon>
+						</button>
+					</div>
+					} } @else { @for(variation of
+					variationMap.get(tmpCountVariations-1);track variation){
+					{{ variation.combination }}
+					@for(variation of variationMap.get(tmpCountVariations);track
+					variation){
 					<div class="popup-content-dish">
 						<button mat-mini-fab (click)="removeVariation(variation)">
 							<mat-icon>remove</mat-icon>
 						</button>
 						<b>
-							<!--
-							@if(getCurrentVariationFromTmpVariations(variations,variation)){
-							{{
-								getCurrentVariationFromTmpVariations(
-									variations,
-									variation
-								).count
-							}}
-							x }
-							{{ variation.name }}
-							-->
+							{{ variation.count }}x
+							{{ variation.display }}
 						</b>
-						<button
-							mat-mini-fab
-							(click)="
-								addVariation(
-									lastClickedItem.variations.items[0],
-									variation
-								)
-							"
-						>
+						<button mat-mini-fab (click)="addVariation(variation)">
 							<mat-icon>add</mat-icon>
 						</button>
 					</div>
-					} } @else if(lastClickedItem.variations.items.length > 1 &&
-					tmpVariations.length != 0 ){ @for(pickedVariations of
-					tmpVariations; track pickedVariations.uuid){
-					@if(getNextVariations(pickedVariations)){ @for(pickedVariation of
-					pickedVariations.variationItems.items;track
-					pickedVariation.uuid){
-					<b>{{ pickedVariation.name }}</b>
-					@for(variation of
-					getNextVariations(pickedVariations).variationItems.items; track
-					variation.uuid){
-					<div class="popup-content-dish">
-						<button mat-mini-fab (click)="removeVariation(variation)">
-							<mat-icon>remove</mat-icon>
-						</button>
-						<b>
-							<!--
-							@if(getCurrentVariationFromTmpVariations(getNextVariations(pickedVariations),variation)){
-							{{
-								getCurrentVariationFromTmpVariations(
-									getNextVariations(pickedVariations),
-									variation
-								).count
-							}}
-							x }
-							{{ variation.name }}
-							-->
-						</b>
-						<button
-							mat-mini-fab
-							(click)="
-								addVariation(
-									getNextVariations(pickedVariations),
-									variation
-								)
-							"
-						>
-							<mat-icon>add</mat-icon>
-						</button>
-					</div>
-					} } } } } } }
+					} } } } }
 					<button mat-flat-button (click)="closeItemPopup()">
 						Schließen
 					</button>

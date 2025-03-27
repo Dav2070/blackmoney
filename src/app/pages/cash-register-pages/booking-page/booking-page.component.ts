@@ -287,24 +287,16 @@ export class BookingPageComponent {
 			undefined
 		) {
 			for (let variationMap of this.tmpPickedVariationResource) {
-				for (let variation of variationMap.get(this.tmpCountVariations)) {
-					if (variation.count > 0) {
-						for (let variationItem of this.lastClickedItem.variations
-							.items[this.tmpCountVariations + 1].variationItems.items) {
-							if (variationMap.get(this.tmpCountVariations + 1)) {
-								variationMap.get(this.tmpCountVariations + 1).push({
-									count: 0,
-									combination:
-										variation.display + " " + variationItem.name,
-									display: variationItem.name,
-									pickedVariation: [
-										...variation.pickedVariation,
-										variationItem
-									]
-								})
-							} else {
-								variationMap.set(this.tmpCountVariations + 1, [
-									{
+				if (variationMap.get(this.tmpCountVariations)) {
+					for (let variation of variationMap.get(
+						this.tmpCountVariations
+					)) {
+						if (variation.count > 0) {
+							for (let variationItem of this.lastClickedItem.variations
+								.items[this.tmpCountVariations + 1].variationItems
+								.items) {
+								if (variationMap.get(this.tmpCountVariations + 1)) {
+									variationMap.get(this.tmpCountVariations + 1).push({
 										count: 0,
 										combination:
 											variation.display + " " + variationItem.name,
@@ -313,8 +305,23 @@ export class BookingPageComponent {
 											...variation.pickedVariation,
 											variationItem
 										]
-									}
-								])
+									})
+								} else {
+									variationMap.set(this.tmpCountVariations + 1, [
+										{
+											count: 0,
+											combination:
+												variation.display +
+												" " +
+												variationItem.name,
+											display: variationItem.name,
+											pickedVariation: [
+												...variation.pickedVariation,
+												variationItem
+											]
+										}
+									])
+								}
 							}
 						}
 					}

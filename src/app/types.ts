@@ -61,7 +61,7 @@ export interface OrderResource {
 
 export interface OrderItemResource {
 	uuid: string
-	order: OrderResource
+	order: string
 	product: ProductResource
 	count: number
 	pickedVariations: PickedVariationResource[]

@@ -176,31 +176,10 @@
 						}}
 					</h2>
 					@for(variationMap of tmpPickedVariationResource; track
-					variationMap ){ @if(tmpCountVariations ==0){ @for(variation of
-					variationMap.values();track variation){
-					<div class="popup-content-dish">
-						<button
-							mat-mini-fab
-							(click)="removeVariation(variation[tmpCountVariations])"
-						>
-							<mat-icon>remove</mat-icon>
-						</button>
-						<b>
-							{{ variation[tmpCountVariations].count }}x
-							{{ variation[tmpCountVariations].display }}
-						</b>
-						<button
-							mat-mini-fab
-							(click)="addVariation(variation[tmpCountVariations])"
-						>
-							<mat-icon>add</mat-icon>
-						</button>
-					</div>
-					} } @else { @for(variation of
-					variationMap.get(tmpCountVariations-1);track variation){
+					variationMap ){ @if(variationMap.get(tmpCountVariations)){
+					@for(variation of
+					variationMap.get(tmpCountVariations).values();track variation){
 					{{ variation.combination }}
-					@for(variation of variationMap.get(tmpCountVariations);track
-					variation){
 					<div class="popup-content-dish">
 						<button mat-mini-fab (click)="removeVariation(variation)">
 							<mat-icon>remove</mat-icon>
@@ -213,7 +192,7 @@
 							<mat-icon>add</mat-icon>
 						</button>
 					</div>
-					} } } } }
+					} } } }
 					<button mat-flat-button (click)="closeItemPopup()">
 						Schließen
 					</button>

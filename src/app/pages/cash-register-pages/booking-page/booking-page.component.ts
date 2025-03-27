@@ -175,7 +175,7 @@ export class BookingPageComponent {
 		let newItemResource: OrderItemResource = <OrderItemResource>{}
 		newItemResource.product = product
 		newItemResource.uuid = product.uuid
-	
+
 		if (product.variations.items.length === 0) {
 			if (this.tmpAnzahl > 0) {
 				newItemResource.count = this.tmpAnzahl
@@ -188,18 +188,17 @@ export class BookingPageComponent {
 					this.stagedItems.pushNewItem(newItemResource)
 				}
 			}
-	
+
 			this.showTotal()
 		} else {
 			// Öffnet Popup für Variationen
 			this.lastClickedItem = product
-	
-			let count = 0
+
 			for (let variationItem of this.lastClickedItem.variations.items[
 				this.tmpCountVariations
 			].variationItems.items) {
 				this.tmpPickedVariationResource.push(
-					new Map<number, TmpVariations[]>().set(count, [
+					new Map<number, TmpVariations[]>().set(0, [
 						{
 							count: 0,
 							combination: variationItem.name,
@@ -208,9 +207,8 @@ export class BookingPageComponent {
 						}
 					])
 				)
-				count += 1
 			}
-	
+
 			this.isItemPopupVisible = true
 		}
 	}
@@ -284,8 +282,76 @@ export class BookingPageComponent {
 
 	//Füge item mit Variation zu stagedItems hinzu
 	sendVariation() {
-		//Check ob es noch eine weitere Variation gibt
 		if (
+			this.lastClickedItem.variations.items[this.tmpCountVariations + 1] !=
+			undefined
+		) {
+			for (let variationMap of this.tmpPickedVariationResource) {
+				for (let variation of variationMap.get(this.tmpCountVariations)) {
+					if (variation.count > 0) {
+						for (let variationItem of this.lastClickedItem.variations
+							.items[this.tmpCountVariations + 1].variationItems.items) {
+							if (variationMap.get(this.tmpCountVariations + 1)) {
+								variationMap.get(this.tmpCountVariations + 1).push({
+									count: 0,
+									combination:
+										variation.display + " " + variationItem.name,
+									display: variationItem.name,
+									pickedVariation: [
+										...variation.pickedVariation,
+										variationItem
+									]
+								})
+							} else {
+								variationMap.set(this.tmpCountVariations + 1, [
+									{
+										count: 0,
+										combination:
+											variation.display + " " + variationItem.name,
+										display: variationItem.name,
+										pickedVariation: [
+											...variation.pickedVariation,
+											variationItem
+										]
+									}
+								])
+							}
+						}
+					}
+				}
+			}
+
+			this.tmpCountVariations += 1
+		} else {
+			let orderItem: OrderItemResource = {
+				uuid: "Hallo",
+				order: this.orderUuid,
+				product: this.lastClickedItem,
+				count: 0,
+				pickedVariations: []
+			}
+
+			for (let variationMap of this.tmpPickedVariationResource) {
+				if (variationMap.get(this.tmpCountVariations)) {
+					for (let variation of variationMap.get(
+						this.tmpCountVariations
+					)) {
+						if (variation.count > 0) {
+							orderItem.count += variation.count
+							orderItem.pickedVariations.push({
+								total: variation.count,
+								variations: variation.pickedVariation
+							})
+						}
+					}
+				}
+			}
+
+			console.log(orderItem)
+		}
+
+		//Check ob es noch eine weitere Variation gibt
+		/*if (
 			this.lastClickedItem.variations.items[this.tmpCountVariations + 1] !=
 			undefined
 		) {
@@ -377,6 +443,8 @@ export class BookingPageComponent {
 		// this.tmpVariations.clear()
 		// this.isItemPopupVisible = false
 		// this.showTotal()
+
+		*/
 	}
 
 	checkForMinus(variable: string) {

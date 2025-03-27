@@ -16,6 +16,7 @@ import {
 } from "src/app/types"
 import { TmpVariations } from "src/app/models/cash-register/tmp-variations.model"
 import { ThisReceiver } from "@angular/compiler"
+import e from "express"
 
 @Component({
 	templateUrl: "./booking-page.component.html",
@@ -171,27 +172,28 @@ export class BookingPageComponent {
 
 	//Füge item zu stagedItems hinzu
 	clickItem(product: ProductResource) {
+		let newItemResource: OrderItemResource = <OrderItemResource>{}
+		newItemResource.product = product
+		newItemResource.uuid = product.uuid
+	
 		if (product.variations.items.length === 0) {
-			let newItemResource: OrderItemResource = <OrderItemResource>{}
-			newItemResource.product = product
-			//newItemResource.order = this.orderUuid
 			if (this.tmpAnzahl > 0) {
-				//this.stagedItems.pushNewItem(new PickedItem(item, this.tmpAnzahl))
-				//product.count = this.tmpAnzahl
 				newItemResource.count = this.tmpAnzahl
-
-				this.stagedItems.pushNewItem(newItemResource)
 			} else {
-				//product.count = 1
-				newItemResource.count = 1
-				this.stagedItems.pushNewItem(newItemResource)
+				if (this.stagedItems.includes(newItemResource)) {
+					let existingItem = this.stagedItems.getItem(newItemResource.uuid)
+					existingItem.count += 1
+				} else {
+					newItemResource.count = 1
+					this.stagedItems.pushNewItem(newItemResource)
+				}
 			}
-
+	
 			this.showTotal()
 		} else {
 			// Öffnet Popup für Variationen
 			this.lastClickedItem = product
-
+	
 			let count = 0
 			for (let variationItem of this.lastClickedItem.variations.items[
 				this.tmpCountVariations
@@ -208,7 +210,7 @@ export class BookingPageComponent {
 				)
 				count += 1
 			}
-
+	
 			this.isItemPopupVisible = true
 		}
 	}

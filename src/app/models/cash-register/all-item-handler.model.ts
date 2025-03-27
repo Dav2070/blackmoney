@@ -10,43 +10,40 @@ export class AllItemHandler {
 	//Füge neues Item in die Map hinzu
 	pushNewItem(pickedItem: OrderItemResource) {
 		const uuid = pickedItem.uuid
-
+	
 		// Prüfen, ob das Item bereits existiert
 		if (this.allPickedItems.has(uuid)) {
 			const item = this.allPickedItems.get(uuid)
-
+	
 			// Anzahl des bestehenden Items erhöhen
-			//item.count += pickedItem.count
-
+			item.count += pickedItem.count
+	
 			// Falls Variationen vorhanden sind, diese ebenfalls aktualisieren
-			/*if (pickedItem.pickedVariations.length != 0) {
+			if (pickedItem.pickedVariations) {
 				for (const variation of pickedItem.pickedVariations) {
-					let existingVariation = item.variations.items.find(
-						v => v.uuid == variation.uuid
+					let existingVariation = item.pickedVariations.find(
+						v => v.variations[0].uuid == variation.variations[0].uuid
 					)
-
+	
 					if (existingVariation != null) {
 						// Existierende Variation aktualisieren
-						for (const variationItem of variation.variationItems.items) {
-							let existingVariationItem =
-								variation.variationItems.items.find(
-									vi => vi.uuid == variationItem.uuid
-								)
+						for (const variationItem of variation.variations) {
+							let existingVariationItem = existingVariation.variations.find(
+								vi => vi.uuid == variationItem.uuid
+							)
 							if (existingVariationItem != null) {
 								//existingVariationItem.count += variationItem.count
 							} else {
 								// Neues VariationItem hinzufügen
-								variation.variationItems.items.push(variationItem)
-								variation.variationItems.total =
-									variation.variationItems.items.length
+								existingVariation.variations.push(variationItem)
 							}
 						}
 					} else {
 						// Neue Variation hinzufügen
-						item.variations.items.push(existingVariation)
+						item.pickedVariations.push(variation)
 					}
 				}
-			}*/
+			}
 		} else {
 			// Neues Item hinzufügen
 			this.allPickedItems.set(uuid, { ...pickedItem })

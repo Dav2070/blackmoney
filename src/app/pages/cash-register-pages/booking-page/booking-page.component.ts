@@ -13,6 +13,17 @@ import {
 } from "src/app/types"
 import { TmpVariations } from "src/app/models/cash-register/tmp-variations.model"
 
+interface AddProductsInput {
+	uuid: string
+	count: number
+	variations?: AddProductsInputVariation[]
+}
+
+interface AddProductsInputVariation {
+	variationItemUuids: string[]
+	count: number
+}
+
 @Component({
 	templateUrl: "./booking-page.component.html",
 	styleUrl: "./booking-page.component.scss",
@@ -567,17 +578,29 @@ export class BookingPageComponent {
 	//Fügt Items der Liste an bestellten Artikeln hinzu
 	async sendOrder() {
 		//this.bookedItems.transferAllItems(this.stagedItems)
-		let tmpProductArray: {
-			uuid: string
-			count: number
-			variations?: {
-				variationItemUuids: string[]
-				count: number
-			}[]
-		}[] = []
+		let tmpProductArray: AddProductsInput[] = []
 
 		for (let values of this.stagedItems.getAllPickedItems().values()) {
-			tmpProductArray.push({ uuid: values.uuid, count: values.count })
+			let product: AddProductsInput = {
+				uuid: values.uuid,
+				count: values.count,
+				variations: []
+			}
+
+			for (let orderItemVariation of values.orderItemVariations.items) {
+				let variation: AddProductsInputVariation = {
+					count: orderItemVariation.count,
+					variationItemUuids: []
+				}
+
+				for (let variationItem of orderItemVariation.variationItems.items) {
+					variation.variationItemUuids.push(variationItem.uuid)
+				}
+
+				product.variations.push(variation)
+			}
+
+			tmpProductArray.push(product)
 		}
 
 		let items = await this.apiService.addProductsToOrder(

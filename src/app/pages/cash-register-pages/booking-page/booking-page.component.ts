@@ -563,12 +563,21 @@ export class BookingPageComponent {
 
 		let items = await this.apiService.addProductsToOrder(
 			`
-				products {
+				orderItems {
 					total
 					items {
 						uuid
-						name
-						price
+						count
+						order
+						variations{
+						total
+						items{
+							id
+							uuid
+							name
+							additionalCost
+						}
+						}
 					}
 				}
 			`,
@@ -579,6 +588,7 @@ export class BookingPageComponent {
 		)
 
 		this.bookedItems.clearItems()
+		console.log(items.data.addProductsToOrder.orderItems.items)
 
 		for (let item of items.data.addProductsToOrder.orderItems.items) {
 			this.bookedItems.pushNewItem(item)

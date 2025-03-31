@@ -126,6 +126,10 @@ export class ApiService {
 			products: {
 				uuid: string
 				count: number
+				variations?: {
+					variationItemUuids: string[]
+					count: number
+				}[]
 			}[]
 		}
 	): Promise<MutationResult<{ addProductsToOrder: OrderResource }>> {

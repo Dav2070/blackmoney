@@ -9,14 +9,9 @@ import { isServer } from "src/app/utils"
 import {
 	CategoryResource,
 	OrderItemResource,
-	PickedVariationResource,
-	ProductResource,
-	VariationItemResource,
-	VariationResource
+	ProductResource
 } from "src/app/types"
 import { TmpVariations } from "src/app/models/cash-register/tmp-variations.model"
-import { ThisReceiver } from "@angular/compiler"
-import e from "express"
 
 @Component({
 	templateUrl: "./booking-page.component.html",
@@ -245,7 +240,7 @@ export class BookingPageComponent {
 			}
 
 			this.showTotal()
-		} else if (this.selectedItem.pickedVariations.length > 0) {
+		} else if (this.selectedItem.orderItemVariations.items.length > 0) {
 			//Wenn Item Variationen enthält
 			this.minusUsed = true
 			this.isItemPopupVisible = true
@@ -331,11 +326,14 @@ export class BookingPageComponent {
 			this.tmpCountVariations += 1
 		} else {
 			let orderItem: OrderItemResource = {
-				uuid: "Hallo",
-				order: this.orderUuid,
+				uuid: this.lastClickedItem.uuid,
+				order: null,
 				product: this.lastClickedItem,
 				count: 0,
-				pickedVariations: []
+				orderItemVariations: {
+					total: 0,
+					items: []
+				}
 			}
 
 			for (let variationMap of this.tmpPickedVariationResource) {
@@ -345,9 +343,12 @@ export class BookingPageComponent {
 					)) {
 						if (variation.count > 0) {
 							orderItem.count += variation.count
-							orderItem.pickedVariations.push({
-								total: variation.count,
-								variations: variation.pickedVariation
+							orderItem.orderItemVariations.items.push({
+								count: variation.count,
+								variationItems: {
+									total: variation.pickedVariation.length,
+									items: variation.pickedVariation
+								}
 							})
 						}
 					}
@@ -499,17 +500,31 @@ export class BookingPageComponent {
 					items {
 						uuid
 						totalPrice
-						orderItems{
+						orderItems {
 							total
 							items {
 								uuid
-		            			order{uuid}
-		            			product{
-										uuid
-										name
-										price
+								count
+								order {
+									uuid
+								}
+								product {
+									uuid
+									name
+									price
+								}
+								orderItemVariations {
+									total
+									items {
+										count
+										variationItems {
+											total
+											items {
+												name
+											}
+										}
 									}
-		            			count
+								}
 							}
 						}
 					}
@@ -555,10 +570,14 @@ export class BookingPageComponent {
 		let tmpProductArray: {
 			uuid: string
 			count: number
+			variations?: {
+				variationItemUuids: string[]
+				count: number
+			}[]
 		}[] = []
 
 		for (let values of this.stagedItems.getAllPickedItems().values()) {
-			//tmpProductArray.push({ uuid: values.uuid, count: values.count })
+			tmpProductArray.push({ uuid: values.uuid, count: values.count })
 		}
 
 		let items = await this.apiService.addProductsToOrder(
@@ -568,15 +587,25 @@ export class BookingPageComponent {
 					items {
 						uuid
 						count
-						order
-						variations{
-						total
-						items{
-							id
+						order {
+							uuid
+						}
+						product {
 							uuid
 							name
-							additionalCost
+							price
 						}
+						orderItemVariations {
+							total
+							items {
+								count
+								variationItems {
+									total
+									items {
+										name
+									}
+								}
+							}
 						}
 					}
 				}

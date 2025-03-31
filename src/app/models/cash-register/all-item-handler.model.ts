@@ -19,28 +19,33 @@ export class AllItemHandler {
 			item.count += pickedItem.count
 	
 			// Falls Variationen vorhanden sind, diese ebenfalls aktualisieren
-			if (pickedItem.pickedVariations) {
-				for (const variation of pickedItem.pickedVariations) {
-					let existingVariation = item.pickedVariations.find(
-						v => v.variations[0].uuid == variation.variations[0].uuid
+			if (pickedItem.orderItemVariations) {
+				for (const variation of pickedItem.orderItemVariations.items) {
+					let existingVariation = item.orderItemVariations.items.find(
+						v =>
+							v.variationItems.items[0].uuid ==
+							variation.variationItems.items[0].uuid
 					)
-	
+
 					if (existingVariation != null) {
 						// Existierende Variation aktualisieren
-						for (const variationItem of variation.variations) {
-							let existingVariationItem = existingVariation.variations.find(
-								vi => vi.uuid == variationItem.uuid
-							)
+						for (const variationItem of variation.variationItems.items) {
+							let existingVariationItem =
+								existingVariation.variationItems.items.find(
+									vi => vi.uuid == variationItem.uuid
+								)
 							if (existingVariationItem != null) {
 								//existingVariationItem.count += variationItem.count
 							} else {
 								// Neues VariationItem hinzufügen
-								existingVariation.variations.push(variationItem)
+								existingVariation.variationItems.items.push(
+									variationItem
+								)
 							}
 						}
 					} else {
 						// Neue Variation hinzufügen
-						item.pickedVariations.push(variation)
+						item.orderItemVariations.items.push(variation)
 					}
 				}
 			}

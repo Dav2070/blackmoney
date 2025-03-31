@@ -61,15 +61,15 @@ export interface OrderResource {
 
 export interface OrderItemResource {
 	uuid: string
-	order: string
-	product: ProductResource
 	count: number
-	pickedVariations: PickedVariationResource[]
+	order: OrderResource
+	product: ProductResource
+	orderItemVariations: List<OrderItemVariationResource>
 }
 
-export interface PickedVariationResource {
-	total: number
-	variations: VariationItemResource[]
+export interface OrderItemVariationResource {
+	count: number
+	variationItems: List<VariationItemResource>
 }
 
 export type CategoryType = "FOOD" | "DRINK"

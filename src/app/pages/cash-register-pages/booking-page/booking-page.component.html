@@ -38,9 +38,9 @@
 								{{ (item.product.price / 100).toFixed(2) }} €
 							</strong>
 						</mat-card-content>
-						@if (item.pickedVariations) { @for (variation of
-						item.pickedVariations; track variation){ @for(variationItem of
-						variation.variations; track variationItem.uuid){
+						@if (item.orderItemVariations) { @for (variation of
+						item.orderItemVariations.items; track variation){ @for(variationItem of
+						variation.variationItems.items; track variationItem.uuid) {
 						<mat-card-content>
 							<!--
 							{{ variationItem.count }}x mit {{ variationItem.name }} +
@@ -87,9 +87,9 @@
 							</strong>
 						</mat-card-content>
 
-						@if (item.pickedVariations) { @for (variation of
-						item.pickedVariations; track variation){ @for(variationItem of
-						variation.variations; track variationItem.uuid){
+						@if (item.orderItemVariations) { @for (variation of
+						item.orderItemVariations.items; track variation){ @for(variationItem of
+						variation.variationItems.items; track variationItem.uuid){
 						<!--
 						<mat-card-content>
 							{{ variationItem.count }}x mit {{ variationItem.name }} +
@@ -348,8 +348,8 @@
 						>
 						-->
 					</div>
-					@if(item.pickedVariations){ @for(variation of
-					item.pickedVariations; track variation){
+					@if(item.orderItemVariations){ @for(variation of
+					item.orderItemVariations.items; track variation) {
 					<div class="bill-item-detail">></div>
 					} } }
 				</div>

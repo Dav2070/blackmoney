@@ -4,7 +4,7 @@ import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.mo
 import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
-import { OrderItemResource, ProductResource } from "src/app/types"
+import { OrderItemResource } from "src/app/types"
 
 @Component({
 	templateUrl: "./transfer-page.component.html",

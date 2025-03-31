@@ -355,6 +355,11 @@ export class BookingPageComponent {
 			}
 
 			console.log(orderItem)
+			this.stagedItems.pushNewItem(orderItem)
+			this.tmpPickedVariationResource = []
+			this.tmpCountVariations = 0
+			this.isItemPopupVisible = false
+			//this.showTotal()
 		}
 
 		//Check ob es noch eine weitere Variation gibt

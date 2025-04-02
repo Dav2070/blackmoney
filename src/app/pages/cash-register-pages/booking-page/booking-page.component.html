@@ -39,16 +39,22 @@
 							</strong>
 						</mat-card-content>
 						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations.items; track variation){ @for(variationItem of
-						variation.variationItems.items; track variationItem.uuid) {
+						item.orderItemVariations.items; track variation){
 						<mat-card-content>
+							{{ variation.count }}
+							@for(variationItem of variation.variationItems.items; track
+							variationItem.uuid) {
+
+							{{ variationItem.name }}
 							<!--
 							{{ variationItem.count }}x mit {{ variationItem.name }} +
 							{{ (variationItem.price / 100).toFixed(2) }} €
 							-->
-						</mat-card-content>
-						} } }
-						<mat-card-content> #{{ item.uuid }} </mat-card-content>
+
+							}</mat-card-content
+						>
+						} }
+						<mat-card-content> #{{ item.product.id }} </mat-card-content>
 					</mat-card>
 					}
 					<mat-card>
@@ -88,8 +94,9 @@
 						</mat-card-content>
 
 						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations.items; track variation){ @for(variationItem of
-						variation.variationItems.items; track variationItem.uuid){
+						item.orderItemVariations.items; track variation){
+						@for(variationItem of variation.variationItems.items; track
+						variationItem.uuid){
 						<!--
 						<mat-card-content>
 							{{ variationItem.count }}x mit {{ variationItem.name }} +

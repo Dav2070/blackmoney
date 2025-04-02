@@ -103,6 +103,7 @@ export class BookingPageComponent {
 					products {
 						total
 						items {
+							id
 							uuid
 							name
 							price
@@ -227,6 +228,7 @@ export class BookingPageComponent {
 					products {
 						total
 						items {
+							id
 							uuid
 							name
 							price
@@ -520,6 +522,7 @@ export class BookingPageComponent {
 									uuid
 								}
 								product {
+									id
 									uuid
 									name
 									price
@@ -614,6 +617,7 @@ export class BookingPageComponent {
 							uuid
 						}
 						product {
+							id
 							uuid
 							name
 							price

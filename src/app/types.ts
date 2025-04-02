@@ -26,6 +26,7 @@ export interface TableResource {
 }
 
 export interface ProductResource {
+	id: string
 	uuid: string
 	name: string
 	price: number

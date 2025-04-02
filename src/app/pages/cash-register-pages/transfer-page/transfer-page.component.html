@@ -5,7 +5,7 @@
 	<div id="mehrspaltig">
 		<nav>
 			<div class="items">
-				<div>
+				<div class="items">
 					<mat-card>
 						<mat-card-content>{{ tableLeftUuid }}</mat-card-content>
 					</mat-card>
@@ -19,30 +19,44 @@
 						<mat-card-content class="card-content">
 							<!--
 							<span class="total-price">
-								@if(item.variations != null){
+								@if (item.variations != null) {
 								{{
 									(
-										item.price * item.count +
-										bookedItemsLeft.getTotalVariationPrice(
-											item.variations.items
-										)
+										(item.price *
+											(item.count +
+												bookedItems.getTotalVariationPrice(
+													item.variations.items
+												))) /
+										100
 									).toFixed(2)
-								}}€ }@else {
-								{{ (item.price * item.count).toFixed(2) }}€ }
+								}}
+								€ } @else {
+								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
 							</span>
+							-->
 							<strong>
 								{{ item.count }} x
-								{{ item.name }}
-								{{ item.price.toFixed(2) }}€
+								{{ item.product.name }}
+								{{ (item.product.price / 100).toFixed(2) }} €
 							</strong>
-						-->
-							
 						</mat-card-content>
-						@if(item.orderItemVariations){ @for(variation of
-						item.orderItemVariations.items; track variation.variationItems){
-						<mat-card-content> </mat-card-content>
+						@if (item.orderItemVariations) { @for (variation of
+						item.orderItemVariations.items; track variation){
+						<mat-card-content>
+							{{ variation.count }}
+							@for(variationItem of variation.variationItems.items; track
+							variationItem.uuid) {
+
+							{{ variationItem.name }}
+							<!--
+							{{ variationItem.count }}x mit {{ variationItem.name }} +
+							{{ (variationItem.price / 100).toFixed(2) }} €
+							-->
+
+							}</mat-card-content
+						>
 						} }
-						<mat-card-content> #{{ item.uuid }} </mat-card-content>
+						<mat-card-content> #{{ item.product.id }} </mat-card-content>
 					</mat-card>
 					}
 				</div>
@@ -103,47 +117,58 @@
 			</div>
 		</article>
 		<aside>
-			<div class="items">
-				<div>
+				<div class="items">
 					<mat-card>
 						<mat-card-content>{{ tableRightUuid }}</mat-card-content>
 					</mat-card>
-					@for (item of bookedItemsRight.getItems(); track item) {
+					@for (item of bookedItemsLeft.getItems(); track item) {
 					<mat-card
-						(click)="
-							transferItem(item, bookedItemsRight, bookedItemsLeft)
-						"
+						(click)="transferItem(item,bookedItemsRight, bookedItemsLeft)"
 						style="cursor: pointer"
 					>
 						<mat-card-content class="card-content">
 							<!--
 							<span class="total-price">
-								@if(item.variations != null){
+								@if (item.variations != null) {
 								{{
 									(
-										item.price * item.count +
-										bookedItemsRight.getTotalVariationPrice(
-											item.variations.items
-										)
+										(item.price *
+											(item.count +
+												bookedItems.getTotalVariationPrice(
+													item.variations.items
+												))) /
+										100
 									).toFixed(2)
-								}}€ }@else { {{ (item.price * item.count).toFixed(2) }}€
-								}
+								}}
+								€ } @else {
+								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
 							</span>
+							-->
 							<strong>
 								{{ item.count }} x
-								{{ item.name }}
-								{{ item.price.toFixed(2) }}€
+								{{ item.product.name }}
+								{{ (item.product.price / 100).toFixed(2) }} €
 							</strong>
-							-->
 						</mat-card-content>
-						@if(item.orderItemVariations){ @for(variation of
+						@if (item.orderItemVariations) { @for (variation of
 						item.orderItemVariations.items; track variation){
-						<mat-card-content> </mat-card-content>
+						<mat-card-content>
+							{{ variation.count }}
+							@for(variationItem of variation.variationItems.items; track
+							variationItem.uuid) {
+
+							{{ variationItem.name }}
+							<!--
+							{{ variationItem.count }}x mit {{ variationItem.name }} +
+							{{ (variationItem.price / 100).toFixed(2) }} €
+							-->
+
+							}</mat-card-content
+						>
 						} }
-						<mat-card-content> #{{ item.uuid }} </mat-card-content>
+						<mat-card-content> #{{ item.product.id }} </mat-card-content>
 					</mat-card>
 					}
-				</div>
 			</div>
 			<div>
 				<mat-card class="price">

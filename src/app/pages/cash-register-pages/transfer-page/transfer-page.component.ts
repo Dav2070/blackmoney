@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
+import { ApiService } from "src/app/services/api-service"
 import { HardcodeService } from "src/app/services/hardcode-service"
 import { OrderItemResource } from "src/app/types"
 
@@ -29,15 +30,75 @@ export class TransferPageComponent {
 
 	constructor(
 		private hardcodeService: HardcodeService,
-		private activatedRoute: ActivatedRoute
+		private activatedRoute: ActivatedRoute,
+		private apiService: ApiService
 	) {}
 
 	async ngOnInit() {
 		this.tableLeftUuid = +this.activatedRoute.snapshot.paramMap.get("uuid")
 		this.tableRightUuid =
 			+this.activatedRoute.snapshot.paramMap.get("console")
+
 		//this.bookedItemsLeft = this.hardcodeService.getItemsofTable(40)
 		//this.bookedItemsRight = this.hardcodeService.getItemsofTable(50)
+	}
+
+	//Aktualisiere Bestellungen aus DB
+	async retrieveOrders(tableUuid: string, orderUuid: string,itemHandler:AllItemHandler ) {
+		let order = await this.apiService.retrieveTable(
+			`
+				orders(paid: $paid) {
+					total
+					items {
+						uuid
+						totalPrice
+						orderItems {
+							total
+							items {
+								uuid
+								count
+								order {
+									uuid
+								}
+								product {
+									id
+									uuid
+									name
+									price
+								}
+								orderItemVariations {
+									total
+									items {
+										count
+										variationItems {
+											total
+											items {
+												name
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			`,
+			{
+				uuid: tableUuid,
+				paid: false
+			}
+		)
+
+		if (order.data.retrieveTable.orders.total > 0) {
+			if (orderUuid === "") {
+				orderUuid = order.data.retrieveTable.orders.items[0].uuid
+			}
+			itemHandler.clearItems()
+			for (let item of order.data.retrieveTable.orders.items[0].orderItems
+				.items) {
+				itemHandler.pushNewItem(item)
+			}
+		}
 	}
 
 	//Berechnet den Preis aller Items eines Tisches

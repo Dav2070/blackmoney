@@ -5,6 +5,7 @@ import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-over
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { ForgotPasswordPageComponent } from "./pages/landing-pages/landing-overview-page/forgot-password-page/forgot-password-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
+import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboard-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
@@ -44,6 +45,10 @@ const routes: Routes = [
 	{
 		path: "forgot-password",
 		component: ForgotPasswordPageComponent
+	},
+	{
+		path: "onboarding",
+		component: OnboardingPageComponent
 	},
 	{
 		path: "tables",

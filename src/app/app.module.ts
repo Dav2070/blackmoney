@@ -38,6 +38,7 @@ import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-over
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { ForgotPasswordPageComponent } from "./pages/landing-pages/landing-overview-page/forgot-password-page/forgot-password-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
+import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboard-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 
@@ -68,6 +69,7 @@ import { VariationsTableComponent } from './components/settings/variations-table
 		LandingPricingPageComponent,
 		ForgotPasswordPageComponent,
 		LoginPageComponent,
+		OnboardingPageComponent,
 		TableOverviewPageComponent,
 		BookingPageComponent,
 		TransferPageComponent,
@@ -75,8 +77,8 @@ import { VariationsTableComponent } from './components/settings/variations-table
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,
-  ItemsTableComponent,
-  VariationsTableComponent
+		ItemsTableComponent,
+		VariationsTableComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],
@@ -107,9 +109,9 @@ import { VariationsTableComponent } from './components/settings/variations-table
 			// or after 30 seconds (whichever comes first).
 			registrationStrategy: "registerWhenStable:30000"
 		}),
-   MatTableModule,
-   MatPaginatorModule,
-   MatSortModule
+		MatTableModule,
+		MatPaginatorModule,
+		MatSortModule
 	],
 
 	providers: [

@@ -1,1 +1,21 @@
-<h1>Hello World</h1>
+<div class="container slide-up-in">
+	<div class="content">
+		<h1 class="headline">Wie heißt dein Restaurant?</h1>
+		<p class="description">Bitte gebe den Namen deines Restaurants ein.</p>
+
+		<div class="restaurant-name-input-container">
+			<dav-textfield
+				placeholder="Café Salmonella"
+				(change)="restaurantNameChange($event)"
+			></dav-textfield>
+
+			<dav-button
+				[disabled]="restaurantName.length < 3"
+				size="sm"
+				outline
+			>
+				Weiter
+			</dav-button>
+		</div>
+	</div>
+</div>

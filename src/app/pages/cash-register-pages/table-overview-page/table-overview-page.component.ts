@@ -30,22 +30,33 @@ export class TableOverviewPageComponent {
 			return
 		}
 
-		let listRoomsResult = await this.apiService.listRooms(
+		// Check if the user still needs to do the onboarding
+		let retrieveCompanyResult = await this.apiService.retrieveCompany(
 			`
-				items {
-					name
-					tables {
-						items {
-							uuid
-							name
+				uuid
+				rooms {
+					total
+					items {
+						name
+						tables {
+							items {
+								uuid
+								name
+							}
 						}
 					}
 				}
 			`
 		)
 
-		if (listRoomsResult.data?.listRooms != null) {
-			for (let roomItem of listRoomsResult.data.listRooms.items) {
+		if (retrieveCompanyResult.data?.retrieveCompany == null) {
+			this.router.navigate(["onboarding"])
+			return
+		}
+
+		if (retrieveCompanyResult.data?.retrieveCompany.rooms?.items != null) {
+			for (let roomItem of retrieveCompanyResult.data?.retrieveCompany.rooms
+				?.items) {
 				this.rooms.push(roomItem)
 			}
 

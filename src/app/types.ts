@@ -7,6 +7,7 @@ export interface CompanyResource {
 	uuid: string
 	name: string
 	users: List<UserResource>
+	rooms: List<RoomResource>
 }
 
 export interface UserResource {

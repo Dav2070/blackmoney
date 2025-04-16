@@ -3,7 +3,6 @@ import { RouterModule, Routes } from "@angular/router"
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
-import { ForgotPasswordPageComponent } from "./pages/landing-pages/landing-overview-page/forgot-password-page/forgot-password-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboard-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
@@ -41,10 +40,6 @@ const routes: Routes = [
 	{
 		path: "login",
 		component: LoginPageComponent
-	},
-	{
-		path: "forgot-password",
-		component: ForgotPasswordPageComponent
 	},
 	{
 		path: "onboarding",

@@ -11,6 +11,7 @@ import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { environment } from "src/environments/environment"
 import { isServer } from "src/app/utils"
+import { davAuthClientName, blackmoneyAuthClientName } from "src/app/constants"
 
 @Component({
 	selector: "app-root",
@@ -64,7 +65,7 @@ export class AppComponent {
 		let accessToken = this.authService.getAccessToken()
 
 		if (accessToken != null) {
-			this.setupApollo(accessToken)
+			this.setupApollo(Dav.accessToken, accessToken)
 		} else {
 			await this.dataService.userPromiseHolder.AwaitResult()
 
@@ -92,36 +93,53 @@ export class AppComponent {
 		}
 	}
 
-	setupApollo(accessToken: string) {
-		this.apollo.removeClient()
+	setupApollo(davAccessToken: string, accessToken: string) {
+		this.apollo.removeClient(davAuthClientName)
+		this.apollo.removeClient(blackmoneyAuthClientName)
 
-		this.apollo.create({
-			cache: new InMemoryCache(),
-			link: this.httpLink.create({
-				uri: environment.apiUrl,
-				headers: new HttpHeaders().set("Authorization", accessToken)
-			})
-		})
+		this.apollo.create(
+			{
+				cache: new InMemoryCache(),
+				link: this.httpLink.create({
+					uri: environment.apiUrl,
+					headers: new HttpHeaders().set(
+						"Authorization",
+						davAccessToken ?? ""
+					)
+				})
+			},
+			davAuthClientName
+		)
+
+		this.apollo.create(
+			{
+				cache: new InMemoryCache(),
+				link: this.httpLink.create({
+					uri: environment.apiUrl,
+					headers: new HttpHeaders().set(
+						"Authorization",
+						accessToken ?? ""
+					)
+				})
+			},
+			blackmoneyAuthClientName
+		)
+
+		this.apiService.loadApolloClients()
 	}
 
 	//#region dav callback functions
 	userLoaded() {
 		let accessToken = this.authService.getAccessToken()
 
-		if (this.dataService.dav.isLoggedIn && accessToken == null) {
-			// Setup the apollo client with the access token
-			this.setupApollo(this.dataService.dav.accessToken)
-		}
+		// Setup the apollo client with the access token
+		this.setupApollo(this.dataService.dav.accessToken, accessToken)
 
 		this.dataService.userPromiseHolder.Resolve()
 	}
 
 	accessTokenRenewed(davAccessToken: string) {
-		let accessToken = this.authService.getAccessToken()
-
-		if (accessToken == null) {
-			this.setupApollo(accessToken)
-		}
+		this.setupApollo(davAccessToken, this.authService.getAccessToken())
 	}
 	//#endregion
 }

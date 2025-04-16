@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { Apollo, gql, MutationResult } from "apollo-angular"
+import { Apollo, ApolloBase, gql, MutationResult } from "apollo-angular"
 import { ApolloQueryResult, ErrorPolicy } from "@apollo/client/core"
 import {
 	List,
@@ -9,12 +9,25 @@ import {
 	TableResource,
 	OrderResource
 } from "../types"
+import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
 const errorPolicy: ErrorPolicy = "all"
 
 @Injectable()
 export class ApiService {
-	constructor(private apollo: Apollo) {}
+	private davAuthApollo: ApolloBase
+	private blackmoneyAuthApollo: ApolloBase
+
+	constructor(private apolloProvider: Apollo) {
+		this.loadApolloClients()
+	}
+
+	loadApolloClients() {
+		this.davAuthApollo = this.apolloProvider.use(davAuthClientName)
+		this.blackmoneyAuthApollo = this.apolloProvider.use(
+			blackmoneyAuthClientName
+		)
+	}
 
 	async login(
 		queryData: string,
@@ -23,7 +36,7 @@ export class ApiService {
 			password: string
 		}
 	): Promise<MutationResult<{ login: { uuid: string } }>> {
-		return await this.apollo
+		return await this.davAuthApollo
 			.mutate<{ login: { uuid: string } }>({
 				mutation: gql`
 					mutation Login(
@@ -47,7 +60,7 @@ export class ApiService {
 	async retrieveCompany(
 		queryData: string
 	): Promise<ApolloQueryResult<{ retrieveCompany: CompanyResource }>> {
-		return await this.apollo
+		return await this.davAuthApollo
 			.query<{ retrieveCompany: CompanyResource }>({
 				query: gql`
 					query RetrieveCompany {
@@ -65,7 +78,7 @@ export class ApiService {
 	async listRooms(
 		queryData: string
 	): Promise<ApolloQueryResult<{ listRooms: List<RoomResource> }>> {
-		return await this.apollo
+		return await this.blackmoneyAuthApollo
 			.query<{ listRooms: List<RoomResource> }>({
 				query: gql`
 					query ListRooms {
@@ -83,7 +96,7 @@ export class ApiService {
 	async listCategories(
 		queryData: string
 	): Promise<ApolloQueryResult<{ listCategories: List<CategoryResource> }>> {
-		return await this.apollo
+		return await this.blackmoneyAuthApollo
 			.query<{ listCategories: List<CategoryResource> }>({
 				query: gql`
 					query ListCategories {
@@ -104,7 +117,7 @@ export class ApiService {
 	): Promise<ApolloQueryResult<{ retrieveTable: TableResource }>> {
 		let paidParam = queryData.includes("paid") ? "$paid: Boolean" : ""
 
-		return await this.apollo
+		return await this.blackmoneyAuthApollo
 			.query<{ retrieveTable: TableResource }>({
 				query: gql`
 					query retrieveTable($uuid:String!,${paidParam}) {
@@ -133,7 +146,7 @@ export class ApiService {
 			}[]
 		}
 	): Promise<MutationResult<{ addProductsToOrder: OrderResource }>> {
-		return await this.apollo
+		return await this.blackmoneyAuthApollo
 			.mutate<{ addProductsToOrder: OrderResource }>({
 				mutation: gql`
 					mutation AddProductsToOrder(
@@ -164,7 +177,7 @@ export class ApiService {
 			}[]
 		}
 	): Promise<MutationResult<{ removeProductsFromOrder: OrderResource }>> {
-		return await this.apollo
+		return await this.blackmoneyAuthApollo
 			.mutate<{ removeProductsFromOrder: OrderResource }>({
 				mutation: gql`
 					mutation RemoveProductsFromOrder(

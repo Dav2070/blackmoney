@@ -21,7 +21,7 @@ export interface RoomResource {
 
 export interface TableResource {
 	uuid: string
-	name: string
+	name: number
 	orders: List<OrderResource>
 }
 

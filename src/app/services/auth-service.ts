@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core"
-import { isServer } from "../utils"
+import { Injectable, Inject, PLATFORM_ID } from "@angular/core"
+import { isPlatformServer } from "@angular/common"
 
 const accessTokenKey = "ACCESS_TOKEN"
 
@@ -7,8 +7,10 @@ const accessTokenKey = "ACCESS_TOKEN"
 export class AuthService {
 	private accessToken: string = null
 
+	constructor(@Inject(PLATFORM_ID) private platformId: object) {}
+
 	getAccessToken() {
-		if (isServer()) return null
+		if (isPlatformServer(this.platformId)) return null
 
 		if (this.accessToken == null) {
 			this.accessToken = localStorage.getItem(accessTokenKey)
@@ -18,7 +20,7 @@ export class AuthService {
 	}
 
 	setAccessToken(accessToken: string) {
-		if (isServer()) return
+		if (isPlatformServer(this.platformId)) return
 
 		this.accessToken = accessToken
 		localStorage.setItem(accessTokenKey, accessToken)

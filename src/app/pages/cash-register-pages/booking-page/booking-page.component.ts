@@ -1,11 +1,11 @@
-import { Component } from "@angular/core"
+import { Component, Inject, PLATFORM_ID } from "@angular/core"
+import { isPlatformServer } from "@angular/common"
 import { ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { Bill } from "src/app/models/cash-register/bill.model"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { HardcodeService } from "src/app/services/hardcode-service"
-import { isServer } from "src/app/utils"
 import {
 	CategoryResource,
 	OrderItemResource,
@@ -80,11 +80,12 @@ export class BookingPageComponent {
 		private dataService: DataService,
 		private apiService: ApiService,
 		private activatedRoute: ActivatedRoute,
-		private hardCodedService: HardcodeService
+		private hardCodedService: HardcodeService,
+		@Inject(PLATFORM_ID) private platformId: object
 	) {}
 
 	async ngOnInit() {
-		if (isServer()) return
+		if (isPlatformServer(this.platformId)) return
 
 		await this.dataService.userPromiseHolder.AwaitResult()
 		this.tableUuid = this.activatedRoute.snapshot.paramMap.get("uuid")

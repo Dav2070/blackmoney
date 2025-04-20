@@ -9,14 +9,6 @@ import {
 } from "./types"
 import { Table } from "./models/Table"
 
-export function isClient(): boolean {
-	return typeof navigator != "undefined"
-}
-
-export function isServer(): boolean {
-	return typeof navigator == "undefined"
-}
-
 export function convertCompanyResourceToCompany(
 	companyResource: CompanyResource
 ): Company {

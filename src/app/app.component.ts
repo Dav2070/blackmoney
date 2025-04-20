@@ -1,4 +1,5 @@
-import { Component } from "@angular/core"
+import { Component, Inject, PLATFORM_ID } from "@angular/core"
+import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute } from "@angular/router"
 import { HttpHeaders } from "@angular/common/http"
 import { Apollo } from "apollo-angular"
@@ -10,7 +11,7 @@ import { DataService } from "./services/data-service"
 import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { environment } from "src/environments/environment"
-import { convertCompanyResourceToCompany, isServer } from "src/app/utils"
+import { convertCompanyResourceToCompany } from "src/app/utils"
 import { davAuthClientName, blackmoneyAuthClientName } from "src/app/constants"
 
 @Component({
@@ -27,7 +28,8 @@ export class AppComponent {
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private apollo: Apollo,
-		private httpLink: HttpLink
+		private httpLink: HttpLink,
+		@Inject(PLATFORM_ID) private platformId: object
 	) {
 		DavUIComponents.setLocale("de")
 		DavUIComponents.setTheme(DavUIComponents.Theme.dark)
@@ -46,7 +48,7 @@ export class AppComponent {
 	}
 
 	async ngOnInit() {
-		if (isServer()) {
+		if (isPlatformServer(this.platformId)) {
 			this.userLoaded()
 			return
 		}

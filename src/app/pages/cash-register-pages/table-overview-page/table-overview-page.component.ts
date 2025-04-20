@@ -1,8 +1,8 @@
-import { Component } from "@angular/core"
+import { Component, Inject, PLATFORM_ID } from "@angular/core"
+import { isPlatformServer } from "@angular/common"
 import { Router } from "@angular/router"
 import { DataService } from "src/app/services/data-service"
 import { Room } from "src/app/models/Room"
-import { isServer } from "src/app/utils"
 
 @Component({
 	templateUrl: "./table-overview-page.component.html",
@@ -13,10 +13,14 @@ export class TableOverviewPageComponent {
 	rooms: Room[] = []
 	selected: Room = null
 
-	constructor(private router: Router, private dataService: DataService) {}
+	constructor(
+		private router: Router,
+		private dataService: DataService,
+		@Inject(PLATFORM_ID) private platformId: object
+	) {}
 
 	async ngOnInit() {
-		if (isServer()) return
+		if (isPlatformServer(this.platformId)) return
 
 		await this.dataService.userPromiseHolder.AwaitResult()
 		await this.dataService.companyPromiseHolder.AwaitResult()

@@ -5,7 +5,7 @@
 			<mat-form-field>
 				<mat-label>User</mat-label>
 				<mat-select [(value)]="username">
-					@for (user of dataService.company.users.items; track user.name) {
+					@for (user of dataService.company.users; track user.uuid) {
 					<mat-option [value]="user.name">{{ user.name }}</mat-option>
 					}
 				</mat-select>

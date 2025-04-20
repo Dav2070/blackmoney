@@ -10,7 +10,7 @@ import { DataService } from "./services/data-service"
 import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { environment } from "src/environments/environment"
-import { isServer } from "src/app/utils"
+import { convertCompanyResourceToCompany, isServer } from "src/app/utils"
 import { davAuthClientName, blackmoneyAuthClientName } from "src/app/constants"
 
 @Component({
@@ -73,8 +73,11 @@ export class AppComponent {
 			let retrieveCompanyResponse = await this.apiService.retrieveCompany(
 				`
 					uuid
+					name
 					users {
+						total
 						items {
+							uuid
 							name
 						}
 					}
@@ -85,10 +88,17 @@ export class AppComponent {
 				retrieveCompanyResponse.data.retrieveCompany
 
 			if (retrieveCompanyResponseData != null) {
-				this.dataService.company = retrieveCompanyResponseData
+				this.dataService.company = convertCompanyResourceToCompany(
+					retrieveCompanyResponseData
+				)
 
-				// Redirect to the login page
-				this.router.navigate(["/login"])
+				if (retrieveCompanyResponseData.users.total == 0) {
+					// Redirect to the onboarding page
+					this.router.navigate(["onboarding"])
+				} else {
+					// Redirect to the login page
+					this.router.navigate(["login"])
+				}
 			}
 		}
 	}

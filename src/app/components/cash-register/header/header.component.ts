@@ -1,6 +1,5 @@
-import { Component, Input } from "@angular/core"
-import { Observable } from "rxjs"
-import { TimeService } from "src/app/services/time.service"
+import { Component, Input, NgZone } from "@angular/core"
+import { DataService } from "src/app/services/data-service"
 
 @Component({
 	selector: "app-header",
@@ -10,16 +9,30 @@ import { TimeService } from "src/app/services/time.service"
 })
 export class HeaderComponent {
 	@Input()
-	showButton: Boolean = true
+	showButton: boolean = true
+	timer: any
+	currentDate: string = ""
+	bediener: string = ""
 
-	date$: Observable<any>
-	bediener: String = "Bediener 1"
+	constructor(public dataService: DataService, private ngZone: NgZone) {}
 
-	constructor(private timeService: TimeService) {
-		/*TO-DO: Die Seite lässt sich nicht neu
-		laden. Man müsste mal nachschauen warum
-		es so ist und den Timer fixen oder ähnliches
-		*/
-		//this.date$ = this.timeService.getDate()
+	ngOnInit() {
+		this.ngZone.runOutsideAngular(() => {
+			this.timer = setInterval(() => {
+				this.ngZone.run(() => {
+					let date = new Date()
+					this.currentDate = `${date.toLocaleDateString()} – ${date.getHours()}:${date.getMinutes()}:${date
+						.getSeconds()
+						.toString()
+						.padStart(2, "0")}`
+				})
+			}, 1000)
+		})
+	}
+
+	ngOnDestroy() {
+		if (this.timer) {
+			clearInterval(this.timer)
+		}
 	}
 }

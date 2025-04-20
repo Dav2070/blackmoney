@@ -1,7 +1,7 @@
 <div id="headerContainer">
-	<p>{{ bediener }}</p>
+	<p>{{ dataService.user?.name ?? "" }}</p>
 	<h2>BMKS</h2>
-	<p>{{ date$ | async }}</p>
+	<p>{{ currentDate }}</p>
 </div>
 
 @if (showButton){

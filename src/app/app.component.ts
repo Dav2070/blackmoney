@@ -104,12 +104,13 @@ export class AppComponent {
 		let retrieveCompanyResponseData =
 			retrieveCompanyResponse.data.retrieveCompany
 
-		if (retrieveCompanyResponseData != null) {
+		if (retrieveCompanyResponseData == null) {
+			// Redirect to the onboarding page
+			this.router.navigate(["onboarding"])
+		} else if (retrieveCompanyResponseData != null) {
 			this.dataService.company = convertCompanyResourceToCompany(
 				retrieveCompanyResponseData
 			)
-
-			this.dataService.companyPromiseHolder.Resolve()
 
 			if (retrieveCompanyResponseData.users.total == 0) {
 				// Redirect to the onboarding page
@@ -131,13 +132,15 @@ export class AppComponent {
 					this.dataService.user = convertUserResourceToUser(
 						retrieveUserResponse.data.retrieveUser
 					)
-					this.dataService.blackmoneyUserPromiseHolder.Resolve()
 
 					// Redirect to the tables page
 					this.router.navigate(["tables"])
 				}
 			}
 		}
+
+		this.dataService.companyPromiseHolder.Resolve()
+		this.dataService.blackmoneyUserPromiseHolder.Resolve()
 	}
 
 	setupApollo(davAccessToken: string, accessToken: string) {

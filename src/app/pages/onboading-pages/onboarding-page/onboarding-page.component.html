@@ -1,3 +1,4 @@
+@if (context == "createCompany") {
 <div class="container slide-up-in">
 	<div class="content">
 		<h1 class="headline">Wie heißt dein Restaurant?</h1>
@@ -20,3 +21,52 @@
 		</div>
 	</div>
 </div>
+} @else if (context == "createUsers") {
+<div class="container slide-up-in">
+	<div class="content">
+		<h1 class="headline">Füge deine Mitarbeiter hinzu</h1>
+		<p class="description">
+			Gib die Namen deiner Mitarbeiter an, damit sich jeder am Kassensystem
+			anmelden kann.
+		</p>
+
+		<div class="employee-name-input-container">
+			<dav-textfield
+				[value]="employeeName"
+				placeholder="Name des Mitarbeiters"
+				(change)="employeeNameChange($event)"
+			></dav-textfield>
+
+			<dav-button
+				[disabled]="employeeName.length < 2"
+				size="sm"
+				outline
+				(click)="addEmployeeButtonClick()"
+			>
+				Hinzufügen
+			</dav-button>
+		</div>
+
+		@if (employees.length > 0) {
+		<div class="employee-list-container">
+			<dav-list>
+				@for (employee of employees; track employee) {
+				<dav-list-item [headline]="employee" size="sm"> </dav-list-item>
+				}
+			</dav-list>
+		</div>
+		}
+
+		<div class="continue-button-container">
+			<dav-button
+				size="sm"
+				[disabled]="employees.length == 0"
+				outline
+				(click)="continueButtonClick()"
+			>
+				Weiter
+			</dav-button>
+		</div>
+	</div>
+</div>
+}

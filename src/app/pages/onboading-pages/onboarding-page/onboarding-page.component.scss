@@ -20,12 +20,22 @@
 
 .description {
 	font-size: 18px;
+	text-align: center;
 }
 
-.restaurant-name-input-container {
+.restaurant-name-input-container,
+.employee-name-input-container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	gap: 16px;
 	margin-top: 8px;
+}
+
+.employee-list-container {
+	margin-top: 16px;
+}
+
+.continue-button-container {
+	margin-top: 16px;
 }

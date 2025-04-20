@@ -22,7 +22,7 @@ export class TableOverviewPageComponent {
 	async ngOnInit() {
 		if (isPlatformServer(this.platformId)) return
 
-		await this.dataService.userPromiseHolder.AwaitResult()
+		await this.dataService.davUserPromiseHolder.AwaitResult()
 		await this.dataService.companyPromiseHolder.AwaitResult()
 
 		if (!this.dataService.dav.isLoggedIn) {

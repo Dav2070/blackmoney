@@ -11,7 +11,10 @@ import { DataService } from "./services/data-service"
 import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { environment } from "src/environments/environment"
-import { convertCompanyResourceToCompany } from "src/app/utils"
+import {
+	convertCompanyResourceToCompany,
+	convertUserResourceToUser
+} from "src/app/utils"
 import { davAuthClientName, blackmoneyAuthClientName } from "src/app/constants"
 
 @Component({
@@ -64,7 +67,7 @@ export class AppComponent {
 			}
 		})
 
-		await this.dataService.userPromiseHolder.AwaitResult()
+		await this.dataService.davUserPromiseHolder.AwaitResult()
 
 		let accessToken = this.authService.getAccessToken()
 		this.setupApollo(Dav.accessToken, accessToken)
@@ -106,6 +109,8 @@ export class AppComponent {
 				retrieveCompanyResponseData
 			)
 
+			this.dataService.companyPromiseHolder.Resolve()
+
 			if (retrieveCompanyResponseData.users.total == 0) {
 				// Redirect to the onboarding page
 				this.router.navigate(["onboarding"])
@@ -113,12 +118,26 @@ export class AppComponent {
 				// Redirect to the login page
 				this.router.navigate(["login"])
 			} else {
-				// Redirect to the tables page
-				this.router.navigate(["tables"])
+				// Load the current user
+				let retrieveUserResponse = await this.apiService.retrieveUser(
+					`
+						uuid
+						name
+						role
+					`
+				)
+
+				if (retrieveUserResponse.data.retrieveUser != null) {
+					this.dataService.user = convertUserResourceToUser(
+						retrieveUserResponse.data.retrieveUser
+					)
+					this.dataService.blackmoneyUserPromiseHolder.Resolve()
+
+					// Redirect to the tables page
+					this.router.navigate(["tables"])
+				}
 			}
 		}
-
-		this.dataService.companyPromiseHolder.Resolve()
 	}
 
 	setupApollo(davAccessToken: string, accessToken: string) {
@@ -163,7 +182,7 @@ export class AppComponent {
 		// Setup the apollo client with the access token
 		this.setupApollo(this.dataService.dav.accessToken, accessToken)
 
-		this.dataService.userPromiseHolder.Resolve()
+		this.dataService.davUserPromiseHolder.Resolve()
 	}
 
 	accessTokenRenewed(davAccessToken: string) {

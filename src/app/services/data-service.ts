@@ -5,13 +5,16 @@ import { Apollo } from "apollo-angular"
 import { HttpLink } from "apollo-angular/http"
 import { Dav, PromiseHolder } from "dav-js"
 import { environment } from "src/environments/environment"
+import { User } from "../models/User"
 import { Company } from "../models/Company"
 
 @Injectable()
 export class DataService {
 	dav = Dav
-	userPromiseHolder = new PromiseHolder()
+	davUserPromiseHolder = new PromiseHolder()
+	blackmoneyUserPromiseHolder = new PromiseHolder()
 	companyPromiseHolder = new PromiseHolder()
+	user: User = null
 	company: Company = null
 
 	constructor(private apollo: Apollo, private httpLink: HttpLink) {}

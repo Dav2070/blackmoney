@@ -3,6 +3,11 @@ export interface List<T> {
 	items: T[]
 }
 
+export interface SessionResource {
+	uuid: string
+	user: UserResource
+}
+
 export interface CompanyResource {
 	uuid: string
 	name: string

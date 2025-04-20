@@ -7,7 +7,9 @@ import {
 	CategoryResource,
 	CompanyResource,
 	TableResource,
-	OrderResource
+	OrderResource,
+	UserResource,
+	SessionResource
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -35,9 +37,9 @@ export class ApiService {
 			userName: string
 			password: string
 		}
-	): Promise<MutationResult<{ login: { uuid: string } }>> {
+	): Promise<MutationResult<{ login: SessionResource }>> {
 		return await this.davAuthApollo
-			.mutate<{ login: { uuid: string } }>({
+			.mutate<{ login: SessionResource }>({
 				mutation: gql`
 					mutation Login(
 						$userName: String!
@@ -57,6 +59,23 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async retrieveUser(
+		queryData: string
+	): Promise<ApolloQueryResult<{ retrieveUser: UserResource }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveUser: UserResource }>({
+				query: gql`
+					query RetrieveUser {
+						retrieveUser {
+							${queryData}
+						}
+					}
+				`,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveCompany(
 		queryData: string
 	): Promise<ApolloQueryResult<{ retrieveCompany: CompanyResource }>> {
@@ -69,7 +88,6 @@ export class ApiService {
 						}
 					}
 				`,
-				variables: {},
 				errorPolicy
 			})
 			.toPromise()

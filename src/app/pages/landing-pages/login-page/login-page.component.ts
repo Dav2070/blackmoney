@@ -3,6 +3,7 @@ import { Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
+import { convertUserResourceToUser } from "src/app/utils"
 
 @Component({
 	templateUrl: "./login-page.component.html",
@@ -31,16 +32,31 @@ export class LoginPageComponent {
 	async login() {
 		this.errorMessage = ""
 
-		let loginResponse = await this.apiService.login("uuid", {
-			userName: this.username,
-			password: this.password
-		})
+		let loginResponse = await this.apiService.login(
+			`
+				uuid
+				user {
+					uuid
+					name
+					role
+				}
+			`,
+			{
+				userName: this.username,
+				password: this.password
+			}
+		)
 
 		let accessToken = loginResponse?.data?.login.uuid
 
 		if (accessToken != null) {
 			this.authService.setAccessToken(accessToken)
 			this.dataService.loadApollo(accessToken)
+
+			this.dataService.user = convertUserResourceToUser(
+				loginResponse.data.login.user
+			)
+			this.dataService.blackmoneyUserPromiseHolder.Resolve()
 
 			// Redirect to tables page
 			this.router.navigate(["tables"])

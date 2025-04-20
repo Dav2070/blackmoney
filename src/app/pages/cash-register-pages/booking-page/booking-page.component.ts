@@ -87,7 +87,7 @@ export class BookingPageComponent {
 	async ngOnInit() {
 		if (isPlatformServer(this.platformId)) return
 
-		await this.dataService.userPromiseHolder.AwaitResult()
+		await this.dataService.davUserPromiseHolder.AwaitResult()
 		this.tableUuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 
 		//Hole Items aus DB und aktualsiere Preis

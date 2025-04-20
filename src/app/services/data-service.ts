@@ -11,6 +11,7 @@ import { Company } from "../models/Company"
 export class DataService {
 	dav = Dav
 	userPromiseHolder = new PromiseHolder()
+	companyPromiseHolder = new PromiseHolder()
 	company: Company = null
 
 	constructor(private apollo: Apollo, private httpLink: HttpLink) {}

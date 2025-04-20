@@ -62,45 +62,61 @@ export class AppComponent {
 			}
 		})
 
+		await this.dataService.userPromiseHolder.AwaitResult()
+
 		let accessToken = this.authService.getAccessToken()
+		this.setupApollo(Dav.accessToken, accessToken)
 
-		if (accessToken != null) {
-			this.setupApollo(Dav.accessToken, accessToken)
-		} else {
-			await this.dataService.userPromiseHolder.AwaitResult()
-
-			// Get the company
-			let retrieveCompanyResponse = await this.apiService.retrieveCompany(
-				`
-					uuid
-					name
-					users {
-						total
-						items {
-							uuid
-							name
+		// Get the company
+		let retrieveCompanyResponse = await this.apiService.retrieveCompany(
+			`
+				uuid
+				name
+				users {
+					total
+					items {
+						uuid
+						name
+					}
+				}
+				rooms {
+					total
+					items {
+						uuid
+						name
+						tables {
+							total
+							items {
+								uuid
+								name
+							}
 						}
 					}
-				`
+				}
+			`
+		)
+
+		let retrieveCompanyResponseData =
+			retrieveCompanyResponse.data.retrieveCompany
+
+		if (retrieveCompanyResponseData != null) {
+			this.dataService.company = convertCompanyResourceToCompany(
+				retrieveCompanyResponseData
 			)
 
-			let retrieveCompanyResponseData =
-				retrieveCompanyResponse.data.retrieveCompany
-
-			if (retrieveCompanyResponseData != null) {
-				this.dataService.company = convertCompanyResourceToCompany(
-					retrieveCompanyResponseData
-				)
-
-				if (retrieveCompanyResponseData.users.total == 0) {
-					// Redirect to the onboarding page
-					this.router.navigate(["onboarding"])
-				} else {
-					// Redirect to the login page
-					this.router.navigate(["login"])
-				}
+			if (retrieveCompanyResponseData.users.total == 0) {
+				// Redirect to the onboarding page
+				this.router.navigate(["onboarding"])
+			} else if (accessToken == null) {
+				// Redirect to the login page
+				this.router.navigate(["login"])
+			} else {
+				// Redirect to the tables page
+				this.router.navigate(["tables"])
 			}
 		}
+
+		this.dataService.companyPromiseHolder.Resolve()
 	}
 
 	setupApollo(davAccessToken: string, accessToken: string) {

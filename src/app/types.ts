@@ -16,6 +16,7 @@ export interface UserResource {
 }
 
 export interface RoomResource {
+	uuid: string
 	name: string
 	tables: List<TableResource>
 }

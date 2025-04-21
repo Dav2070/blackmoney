@@ -58,7 +58,7 @@ const routes: Routes = [
 		component: SeparatePayComponent
 	},
 	{
-		path: "tables/:uuid/:console",
+		path: "tables/:uuid1/:uuid2",
 		component: TransferPageComponent
 	}
 ]

@@ -1,12 +1,14 @@
 import { Component } from "@angular/core"
-import { ActivatedRoute } from "@angular/router"
+import { Router, ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
+import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
-import { HardcodeService } from "src/app/services/hardcode-service"
 import { convertOrderItemResourceToOrderItem } from "src/app/utils"
+import { Table } from "src/app/models/Table"
 import { OrderItem } from "src/app/models/OrderItem"
+import { Room } from "src/app/models/Room"
 
 @Component({
 	templateUrl: "./transfer-page.component.html",
@@ -17,8 +19,10 @@ export class TransferPageComponent {
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 	bookedItemsLeft = new AllItemHandler()
 	bookedItemsRight = new AllItemHandler()
-	tableLeftUuid: number
-	tableRightUuid: number
+	tableLeft: Table = null
+	tableRight: Table = null
+	tableLeftRoom: Room = null
+	tableRightRoom: Room = null
 	console: string
 	consoleActive: boolean = false
 	isItemPopupVisible: boolean = false
@@ -30,18 +34,43 @@ export class TransferPageComponent {
 	tmpReceiver: AllItemHandler
 
 	constructor(
-		private hardcodeService: HardcodeService,
+		private dataService: DataService,
 		private activatedRoute: ActivatedRoute,
-		private apiService: ApiService
+		private apiService: ApiService,
+		private router: Router
 	) {}
 
 	async ngOnInit() {
-		this.tableLeftUuid = +this.activatedRoute.snapshot.paramMap.get("uuid")
-		this.tableRightUuid =
-			+this.activatedRoute.snapshot.paramMap.get("console")
+		await this.dataService.companyPromiseHolder.AwaitResult()
 
-		//this.bookedItemsLeft = this.hardcodeService.getItemsofTable(40)
-		//this.bookedItemsRight = this.hardcodeService.getItemsofTable(50)
+		const uuid1 = this.activatedRoute.snapshot.paramMap.get("uuid1")
+		const uuid2 = this.activatedRoute.snapshot.paramMap.get("uuid2")
+
+		for (let room of this.dataService.company.rooms) {
+			for (let table of room.tables) {
+				if (table.uuid === uuid1) {
+					this.tableLeft = table
+					this.tableLeftRoom = room
+				}
+
+				if (table.uuid === uuid2) {
+					this.tableRight = table
+					this.tableRightRoom = room
+				}
+			}
+
+			if (this.tableLeft && this.tableRight) {
+				break
+			}
+		}
+
+		if (this.tableLeft != null && this.tableRight == null) {
+			this.router.navigate(["tables", this.tableLeft.uuid])
+			return
+		} else if (this.tableLeft == null || this.tableRight == null) {
+			this.router.navigate(["tables"])
+			return
+		}
 	}
 
 	//Aktualisiere Bestellungen aus DB

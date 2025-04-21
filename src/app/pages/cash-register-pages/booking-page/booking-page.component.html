@@ -246,10 +246,9 @@
 			<button mat-flat-button class="footerButton" (click)="sendOrder()">
 				Bestellung abschicken
 			</button>
-			<a
+			<button
 				mat-flat-button
 				class="footerButton"
-				[routerLink]="[console]"
 				[disabled]="
 					commaUsed ||
 					!consoleActive ||
@@ -257,9 +256,10 @@
 					checkforZero() ||
 					xUsed
 				"
+				(click)="navigateToTransferPage()"
 			>
 				Umbuchen
-			</a>
+			</button>
 			<button mat-flat-button class="footerButton" [routerLink]="['../']">
 				Tischplan
 			</button>

@@ -1,6 +1,6 @@
 import { Component, Inject, PLATFORM_ID } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
-import { ActivatedRoute } from "@angular/router"
+import { Router, ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { Bill } from "src/app/models/cash-register/bill.model"
 import { ApiService } from "src/app/services/api-service"
@@ -10,11 +10,12 @@ import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { OrderItem } from "src/app/models/OrderItem"
 import { TmpVariations } from "src/app/models/cash-register/tmp-variations.model"
+import { Table } from "src/app/models/Table"
+import { Room } from "src/app/models/Room"
 import {
 	convertCategoryResourceToCategory,
 	convertOrderItemResourceToOrderItem
 } from "src/app/utils"
-import { Table } from "src/app/models/Table"
 
 interface AddProductsInput {
 	uuid: string
@@ -58,6 +59,7 @@ export class BookingPageComponent {
 	consoleActive: boolean = false
 
 	commaUsed: boolean = false
+	room: Room = null
 	table: Table = null
 	orderUuid: string = ""
 
@@ -84,6 +86,7 @@ export class BookingPageComponent {
 		private apiService: ApiService,
 		private activatedRoute: ActivatedRoute,
 		private hardCodedService: HardcodeService,
+		private router: Router,
 		@Inject(PLATFORM_ID) private platformId: object
 	) {}
 
@@ -497,6 +500,7 @@ export class BookingPageComponent {
 		for (let room of this.dataService.company.rooms) {
 			for (let table of room.tables) {
 				if (table.uuid === uuid) {
+					this.room = room
 					this.table = table
 					break
 				}
@@ -581,7 +585,7 @@ export class BookingPageComponent {
 		this.commaUsed = false
 		this.tmpAnzahl = 0
 		this.xUsed = false
-		this.selectedItem = undefined
+		this.selectedItem = null
 	}
 
 	// Fügt Items der Liste an bestellten Artikeln hinzu
@@ -709,12 +713,7 @@ export class BookingPageComponent {
 
 	//Prüft ob am Anfang des Strings eine 0 eingefügt ist
 	checkforZero() {
-		if (this.consoleActive) {
-			if (this.console.charAt(0) === "0") {
-				return true
-			}
-		}
-		return false
+		return this.consoleActive && this.console.charAt(0) === "0"
 	}
 
 	//Setze die Anzahl der Items die gebucht werden sollen
@@ -872,6 +871,18 @@ export class BookingPageComponent {
 	closeBills() {
 		this.isBillPopupVisible = !this.isBillPopupVisible
 		this.bills = []
-		this.pickedBill = undefined
+		this.pickedBill = null
+	}
+
+	navigateToTransferPage() {
+		let selectedTableNumber = Number(this.console)
+		if (isNaN(selectedTableNumber)) return
+
+		// Find the table
+		let table = this.room.tables.find(t => t.name == selectedTableNumber)
+		if (table == null) return
+
+		// Navigate to the transfer page with the table UUID
+		this.router.navigate(["tables", this.table.uuid, table.uuid])
 	}
 }

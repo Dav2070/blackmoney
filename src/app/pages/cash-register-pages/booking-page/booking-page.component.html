@@ -58,7 +58,7 @@
 					</mat-card>
 					}
 					<mat-card>
-						<mat-card-content>Tisch 12</mat-card-content>
+						<mat-card-content>Tisch {{ table?.name }}</mat-card-content>
 					</mat-card>
 					@for (item of stagedItems.getItems(); track item) {
 					<mat-card
@@ -253,7 +253,7 @@
 				[disabled]="
 					commaUsed ||
 					!consoleActive ||
-					tableUuid == console ||
+					table?.uuid == console ||
 					checkforZero() ||
 					xUsed
 				"
@@ -270,7 +270,7 @@
 				[disabled]="
 					commaUsed ||
 					!consoleActive ||
-					tableUuid == console ||
+					table?.uuid == console ||
 					checkforZero() ||
 					xUsed
 				"

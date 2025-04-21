@@ -133,8 +133,10 @@ export class AppComponent {
 						retrieveUserResponse.data.retrieveUser
 					)
 
-					// Redirect to the tables page
-					this.router.navigate(["tables"])
+					if (this.router.url == "/") {
+						// Redirect to the tables page
+						this.router.navigate(["tables"])
+					}
 				}
 			}
 		}

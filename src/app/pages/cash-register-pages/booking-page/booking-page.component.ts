@@ -14,6 +14,7 @@ import {
 	convertCategoryResourceToCategory,
 	convertOrderItemResourceToOrderItem
 } from "src/app/utils"
+import { Table } from "src/app/models/Table"
 
 interface AddProductsInput {
 	uuid: string
@@ -57,7 +58,7 @@ export class BookingPageComponent {
 	consoleActive: boolean = false
 
 	commaUsed: boolean = false
-	tableUuid: string = ""
+	table: Table = null
 	orderUuid: string = ""
 
 	xUsed: boolean = false
@@ -89,11 +90,11 @@ export class BookingPageComponent {
 	async ngOnInit() {
 		if (isPlatformServer(this.platformId)) return
 
-		await this.dataService.davUserPromiseHolder.AwaitResult()
-		this.tableUuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
 
-		//Hole Items aus DB und aktualsiere Preis
-		await this.retrieveOrders()
+		await this.loadTable(this.activatedRoute.snapshot.paramMap.get("uuid"))
+		await this.loadOrders()
+
 		this.showTotal()
 
 		let listCategoriesResult = await this.apiService.listCategories(
@@ -490,8 +491,25 @@ export class BookingPageComponent {
 		return true
 	}
 
+	async loadTable(uuid: string) {
+		if (uuid == null) return
+
+		for (let room of this.dataService.company.rooms) {
+			for (let table of room.tables) {
+				if (table.uuid === uuid) {
+					this.table = table
+					break
+				}
+			}
+
+			if (this.table != null) {
+				break
+			}
+		}
+	}
+
 	//Aktualisiere Bestellungen aus DB
-	async retrieveOrders() {
+	async loadOrders() {
 		let order = await this.apiService.retrieveTable(
 			`
 				orders(paid: $paid) {
@@ -531,7 +549,7 @@ export class BookingPageComponent {
 				}
 			`,
 			{
-				uuid: this.tableUuid,
+				uuid: this.table.uuid,
 				paid: false
 			}
 		)
@@ -836,7 +854,7 @@ export class BookingPageComponent {
 	createBill(payment: string) {
 		let bill = new Bill(
 			"Bediener 1",
-			parseInt(this.tableUuid),
+			parseInt(this.table.uuid),
 			this.bookedItems,
 			new Date(),
 			payment,

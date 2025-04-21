@@ -16,6 +16,7 @@ import {
 	convertCategoryResourceToCategory,
 	convertOrderItemResourceToOrderItem
 } from "src/app/utils"
+import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 
 interface AddProductsInput {
 	uuid: string
@@ -80,6 +81,8 @@ export class BookingPageComponent {
 	tmpCountVariations: number = 0
 
 	tmpPickedVariationResource: Map<number, TmpVariations[]>[] = []
+
+	tmpOrderVariations: OrderItemVariation[] = []
 
 	constructor(
 		private dataService: DataService,
@@ -218,38 +221,46 @@ export class BookingPageComponent {
 	// Verringert Item um 1 oder Anzahl in Konsole
 	async subtractitem() {
 		if (this.tmpAllItemHandler === this.bookedItems) {
-			let items = await this.apiService.removeProductsFromOrder(
-				`
-					products {
-						total
-						items {
-							id
-							uuid
-							name
-							price
+			if (this.selectedItem.orderItemVariations.length <= 0) {
+				let items = await this.apiService.removeProductsFromOrder(
+					`
+						products {
+							total
+							items {
+								id
+								uuid
+								name
+								price
+							}
 						}
+					`,
+					{
+						uuid: this.orderUuid,
+						products: [
+							{
+								uuid: this.selectedItem.uuid,
+								count: this.tmpAnzahl == 0 ? 1 : this.tmpAnzahl
+							}
+						]
 					}
-				`,
-				{
-					uuid: this.orderUuid,
-					products: [
-						{
-							uuid: this.selectedItem.uuid,
-							count: this.tmpAnzahl == 0 ? 1 : this.tmpAnzahl
-						}
-					]
-				}
-			)
-
-			this.bookedItems.clearItems()
-
-			for (let item of items.data.removeProductsFromOrder.orderItems.items) {
-				this.bookedItems.pushNewItem(
-					convertOrderItemResourceToOrderItem(item)
 				)
-			}
 
-			this.showTotal()
+				this.bookedItems.clearItems()
+
+				for (let item of items.data.removeProductsFromOrder.orderItems
+					.items) {
+					this.bookedItems.pushNewItem(
+						convertOrderItemResourceToOrderItem(item)
+					)
+				}
+
+				this.showTotal()
+			} else {
+				// Wenn Variationen vorhanden sind
+				this.tmpOrderVariations = []
+				this.minusUsed = true
+				this.isItemPopupVisible = true
+			}
 		} else if (this.selectedItem.orderItemVariations.length > 0) {
 			//Wenn Item Variationen enthält
 			this.minusUsed = true
@@ -283,6 +294,22 @@ export class BookingPageComponent {
 			*/
 			this.showTotal()
 		}
+	}
+
+	removeVariationSubtraction(variation: OrderItemVariation) {
+		this.selectedItem.count -= 1
+		variation.count -= 1
+	}
+
+	addVariationSubtraction(variation: OrderItemVariation) {
+		this.selectedItem.count += 1
+		variation.count += 1
+	}
+	sendDeleteVariation() {
+		console.log(this.selectedItem.orderItemVariations)
+		this.tmpOrderVariations = []
+		this.minusUsed = false
+		this.isItemPopupVisible = false
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu

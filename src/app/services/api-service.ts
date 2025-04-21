@@ -76,6 +76,25 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createUser(
+		queryData: string,
+		variables: { name: string }
+	): Promise<MutationResult<{ createUser: UserResource }>> {
+		return await this.davAuthApollo
+			.mutate<{ createUser: UserResource }>({
+				mutation: gql`
+					mutation CreateUser($name: String!) {
+						createUser(name: $name) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveCompany(
 		queryData: string
 	): Promise<ApolloQueryResult<{ retrieveCompany: CompanyResource }>> {

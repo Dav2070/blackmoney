@@ -1,4 +1,5 @@
 import { Component } from "@angular/core"
+import { Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 
@@ -15,7 +16,8 @@ export class OnboardingPageComponent {
 
 	constructor(
 		public dataService: DataService,
-		private apiService: ApiService
+		private apiService: ApiService,
+		private router: Router
 	) {}
 
 	async ngOnInit() {
@@ -36,7 +38,8 @@ export class OnboardingPageComponent {
 		this.employeeName = (event as CustomEvent).detail.value
 	}
 
-	addEmployeeButtonClick() {
+	async addEmployeeButtonClick() {
+		await this.apiService.createUser(`uuid`, { name: this.employeeName })
 		this.employees.push(this.employeeName)
 		this.employeeName = ""
 	}
@@ -49,6 +52,8 @@ export class OnboardingPageComponent {
 			})
 
 			this.context = "createUsers"
+		} else if (this.context === "createUsers") {
+			this.router.navigate(["login"])
 		}
 	}
 }

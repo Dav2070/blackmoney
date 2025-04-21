@@ -36,10 +36,8 @@
 						-->
 						</mat-card-content>
 						@if(item.orderItemVariations){ @for(variation of
-						item.orderItemVariations.items; track variation){
-						<mat-card-content>
-							
-						</mat-card-content>
+						item.orderItemVariations; track variation){
+						<mat-card-content></mat-card-content>
 						} }
 						<mat-card-content> #{{ item.uuid }} </mat-card-content>
 					</mat-card>
@@ -141,10 +139,8 @@
 							-->
 						</mat-card-content>
 						@if(item.orderItemVariations){ @for(variation of
-						item.orderItemVariations.items; track variation){
-						<mat-card-content>
-							
-						</mat-card-content>
+						item.orderItemVariations; track variation){
+						<mat-card-content></mat-card-content>
 						} }
 						<mat-card-content> #{{ item.uuid }} </mat-card-content>
 					</mat-card>

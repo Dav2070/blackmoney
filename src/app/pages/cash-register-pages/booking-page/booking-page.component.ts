@@ -6,12 +6,14 @@ import { Bill } from "src/app/models/cash-register/bill.model"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { HardcodeService } from "src/app/services/hardcode-service"
-import {
-	CategoryResource,
-	OrderItemResource,
-	ProductResource
-} from "src/app/types"
+import { Category } from "src/app/models/Category"
+import { Product } from "src/app/models/Product"
+import { OrderItem } from "src/app/models/OrderItem"
 import { TmpVariations } from "src/app/models/cash-register/tmp-variations.model"
+import {
+	convertCategoryResourceToCategory,
+	convertOrderItemResourceToOrderItem
+} from "src/app/utils"
 
 interface AddProductsInput {
 	uuid: string
@@ -30,8 +32,8 @@ interface AddProductsInputVariation {
 	standalone: false
 })
 export class BookingPageComponent {
-	categories: CategoryResource[] = []
-	selectedInventory: ProductResource[] = []
+	categories: Category[] = []
+	selectedInventory: Product[] = []
 
 	//bookedItems = new Map<Item, Map<Variation, number>>()
 	bookedItems = new AllItemHandler()
@@ -42,35 +44,35 @@ export class BookingPageComponent {
 
 	endpreis: number = 0.0
 
-	lastClickedItem: ProductResource = null
+	lastClickedItem: Product = null
 
 	lastClickedItemSource: "new" | "booked" | null = null
 
 	console: string = "0.00 €"
 
-	selectedItemNew: ProductResource = null
+	selectedItemNew: Product = null
 
-	isItemPopupVisible: Boolean = false
+	isItemPopupVisible: boolean = false
 
-	consoleActive: Boolean = false
+	consoleActive: boolean = false
 
-	commaUsed: Boolean = false
+	commaUsed: boolean = false
 	tableUuid: string = ""
 	orderUuid: string = ""
 
-	xUsed: Boolean = false
-	minusUsed: Boolean = false
+	xUsed: boolean = false
+	minusUsed: boolean = false
 
 	tmpAnzahl = 0
 
-	selectedItem: OrderItemResource = undefined
-	tmpAllItemHandler: AllItemHandler = undefined
+	selectedItem: OrderItem = null
+	tmpAllItemHandler: AllItemHandler = null
 
 	isBillPopupVisible: boolean = false
 
 	bills: Bill[] = []
 
-	pickedBill: Bill = undefined
+	pickedBill: Bill = null
 
 	tmpCountVariations: number = 0
 
@@ -128,47 +130,31 @@ export class BookingPageComponent {
 			`
 		)
 
-		this.categories = listCategoriesResult.data.listCategories.items
-		console.log(this.categories)
-
-		/*
-		for (let item of listCategoriesResult.data.listCategories.items) {
-			let category: CategoryResource = {
-				uuid: item.uuid,
-				name: item.name,
-				type: item.type,
-				products: {
-					total: item.products.total,
-					items: item.products.items.map(product => {
-						return {
-							uuid: product.uuid,
-							count: 0,
-							name: product.name,
-							price: product.price,
-							variations: {
-								total: 0,
-								items: [] as VariationResource[]
-							}
-						}
-					})
-				}
-			}
-
-			this.categories.push(category)
+		if (listCategoriesResult.errors != null) {
+			console.error(listCategoriesResult.errors)
+			return
 		}
-		*/
+
+		this.categories = []
+
+		for (let categoryResource of listCategoriesResult.data.listCategories
+			.items) {
+			this.categories.push(
+				convertCategoryResourceToCategory(categoryResource)
+			)
+		}
 
 		if (this.categories.length > 0) {
-			this.selectedInventory = this.categories[0].products.items
+			this.selectedInventory = this.categories[0].products
 		}
 	}
 
-	//Lade Items zur ausgewählten Kategorie
-	changeSelectedInventory(items: ProductResource[]) {
+	// Lade Items zur ausgewählten Kategorie
+	changeSelectedInventory(items: Product[]) {
 		this.selectedInventory = items
 	}
 
-	//Zeige Variations-Popup an
+	// Zeige Variations-Popup an
 	toggleItemPopup() {
 		this.isItemPopupVisible = !this.isItemPopupVisible
 	}
@@ -178,23 +164,27 @@ export class BookingPageComponent {
 		//this.tmpVariations.clear()
 	}
 
-	//Füge item zu stagedItems hinzu
-	clickItem(product: ProductResource) {
-		let newItemResource: OrderItemResource = <OrderItemResource>{}
-		newItemResource.product = product
-		newItemResource.uuid = product.uuid
+	// Füge item zu stagedItems hinzu
+	clickItem(product: Product) {
+		if (product == null) return
 
-		if (product.variations.items.length === 0) {
+		let newItem: OrderItem = {
+			uuid: product.uuid,
+			count: 0,
+			order: null,
+			product,
+			orderItemVariations: []
+		}
+
+		if (product.variations.length === 0) {
 			if (this.tmpAnzahl > 0) {
-				newItemResource.count = this.tmpAnzahl
+				newItem.count = this.tmpAnzahl
+			} else if (this.stagedItems.includes(newItem)) {
+				let existingItem = this.stagedItems.getItem(newItem.uuid)
+				existingItem.count += 1
 			} else {
-				if (this.stagedItems.includes(newItemResource)) {
-					let existingItem = this.stagedItems.getItem(newItemResource.uuid)
-					existingItem.count += 1
-				} else {
-					newItemResource.count = 1
-					this.stagedItems.pushNewItem(newItemResource)
-				}
+				newItem.count = 1
+				this.stagedItems.pushNewItem(newItem)
 			}
 
 			this.showTotal()
@@ -202,9 +192,9 @@ export class BookingPageComponent {
 			// Öffnet Popup für Variationen
 			this.lastClickedItem = product
 
-			for (let variationItem of this.lastClickedItem.variations.items[
+			for (let variationItem of this.lastClickedItem.variations[
 				this.tmpCountVariations
-			].variationItems.items) {
+			].variationItems) {
 				this.tmpPickedVariationResource.push(
 					new Map<number, TmpVariations[]>().set(0, [
 						{
@@ -221,7 +211,7 @@ export class BookingPageComponent {
 		}
 	}
 
-	//Verringert Item um 1 oder Anzahl in Konsole
+	// Verringert Item um 1 oder Anzahl in Konsole
 	async subtractitem() {
 		if (this.tmpAllItemHandler === this.bookedItems) {
 			let items = await this.apiService.removeProductsFromOrder(
@@ -250,11 +240,13 @@ export class BookingPageComponent {
 			this.bookedItems.clearItems()
 
 			for (let item of items.data.removeProductsFromOrder.orderItems.items) {
-				this.bookedItems.pushNewItem(item)
+				this.bookedItems.pushNewItem(
+					convertOrderItemResourceToOrderItem(item)
+				)
 			}
 
 			this.showTotal()
-		} else if (this.selectedItem.orderItemVariations.items.length > 0) {
+		} else if (this.selectedItem.orderItemVariations.length > 0) {
 			//Wenn Item Variationen enthält
 			this.minusUsed = true
 			this.isItemPopupVisible = true
@@ -292,7 +284,7 @@ export class BookingPageComponent {
 	//Füge item mit Variation zu stagedItems hinzu
 	sendVariation() {
 		if (
-			this.lastClickedItem.variations.items[this.tmpCountVariations + 1] !=
+			this.lastClickedItem.variations[this.tmpCountVariations + 1] !=
 			undefined
 		) {
 			for (let variationMap of this.tmpPickedVariationResource) {
@@ -301,9 +293,9 @@ export class BookingPageComponent {
 						this.tmpCountVariations
 					)) {
 						if (variation.count > 0) {
-							for (let variationItem of this.lastClickedItem.variations
-								.items[this.tmpCountVariations + 1].variationItems
-								.items) {
+							for (let variationItem of this.lastClickedItem.variations[
+								this.tmpCountVariations + 1
+							].variationItems) {
 								if (variationMap.get(this.tmpCountVariations + 1)) {
 									variationMap.get(this.tmpCountVariations + 1).push({
 										count: 0,
@@ -339,15 +331,12 @@ export class BookingPageComponent {
 
 			this.tmpCountVariations += 1
 		} else {
-			let orderItem: OrderItemResource = {
+			let orderItem: OrderItem = {
 				uuid: this.lastClickedItem.uuid,
 				order: null,
 				product: this.lastClickedItem,
 				count: 0,
-				orderItemVariations: {
-					total: 0,
-					items: []
-				}
+				orderItemVariations: []
 			}
 
 			for (let variationMap of this.tmpPickedVariationResource) {
@@ -357,19 +346,15 @@ export class BookingPageComponent {
 					)) {
 						if (variation.count > 0) {
 							orderItem.count += variation.count
-							orderItem.orderItemVariations.items.push({
+							orderItem.orderItemVariations.push({
 								count: variation.count,
-								variationItems: {
-									total: variation.pickedVariation.length,
-									items: variation.pickedVariation
-								}
+								variationItems: variation.pickedVariation
 							})
 						}
 					}
 				}
 			}
 
-			console.log(orderItem)
 			this.stagedItems.pushNewItem(orderItem)
 			this.tmpPickedVariationResource = []
 			this.tmpCountVariations = 0
@@ -558,12 +543,14 @@ export class BookingPageComponent {
 			this.bookedItems.clearItems()
 			for (let item of order.data.retrieveTable.orders.items[0].orderItems
 				.items) {
-				this.bookedItems.pushNewItem(item)
+				this.bookedItems.pushNewItem(
+					convertOrderItemResourceToOrderItem(item)
+				)
 			}
 		}
 	}
 
-	//Aktualisiert den Gesamtpreis
+	// Aktualisiert den Gesamtpreis
 	async showTotal() {
 		this.console =
 			(
@@ -579,7 +566,7 @@ export class BookingPageComponent {
 		this.selectedItem = undefined
 	}
 
-	//Fügt Items der Liste an bestellten Artikeln hinzu
+	// Fügt Items der Liste an bestellten Artikeln hinzu
 	async sendOrder() {
 		//this.bookedItems.transferAllItems(this.stagedItems)
 		let tmpProductArray: AddProductsInput[] = []
@@ -591,13 +578,13 @@ export class BookingPageComponent {
 				variations: []
 			}
 
-			for (let orderItemVariation of values.orderItemVariations.items) {
+			for (let orderItemVariation of values.orderItemVariations) {
 				let variation: AddProductsInputVariation = {
 					count: orderItemVariation.count,
 					variationItemUuids: []
 				}
 
-				for (let variationItem of orderItemVariation.variationItems.items) {
+				for (let variationItem of orderItemVariation.variationItems) {
 					variation.variationItemUuids.push(variationItem.uuid)
 				}
 
@@ -648,7 +635,7 @@ export class BookingPageComponent {
 		console.log(items.data.addProductsToOrder.orderItems.items)
 
 		for (let item of items.data.addProductsToOrder.orderItems.items) {
-			this.bookedItems.pushNewItem(item)
+			this.bookedItems.pushNewItem(convertOrderItemResourceToOrderItem(item))
 		}
 
 		this.stagedItems.clearItems()
@@ -809,37 +796,40 @@ export class BookingPageComponent {
 		*/
 	}
 
-	//Prüft ob nach dem x eine Nummer einegeben wurde
+	// Prüft ob nach dem x eine Nummer eingeben wurde
 	checkArticleNumber() {
-		if (this.xUsed) {
-			if (this.console.split("x")[1]) {
-				return false
-			}
-			return true
-		}
-		return false
+		return this.xUsed && !this.console.split("x")[1]
 	}
 
 	//Selektiert das Item in der Liste
-	selectItem(pickedItem: OrderItemResource, AllItemHandler: AllItemHandler) {
+	selectItem(pickedItem: OrderItem, AllItemHandler: AllItemHandler) {
 		this.selectedItem = pickedItem
 		this.tmpAllItemHandler = AllItemHandler
 	}
 
 	//Füge selektiertes Item hinzu
 	addSelectedItem() {
-		let pickedItem: ProductResource = undefined
+		let pickedItem: Product = null
 		let id = this.selectedItem.uuid
+
 		for (let dish of this.categories) {
-			for (let item of dish.products.items) {
-				if (id === item.uuid) pickedItem = item
+			for (let item of dish.products) {
+				if (id === item.uuid) {
+					pickedItem = item
+					break
+				}
 			}
 		}
+
 		for (let drink of this.categories) {
-			for (let item of drink.products.items) {
-				if (id === item.uuid) pickedItem = item
+			for (let item of drink.products) {
+				if (id === item.uuid) {
+					pickedItem = item
+					break
+				}
 			}
 		}
+
 		this.clickItem(pickedItem)
 	}
 

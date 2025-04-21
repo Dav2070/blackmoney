@@ -39,10 +39,10 @@
 							</strong>
 						</mat-card-content>
 						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations.items; track variation){
+						item.orderItemVariations; track variation){
 						<mat-card-content>
 							{{ variation.count }}
-							@for(variationItem of variation.variationItems.items; track
+							@for(variationItem of variation.variationItems; track
 							variationItem.uuid) {
 
 							{{ variationItem.name }}
@@ -94,8 +94,8 @@
 						</mat-card-content>
 
 						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations.items; track variation){
-						@for(variationItem of variation.variationItems.items; track
+						item.orderItemVariations; track variation){
+						@for(variationItem of variation.variationItems; track
 						variationItem.uuid){
 						<!--
 						<mat-card-content>
@@ -179,7 +179,7 @@
 					@if(lastClickedItem!=null){
 					<h2>
 						{{
-							lastClickedItem.variations.items[tmpCountVariations].name
+							lastClickedItem.variations[tmpCountVariations].name
 						}}
 					</h2>
 					@for(variationMap of tmpPickedVariationResource; track
@@ -221,7 +221,7 @@
 				@for (category of categories; track category.uuid){ @if
 				(category.type == "DRINK") {
 				<button
-					(click)="changeSelectedInventory(category.products.items)"
+					(click)="changeSelectedInventory(category.products)"
 					mat-flat-button
 				>
 					{{ category.name }}
@@ -232,7 +232,7 @@
 				@for (category of categories; track category.uuid) { @if
 				(category.type == "FOOD") {
 				<button
-					(click)="changeSelectedInventory(category.products.items)"
+					(click)="changeSelectedInventory(category.products)"
 					mat-flat-button
 				>
 					{{ category.name }}
@@ -356,7 +356,7 @@
 						-->
 					</div>
 					@if(item.orderItemVariations){ @for(variation of
-					item.orderItemVariations.items; track variation) {
+					item.orderItemVariations; track variation) {
 					<div class="bill-item-detail">></div>
 					} } }
 				</div>

@@ -41,10 +41,10 @@
 							</strong>
 						</mat-card-content>
 						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations.items; track variation){
+						item.orderItemVariations; track variation){
 						<mat-card-content>
 							{{ variation.count }}
-							@for(variationItem of variation.variationItems.items; track
+							@for(variationItem of variation.variationItems; track
 							variationItem.uuid) {
 
 							{{ variationItem.name }}
@@ -151,10 +151,10 @@
 							</strong>
 						</mat-card-content>
 						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations.items; track variation){
+						item.orderItemVariations; track variation){
 						<mat-card-content>
 							{{ variation.count }}
-							@for(variationItem of variation.variationItems.items; track
+							@for(variationItem of variation.variationItems; track
 							variationItem.uuid) {
 
 							{{ variationItem.name }}

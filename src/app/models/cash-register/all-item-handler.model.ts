@@ -1,51 +1,50 @@
-import { OrderItemResource, ProductResource, VariationResource } from "../../types"
+import { OrderItem } from "src/app/models/OrderItem"
+import { Variation } from "src/app/models/Variation"
 
 export class AllItemHandler {
-	private allPickedItems = new Map<string, OrderItemResource>()
+	private allPickedItems = new Map<string, OrderItem>()
 
 	getAllPickedItems() {
 		return this.allPickedItems
 	}
 
 	//Füge neues Item in die Map hinzu
-	pushNewItem(pickedItem: OrderItemResource) {
+	pushNewItem(pickedItem: OrderItem) {
 		const uuid = pickedItem.uuid
-	
+
 		// Prüfen, ob das Item bereits existiert
 		if (this.allPickedItems.has(uuid)) {
 			const item = this.allPickedItems.get(uuid)
-	
+
 			// Anzahl des bestehenden Items erhöhen
 			item.count += pickedItem.count
-	
+
 			// Falls Variationen vorhanden sind, diese ebenfalls aktualisieren
 			if (pickedItem.orderItemVariations) {
-				for (const variation of pickedItem.orderItemVariations.items) {
-					let existingVariation = item.orderItemVariations.items.find(
+				for (const variation of pickedItem.orderItemVariations) {
+					let existingVariation = item.orderItemVariations.find(
 						v =>
-							v.variationItems.items[0].uuid ==
-							variation.variationItems.items[0].uuid
+							v.variationItems[0].uuid ==
+							variation.variationItems[0].uuid
 					)
 
 					if (existingVariation != null) {
 						// Existierende Variation aktualisieren
-						for (const variationItem of variation.variationItems.items) {
+						for (const variationItem of variation.variationItems) {
 							let existingVariationItem =
-								existingVariation.variationItems.items.find(
+								existingVariation.variationItems.find(
 									vi => vi.uuid == variationItem.uuid
 								)
 							if (existingVariationItem != null) {
 								//existingVariationItem.count += variationItem.count
 							} else {
 								// Neues VariationItem hinzufügen
-								existingVariation.variationItems.items.push(
-									variationItem
-								)
+								existingVariation.variationItems.push(variationItem)
 							}
 						}
 					} else {
 						// Neue Variation hinzufügen
-						item.orderItemVariations.items.push(variation)
+						item.orderItemVariations.push(variation)
 					}
 				}
 			}
@@ -89,11 +88,11 @@ export class AllItemHandler {
 	}
 
 	//Gibt den Gesamtpreis der Variationen zurück
-	getTotalVariationPrice(pickedVariation: VariationResource[]): number {
+	getTotalVariationPrice(pickedVariation: Variation[]): number {
 		let total = 0
 
 		for (let variation of pickedVariation) {
-			for (let variationItem of variation.variationItems.items) {
+			for (let variationItem of variation.variationItems) {
 				//total += variationItem.price * variationItem.count
 			}
 		}
@@ -102,11 +101,11 @@ export class AllItemHandler {
 	}
 
 	//Entferne Item aus der Map
-	deleteItem(pickedItem: OrderItemResource): void {
+	deleteItem(pickedItem: OrderItem): void {
 		this.allPickedItems.delete(pickedItem.uuid)
 	}
 
-	deleteVariation(pickedItem: OrderItemResource): void {
+	deleteVariation(pickedItem: OrderItem): void {
 		/*
 		this.allPickedItems
 			.get(pickedItem.uuid)
@@ -114,17 +113,17 @@ export class AllItemHandler {
 		*/
 	}
 
-	getItem(uuid: string): OrderItemResource {
+	getItem(uuid: string): OrderItem {
 		return this.allPickedItems.get(uuid)
 	}
 
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
-	includes(pickedItem: OrderItemResource): boolean {
+	includes(pickedItem: OrderItem): boolean {
 		return this.allPickedItems.has(pickedItem.uuid)
 	}
 
 	//Reduziere Item oder Lösche es wenn Item = 0
-	reduceItem(item: OrderItemResource, anzahl: number) {
+	reduceItem(item: OrderItem, anzahl: number) {
 		// if (item.variations != null) {
 		// 	for (let variation of item.variations.items) {
 		// 		if (

@@ -5,7 +5,8 @@ import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
 import { ApiService } from "src/app/services/api-service"
 import { HardcodeService } from "src/app/services/hardcode-service"
-import { OrderItemResource } from "src/app/types"
+import { convertOrderItemResourceToOrderItem } from "src/app/utils"
+import { OrderItem } from "src/app/models/OrderItem"
 
 @Component({
 	templateUrl: "./transfer-page.component.html",
@@ -44,7 +45,11 @@ export class TransferPageComponent {
 	}
 
 	//Aktualisiere Bestellungen aus DB
-	async retrieveOrders(tableUuid: string, orderUuid: string,itemHandler:AllItemHandler ) {
+	async retrieveOrders(
+		tableUuid: string,
+		orderUuid: string,
+		itemHandler: AllItemHandler
+	) {
 		let order = await this.apiService.retrieveTable(
 			`
 				orders(paid: $paid) {
@@ -96,7 +101,7 @@ export class TransferPageComponent {
 			itemHandler.clearItems()
 			for (let item of order.data.retrieveTable.orders.items[0].orderItems
 				.items) {
-				itemHandler.pushNewItem(item)
+				itemHandler.pushNewItem(convertOrderItemResourceToOrderItem(item))
 			}
 		}
 	}
@@ -121,7 +126,7 @@ export class TransferPageComponent {
 	}
 
 	transferItem(
-		item: OrderItemResource,
+		item: OrderItem,
 		send: AllItemHandler,
 		receiving: AllItemHandler
 	) {

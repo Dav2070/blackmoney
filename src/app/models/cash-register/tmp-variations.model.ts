@@ -1,8 +1,8 @@
-import { VariationItemResource } from "src/app/types"
+import { VariationItem } from "../VariationItem"
 
 export class TmpVariations {
 	count: number
-	pickedVariation: VariationItemResource[]
+	pickedVariation: VariationItem[]
 	display: string
-    combination: string
+	combination: string
 }

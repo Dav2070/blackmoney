@@ -71,14 +71,13 @@ export class TransferPageComponent {
 			this.router.navigate(["tables"])
 			return
 		}
+
+		await this.loadOrders(this.tableLeft.uuid, this.bookedItemsLeft)
+		await this.loadOrders(this.tableRight.uuid, this.bookedItemsRight)
 	}
 
 	//Aktualisiere Bestellungen aus DB
-	async retrieveOrders(
-		tableUuid: string,
-		orderUuid: string,
-		itemHandler: AllItemHandler
-	) {
+	async loadOrders(tableUuid: string, itemHandler: AllItemHandler) {
 		let order = await this.apiService.retrieveTable(
 			`
 				orders(paid: $paid) {
@@ -124,10 +123,8 @@ export class TransferPageComponent {
 		)
 
 		if (order.data.retrieveTable.orders.total > 0) {
-			if (orderUuid === "") {
-				orderUuid = order.data.retrieveTable.orders.items[0].uuid
-			}
 			itemHandler.clearItems()
+
 			for (let item of order.data.retrieveTable.orders.items[0].orderItems
 				.items) {
 				itemHandler.pushNewItem(convertOrderItemResourceToOrderItem(item))

@@ -1,36 +1,30 @@
-<div class="container">
-	<div class="form-container">
-		<div class="input-container">
-			@if (dataService.company != null) {
-			<mat-form-field>
-				<mat-label>User</mat-label>
-				<mat-select [(value)]="username">
-					@for (user of dataService.company.users; track user.uuid) {
-					<mat-option [value]="user.name">{{ user.name }}</mat-option>
-					}
-				</mat-select>
-			</mat-form-field>
-			}
-		</div>
-		<div class="input-container">
-			<mat-form-field>
-				<input
-					matInput
-					placeholder="Passwort"
-					type="password"
-					[(ngModel)]="password"
-				/>
-			</mat-form-field>
-		</div>
-		@if (errorMessage.length > 0) {
-		<div class="error-message-container">
-			<p>{{ errorMessage }}</p>
-		</div>
-		}
+<div class="container slide-up-in">
+	<div class="content">
+		<h1 class="headline">Anmelden</h1>
+
+		<dav-dropdown
+			label="User"
+			width="173"
+			[options]="userDropdownOptions"
+			[selectedKey]="userDropdownSelectedKey"
+			(change)="userDropdownChange($event)"
+		></dav-dropdown>
+
+		<dav-textfield
+			placeholder="Passwort"
+			type="password"
+			[errorMessage]="errorMessage"
+			(change)="passwordChange($event)"
+		></dav-textfield>
+
 		<div class="button-container">
-			<button mat-raised-button color="primary" (click)="login()">
+			<dav-button
+				size="sm"
+				outline
+				(click)="login()"
+			>
 				Anmelden
-			</button>
+			</dav-button>
 		</div>
 	</div>
 </div>

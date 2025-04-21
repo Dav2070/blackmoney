@@ -1,29 +1,27 @@
 .container {
 	display: flex;
 	justify-content: center;
-	align-items: center;
 	height: 100vh;
-	background-color: white;
+	background-color: black;
 }
 
-.form-container {
-	background-color: #f0f0f0;
-	padding: 20px;
-	border-radius: 8px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 14px;
+	color: white;
+	margin-top: 20%;
+}
+
+h1 {
+	margin-bottom: 14px;
+	color: white;
+	font-family: 'Geist Mono', sans-serif;
+	font-size: 36px;
 }
 
 .button-container {
 	display: flex;
 	justify-content: center;
-}
-
-.error-message-container {
-	display: flex;
-	justify-content: center;
-
-	p {
-		margin-top: 0;
-		color: red;
-	}
 }

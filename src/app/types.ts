@@ -33,7 +33,7 @@ export interface TableResource {
 }
 
 export interface ProductResource {
-	id: string
+	id: number
 	uuid: string
 	name: string
 	price: number

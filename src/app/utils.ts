@@ -2,12 +2,26 @@ import { Company } from "./models/Company"
 import { User } from "./models/User"
 import { Room } from "./models/Room"
 import {
+	CategoryResource,
 	CompanyResource,
+	ProductResource,
 	RoomResource,
 	TableResource,
-	UserResource
+	UserResource,
+	VariationResource,
+	VariationItemResource,
+	OrderResource,
+	OrderItemResource,
+	OrderItemVariationResource
 } from "./types"
 import { Table } from "./models/Table"
+import { Category } from "./models/Category"
+import { Product } from "./models/Product"
+import { Variation } from "./models/Variation"
+import { VariationItem } from "./models/VariationItem"
+import { Order } from "./models/Order"
+import { OrderItem } from "./models/OrderItem"
+import { OrderItemVariation } from "./models/OrderItemVariation"
 
 export function convertCompanyResourceToCompany(
 	companyResource: CompanyResource
@@ -18,14 +32,18 @@ export function convertCompanyResourceToCompany(
 
 	const users: User[] = []
 
-	for (let user of companyResource.users.items) {
-		users.push(convertUserResourceToUser(user))
+	if (companyResource.users != null) {
+		for (let user of companyResource.users.items) {
+			users.push(convertUserResourceToUser(user))
+		}
 	}
 
 	const rooms: Room[] = []
 
-	for (let room of companyResource.rooms.items) {
-		rooms.push(convertRoomResourceToRoom(room))
+	if (companyResource.rooms != null) {
+		for (let room of companyResource.rooms.items) {
+			rooms.push(convertRoomResourceToRoom(room))
+		}
 	}
 
 	return {
@@ -75,5 +93,156 @@ export function convertTableResourceToTable(
 	return {
 		uuid: tableResource.uuid,
 		name: tableResource.name
+	}
+}
+
+export function convertProductResourceToProduct(
+	productResource: ProductResource
+): Product {
+	if (productResource == null) {
+		return null
+	}
+
+	const variations: Variation[] = []
+
+	if (productResource.variations != null) {
+		for (let variation of productResource.variations.items) {
+			variations.push(convertVariationResourceToVariation(variation))
+		}
+	}
+
+	return {
+		id: productResource.id,
+		uuid: productResource.uuid,
+		name: productResource.name,
+		price: productResource.price,
+		variations
+	}
+}
+
+export function convertCategoryResourceToCategory(
+	categoryResource: CategoryResource
+): Category {
+	if (categoryResource == null) {
+		return null
+	}
+
+	const products: Product[] = []
+
+	if (categoryResource.products != null) {
+		for (let product of categoryResource.products.items) {
+			products.push(convertProductResourceToProduct(product))
+		}
+	}
+
+	return {
+		uuid: categoryResource.uuid,
+		name: categoryResource.name,
+		type: categoryResource.type,
+		products
+	}
+}
+
+export function convertVariationResourceToVariation(
+	variationResource: VariationResource
+): Variation {
+	if (variationResource == null) {
+		return null
+	}
+
+	const variationItems: VariationItem[] = []
+
+	if (variationResource.variationItems != null) {
+		for (let variationItem of variationResource.variationItems.items) {
+			variationItems.push(
+				convertVariationItemResourceToVariationItem(variationItem)
+			)
+		}
+	}
+
+	return {
+		uuid: variationResource.uuid,
+		name: variationResource.name,
+		variationItems
+	}
+}
+
+export function convertVariationItemResourceToVariationItem(
+	variationItemResource: VariationItemResource
+): VariationItem {
+	if (variationItemResource == null) {
+		return null
+	}
+
+	return {
+		uuid: variationItemResource.uuid,
+		name: variationItemResource.name,
+		additionalCost: variationItemResource.additionalCost
+	}
+}
+
+export function convertOrderResourceToOrder(
+	orderResource: OrderResource
+): Order {
+	if (orderResource == null) {
+		return null
+	}
+
+	return {
+		uuid: orderResource.uuid,
+		totalPrice: orderResource.totalPrice
+	}
+}
+
+export function convertOrderItemResourceToOrderItem(
+	orderItemResource: OrderItemResource
+): OrderItem {
+	if (orderItemResource == null) {
+		return null
+	}
+
+	const orderItemVariations: OrderItemVariation[] = []
+
+	if (orderItemResource.orderItemVariations != null) {
+		for (let orderItemVariation of orderItemResource.orderItemVariations
+			.items) {
+			orderItemVariations.push(
+				convertOrderItemVariationResourceToOrderItemVariation(
+					orderItemVariation
+				)
+			)
+		}
+	}
+
+	return {
+		uuid: orderItemResource.uuid,
+		count: orderItemResource.count,
+		order: convertOrderResourceToOrder(orderItemResource.order),
+		product: convertProductResourceToProduct(orderItemResource.product),
+		orderItemVariations
+	}
+}
+
+export function convertOrderItemVariationResourceToOrderItemVariation(
+	orderItemVariationResource: OrderItemVariationResource
+): OrderItemVariation {
+	if (orderItemVariationResource == null) {
+		return null
+	}
+
+	const variationItems: VariationItem[] = []
+
+	if (orderItemVariationResource.variationItems != null) {
+		for (let variationItem of orderItemVariationResource.variationItems
+			.items) {
+			variationItems.push(
+				convertVariationItemResourceToVariationItem(variationItem)
+			)
+		}
+	}
+
+	return {
+		count: orderItemVariationResource.count,
+		variationItems
 	}
 }

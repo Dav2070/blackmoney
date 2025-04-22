@@ -205,6 +205,7 @@ export class BookingPageComponent {
 				this.tmpPickedVariationResource.push(
 					new Map<number, TmpVariations[]>().set(0, [
 						{
+							uuid: variationItem.uuid,
 							count: 0,
 							combination: variationItem.name,
 							display: variationItem.name,
@@ -329,6 +330,7 @@ export class BookingPageComponent {
 							].variationItems) {
 								if (variationMap.get(this.tmpCountVariations + 1)) {
 									variationMap.get(this.tmpCountVariations + 1).push({
+										uuid: variationItem.uuid,
 										count: 0,
 										combination:
 											variation.display + " " + variationItem.name,
@@ -341,6 +343,7 @@ export class BookingPageComponent {
 								} else {
 									variationMap.set(this.tmpCountVariations + 1, [
 										{
+											uuid: variationItem.uuid,
 											count: 0,
 											combination:
 												variation.display +
@@ -378,6 +381,7 @@ export class BookingPageComponent {
 						if (variation.count > 0) {
 							orderItem.count += variation.count
 							orderItem.orderItemVariations.push({
+								uuid: variation.uuid,
 								count: variation.count,
 								variationItems: variation.pickedVariation
 							})

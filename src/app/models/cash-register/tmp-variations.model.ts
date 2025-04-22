@@ -1,6 +1,7 @@
 import { VariationItem } from "../VariationItem"
 
 export class TmpVariations {
+	uuid: string
 	count: number
 	pickedVariation: VariationItem[]
 	display: string

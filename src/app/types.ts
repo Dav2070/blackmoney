@@ -76,6 +76,7 @@ export interface OrderItemResource {
 }
 
 export interface OrderItemVariationResource {
+	uuid: string
 	count: number
 	variationItems: List<VariationItemResource>
 }

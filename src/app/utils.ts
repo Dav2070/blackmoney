@@ -242,6 +242,7 @@ export function convertOrderItemVariationResourceToOrderItemVariation(
 	}
 
 	return {
+		uuid: orderItemVariationResource.uuid,
 		count: orderItemVariationResource.count,
 		variationItems
 	}

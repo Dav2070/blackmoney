@@ -253,4 +253,38 @@ export class ApiService {
 			})
 			.toPromise()
 	}
+
+	async updateOrderItem(
+		queryData: string,
+		variables: {
+			uuid: string
+			count: number
+			orderItemVariations: {
+				uuid: string
+				count: number
+			}[]
+		}
+	): Promise<MutationResult<{ updateOrderItem: OrderResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateOrderItem: OrderResource }>({
+				mutation: gql`
+					mutation UpdateOrderItem(
+						$uuid: String!
+						$count: Int
+						$orderItemVariations: [UpdateOrderItemVariationInput!]
+					) {
+						updateOrderItem(
+							uuid: $uuid
+							count: $count
+							orderItemVariations: $orderItemVariations
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
 }

@@ -1,3 +1,4 @@
+import e from "express"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Variation } from "src/app/models/Variation"
 
@@ -22,26 +23,25 @@ export class AllItemHandler {
 			// Falls Variationen vorhanden sind, diese ebenfalls aktualisieren
 			if (pickedItem.orderItemVariations) {
 				for (const variation of pickedItem.orderItemVariations) {
-					let existingVariation = item.orderItemVariations.find(
-						v =>
-							v.variationItems[0].uuid ==
-							variation.variationItems[0].uuid
-					)
+					let existingVariation = null
+
+					if (item.orderItemVariations) {
+						existingVariation = item.orderItemVariations.find(
+							v =>
+								v.variationItems.length ===
+									variation.variationItems.length &&
+								v.variationItems.every(
+									(item, index) =>
+										item.name ===
+											variation.variationItems[index].name &&
+										item.uuid === variation.variationItems[index].uuid
+								)
+						)
+					}
 
 					if (existingVariation != null) {
 						// Existierende Variation aktualisieren
-						for (const variationItem of variation.variationItems) {
-							let existingVariationItem =
-								existingVariation.variationItems.find(
-									vi => vi.uuid == variationItem.uuid
-								)
-							if (existingVariationItem != null) {
-								//existingVariationItem.count += variationItem.count
-							} else {
-								// Neues VariationItem hinzufügen
-								existingVariation.variationItems.push(variationItem)
-							}
-						}
+						existingVariation.count += variation.count
 					} else {
 						// Neue Variation hinzufügen
 						item.orderItemVariations.push(variation)

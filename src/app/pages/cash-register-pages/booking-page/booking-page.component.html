@@ -70,40 +70,45 @@
 					>
 						<mat-card-content class="card-content">
 							<!--
-							<span class="total-price">
-								@if (item.variations != null) {
-								{{
-									(
-										(item.price *
-											(item.count +
-												stagedItems.getTotalVariationPrice(
-													item.variations.items
-												))) /
-										100
-									).toFixed(2)
-								}}
-								€ } @else {
-								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
-							</span>
-							-->
+						<span class="total-price">
+							@if (item.variations != null) {
+							{{
+								(
+									(item.price *
+										(item.count +
+											bookedItems.getTotalVariationPrice(
+												item.variations.items
+											))) /
+									100
+								).toFixed(2)
+							}}
+							€ } @else {
+							{{ ((item.price * item.count) / 100).toFixed(2) }} € }
+						</span>
+						-->
 							<strong>
 								{{ item.count }} x
 								{{ item.product.name }}
 								{{ (item.product.price / 100).toFixed(2) }} €
 							</strong>
 						</mat-card-content>
-
 						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations; track variation){ @for(variationItem
-						of variation.variationItems; track variationItem.uuid){
-						<!--
+						item.orderItemVariations; track variation){
 						<mat-card-content>
-							{{ variationItem.count }}x mit {{ variationItem.name }} +
-							{{ (variationItem.price / 100).toFixed(2) }} €
-						</mat-card-content>
+							{{ variation.count }}
+							@for(variationItem of variation.variationItems; track
+							variationItem.uuid) {
+
+							{{ variationItem.name }}
+							<!--
+						{{ variationItem.count }}x mit {{ variationItem.name }} +
+						{{ (variationItem.price / 100).toFixed(2) }} €
 						-->
-						} } }
-						<mat-card-content> #{{ item.uuid }} </mat-card-content>
+
+							}</mat-card-content
+						>
+						} }
+						<mat-card-content> #{{ item.product.id }} </mat-card-content>
 					</mat-card>
 					}
 				</div>

@@ -314,6 +314,18 @@ export class BookingPageComponent {
 		this.isItemPopupVisible = false
 
 		this.sendOrderItem()
+		if (this.selectedItem.count == 0) {
+			this.bookedItems.deleteItem(this.selectedItem)
+		} else {
+			for (let variation of this.selectedItem.orderItemVariations) {
+				if (variation.count == 0) {
+					this.selectedItem.orderItemVariations.splice(
+						this.selectedItem.orderItemVariations.indexOf(variation),
+						1
+					)
+				}
+			}
+		}
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu

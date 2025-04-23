@@ -274,17 +274,17 @@ export class BookingPageComponent {
 			//this.tmpVariations = new Map<string, VariationResource>()
 		} else if (this.tmpAnzahl > 0) {
 			//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
-			/*
-			if (this.selectedItem.count > this.tmpAnzahl) {
+
+			if (this.selectedItem.count >= this.tmpAnzahl) {
 				this.selectedItem.count -= this.tmpAnzahl
-			} else if (this.selectedItem.count === this.tmpAnzahl) {
-				this.tmpAllItemHandler.deleteItem(this.selectedItem)
 			} else {
 				window.alert("Anzahl ist zu hoch")
 			}
-			*/
+
+			this.removeEmptyItem(this.stagedItems)
 			this.showTotal()
 		} else {
+			this.selectedItem.count -= 1
 			//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
 			/*
 			if (this.selectedItem.count > 1) {
@@ -293,6 +293,7 @@ export class BookingPageComponent {
 				this.tmpAllItemHandler.deleteItem(this.selectedItem)
 			}
 			*/
+			this.removeEmptyItem(this.stagedItems)
 			this.showTotal()
 		}
 	}
@@ -308,14 +309,20 @@ export class BookingPageComponent {
 	}
 
 	sendDeleteVariation() {
-		console.log(this.selectedItem)
 		this.tmpOrderVariations = []
 		this.minusUsed = false
 		this.isItemPopupVisible = false
 
-		this.sendOrderItem()
+		if (this.tmpAllItemHandler === this.bookedItems) {
+			this.sendOrderItem()
+		}
+
+		this.removeEmptyItem(this.tmpAllItemHandler)
+	}
+
+	removeEmptyItem(itemHandler: AllItemHandler) {
 		if (this.selectedItem.count == 0) {
-			this.bookedItems.deleteItem(this.selectedItem)
+			itemHandler.deleteItem(this.selectedItem)
 		} else {
 			for (let variation of this.selectedItem.orderItemVariations) {
 				if (variation.count == 0) {
@@ -326,6 +333,7 @@ export class BookingPageComponent {
 				}
 			}
 		}
+		console.log(this.selectedItem)
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu

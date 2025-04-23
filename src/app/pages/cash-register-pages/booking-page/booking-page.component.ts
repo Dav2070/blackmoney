@@ -308,7 +308,7 @@ export class BookingPageComponent {
 	}
 
 	sendDeleteVariation() {
-		console.log(this.selectedItem.orderItemVariations)
+		console.log(this.selectedItem)
 		this.tmpOrderVariations = []
 		this.minusUsed = false
 		this.isItemPopupVisible = false
@@ -670,6 +670,7 @@ export class BookingPageComponent {
 						orderItemVariations {
 							total
 							items {
+								uuid
 								count
 								variationItems {
 									total

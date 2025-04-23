@@ -306,11 +306,14 @@ export class BookingPageComponent {
 		this.selectedItem.count += 1
 		variation.count += 1
 	}
+
 	sendDeleteVariation() {
 		console.log(this.selectedItem.orderItemVariations)
 		this.tmpOrderVariations = []
 		this.minusUsed = false
 		this.isItemPopupVisible = false
+
+		this.sendOrderItem()
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu
@@ -569,6 +572,7 @@ export class BookingPageComponent {
 								orderItemVariations {
 									total
 									items {
+										uuid
 										count
 										variationItems {
 											total
@@ -740,6 +744,23 @@ export class BookingPageComponent {
 				this.tmpVariations.delete(variation.uuid)
 			}
 		}*/
+	}
+
+	async sendOrderItem() {
+		const orderItemVariations: { uuid: string; count: number }[] = []
+
+		for (let variation of this.selectedItem.orderItemVariations) {
+			orderItemVariations.push({
+				uuid: variation.uuid,
+				count: variation.count
+			})
+		}
+
+		await this.apiService.updateOrderItem(`uuid`, {
+			uuid: this.selectedItem.uuid,
+			count: this.selectedItem.count,
+			orderItemVariations
+		})
 	}
 
 	//Prüft ob am Anfang des Strings eine 0 eingefügt ist

@@ -9,7 +9,7 @@
 					<mat-card>
 						<mat-card-content>Tisch {{ tableLeft?.name }} – {{ tableLeftRoom?.name }}</mat-card-content>
 					</mat-card>
-					@for (item of bookedItemsLeft.getItems(); track item) {
+					@for (item of bookedItemsLeft.getItems(); track item.uuid) {
 					<mat-card
 						(click)="
 							transferItem(item, bookedItemsLeft, bookedItemsRight)
@@ -121,9 +121,9 @@
 					<mat-card>
 						<mat-card-content>Tisch {{ tableRight?.name }} – {{ tableRightRoom?.name }}</mat-card-content>
 					</mat-card>
-					@for (item of bookedItemsLeft.getItems(); track item) {
+					@for (item of bookedItemsRight.getItems(); track item.uuid) {
 					<mat-card
-						(click)="transferItem(item,bookedItemsRight, bookedItemsLeft)"
+						(click)="transferItem(item, bookedItemsRight, bookedItemsLeft)"
 						style="cursor: pointer"
 					>
 						<mat-card-content class="card-content">

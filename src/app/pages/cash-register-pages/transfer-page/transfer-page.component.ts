@@ -106,6 +106,7 @@ export class TransferPageComponent {
 										variationItems {
 											total
 											items {
+												uuid
 												name
 											}
 										}

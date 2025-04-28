@@ -9,6 +9,8 @@ import { convertOrderItemResourceToOrderItem } from "src/app/utils"
 import { Table } from "src/app/models/Table"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Room } from "src/app/models/Room"
+import { OrderItemVariation } from "src/app/models/OrderItemVariation"
+import { Order } from "src/app/models/Order"
 
 @Component({
 	templateUrl: "./transfer-page.component.html",
@@ -26,8 +28,8 @@ export class TransferPageComponent {
 	console: string
 	consoleActive: boolean = false
 	isItemPopupVisible: boolean = false
-	lastClickedItem: PickedItem
-	tmpVariations = new Map<number, Variation>()
+	lastClickedItem: OrderItem
+	tmpVariations: OrderItem
 	tmpAnzahl: number
 
 	tmpSend: AllItemHandler
@@ -157,6 +159,22 @@ export class TransferPageComponent {
 		send: AllItemHandler,
 		receiving: AllItemHandler
 	) {
+		if (item.orderItemVariations.length > 0) {
+			this.tmpSend = send
+			this.tmpReceiver = receiving
+			this.lastClickedItem = item
+			this.tmpVariations = JSON.parse(JSON.stringify(item))
+			this.tmpVariations.count = 0
+			for (let variation of this.tmpVariations.orderItemVariations) {
+				variation.count = 0
+			}
+
+			this.isItemPopupVisible = true
+		} else {
+			send.reduceItem(item, 1)
+			receiving.pushNewItem({ ...item, count: 1 })
+		}
+
 		// let anzahl = 0
 		// if (this.consoleActive) {
 		// 	anzahl = parseInt(this.console)
@@ -197,17 +215,14 @@ export class TransferPageComponent {
 	}
 
 	//Entfernt eine Variation
-	removeVariation(variation: Variation) {
-		if (variation.anzahl === 1) {
-			this.tmpVariations.delete(variation.id)
-		} else {
-			this.tmpVariations.get(variation.id).anzahl -= 1
-		}
+	removeVariation(variation: OrderItemVariation) {
+		this.tmpVariations.count -= 1
+		variation.count -= 1
 	}
 
 	//Checkt ob Limit der Anzahl erreicht ist
 	checkLimitAnzahl(id: number) {
-		let anzahl = this.lastClickedItem.pickedVariation.get(id).anzahl
+		/*let anzahl = this.lastClickedItem.pickedVariation.get(id).anzahl
 		if (this.tmpAnzahl > 0) {
 			anzahl = this.tmpAnzahl
 		}
@@ -218,21 +233,18 @@ export class TransferPageComponent {
 			}
 		}
 
-		return false
+		return false*/
 	}
 
 	//Erhöht eine Variation um eins
-	addVariation(variation: Variation) {
-		if (this.tmpVariations.has(variation.id)) {
-			this.tmpVariations.get(variation.id).anzahl += 1
-		} else {
-			this.tmpVariations.set(variation.id, { ...variation, anzahl: 1 })
-		}
+	addVariation(variation: OrderItemVariation) {
+		this.tmpVariations.count += 1
+		variation.count += 1
 	}
 
 	//Checkt ob mindestens eine Variation ausgewählt wurde oder die Anzahl an Variationen ausgewählt wurde die man buchen möchte
 	checkPickedVariation() {
-		if (this.tmpAnzahl > 0) {
+		/*if (this.tmpAnzahl > 0) {
 			let anzahl = 0
 			for (let variation of this.tmpVariations.values()) {
 				anzahl += variation.anzahl
@@ -247,13 +259,13 @@ export class TransferPageComponent {
 				}
 			}
 		}
-		return true
+		return true*/
 	}
 
 	//Schließt Popup und setzt alle Variablen default
 	closeItemPopup() {
 		this.isItemPopupVisible = !this.isItemPopupVisible
-		this.tmpVariations.clear()
+		this.tmpVariations = null
 		this.lastClickedItem = undefined
 		this.tmpAnzahl = 0
 	}
@@ -280,5 +292,37 @@ export class TransferPageComponent {
 		// 	number
 		// )
 		// this.closeItemPopup()
+	}
+	transferVariation() {
+		this.tmpVariations.orderItemVariations =
+			this.tmpVariations.orderItemVariations.filter(v => v.count > 0)
+		this.tmpReceiver.pushNewItem(this.tmpVariations)
+		this.tmpSend.reduceItem(this.lastClickedItem, this.tmpVariations.count)
+		for (
+			let i = this.lastClickedItem.orderItemVariations.length - 1;
+			i >= 0;
+			i--
+		) {
+			const variation = this.lastClickedItem.orderItemVariations[i]
+			const matchingVariation = this.tmpVariations.orderItemVariations.find(
+				v =>
+					v.variationItems.length === variation.variationItems.length &&
+					v.variationItems.every(
+						(item, index) =>
+							item.name === variation.variationItems[index].name
+					)
+			)
+
+			if (matchingVariation) {
+				variation.count -= matchingVariation.count
+
+				// Entfernen, wenn der count kleiner oder gleich 0 ist
+				if (variation.count <= 0) {
+					this.lastClickedItem.orderItemVariations.splice(i, 1)
+				}
+			}
+		}
+
+		this.isItemPopupVisible = false
 	}
 }

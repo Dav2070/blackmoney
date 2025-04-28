@@ -7,7 +7,10 @@
 			<div class="items">
 				<div class="items">
 					<mat-card>
-						<mat-card-content>Tisch {{ tableLeft?.name }} – {{ tableLeftRoom?.name }}</mat-card-content>
+						<mat-card-content
+							>Tisch {{ tableLeft?.name }} –
+							{{ tableLeftRoom?.name }}</mat-card-content
+						>
 					</mat-card>
 					@for (item of bookedItemsLeft.getItems(); track item.uuid) {
 					<mat-card
@@ -117,17 +120,20 @@
 			</div>
 		</article>
 		<aside>
-				<div class="items">
-					<mat-card>
-						<mat-card-content>Tisch {{ tableRight?.name }} – {{ tableRightRoom?.name }}</mat-card-content>
-					</mat-card>
-					@for (item of bookedItemsRight.getItems(); track item.uuid) {
-					<mat-card
-						(click)="transferItem(item, bookedItemsRight, bookedItemsLeft)"
-						style="cursor: pointer"
+			<div class="items">
+				<mat-card>
+					<mat-card-content
+						>Tisch {{ tableRight?.name }} –
+						{{ tableRightRoom?.name }}</mat-card-content
 					>
-						<mat-card-content class="card-content">
-							<!--
+				</mat-card>
+				@for (item of bookedItemsRight.getItems(); track item.uuid) {
+				<mat-card
+					(click)="transferItem(item, bookedItemsRight, bookedItemsLeft)"
+					style="cursor: pointer"
+				>
+					<mat-card-content class="card-content">
+						<!--
 							<span class="total-price">
 								@if (item.variations != null) {
 								{{
@@ -144,31 +150,31 @@
 								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
 							</span>
 							-->
-							<strong>
-								{{ item.count }} x
-								{{ item.product.name }}
-								{{ (item.product.price / 100).toFixed(2) }} €
-							</strong>
-						</mat-card-content>
-						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations; track variation){
-						<mat-card-content>
-							{{ variation.count }}
-							@for(variationItem of variation.variationItems; track
-							variationItem.uuid) {
+						<strong>
+							{{ item.count }} x
+							{{ item.product.name }}
+							{{ (item.product.price / 100).toFixed(2) }} €
+						</strong>
+					</mat-card-content>
+					@if (item.orderItemVariations) { @for (variation of
+					item.orderItemVariations; track variation){
+					<mat-card-content>
+						{{ variation.count }}
+						@for(variationItem of variation.variationItems; track
+						variationItem.uuid) {
 
-							{{ variationItem.name }}
-							<!--
+						{{ variationItem.name }}
+						<!--
 							{{ variationItem.count }}x mit {{ variationItem.name }} +
 							{{ (variationItem.price / 100).toFixed(2) }} €
 							-->
 
-							}</mat-card-content
-						>
-						} }
-						<mat-card-content> #{{ item.product.id }} </mat-card-content>
-					</mat-card>
-					}
+						}</mat-card-content
+					>
+					} }
+					<mat-card-content> #{{ item.product.id }} </mat-card-content>
+				</mat-card>
+				}
 			</div>
 			<div>
 				<mat-card class="price">
@@ -206,48 +212,28 @@
 	</footer>
 	<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
 		<div class="popup-content">
+			@if(tmpVariations!=null){
 			<h2>
-				@if(lastClickedItem) {
-				{{ lastClickedItem.anzahl }} x
-				{{ lastClickedItem.name }}
-				}
+				{{ tmpVariations.product.name }}
 			</h2>
-			@if(isItemPopupVisible){ @for (variation of
-			lastClickedItem.pickedVariation.values(); track variation){
+			@for(variation of tmpVariations.orderItemVariations; track variation){
 			<div class="popup-content-dish">
-				<button
-					[disabled]="
-						!tmpVariations.has(variation.id) ||
-						tmpVariations.get(variation.id).anzahl === 0
-					"
-					mat-mini-fab
-					(click)="removeVariation(variation)"
-				>
+				<button mat-mini-fab (click)="removeVariation(variation)">
 					<mat-icon>remove</mat-icon>
 				</button>
 				<b>
-					@if(tmpVariations.has(variation.id)){
-					{{ tmpVariations.get(variation.id).anzahl }}
-					} @else(){ 0 } x mit {{ variation.name }}
-					<br />
-					+ {{ variation.preis }}€
+					{{ variation.count }}x @for(variationItem of
+					variation.variationItems; track variationItem){
+					{{ variationItem.name }}
+					}
 				</b>
-				<button
-					mat-mini-fab
-					[disabled]="checkLimitAnzahl(variation.id)"
-					(click)="addVariation(variation)"
-				>
+				<button mat-mini-fab (click)="addVariation(variation)">
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>
-
 			} }
 			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
-			<button
-				mat-flat-button
-				[disabled]="checkPickedVariation()"
-				(click)="sendVariation()"
-			>
+			<button mat-flat-button (click)="transferVariation()">
 				Auswählen
 			</button>
 		</div>

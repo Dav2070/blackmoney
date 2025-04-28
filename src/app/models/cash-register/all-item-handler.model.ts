@@ -32,10 +32,9 @@ export class AllItemHandler {
 									variation.variationItems.length &&
 								v.variationItems.every(
 									(item, index) =>
-										item.name ===
-											variation.variationItems[index].name 
-											//&&
-										//item.uuid === variation.variationItems[index].uuid
+										item.name === variation.variationItems[index].name
+									//&&
+									//item.uuid === variation.variationItems[index].uuid
 								)
 						)
 					}
@@ -125,6 +124,10 @@ export class AllItemHandler {
 
 	//Reduziere Item oder Lösche es wenn Item = 0
 	reduceItem(item: OrderItem, anzahl: number) {
+		item.count -= anzahl
+		if (item.count <= 0) {
+			this.allPickedItems.delete(item.uuid)
+		}
 		// if (item.variations != null) {
 		// 	for (let variation of item.variations.items) {
 		// 		if (

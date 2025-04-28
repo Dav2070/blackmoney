@@ -223,37 +223,18 @@ export class BookingPageComponent {
 	async subtractitem() {
 		if (this.tmpAllItemHandler === this.bookedItems) {
 			if (this.selectedItem.orderItemVariations.length <= 0) {
-				let items = await this.apiService.removeProductsFromOrder(
-					`
-						products {
-							total
-							items {
-								id
-								uuid
-								name
-								price
-							}
-						}
-					`,
-					{
-						uuid: this.orderUuid,
-						products: [
-							{
-								uuid: this.selectedItem.uuid,
-								count: this.tmpAnzahl == 0 ? 1 : this.tmpAnzahl
-							}
-						]
+				if (this.tmpAnzahl > 0) {
+					if (this.selectedItem.count >= this.tmpAnzahl) {
+						this.selectedItem.count -= this.tmpAnzahl
+					} else {
+						window.alert("Anzahl ist zu hoch")
 					}
-				)
-
-				this.bookedItems.clearItems()
-
-				for (let item of items.data.removeProductsFromOrder.orderItems
-					.items) {
-					this.bookedItems.pushNewItem(
-						convertOrderItemResourceToOrderItem(item)
-					)
+				} else {
+					this.selectedItem.count -= 1
 				}
+
+				this.sendOrderItem()
+				this.removeEmptyItem(this.bookedItems)
 
 				this.showTotal()
 			} else {

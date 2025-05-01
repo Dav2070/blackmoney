@@ -221,6 +221,7 @@
 					<div class="popup-content-dish">
 						<button
 							mat-mini-fab
+							[disabled]="variation.count == 0"
 							(click)="removeVariationSubtraction(variation)"
 						>
 							<mat-icon>remove</mat-icon>
@@ -233,6 +234,7 @@
 						</b>
 						<button
 							mat-mini-fab
+							[disabled]="checkForPlus(variation)"
 							(click)="addVariationSubtraction(variation)"
 						>
 							<mat-icon>add</mat-icon>

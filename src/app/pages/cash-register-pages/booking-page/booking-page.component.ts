@@ -70,6 +70,7 @@ export class BookingPageComponent {
 	tmpAnzahl = 0
 
 	selectedItem: OrderItem = null
+	tmpSelectedItem: OrderItem = null
 	tmpAllItemHandler: AllItemHandler = null
 
 	isBillPopupVisible: boolean = false
@@ -81,8 +82,6 @@ export class BookingPageComponent {
 	tmpCountVariations: number = 0
 
 	tmpPickedVariationResource: Map<number, TmpVariations[]>[] = []
-
-	tmpOrderVariations: OrderItemVariation[] = []
 
 	constructor(
 		private dataService: DataService,
@@ -239,7 +238,8 @@ export class BookingPageComponent {
 				this.showTotal()
 			} else {
 				// Wenn Variationen vorhanden sind
-				this.tmpOrderVariations = []
+
+				this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedItem))
 				this.minusUsed = true
 				this.isItemPopupVisible = true
 			}
@@ -290,7 +290,6 @@ export class BookingPageComponent {
 	}
 
 	sendDeleteVariation() {
-		this.tmpOrderVariations = []
 		this.minusUsed = false
 		this.isItemPopupVisible = false
 
@@ -938,5 +937,23 @@ export class BookingPageComponent {
 
 		// Navigate to the transfer page with the table UUID
 		this.router.navigate(["tables", this.table.uuid, table.uuid])
+	}
+
+	checkForPlus(variation: OrderItemVariation) {
+		let variationCount = this.tmpSelectedItem.orderItemVariations.find(
+			v =>
+				v.variationItems.length === variation.variationItems.length &&
+				v.variationItems.every(
+					(item, index) =>
+						item.name === variation.variationItems[index].name
+					//&&
+					//item.uuid === variation.variationItems[index].uuid
+				)
+		)?.count
+
+		if (variationCount <= variation.count) {
+			return true
+		}
+		return false
 	}
 }

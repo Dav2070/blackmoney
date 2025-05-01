@@ -159,20 +159,43 @@ export class TransferPageComponent {
 		send: AllItemHandler,
 		receiving: AllItemHandler
 	) {
-		if (item.orderItemVariations.length > 0) {
-			this.tmpSend = send
-			this.tmpReceiver = receiving
-			this.lastClickedItem = item
-			this.tmpVariations = JSON.parse(JSON.stringify(item))
-			this.tmpVariations.count = 0
-			for (let variation of this.tmpVariations.orderItemVariations) {
-				variation.count = 0
-			}
-
-			this.isItemPopupVisible = true
+		let anzahl = 1
+		if (this.tmpAnzahl > 0) {
+			anzahl = this.tmpAnzahl
+		}
+		if (item.count < anzahl) {
+			window.alert(
+				"Es können maximal " + item.count + " Items übertragen werden"
+			)
 		} else {
-			send.reduceItem(item, 1)
-			receiving.pushNewItem({ ...item, count: 1 })
+			if (item.orderItemVariations.length == 0) {
+				send.reduceItem(item, anzahl)
+				receiving.pushNewItem({ ...item, count: anzahl })
+			}
+			if (item.orderItemVariations.length == 1) {
+				this.tmpSend = send
+				this.tmpReceiver = receiving
+				this.lastClickedItem = item
+				this.tmpVariations = JSON.parse(JSON.stringify(item))
+
+				this.tmpVariations.count = anzahl
+				for (let variation of this.tmpVariations.orderItemVariations) {
+					variation.count = anzahl
+				}
+				this.transferVariation()
+			}
+			if (item.orderItemVariations.length > 1) {
+				this.tmpSend = send
+				this.tmpReceiver = receiving
+				this.lastClickedItem = item
+				this.tmpVariations = JSON.parse(JSON.stringify(item))
+				this.tmpVariations.count = 0
+				for (let variation of this.tmpVariations.orderItemVariations) {
+					variation.count = 0
+				}
+
+				this.isItemPopupVisible = true
+			}
 		}
 
 		// let anzahl = 0

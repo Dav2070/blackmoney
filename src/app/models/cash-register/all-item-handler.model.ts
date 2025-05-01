@@ -3,7 +3,8 @@ import { OrderItem } from "src/app/models/OrderItem"
 import { Variation } from "src/app/models/Variation"
 
 export class AllItemHandler {
-	private allPickedItems = new Map<string, OrderItem>()
+	//private allPickedItems = new Map<string, OrderItem>()
+	private allPickedItems: OrderItem[] = []
 
 	getAllPickedItems() {
 		return this.allPickedItems
@@ -11,12 +12,11 @@ export class AllItemHandler {
 
 	//Füge neues Item in die Map hinzu
 	pushNewItem(pickedItem: OrderItem) {
-		const uuid = pickedItem.uuid
+		const id = pickedItem.product.id
 
+		const item = this.allPickedItems.find(item => item.product.id === id)
 		// Prüfen, ob das Item bereits existiert
-		if (this.allPickedItems.has(uuid)) {
-			const item = this.allPickedItems.get(uuid)
-
+		if (item != undefined) {
 			// Anzahl des bestehenden Items erhöhen
 			item.count += pickedItem.count
 
@@ -50,7 +50,7 @@ export class AllItemHandler {
 			}
 		} else {
 			// Neues Item hinzufügen
-			this.allPickedItems.set(uuid, { ...pickedItem })
+			this.allPickedItems.push({ ...pickedItem })
 		}
 	}
 
@@ -60,7 +60,7 @@ export class AllItemHandler {
 			this.pushNewItem(item)
 		}
 
-		itemHandler.getAllPickedItems().clear()
+		itemHandler.clearItems()
 	}
 
 	//Berechne Total Preis von items mit der selben ID
@@ -102,7 +102,13 @@ export class AllItemHandler {
 
 	//Entferne Item aus der Map
 	deleteItem(pickedItem: OrderItem): void {
-		this.allPickedItems.delete(pickedItem.uuid)
+		//this.allPickedItems.delete(pickedItem.uuid)
+		const index = this.allPickedItems.findIndex(
+			item => item.product.id === pickedItem.product.id
+		)
+		if (index !== -1) {
+			this.allPickedItems.splice(index, 1)
+		}
 	}
 
 	deleteVariation(pickedItem: OrderItem): void {
@@ -114,19 +120,21 @@ export class AllItemHandler {
 	}
 
 	getItem(uuid: string): OrderItem {
-		return this.allPickedItems.get(uuid)
+		return this.allPickedItems.find(item => item.uuid === uuid)
 	}
 
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
 	includes(pickedItem: OrderItem): boolean {
-		return this.allPickedItems.has(pickedItem.uuid)
+		return this.allPickedItems.some(
+			item => item.product.id === pickedItem.product.id
+		)
 	}
 
 	//Reduziere Item oder Lösche es wenn Item = 0
 	reduceItem(item: OrderItem, anzahl: number) {
 		item.count -= anzahl
 		if (item.count <= 0) {
-			this.allPickedItems.delete(item.uuid)
+			this.deleteItem(item)
 		}
 		// if (item.variations != null) {
 		// 	for (let variation of item.variations.items) {
@@ -173,10 +181,11 @@ export class AllItemHandler {
 
 	//Entfertn alle Items aus Map
 	clearItems() {
-		this.allPickedItems.clear()
+		this.allPickedItems = []
+		//this.allPickedItems.clear()
 	}
 
 	isEmpty() {
-		return this.allPickedItems.size == 0
+		return this.allPickedItems.length === 0
 	}
 }

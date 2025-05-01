@@ -218,7 +218,11 @@
 			</h2>
 			@for(variation of tmpVariations.orderItemVariations; track variation){
 			<div class="popup-content-dish">
-				<button mat-mini-fab (click)="removeVariation(variation)">
+				<button
+					mat-mini-fab
+					[disabled]="checkIfMinus(variation)"
+					(click)="removeVariation(variation)"
+				>
 					<mat-icon>remove</mat-icon>
 				</button>
 				<b>
@@ -227,7 +231,11 @@
 					{{ variationItem.name }}
 					}
 				</b>
-				<button mat-mini-fab (click)="addVariation(variation)">
+				<button
+					mat-mini-fab
+					[disabled]="checkIfPlus(variation)"
+					(click)="addVariation(variation)"
+				>
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>

@@ -348,4 +348,29 @@ export class TransferPageComponent {
 
 		this.isItemPopupVisible = false
 	}
+
+	checkIfMinus(variation: OrderItemVariation) {
+		if (variation.count <= 0) {
+			return true
+		}
+		return false
+	}
+
+	checkIfPlus(variation: OrderItemVariation) {
+		let variationCount = this.lastClickedItem.orderItemVariations.find(
+			v =>
+				v.variationItems.length === variation.variationItems.length &&
+				v.variationItems.every(
+					(item, index) =>
+						item.name === variation.variationItems[index].name
+					//&&
+					//item.uuid === variation.variationItems[index].uuid
+				)
+		)?.count
+
+		if (variationCount <= variation.count) {
+			return true
+		}
+		return false
+	}
 }

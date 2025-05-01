@@ -187,7 +187,7 @@ export class BookingPageComponent {
 			if (this.tmpAnzahl > 0) {
 				newItem.count = this.tmpAnzahl
 			} else if (this.stagedItems.includes(newItem)) {
-				let existingItem = this.stagedItems.getItem(newItem.uuid)
+				let existingItem = this.stagedItems.getItem(newItem.product.id)
 				existingItem.count += 1
 			} else {
 				newItem.count = 1

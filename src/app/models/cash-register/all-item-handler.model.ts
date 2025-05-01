@@ -119,8 +119,8 @@ export class AllItemHandler {
 		*/
 	}
 
-	getItem(uuid: string): OrderItem {
-		return this.allPickedItems.find(item => item.uuid === uuid)
+	getItem(id: number): OrderItem {
+		return this.allPickedItems.find(item => item.product.id === id)
 	}
 
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist

@@ -394,7 +394,8 @@ export class TransferPageComponent {
 
 		await this.apiService.updateOrder("uuid",{uuid: this.tableRightOrder.uuid, orderItems: this.bookedItemsRight.getItemsCountandId()})
 
-		this.router.navigate([route], { relativeTo: this.activatedRoute });
+		this.router.navigate([route], { relativeTo: this.activatedRoute }).then(() => {
+			window.location.reload()});
 
 	}
 }

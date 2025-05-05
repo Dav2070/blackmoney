@@ -84,7 +84,7 @@ export class AllItemHandler {
 
 	//Gib Liste mit jedem Item zurück
 	getItems() {
-		return this.allPickedItems.values()
+		return this.allPickedItems
 	}
 
 	//Gibt den Gesamtpreis der Variationen zurück

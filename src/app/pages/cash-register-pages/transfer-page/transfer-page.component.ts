@@ -76,15 +76,13 @@ export class TransferPageComponent {
 			return
 		}
 
-		await this.loadOrders(
+		this.tableLeftOrder = await this.loadOrders(
 			this.tableLeft.uuid,
-			this.bookedItemsLeft,
-			this.tableLeftOrder
+			this.bookedItemsLeft
 		)
-		await this.loadOrders(
+		this.tableRightOrder = await this.loadOrders(
 			this.tableRight.uuid,
-			this.bookedItemsRight,
-			this.tableRightOrder
+			this.bookedItemsRight
 		)
 	}
 
@@ -92,7 +90,6 @@ export class TransferPageComponent {
 	async loadOrders(
 		tableUuid: string,
 		itemHandler: AllItemHandler,
-		orderObject: Order
 	) {
 		let order = await this.apiService.retrieveTable(
 			`
@@ -146,8 +143,10 @@ export class TransferPageComponent {
 				.items) {
 				itemHandler.pushNewItem(convertOrderItemResourceToOrderItem(item))
 			}
-			orderObject = order.data.retrieveTable.orders.items[0]
+			return {...order.data.retrieveTable.orders.items[0]}
 		}
+
+		return null;
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
@@ -389,17 +388,13 @@ export class TransferPageComponent {
 		return false
 	}
 
-	updateTables() {
-		console.log(
-			"Tisch links: ",
-			this.bookedItemsLeft.getItems(),
-			this.tableLeftOrder.uuid
-		)
+	async updateTables(route : string) {
 
-		console.log(
-			"Tisch rechts: ",
-			this.bookedItemsRight.getItems(),
-			this.tableRightOrder.uuid
-		)
+		await this.apiService.updateOrder("uuid",{uuid: this.tableLeftOrder.uuid, orderItems: this.bookedItemsLeft.getItemsCountandId()})
+
+		await this.apiService.updateOrder("uuid",{uuid: this.tableRightOrder.uuid, orderItems: this.bookedItemsRight.getItemsCountandId()})
+
+		this.router.navigate([route], { relativeTo: this.activatedRoute });
+
 	}
 }

@@ -187,26 +187,24 @@
 	</div>
 	<footer>
 		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton" [routerLink]="['../']" (click)="updateTables()">
+			<button mat-flat-button class="footerButton"  (click)="updateTables('../')">
 				Tisch {{ tableLeft?.name }}
 			</button>
-			<button mat-flat-button class="footerButton" [routerLink]="['../../']" (click)="updateTables()">
+			<button mat-flat-button class="footerButton"  (click)="updateTables('../../')">
 				Tischplan
 			</button>
 			<button
 				mat-flat-button
 				class="footerButton"
 				[disabled]="!consoleActive"
-				[routerLink]="['../../' + console]"
-				(click)="updateTables()"
+				(click)="updateTables('../../ + {{console}}')"
 			>
 				Tisch
 			</button>
 			<button
 				mat-flat-button
 				class="footerButton"
-				[routerLink]="['../../' + tableRight?.uuid]"
-				(click)="updateTables()"
+				(click)="updateTables('../../' + tableRight?.uuid)"
 			>
 				Tisch {{ tableRight?.name }}
 			</button>

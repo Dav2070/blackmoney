@@ -87,6 +87,17 @@ export class AllItemHandler {
 		return this.allPickedItems
 	}
 
+	getItemsCountandId(){
+		return this.allPickedItems.map(item => {
+			return {
+				
+				count: item.count,
+				productId: item.product.id
+			}
+		}
+		)
+	}
+
 	//Gibt den Gesamtpreis der Variationen zurück
 	getTotalVariationPrice(pickedVariation: Variation[]): number {
 		let total = 0

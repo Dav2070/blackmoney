@@ -84,7 +84,18 @@ export class AllItemHandler {
 
 	//Gib Liste mit jedem Item zurück
 	getItems() {
-		return this.allPickedItems.values()
+		return this.allPickedItems
+	}
+
+	getItemsCountandId(){
+		return this.allPickedItems.map(item => {
+			return {
+				
+				count: item.count,
+				productId: item.product.id
+			}
+		}
+		)
 	}
 
 	//Gibt den Gesamtpreis der Variationen zurück

@@ -1,6 +1,7 @@
 import e from "express"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Variation } from "src/app/models/Variation"
+import { OrderItemVariation } from "../OrderItemVariation"
 
 export class AllItemHandler {
 	//private allPickedItems = new Map<string, OrderItem>()
@@ -88,16 +89,15 @@ export class AllItemHandler {
 	}
 
 	//Gibt den Gesamtpreis der Variationen zurück
-	getTotalVariationPrice(pickedVariation: Variation[]): number {
-		let total = 0
-
-		for (let variation of pickedVariation) {
-			for (let variationItem of variation.variationItems) {
-				//total += variationItem.price * variationItem.count
+	getTotalVariationPrice(variations: OrderItemVariation[]): number {
+		let total = 0;
+		
+		for (const variation of variations) {
+			for (const variationItem of variation.variationItems) {
+				total += variationItem.additionalCost || 0;
 			}
 		}
-
-		return total
+		return total;
 	}
 
 	//Entferne Item aus der Map

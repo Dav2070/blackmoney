@@ -15,23 +15,17 @@
 						"
 					>
 						<mat-card-content class="card-content">
-							<!--
 							<span class="total-price">
-								@if (item.variations != null) {
+								@if (item.product.variations != null) {
 								{{
 									(
-										(item.price *
-											(item.count +
-												bookedItems.getTotalVariationPrice(
-													item.variations.items
-												))) /
+										(item.count *(item.product.price + bookedItems.getTotalVariationPrice(item.orderItemVariations))) /
 										100
 									).toFixed(2)
 								}}
 								€ } @else {
-								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
+								{{ ((item.product.price) / 100).toFixed(2) }} € }
 							</span>
-							-->
 							<strong>
 								{{ item.count }} x
 								{{ item.product.name }}
@@ -46,11 +40,6 @@
 							variationItem.uuid) {
 
 							{{ variationItem.name }}
-							<!--
-							{{ variationItem.count }}x mit {{ variationItem.name }} +
-							{{ (variationItem.price / 100).toFixed(2) }} €
-							-->
-
 							}</mat-card-content
 						>
 						} }
@@ -69,23 +58,17 @@
 						"
 					>
 						<mat-card-content class="card-content">
-							<!--
-						<span class="total-price">
-							@if (item.variations != null) {
-							{{
-								(
-									(item.price *
-										(item.count +
-											bookedItems.getTotalVariationPrice(
-												item.variations.items
-											))) /
-									100
-								).toFixed(2)
-							}}
-							€ } @else {
-							{{ ((item.price * item.count) / 100).toFixed(2) }} € }
-						</span>
-						-->
+							<span class="total-price">
+								@if (item.product.variations != null) {
+								{{
+									(
+										(item.count *(item.product.price + stagedItems.getTotalVariationPrice(item.orderItemVariations))) /
+										100
+									).toFixed(2)
+								}}
+								€ } @else {
+								{{ ((item.product.price) / 100).toFixed(2) }} € }
+							</span>
 							<strong>
 								{{ item.count }} x
 								{{ item.product.name }}
@@ -99,12 +82,9 @@
 							@for(variationItem of variation.variationItems; track
 							variationItem.uuid) {
 
-							{{ variationItem.name }}
-							<!--
-						{{ variationItem.count }}x mit {{ variationItem.name }} +
-						{{ (variationItem.price / 100).toFixed(2) }} €
-						-->
-
+							{{ variationItem.name }} @if(variationItem.additionalCost){
+								(+ {{ variationItem.additionalCost }}€)
+							}
 							}</mat-card-content
 						>
 						} }

@@ -195,6 +195,13 @@ export class ApiService {
 			orderItems: {
 				count: number
 				productId: number
+				orderItemVariations?: {
+					uuid: string
+					count: number
+					variationItems: {
+						id: number
+					}[]
+				}[]
 			}[]
 		}
 	): Promise<MutationResult<{ updateOrder: OrderResource }>> {
@@ -203,7 +210,7 @@ export class ApiService {
 				mutation: gql`
 					mutation UpdateOrder(
 						$uuid: String!
-						$orderItems: [UpdateOrderItemInput!]!
+						$orderItems: [OrderItemInput!]!
 					) {
 						updateOrder(
 							uuid: $uuid
@@ -302,7 +309,7 @@ export class ApiService {
 					mutation UpdateOrderItem(
 						$uuid: String!
 						$count: Int
-						$orderItemVariations: [UpdateOrderItemVariationInput!]
+						$orderItemVariations: [OrderItemVariationInput!]
 					) {
 						updateOrderItem(
 							uuid: $uuid

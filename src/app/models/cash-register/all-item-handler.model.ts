@@ -32,7 +32,7 @@ export class AllItemHandler {
 									variation.variationItems.length &&
 								v.variationItems.every(
 									(item, index) =>
-										item.name === variation.variationItems[index].name
+										item.id === variation.variationItems[index].id
 									//&&
 									//item.uuid === variation.variationItems[index].uuid
 								)
@@ -90,12 +90,20 @@ export class AllItemHandler {
 	getItemsCountandId(){
 		return this.allPickedItems.map(item => {
 			return {
-				
 				count: item.count,
-				productId: item.product.id
-			}
-		}
-		)
+				productId: item.product.id,
+				orderItemVariations: item.orderItemVariations.map(variation => {
+					return {
+						count: variation.count,
+						variationItems: variation.variationItems.map(variationItem => {
+							return {
+								id: variationItem.id,
+							};
+						}),
+					};
+				}),
+			};
+		});
 	}
 
 	//Gibt den Gesamtpreis der Variationen zurück

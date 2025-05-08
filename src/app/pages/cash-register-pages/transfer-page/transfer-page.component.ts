@@ -119,6 +119,7 @@ export class TransferPageComponent {
 										variationItems {
 											total
 											items {
+												id
 												uuid
 												name
 											}
@@ -346,7 +347,7 @@ export class TransferPageComponent {
 					v.variationItems.length === variation.variationItems.length &&
 					v.variationItems.every(
 						(item, index) =>
-							item.name === variation.variationItems[index].name
+							item.id === variation.variationItems[index].id
 					)
 			)
 

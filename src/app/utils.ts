@@ -175,6 +175,7 @@ export function convertVariationItemResourceToVariationItem(
 	}
 
 	return {
+		id: variationItemResource.id,
 		uuid: variationItemResource.uuid,
 		name: variationItemResource.name,
 		additionalCost: variationItemResource.additionalCost

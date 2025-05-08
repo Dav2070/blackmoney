@@ -195,8 +195,7 @@ export class ApiService {
 			orderItems: {
 				count: number
 				productId: number
-				orderItemVariations?: {
-					uuid: string
+				orderItemVariations: {
 					count: number
 					variationItems: {
 						id: number

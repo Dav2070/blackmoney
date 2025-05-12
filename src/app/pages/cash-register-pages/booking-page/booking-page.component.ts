@@ -577,6 +577,7 @@ export class BookingPageComponent {
 										variationItems {
 											total
 											items {
+												id
 												name
 											}
 										}

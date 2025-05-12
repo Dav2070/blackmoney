@@ -25,6 +25,8 @@ export class TransferPageComponent {
 	tableRight: Table = null
 	tableLeftRoom: Room = null
 	tableRightRoom: Room = null
+	tableLeftOrder: Order = null
+	tableRightOrder: Order = null
 	console: string
 	consoleActive: boolean = false
 	isItemPopupVisible: boolean = false
@@ -74,12 +76,21 @@ export class TransferPageComponent {
 			return
 		}
 
-		await this.loadOrders(this.tableLeft.uuid, this.bookedItemsLeft)
-		await this.loadOrders(this.tableRight.uuid, this.bookedItemsRight)
+		this.tableLeftOrder = await this.loadOrders(
+			this.tableLeft.uuid,
+			this.bookedItemsLeft
+		)
+		this.tableRightOrder = await this.loadOrders(
+			this.tableRight.uuid,
+			this.bookedItemsRight
+		)
 	}
 
 	//Aktualisiere Bestellungen aus DB
-	async loadOrders(tableUuid: string, itemHandler: AllItemHandler) {
+	async loadOrders(
+		tableUuid: string,
+		itemHandler: AllItemHandler,
+	) {
 		let order = await this.apiService.retrieveTable(
 			`
 				orders(paid: $paid) {
@@ -108,6 +119,7 @@ export class TransferPageComponent {
 										variationItems {
 											total
 											items {
+												id
 												uuid
 												name
 											}
@@ -132,7 +144,10 @@ export class TransferPageComponent {
 				.items) {
 				itemHandler.pushNewItem(convertOrderItemResourceToOrderItem(item))
 			}
+			return {...order.data.retrieveTable.orders.items[0]}
 		}
+
+		return null;
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
@@ -332,7 +347,7 @@ export class TransferPageComponent {
 					v.variationItems.length === variation.variationItems.length &&
 					v.variationItems.every(
 						(item, index) =>
-							item.name === variation.variationItems[index].name
+							item.id === variation.variationItems[index].id
 					)
 			)
 
@@ -372,5 +387,16 @@ export class TransferPageComponent {
 			return true
 		}
 		return false
+	}
+
+	async updateTables(route : string) {
+
+		await this.apiService.updateOrder("uuid",{uuid: this.tableLeftOrder.uuid, orderItems: this.bookedItemsLeft.getItemsCountandId()})
+
+		await this.apiService.updateOrder("uuid",{uuid: this.tableRightOrder.uuid, orderItems: this.bookedItemsRight.getItemsCountandId()})
+
+		this.router.navigate([route], { relativeTo: this.activatedRoute }).then(() => {
+			window.location.reload()});
+
 	}
 }

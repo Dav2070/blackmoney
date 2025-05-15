@@ -255,14 +255,9 @@ export class BookingPageComponent {
 			}
 		} else if (this.selectedItem.orderItemVariations.length > 0) {
 			//Wenn Item Variationen enthält
+			this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedItem))
 			this.minusUsed = true
 			this.isItemPopupVisible = true
-			//this.lastClickedItem = this.selectedItem
-			/*this.lastClickedItem.variations = {
-				total: 0,
-				items: Array.from(this.selectedItem.variations.items)
-			}*/
-			//this.tmpVariations = new Map<string, VariationResource>()
 		} else if (this.tmpAnzahl > 0) {
 			//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
 

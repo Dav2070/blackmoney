@@ -166,8 +166,10 @@ export class BookingPageComponent {
 	}
 
 	closeItemPopup() {
+		this.tmpPickedVariationResource = []
+		this.tmpCountVariations = 0
 		this.isItemPopupVisible = !this.isItemPopupVisible
-		//this.tmpVariations.clear()
+		this.showTotal()
 	}
 
 	// Füge item zu stagedItems hinzu
@@ -184,7 +186,13 @@ export class BookingPageComponent {
 
 		if (product.variations.length === 0) {
 			if (this.tmpAnzahl > 0) {
-				newItem.count = this.tmpAnzahl
+				if (this.stagedItems.includes(newItem)) {
+					let existingItem = this.stagedItems.getItem(newItem.product.id)
+					existingItem.count += this.tmpAnzahl
+				} else {	
+					newItem.count = this.tmpAnzahl
+					this.stagedItems.pushNewItem(newItem)
+				}
 			} else if (this.stagedItems.includes(newItem)) {
 				let existingItem = this.stagedItems.getItem(newItem.product.id)
 				existingItem.count += 1
@@ -245,17 +253,11 @@ export class BookingPageComponent {
 			}
 		} else if (this.selectedItem.orderItemVariations.length > 0) {
 			//Wenn Item Variationen enthält
+			this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedItem))
 			this.minusUsed = true
 			this.isItemPopupVisible = true
-			//this.lastClickedItem = this.selectedItem
-			/*this.lastClickedItem.variations = {
-				total: 0,
-				items: Array.from(this.selectedItem.variations.items)
-			}*/
-			//this.tmpVariations = new Map<string, VariationResource>()
 		} else if (this.tmpAnzahl > 0) {
 			//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
-
 			if (this.selectedItem.count >= this.tmpAnzahl) {
 				this.selectedItem.count -= this.tmpAnzahl
 			} else {
@@ -298,6 +300,7 @@ export class BookingPageComponent {
 		}
 
 		this.removeEmptyItem(this.tmpAllItemHandler)
+		this.showTotal()
 	}
 
 	removeEmptyItem(itemHandler: AllItemHandler) {
@@ -397,7 +400,7 @@ export class BookingPageComponent {
 			this.tmpPickedVariationResource = []
 			this.tmpCountVariations = 0
 			this.isItemPopupVisible = false
-			//this.showTotal()
+			this.showTotal()
 		}
 
 		//Check ob es noch eine weitere Variation gibt
@@ -838,22 +841,21 @@ export class BookingPageComponent {
 	}
 
 	//Bucht Artikel mit Artikelnummer
-	bookById() {
-		/*
-		let pickedItem: Item = undefined
+	bookById() {	
+		let pickedItem: Product = undefined
 		let id = this.console
 
 		if (this.xUsed) {
 			id = this.console.split("x")[1]
 		}
 
-		for (let dish of this.dishes) {
-			for (let item of dish.items) {
+		for (let dish of this.categories) {
+			for (let item of dish.products) {
 				if (id === item.id.toString()) pickedItem = item
 			}
 		}
-		for (let drink of this.drinks) {
-			for (let item of drink.items) {
+		for (let drink of this.categories) {
+			for (let item of drink.products) {
 				if (id === item.id.toString()) pickedItem = item
 			}
 		}
@@ -863,7 +865,7 @@ export class BookingPageComponent {
 		} else {
 			window.alert("Item gibt es nicht")
 		}
-		*/
+		
 	}
 
 	// Prüft ob nach dem x eine Nummer eingeben wurde
@@ -879,28 +881,7 @@ export class BookingPageComponent {
 
 	//Füge selektiertes Item hinzu
 	addSelectedItem() {
-		let pickedItem: Product = null
-		let id = this.selectedItem.uuid
-
-		for (let dish of this.categories) {
-			for (let item of dish.products) {
-				if (id === item.uuid) {
-					pickedItem = item
-					break
-				}
-			}
-		}
-
-		for (let drink of this.categories) {
-			for (let item of drink.products) {
-				if (id === item.uuid) {
-					pickedItem = item
-					break
-				}
-			}
-		}
-
-		this.clickItem(pickedItem)
+		this.clickItem(this.selectedItem.product);
 	}
 
 	createBill(payment: string) {

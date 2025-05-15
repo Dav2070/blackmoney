@@ -17,6 +17,7 @@ import {
 	convertOrderItemResourceToOrderItem
 } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
+import { count } from "node:console"
 
 interface AddProductsInput {
 	uuid: string
@@ -168,7 +169,9 @@ export class BookingPageComponent {
 
 	closeItemPopup() {
 		this.isItemPopupVisible = !this.isItemPopupVisible
-		//this.tmpVariations.clear()
+		this.tmpPickedVariationResource = []
+		this.tmpCountVariations = 0
+		this.showTotal()
 	}
 
 	// Füge item zu stagedItems hinzu
@@ -185,7 +188,13 @@ export class BookingPageComponent {
 
 		if (product.variations.length === 0) {
 			if (this.tmpAnzahl > 0) {
-				newItem.count = this.tmpAnzahl
+				if (this.stagedItems.includes(newItem)) {
+					let existingItem = this.stagedItems.getItem(newItem.product.id)
+					existingItem.count += this.tmpAnzahl
+				} else {
+					newItem.count = this.tmpAnzahl
+					this.stagedItems.pushNewItem(newItem)
+				}
 			} else if (this.stagedItems.includes(newItem)) {
 				let existingItem = this.stagedItems.getItem(newItem.product.id)
 				existingItem.count += 1
@@ -314,7 +323,6 @@ export class BookingPageComponent {
 				}
 			}
 		}
-		console.log(this.selectedItem)
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu
@@ -398,7 +406,7 @@ export class BookingPageComponent {
 			this.tmpPickedVariationResource = []
 			this.tmpCountVariations = 0
 			this.isItemPopupVisible = false
-			//this.showTotal()
+			this.showTotal()
 		}
 
 		//Check ob es noch eine weitere Variation gibt
@@ -569,6 +577,21 @@ export class BookingPageComponent {
 									uuid
 									name
 									price
+									variations {
+								total
+								items {
+									uuid
+									name
+									variationItems {
+										total
+										items {
+											uuid
+											name
+											additionalCost
+										}
+									}
+								}
+							}
 								}
 								orderItemVariations {
 									total
@@ -669,6 +692,21 @@ export class BookingPageComponent {
 							uuid
 							name
 							price
+							variations {
+								total
+								items {
+									uuid
+									name
+									variationItems {
+										total
+										items {
+											uuid
+											name
+											additionalCost
+										}
+									}
+								}
+							}
 						}
 						orderItemVariations {
 							total
@@ -678,7 +716,9 @@ export class BookingPageComponent {
 								variationItems {
 									total
 									items {
+										uuid
 										name
+										additionalCost
 									}
 								}
 							}
@@ -693,7 +733,7 @@ export class BookingPageComponent {
 		)
 
 		this.bookedItems.clearItems()
-		console.log(items.data.addProductsToOrder.orderItems.items)
+
 
 		for (let item of items.data.addProductsToOrder.orderItems.items) {
 			this.bookedItems.pushNewItem(convertOrderItemResourceToOrderItem(item))
@@ -765,6 +805,8 @@ export class BookingPageComponent {
 			count: this.selectedItem.count,
 			orderItemVariations
 		})
+
+		this.showTotal()
 	}
 
 	//Prüft ob am Anfang des Strings eine 0 eingefügt ist
@@ -842,31 +884,25 @@ export class BookingPageComponent {
 
 	//Bucht Artikel mit Artikelnummer
 	bookById() {
-		/*
-		let pickedItem: Item = undefined
+
+		let pickedItem: Product = undefined
 		let id = this.console
 
 		if (this.xUsed) {
 			id = this.console.split("x")[1]
 		}
 
-		for (let dish of this.dishes) {
-			for (let item of dish.items) {
+		for (let dish of this.categories) {
+			for (let item of dish.products) {
 				if (id === item.id.toString()) pickedItem = item
 			}
 		}
-		for (let drink of this.drinks) {
-			for (let item of drink.items) {
-				if (id === item.id.toString()) pickedItem = item
-			}
-		}
-
 		if (pickedItem) {
 			this.clickItem(pickedItem)
 		} else {
 			window.alert("Item gibt es nicht")
 		}
-		*/
+
 	}
 
 	// Prüft ob nach dem x eine Nummer eingeben wurde
@@ -881,29 +917,8 @@ export class BookingPageComponent {
 	}
 
 	//Füge selektiertes Item hinzu
-	addSelectedItem() {
-		let pickedItem: Product = null
-		let id = this.selectedItem.uuid
-
-		for (let dish of this.categories) {
-			for (let item of dish.products) {
-				if (id === item.uuid) {
-					pickedItem = item
-					break
-				}
-			}
-		}
-
-		for (let drink of this.categories) {
-			for (let item of drink.products) {
-				if (id === item.uuid) {
-					pickedItem = item
-					break
-				}
-			}
-		}
-
-		this.clickItem(pickedItem)
+	addSelectedItem(orderItem: OrderItem) {
+		this.clickItem(orderItem.product)
 	}
 
 	createBill(payment: string) {
@@ -967,7 +982,6 @@ export class BookingPageComponent {
 		for (let variation of orderItem.orderItemVariations) {
 			for (let variationItem of variation.variationItems) {
 				total += variation.count * variationItem.additionalCost
-				console.log(variationItem.additionalCost)
 			}
 		}
 

@@ -90,7 +90,7 @@ export class BookingPageComponent {
 		private hardCodedService: HardcodeService,
 		private router: Router,
 		@Inject(PLATFORM_ID) private platformId: object
-	) {}
+	) { }
 
 	async ngOnInit() {
 		if (isPlatformServer(this.platformId)) return
@@ -126,6 +126,7 @@ export class BookingPageComponent {
 										items {
 											uuid
 											name
+											additionalCost
 										}
 									}
 								}
@@ -579,6 +580,7 @@ export class BookingPageComponent {
 											items {
 												id
 												name
+												additionalCost
 											}
 										}
 									}
@@ -957,4 +959,19 @@ export class BookingPageComponent {
 		}
 		return false
 	}
+
+	calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
+		let total = 0
+
+
+		for (let variation of orderItem.orderItemVariations) {
+			for (let variationItem of variation.variationItems) {
+				total += variation.count * variationItem.additionalCost
+				console.log(variationItem.additionalCost)
+			}
+		}
+
+		return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
+	}
+
 }

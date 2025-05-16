@@ -122,6 +122,7 @@ export class TransferPageComponent {
 												id
 												uuid
 												name
+												additionalCost
 											}
 										}
 									}
@@ -387,6 +388,19 @@ export class TransferPageComponent {
 			return true
 		}
 		return false
+	}
+
+		calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
+		let total = 0
+
+
+		for (let variation of orderItem.orderItemVariations) {
+			for (let variationItem of variation.variationItems) {
+				total += variation.count * variationItem.additionalCost
+			}
+		}
+
+		return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
 	}
 
 	async updateTables(route : string) {

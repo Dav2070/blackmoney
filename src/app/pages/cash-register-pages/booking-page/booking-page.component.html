@@ -16,12 +16,13 @@
 					>
 						<mat-card-content class="card-content">
 							
-							<span class="total-price">
-							
-								
-									{{calculateTotalPriceOfOrderItem(item)}}€ 
+							@if(item.orderItemVariations.length > 0){
+								<span class="item-price">
+									{{ (item.count * (item.product.price / 100)).toFixed(2) }} €
 							</span>
-						
+							} @else {
+									<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							}
 							<strong>
 								{{ item.count }} x
 								{{ item.product.name }}
@@ -35,11 +36,19 @@
 							@for(variationItem of variation.variationItems; track
 							variationItem.uuid) {
 
-							{{ variationItem.name }} +{{(variation.count*variationItem.additionalCost/100).toFixed(2)}}€<br>
+							{{ variationItem.name }} @if (variationItem.additionalCost > 0){ 
+								<span class="variationItem-price"> + {{(variation.count*variationItem.additionalCost/100).toFixed(2)}}€</span>} <br>
 
-							}</mat-card-content>
+							}
+						</mat-card-content>
 						} }
-						<mat-card-content> #{{ item.product.id }} </mat-card-content>
+						<mat-card-content> 
+							#{{ item.product.id }} 
+							
+							@if(item.orderItemVariations.length > 0){
+								<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							}
+						</mat-card-content>
 					</mat-card>
 					}
 					<mat-card>
@@ -55,12 +64,13 @@
 					>
 						<mat-card-content class="card-content">
 							
-							<span class="total-price">
-							
-								
-									{{calculateTotalPriceOfOrderItem(item)}}€ 
+							@if(item.orderItemVariations.length > 0){
+								<span class="item-price">
+									{{ (item.count * (item.product.price / 100)).toFixed(2) }} €
 							</span>
-						
+							} @else {
+									<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							}
 							<strong>
 								{{ item.count }} x
 								{{ item.product.name }}
@@ -74,11 +84,18 @@
 							@for(variationItem of variation.variationItems; track
 							variationItem.uuid) {
 
-							{{ variationItem.name }} {{(variation.count*variationItem.additionalCost/100).toFixed(2)}}€<br>
-
+							{{ variationItem.name }} @if (variationItem.additionalCost > 0){ 
+								<span class="variationItem-price"> + {{(variation.count*variationItem.additionalCost/100).toFixed(2)}}€</span>} <br>
+								
 							}</mat-card-content>
 						} }
-						<mat-card-content> #{{ item.product.id }} </mat-card-content>
+						<mat-card-content> 
+							#{{ item.product.id }} 
+							
+							@if(item.orderItemVariations.length > 0){
+								<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							}
+						</mat-card-content>
 					</mat-card>
 					}
 				</div>

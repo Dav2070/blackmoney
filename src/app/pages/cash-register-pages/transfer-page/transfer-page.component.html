@@ -20,23 +20,14 @@
 						style="cursor: pointer"
 					>
 						<mat-card-content class="card-content">
-							<!--
-							<span class="total-price">
-								@if (item.variations != null) {
-								{{
-									(
-										(item.price *
-											(item.count +
-												bookedItems.getTotalVariationPrice(
-													item.variations.items
-												))) /
-										100
-									).toFixed(2)
-								}}
-								€ } @else {
-								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
+							
+							@if(item.orderItemVariations.length > 0){
+								<span class="item-price">
+									{{ (item.count * (item.product.price / 100)).toFixed(2) }} €
 							</span>
-							-->
+							} @else {
+									<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							}
 							<strong>
 								{{ item.count }} x
 								{{ item.product.name }}
@@ -46,20 +37,22 @@
 						@if (item.orderItemVariations) { @for (variation of
 						item.orderItemVariations; track variation){
 						<mat-card-content>
-							{{ variation.count }}
+							{{ variation.count }} x
 							@for(variationItem of variation.variationItems; track
 							variationItem.uuid) {
 
-							{{ variationItem.name }}
-							<!--
-							{{ variationItem.count }}x mit {{ variationItem.name }} +
-							{{ (variationItem.price / 100).toFixed(2) }} €
-							-->
+							{{ variationItem.name }} @if (variationItem.additionalCost > 0){ 
+								<span class="variationItem-price"> + {{(variation.count*variationItem.additionalCost/100).toFixed(2)}}€</span>} <br>
 
-							}</mat-card-content
-						>
+							}
+						</mat-card-content>					
 						} }
-						<mat-card-content> #{{ item.product.id }} </mat-card-content>
+						<mat-card-content> 
+							#{{ item.product.id }} 
+							@if(item.orderItemVariations.length > 0){
+								<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							}
+						</mat-card-content>
 					</mat-card>
 					}
 				</div>
@@ -133,46 +126,39 @@
 					style="cursor: pointer"
 				>
 					<mat-card-content class="card-content">
-						<!--
-							<span class="total-price">
-								@if (item.variations != null) {
-								{{
-									(
-										(item.price *
-											(item.count +
-												bookedItems.getTotalVariationPrice(
-													item.variations.items
-												))) /
-										100
-									).toFixed(2)
-								}}
-								€ } @else {
-								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
+							
+							@if(item.orderItemVariations.length > 0){
+								<span class="item-price">
+									{{ (item.count * (item.product.price / 100)).toFixed(2) }} €
 							</span>
-							-->
-						<strong>
-							{{ item.count }} x
-							{{ item.product.name }}
-							{{ (item.product.price / 100).toFixed(2) }} €
-						</strong>
-					</mat-card-content>
-					@if (item.orderItemVariations) { @for (variation of
-					item.orderItemVariations; track variation){
-					<mat-card-content>
-						{{ variation.count }}
-						@for(variationItem of variation.variationItems; track
-						variationItem.uuid) {
+							} @else {
+									<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							}
+							<strong>
+								{{ item.count }} x
+								{{ item.product.name }}
+								{{ (item.product.price / 100).toFixed(2) }} €
+							</strong>
+						</mat-card-content>
+						@if (item.orderItemVariations) { @for (variation of
+						item.orderItemVariations; track variation){
+						<mat-card-content>
+							{{ variation.count }} x
+							@for(variationItem of variation.variationItems; track
+							variationItem.uuid) {
 
-						{{ variationItem.name }}
-						<!--
-							{{ variationItem.count }}x mit {{ variationItem.name }} +
-							{{ (variationItem.price / 100).toFixed(2) }} €
-							-->
+							{{ variationItem.name }} @if (variationItem.additionalCost > 0){ 
+								<span class="variationItem-price"> + {{(variation.count*variationItem.additionalCost/100).toFixed(2)}}€</span>} <br>
 
-						}</mat-card-content
-					>
-					} }
-					<mat-card-content> #{{ item.product.id }} </mat-card-content>
+							}
+						</mat-card-content>					
+						} }
+						<mat-card-content> 
+							#{{ item.product.id }} 
+							@if(item.orderItemVariations.length > 0){
+								<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							}
+						</mat-card-content>
 				</mat-card>
 				}
 			</div>

@@ -20,6 +20,7 @@ import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { count } from "node:console"
 import { List, OrderItemVariationResource, VariationResource } from "src/app/types"
 import { threadId } from "node:worker_threads"
+import { VariationItem } from "src/app/models/VariationItem"
 
 interface AddProductsInput {
 	uuid: string
@@ -87,6 +88,8 @@ export class BookingPageComponent {
 	tmpPickedVariationResource: Map<number, TmpVariations[]>[] = []
 
 	tmpVariations: OrderItemVariation[] = []
+
+	tmpLastPickedVariation: VariationItem[] = []
 
 	constructor(
 		private dataService: DataService,
@@ -421,6 +424,7 @@ export class BookingPageComponent {
 			this.tmpPickedVariationResource = []
 			this.tmpCountVariations = 0
 			this.isItemPopupVisible = false
+			this.tmpLastPickedVariation=[]
 			this.showTotal()
 		}
 
@@ -1021,6 +1025,59 @@ export class BookingPageComponent {
 		}
 
 		return count > variation.max
+
+	}
+
+	displayVariation(variation: TmpVariations) {
+		let variationString = ""
+
+
+		if (variation.lastPickedVariation != this.tmpLastPickedVariation) {
+			this.tmpLastPickedVariation = variation.lastPickedVariation
+			for (let variation of this.tmpLastPickedVariation) {
+				variationString += variation.name + ""
+			}
+		}
+		if (variationString != "") {
+			return variationString
+		}
+		return null;
+
+
+	}
+
+	checkForSendVariation() {
+		let count = 0
+		let maxCount = 0
+		let countVariations: TmpVariations[] = []
+
+		for (let variationMap of this.tmpPickedVariationResource) {
+			if (variationMap.get(this.tmpCountVariations)) {
+				for (let tmpVariation of variationMap.get(this.tmpCountVariations).values()) {
+					count += tmpVariation.count
+					// Prüfen, ob bereits ein Eintrag mit der gleichen lastPickedVariation existiert
+					const exists = countVariations.some(
+						v => v.lastPickedVariation === tmpVariation.lastPickedVariation
+					);
+
+					if (!exists) {
+						countVariations.push(tmpVariation);
+					}
+				}
+			}
+		}
+
+		for (let variation of countVariations) {
+			maxCount += variation.max
+		}
+
+		if (this.tmpCountVariations == 0) {
+			return count == 0
+		}
+
+
+
+		return count != maxCount
 
 	}
 

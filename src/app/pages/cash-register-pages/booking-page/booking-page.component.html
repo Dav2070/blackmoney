@@ -205,7 +205,10 @@
 					variationMap ){ @if(variationMap.get(tmpCountVariations)){
 					@for(variation of
 					variationMap.get(tmpCountVariations).values();track variation){
-					{{ variation.combination }}
+					@if(tmpCountVariations!=0 ){
+					{{ displayVariation(variation) }}
+					}
+
 					<div class="popup-content-dish">
 						<button
 							mat-mini-fab
@@ -218,9 +221,11 @@
 							{{ variation.count }}x
 							{{ variation.display }}
 						</b>
-						<button mat-mini-fab 
-						[disabled]="checkForPlusaddVariation(variation)"
-						(click)="addVariation(variation)">
+						<button
+							mat-mini-fab
+							[disabled]="checkForPlusaddVariation(variation)"
+							(click)="addVariation(variation)"
+						>
 							<mat-icon>add</mat-icon>
 						</button>
 					</div>
@@ -228,7 +233,11 @@
 					<button mat-flat-button (click)="closeItemPopup()">
 						Schließen
 					</button>
-					<button mat-flat-button (click)="sendVariation()">
+					<button
+						mat-flat-button
+						[disabled]="checkForSendVariation()"
+						(click)="sendVariation()"
+					>
 						Auswählen
 					</button>
 				</div>

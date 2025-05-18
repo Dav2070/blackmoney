@@ -82,3 +82,5 @@ export interface OrderItemVariationResource {
 }
 
 export type CategoryType = "FOOD" | "DRINK"
+
+export type PaymentMethod = "CASH" | "CARD"

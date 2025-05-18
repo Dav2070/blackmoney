@@ -9,7 +9,8 @@ import {
 	TableResource,
 	OrderResource,
 	UserResource,
-	SessionResource
+	SessionResource,
+	PaymentMethod
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -314,6 +315,34 @@ export class ApiService {
 							uuid: $uuid
 							count: $count
 							orderItemVariations: $orderItemVariations
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async completeOrder(
+		queryData: string,
+		variables: {
+			uuid: string
+			paymentMethod: PaymentMethod
+		}
+	): Promise<MutationResult<{ completeOrder: OrderResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ completeOrder: OrderResource }>({
+				mutation: gql`
+					mutation CompleteOrder(
+						$uuid: String!
+						$paymentMethod: PaymentMethod!
+					) {
+						completeOrder(
+							uuid: $uuid
+							paymentMethod: $paymentMethod
 						) {
 							${queryData}
 						}

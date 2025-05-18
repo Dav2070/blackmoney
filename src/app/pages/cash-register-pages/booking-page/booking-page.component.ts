@@ -18,7 +18,7 @@ import {
 } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { count } from "node:console"
-import { List, OrderItemVariationResource, VariationResource } from "src/app/types"
+import { List, OrderItemVariationResource, PaymentMethod, VariationResource } from "src/app/types"
 import { threadId } from "node:worker_threads"
 import { VariationItem } from "src/app/models/VariationItem"
 
@@ -424,7 +424,7 @@ export class BookingPageComponent {
 			this.tmpPickedVariationResource = []
 			this.tmpCountVariations = 0
 			this.isItemPopupVisible = false
-			this.tmpLastPickedVariation=[]
+			this.tmpLastPickedVariation = []
 			this.showTotal()
 		}
 
@@ -940,16 +940,10 @@ export class BookingPageComponent {
 		this.clickItem(orderItem.product)
 	}
 
-	createBill(payment: string) {
-		let bill = new Bill(
-			"Bediener 1",
-			parseInt(this.table.uuid),
-			this.bookedItems,
-			new Date(),
-			payment,
-			false
-		)
-		this.bookedItems.clearItems()
+	async createBill(payment: PaymentMethod) {
+
+		await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
+		window.location.reload()
 	}
 
 	openBills() {

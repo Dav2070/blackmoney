@@ -353,4 +353,23 @@ export class ApiService {
 			})
 			.toPromise()
 	}
+
+	async listOrders(
+		queryData: string,
+		variables: { completed?: boolean },
+	): Promise<ApolloQueryResult<{ listOrders: List<OrderResource> }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ listOrders: List<OrderResource> }>({
+				query: gql`
+					query ListOrders($completed:Boolean) {
+						listOrders(completed:$completed) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
 }

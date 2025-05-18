@@ -14,13 +14,16 @@ import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
 import {
 	convertCategoryResourceToCategory,
-	convertOrderItemResourceToOrderItem
+	convertOrderItemResourceToOrderItem,
+	convertOrderResourceToOrder
 } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { count } from "node:console"
 import { List, OrderItemVariationResource, PaymentMethod, VariationResource } from "src/app/types"
 import { threadId } from "node:worker_threads"
 import { VariationItem } from "src/app/models/VariationItem"
+import { OrderResource } from "dav-js"
+import { Order } from "src/app/models/Order"
 
 interface AddProductsInput {
 	uuid: string
@@ -79,9 +82,9 @@ export class BookingPageComponent {
 
 	isBillPopupVisible: boolean = false
 
-	bills: Bill[] = []
+	bills: Order[] = []
 
-	pickedBill: Bill = null
+	pickedBill: Order = null
 
 	tmpCountVariations: number = 0
 
@@ -946,12 +949,56 @@ export class BookingPageComponent {
 		window.location.reload()
 	}
 
-	openBills() {
-		this.bills = this.hardCodedService.getBillsOfTable(20)
+	async openBills() {
+		let listOrdersResult = await this.apiService.listOrders(
+			`
+				items {
+					uuid
+					totalPrice
+					paidAt
+					table {
+						name
+					}
+					orderItems {
+						items{
+							uuid
+							count
+							product {
+								id
+								name
+								price
+							}
+							orderItemVariations {
+								total
+								items {
+									uuid
+									count
+									variationItems {
+										total
+										items {
+											uuid
+											name
+											additionalCost
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			`, { completed: true })
+		this.bills = []
+
+		for (let orderResource of listOrdersResult.data.listOrders.items) {
+			this.bills.push(
+				convertOrderResourceToOrder(orderResource)
+			)
+		}
+		console.log(this.bills)
 		this.pickedBill = this.bills[0]
+
 		this.isBillPopupVisible = !this.isBillPopupVisible
 	}
-
 	closeBills() {
 		this.isBillPopupVisible = !this.isBillPopupVisible
 		this.bills = []

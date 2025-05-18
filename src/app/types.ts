@@ -64,6 +64,8 @@ export interface CategoryResource {
 export interface OrderResource {
 	uuid: string
 	totalPrice: number
+	paidAt: string
+	table: TableResource
 	orderItems: List<OrderItemResource>
 }
 

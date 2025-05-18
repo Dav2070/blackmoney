@@ -224,6 +224,8 @@ export class BookingPageComponent {
 						{
 							uuid: variationItem.uuid,
 							count: 0,
+							max: undefined,
+							lastPickedVariation: undefined,
 							combination: variationItem.name,
 							display: variationItem.name,
 							pickedVariation: [variationItem]
@@ -355,6 +357,8 @@ export class BookingPageComponent {
 									variationMap.get(this.tmpCountVariations + 1).push({
 										uuid: variationItem.uuid,
 										count: 0,
+										max: variation.count,
+										lastPickedVariation: variation.pickedVariation,
 										combination:
 											variation.display + " " + variationItem.name,
 										display: variationItem.name,
@@ -368,10 +372,10 @@ export class BookingPageComponent {
 										{
 											uuid: variationItem.uuid,
 											count: 0,
+											max: variation.count,
+											lastPickedVariation: variation.pickedVariation,
 											combination:
-												variation.display +
-												" " +
-												variationItem.name,
+												variation.display + " " + variationItem.name,
 											display: variationItem.name,
 											pickedVariation: [
 												...variation.pickedVariation,
@@ -969,7 +973,7 @@ export class BookingPageComponent {
 	}
 
 	checkForPlus(variation: OrderItemVariation) {
-		let variationCount = this.tmpSelectedItem.orderItemVariations.find(
+		let variationCount = this.selectedItem.orderItemVariations.find(
 			v =>
 				v.variationItems.length === variation.variationItems.length &&
 				v.variationItems.every(
@@ -997,6 +1001,27 @@ export class BookingPageComponent {
 		}
 
 		return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
+	}
+
+	checkForPlusaddVariation(variation: TmpVariations) {
+		let count = variation.count
+
+		for (let variationMap of this.tmpPickedVariationResource) {
+			if (variationMap.get(this.tmpCountVariations)) {
+				for (let tmpVariation of
+					variationMap.get(this.tmpCountVariations).values()) {
+					if (variation.lastPickedVariation == tmpVariation.lastPickedVariation)
+						count += tmpVariation.count
+				}
+			}
+		}
+
+		if (count == variation.max && variation.count == 0) {
+			return true
+		}
+
+		return count > variation.max
+
 	}
 
 }

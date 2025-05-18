@@ -207,14 +207,20 @@
 					variationMap.get(tmpCountVariations).values();track variation){
 					{{ variation.combination }}
 					<div class="popup-content-dish">
-						<button mat-mini-fab (click)="removeVariation(variation)">
+						<button
+							mat-mini-fab
+							[disabled]="variation.count == 0"
+							(click)="removeVariation(variation)"
+						>
 							<mat-icon>remove</mat-icon>
 						</button>
 						<b>
 							{{ variation.count }}x
 							{{ variation.display }}
 						</b>
-						<button mat-mini-fab (click)="addVariation(variation)">
+						<button mat-mini-fab 
+						[disabled]="checkForPlusaddVariation(variation)"
+						(click)="addVariation(variation)">
 							<mat-icon>add</mat-icon>
 						</button>
 					</div>

@@ -29,7 +29,7 @@ export class AllItemHandler {
 						existingVariation = item.orderItemVariations.find(
 							v =>
 								v.variationItems.length ===
-									variation.variationItems.length &&
+								variation.variationItems.length &&
 								v.variationItems.every(
 									(item, index) =>
 										item.id === variation.variationItems[index].id
@@ -67,17 +67,18 @@ export class AllItemHandler {
 	calculateTotal() {
 		let total = 0
 
-		/*for (let item of this.allPickedItems.values()) {
-			if (item.variations != null) {
-				for (let variation of item.variations.items) {
-					for (let variationItem of variation.variationItems.items) {
-						//total += variationItem.price * variationItem.count
+		for (let item of this.allPickedItems) {
+			total += item.product.price * item.count
+
+			if (item.orderItemVariations) {
+				for (const variation of item.orderItemVariations) {
+					for (const variationItem of variation.variationItems) {
+						total += variationItem.additionalCost * variation.count
 					}
+
 				}
 			}
-
-			//total += item.price * item.count
-		}*/
+		}
 
 		return total
 	}
@@ -87,7 +88,7 @@ export class AllItemHandler {
 		return this.allPickedItems
 	}
 
-	getItemsCountandId(){
+	getItemsCountandId() {
 		return this.allPickedItems.map(item => {
 			return {
 				count: item.count,

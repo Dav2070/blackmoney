@@ -42,7 +42,7 @@ export class TransferPageComponent {
 		private activatedRoute: ActivatedRoute,
 		private apiService: ApiService,
 		private router: Router
-	) {}
+	) { }
 
 	async ngOnInit() {
 		await this.dataService.companyPromiseHolder.AwaitResult()
@@ -122,6 +122,7 @@ export class TransferPageComponent {
 												id
 												uuid
 												name
+												additionalCost
 											}
 										}
 									}
@@ -144,7 +145,7 @@ export class TransferPageComponent {
 				.items) {
 				itemHandler.pushNewItem(convertOrderItemResourceToOrderItem(item))
 			}
-			return {...order.data.retrieveTable.orders.items[0]}
+			return { ...order.data.retrieveTable.orders.items[0] }
 		}
 
 		return null;
@@ -389,14 +390,42 @@ export class TransferPageComponent {
 		return false
 	}
 
-	async updateTables(route : string) {
+	calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
+		let total = 0
 
-		await this.apiService.updateOrder("uuid",{uuid: this.tableLeftOrder.uuid, orderItems: this.bookedItemsLeft.getItemsCountandId()})
 
-		await this.apiService.updateOrder("uuid",{uuid: this.tableRightOrder.uuid, orderItems: this.bookedItemsRight.getItemsCountandId()})
+		for (let variation of orderItem.orderItemVariations) {
+			for (let variationItem of variation.variationItems) {
+				total += variation.count * variationItem.additionalCost
+			}
+		}
+
+		return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
+	}
+
+	async updateTables(route: string) {
+
+		await this.apiService.updateOrder("uuid", { uuid: this.tableLeftOrder.uuid, orderItems: this.bookedItemsLeft.getItemsCountandId() })
+
+		await this.apiService.updateOrder("uuid", { uuid: this.tableRightOrder.uuid, orderItems: this.bookedItemsRight.getItemsCountandId() })
 
 		this.router.navigate([route], { relativeTo: this.activatedRoute }).then(() => {
-			window.location.reload()});
+			window.location.reload()
+		});
 
 	}
+
+	checkifVariationPicked() {
+		let picked = true
+		if (this.tmpVariations != null) {
+
+			for (let variation of this.tmpVariations.orderItemVariations) {
+				if (variation.count > 0) {
+					picked = false
+				}
+			}
+		}
+		return picked
+	}
+
 }

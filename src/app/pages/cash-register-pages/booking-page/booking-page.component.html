@@ -15,23 +15,18 @@
 						"
 					>
 						<mat-card-content class="card-content">
-							<!--
-							<span class="total-price">
-								@if (item.variations != null) {
+							@if(item.orderItemVariations.length > 0){
+							<span class="item-price">
 								{{
-									(
-										(item.price *
-											(item.count +
-												bookedItems.getTotalVariationPrice(
-													item.variations.items
-												))) /
-										100
-									).toFixed(2)
+									(item.count * (item.product.price / 100)).toFixed(2)
 								}}
-								€ } @else {
-								{{ ((item.price * item.count) / 100).toFixed(2) }} € }
+								€
 							</span>
-							-->
+							} @else {
+							<span class="total-price">
+								{{ calculateTotalPriceOfOrderItem(item) }}€
+							</span>
+							}
 							<strong>
 								{{ item.count }} x
 								{{ item.product.name }}
@@ -41,20 +36,33 @@
 						@if (item.orderItemVariations) { @for (variation of
 						item.orderItemVariations; track variation){
 						<mat-card-content>
-							{{ variation.count }}
-							@for(variationItem of variation.variationItems; track
-							variationItem.uuid) {
+							{{ variation.count }} x @for(variationItem of
+							variation.variationItems; track variationItem.uuid) {
 
-							{{ variationItem.name }}
-							<!--
-							{{ variationItem.count }}x mit {{ variationItem.name }} +
-							{{ (variationItem.price / 100).toFixed(2) }} €
-							-->
+							{{ variationItem.name }} @if (variationItem.additionalCost
+							> 0){
+							<span class="variationItem-price">
+								+
+								{{
+									(
+										(variation.count * variationItem.additionalCost) /
+										100
+									).toFixed(2)
+								}}€</span
+							>} <br />
 
-							}</mat-card-content
-						>
+							}
+						</mat-card-content>
 						} }
-						<mat-card-content> #{{ item.product.id }} </mat-card-content>
+						<mat-card-content>
+							#{{ item.product.id }}
+
+							@if(item.orderItemVariations.length > 0){
+							<span class="total-price">
+								{{ calculateTotalPriceOfOrderItem(item) }}€
+							</span>
+							}
+						</mat-card-content>
 					</mat-card>
 					}
 					<mat-card>
@@ -69,23 +77,18 @@
 						"
 					>
 						<mat-card-content class="card-content">
-							<!--
-						<span class="total-price">
-							@if (item.variations != null) {
-							{{
-								(
-									(item.price *
-										(item.count +
-											bookedItems.getTotalVariationPrice(
-												item.variations.items
-											))) /
-									100
-								).toFixed(2)
-							}}
-							€ } @else {
-							{{ ((item.price * item.count) / 100).toFixed(2) }} € }
-						</span>
-						-->
+							@if(item.orderItemVariations.length > 0){
+							<span class="item-price">
+								{{
+									(item.count * (item.product.price / 100)).toFixed(2)
+								}}
+								€
+							</span>
+							} @else {
+							<span class="total-price">
+								{{ calculateTotalPriceOfOrderItem(item) }}€
+							</span>
+							}
 							<strong>
 								{{ item.count }} x
 								{{ item.product.name }}
@@ -95,20 +98,33 @@
 						@if (item.orderItemVariations) { @for (variation of
 						item.orderItemVariations; track variation){
 						<mat-card-content>
-							{{ variation.count }}
-							@for(variationItem of variation.variationItems; track
-							variationItem.uuid) {
+							{{ variation.count }} x @for(variationItem of
+							variation.variationItems; track variationItem.uuid) {
 
-							{{ variationItem.name }}
-							<!--
-						{{ variationItem.count }}x mit {{ variationItem.name }} +
-						{{ (variationItem.price / 100).toFixed(2) }} €
-						-->
+							{{ variationItem.name }} @if (variationItem.additionalCost
+							> 0){
+							<span class="variationItem-price">
+								+
+								{{
+									(
+										(variation.count * variationItem.additionalCost) /
+										100
+									).toFixed(2)
+								}}€</span
+							>} <br />
 
 							}</mat-card-content
 						>
 						} }
-						<mat-card-content> #{{ item.product.id }} </mat-card-content>
+						<mat-card-content>
+							#{{ item.product.id }}
+
+							@if(item.orderItemVariations.length > 0){
+							<span class="total-price">
+								{{ calculateTotalPriceOfOrderItem(item) }}€
+							</span>
+							}
+						</mat-card-content>
 					</mat-card>
 					}
 				</div>
@@ -170,7 +186,7 @@
 					<button
 						mat-flat-button
 						[disabled]="!selectedItem"
-						(click)="addSelectedItem()"
+						(click)="addSelectedItem(selectedItem)"
 					>
 						+
 					</button>
@@ -189,16 +205,27 @@
 					variationMap ){ @if(variationMap.get(tmpCountVariations)){
 					@for(variation of
 					variationMap.get(tmpCountVariations).values();track variation){
-					{{ variation.combination }}
+					@if(tmpCountVariations!=0 ){
+					{{ displayVariation(variation) }}
+					}
+
 					<div class="popup-content-dish">
-						<button mat-mini-fab (click)="removeVariation(variation)">
+						<button
+							mat-mini-fab
+							[disabled]="variation.count == 0"
+							(click)="removeVariation(variation)"
+						>
 							<mat-icon>remove</mat-icon>
 						</button>
 						<b>
 							{{ variation.count }}x
 							{{ variation.display }}
 						</b>
-						<button mat-mini-fab (click)="addVariation(variation)">
+						<button
+							mat-mini-fab
+							[disabled]="checkForPlusaddVariation(variation)"
+							(click)="addVariation(variation)"
+						>
 							<mat-icon>add</mat-icon>
 						</button>
 					</div>
@@ -206,7 +233,11 @@
 					<button mat-flat-button (click)="closeItemPopup()">
 						Schließen
 					</button>
-					<button mat-flat-button (click)="sendVariation()">
+					<button
+						mat-flat-button
+						[disabled]="checkForSendVariation()"
+						(click)="sendVariation()"
+					>
 						Auswählen
 					</button>
 				</div>
@@ -216,7 +247,7 @@
 					<h2>
 						{{ selectedItem.product.name }}
 					</h2>
-					@for(variation of selectedItem.orderItemVariations; track
+					@for(variation of tmpSelectedItem.orderItemVariations; track
 					variation){
 					<div class="popup-content-dish">
 						<button
@@ -244,7 +275,10 @@
 					<button mat-flat-button (click)="closeItemPopup()">
 						Schließen
 					</button>
-					<button mat-flat-button (click)="sendDeleteVariation()">
+					<button
+						mat-flat-button
+						(click)="sendDeleteVariation(tmpSelectedItem)"
+					>
 						Auswählen
 					</button>
 				</div>

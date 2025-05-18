@@ -86,8 +86,16 @@ footer {
 	justify-content: center;
 }
 
-.total-price {
+.item-price {
 	float: right;
+}
+
+.variationItem-price {
+	float: right;
+}
+
+.total-price {
+	float: inline-end;
 	font-weight: bold;
 }
 

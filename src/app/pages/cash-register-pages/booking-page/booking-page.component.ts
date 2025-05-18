@@ -17,6 +17,10 @@ import {
 	convertOrderItemResourceToOrderItem
 } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
+import { count } from "node:console"
+import { List, OrderItemVariationResource, VariationResource } from "src/app/types"
+import { threadId } from "node:worker_threads"
+import { VariationItem } from "src/app/models/VariationItem"
 
 interface AddProductsInput {
 	uuid: string
@@ -83,6 +87,10 @@ export class BookingPageComponent {
 
 	tmpPickedVariationResource: Map<number, TmpVariations[]>[] = []
 
+	tmpVariations: OrderItemVariation[] = []
+
+	tmpLastPickedVariation: VariationItem[] = []
+
 	constructor(
 		private dataService: DataService,
 		private apiService: ApiService,
@@ -90,7 +98,7 @@ export class BookingPageComponent {
 		private hardCodedService: HardcodeService,
 		private router: Router,
 		@Inject(PLATFORM_ID) private platformId: object
-	) {}
+	) { }
 
 	async ngOnInit() {
 		if (isPlatformServer(this.platformId)) return
@@ -126,6 +134,7 @@ export class BookingPageComponent {
 										items {
 											uuid
 											name
+											additionalCost
 										}
 									}
 								}
@@ -167,7 +176,13 @@ export class BookingPageComponent {
 
 	closeItemPopup() {
 		this.isItemPopupVisible = !this.isItemPopupVisible
-		//this.tmpVariations.clear()
+		this.tmpPickedVariationResource = []
+		this.tmpCountVariations = 0
+		if (this.minusUsed === true) {
+			this.minusUsed = false
+		}
+		this.tmpSelectedItem = undefined
+		this.showTotal()
 	}
 
 	// Füge item zu stagedItems hinzu
@@ -184,7 +199,13 @@ export class BookingPageComponent {
 
 		if (product.variations.length === 0) {
 			if (this.tmpAnzahl > 0) {
-				newItem.count = this.tmpAnzahl
+				if (this.stagedItems.includes(newItem)) {
+					let existingItem = this.stagedItems.getItem(newItem.product.id)
+					existingItem.count += this.tmpAnzahl
+				} else {
+					newItem.count = this.tmpAnzahl
+					this.stagedItems.pushNewItem(newItem)
+				}
 			} else if (this.stagedItems.includes(newItem)) {
 				let existingItem = this.stagedItems.getItem(newItem.product.id)
 				existingItem.count += 1
@@ -206,6 +227,8 @@ export class BookingPageComponent {
 						{
 							uuid: variationItem.uuid,
 							count: 0,
+							max: undefined,
+							lastPickedVariation: undefined,
 							combination: variationItem.name,
 							display: variationItem.name,
 							pickedVariation: [variationItem]
@@ -232,7 +255,7 @@ export class BookingPageComponent {
 					this.selectedItem.count -= 1
 				}
 
-				this.sendOrderItem()
+				this.sendOrderItem(this.selectedItem)
 				this.removeEmptyItem(this.bookedItems)
 
 				this.showTotal()
@@ -245,14 +268,9 @@ export class BookingPageComponent {
 			}
 		} else if (this.selectedItem.orderItemVariations.length > 0) {
 			//Wenn Item Variationen enthält
+			this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedItem))
 			this.minusUsed = true
 			this.isItemPopupVisible = true
-			//this.lastClickedItem = this.selectedItem
-			/*this.lastClickedItem.variations = {
-				total: 0,
-				items: Array.from(this.selectedItem.variations.items)
-			}*/
-			//this.tmpVariations = new Map<string, VariationResource>()
 		} else if (this.tmpAnzahl > 0) {
 			//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
 
@@ -280,22 +298,30 @@ export class BookingPageComponent {
 	}
 
 	removeVariationSubtraction(variation: OrderItemVariation) {
-		this.selectedItem.count -= 1
+		this.tmpSelectedItem.count -= 1
 		variation.count -= 1
 	}
 
 	addVariationSubtraction(variation: OrderItemVariation) {
-		this.selectedItem.count += 1
+		this.tmpSelectedItem.count += 1
 		variation.count += 1
 	}
 
-	sendDeleteVariation() {
+	sendDeleteVariation(orderItem: OrderItem) {
 		this.minusUsed = false
 		this.isItemPopupVisible = false
+		this.tmpVariations = []
+		this.selectedItem.count = this.tmpSelectedItem.count
+		this.selectedItem.orderItemVariations = this.tmpSelectedItem.orderItemVariations
 
 		if (this.tmpAllItemHandler === this.bookedItems) {
-			this.sendOrderItem()
+			this.sendOrderItem(orderItem)
 		}
+
+		//console.log(this.tmpSelectedItem)
+		this.tmpSelectedItem = undefined
+		console.log(this.selectedItem)
+
 
 		this.removeEmptyItem(this.tmpAllItemHandler)
 	}
@@ -313,7 +339,6 @@ export class BookingPageComponent {
 				}
 			}
 		}
-		console.log(this.selectedItem)
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu
@@ -335,6 +360,8 @@ export class BookingPageComponent {
 									variationMap.get(this.tmpCountVariations + 1).push({
 										uuid: variationItem.uuid,
 										count: 0,
+										max: variation.count,
+										lastPickedVariation: variation.pickedVariation,
 										combination:
 											variation.display + " " + variationItem.name,
 										display: variationItem.name,
@@ -348,10 +375,10 @@ export class BookingPageComponent {
 										{
 											uuid: variationItem.uuid,
 											count: 0,
+											max: variation.count,
+											lastPickedVariation: variation.pickedVariation,
 											combination:
-												variation.display +
-												" " +
-												variationItem.name,
+												variation.display + " " + variationItem.name,
 											display: variationItem.name,
 											pickedVariation: [
 												...variation.pickedVariation,
@@ -397,7 +424,8 @@ export class BookingPageComponent {
 			this.tmpPickedVariationResource = []
 			this.tmpCountVariations = 0
 			this.isItemPopupVisible = false
-			//this.showTotal()
+			this.tmpLastPickedVariation=[]
+			this.showTotal()
 		}
 
 		//Check ob es noch eine weitere Variation gibt
@@ -568,6 +596,21 @@ export class BookingPageComponent {
 									uuid
 									name
 									price
+									variations {
+								total
+								items {
+									uuid
+									name
+									variationItems {
+										total
+										items {
+											uuid
+											name
+											additionalCost
+										}
+									}
+								}
+							}
 								}
 								orderItemVariations {
 									total
@@ -579,6 +622,7 @@ export class BookingPageComponent {
 											items {
 												id
 												name
+												additionalCost
 											}
 										}
 									}
@@ -667,6 +711,21 @@ export class BookingPageComponent {
 							uuid
 							name
 							price
+							variations {
+								total
+								items {
+									uuid
+									name
+									variationItems {
+										total
+										items {
+											uuid
+											name
+											additionalCost
+										}
+									}
+								}
+							}
 						}
 						orderItemVariations {
 							total
@@ -676,7 +735,9 @@ export class BookingPageComponent {
 								variationItems {
 									total
 									items {
+										uuid
 										name
+										additionalCost
 									}
 								}
 							}
@@ -691,7 +752,7 @@ export class BookingPageComponent {
 		)
 
 		this.bookedItems.clearItems()
-		console.log(items.data.addProductsToOrder.orderItems.items)
+
 
 		for (let item of items.data.addProductsToOrder.orderItems.items) {
 			this.bookedItems.pushNewItem(convertOrderItemResourceToOrderItem(item))
@@ -748,10 +809,10 @@ export class BookingPageComponent {
 		}*/
 	}
 
-	async sendOrderItem() {
+	async sendOrderItem(orderItem: OrderItem) {
 		const orderItemVariations: { uuid: string; count: number }[] = []
 
-		for (let variation of this.selectedItem.orderItemVariations) {
+		for (let variation of orderItem.orderItemVariations) {
 			orderItemVariations.push({
 				uuid: variation.uuid,
 				count: variation.count
@@ -759,10 +820,12 @@ export class BookingPageComponent {
 		}
 
 		await this.apiService.updateOrderItem(`uuid`, {
-			uuid: this.selectedItem.uuid,
-			count: this.selectedItem.count,
+			uuid: orderItem.uuid,
+			count: orderItem.count,
 			orderItemVariations
 		})
+
+		this.showTotal()
 	}
 
 	//Prüft ob am Anfang des Strings eine 0 eingefügt ist
@@ -840,31 +903,25 @@ export class BookingPageComponent {
 
 	//Bucht Artikel mit Artikelnummer
 	bookById() {
-		/*
-		let pickedItem: Item = undefined
+
+		let pickedItem: Product = undefined
 		let id = this.console
 
 		if (this.xUsed) {
 			id = this.console.split("x")[1]
 		}
 
-		for (let dish of this.dishes) {
-			for (let item of dish.items) {
+		for (let dish of this.categories) {
+			for (let item of dish.products) {
 				if (id === item.id.toString()) pickedItem = item
 			}
 		}
-		for (let drink of this.drinks) {
-			for (let item of drink.items) {
-				if (id === item.id.toString()) pickedItem = item
-			}
-		}
-
 		if (pickedItem) {
 			this.clickItem(pickedItem)
 		} else {
 			window.alert("Item gibt es nicht")
 		}
-		*/
+
 	}
 
 	// Prüft ob nach dem x eine Nummer eingeben wurde
@@ -879,29 +936,8 @@ export class BookingPageComponent {
 	}
 
 	//Füge selektiertes Item hinzu
-	addSelectedItem() {
-		let pickedItem: Product = null
-		let id = this.selectedItem.uuid
-
-		for (let dish of this.categories) {
-			for (let item of dish.products) {
-				if (id === item.uuid) {
-					pickedItem = item
-					break
-				}
-			}
-		}
-
-		for (let drink of this.categories) {
-			for (let item of drink.products) {
-				if (id === item.uuid) {
-					pickedItem = item
-					break
-				}
-			}
-		}
-
-		this.clickItem(pickedItem)
+	addSelectedItem(orderItem: OrderItem) {
+		this.clickItem(orderItem.product)
 	}
 
 	createBill(payment: string) {
@@ -941,7 +977,7 @@ export class BookingPageComponent {
 	}
 
 	checkForPlus(variation: OrderItemVariation) {
-		let variationCount = this.tmpSelectedItem.orderItemVariations.find(
+		let variationCount = this.selectedItem.orderItemVariations.find(
 			v =>
 				v.variationItems.length === variation.variationItems.length &&
 				v.variationItems.every(
@@ -957,4 +993,92 @@ export class BookingPageComponent {
 		}
 		return false
 	}
+
+	calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
+		let total = 0
+
+
+		for (let variation of orderItem.orderItemVariations) {
+			for (let variationItem of variation.variationItems) {
+				total += variation.count * variationItem.additionalCost
+			}
+		}
+
+		return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
+	}
+
+	checkForPlusaddVariation(variation: TmpVariations) {
+		let count = variation.count
+
+		for (let variationMap of this.tmpPickedVariationResource) {
+			if (variationMap.get(this.tmpCountVariations)) {
+				for (let tmpVariation of
+					variationMap.get(this.tmpCountVariations).values()) {
+					if (variation.lastPickedVariation == tmpVariation.lastPickedVariation)
+						count += tmpVariation.count
+				}
+			}
+		}
+
+		if (count == variation.max && variation.count == 0) {
+			return true
+		}
+
+		return count > variation.max
+
+	}
+
+	displayVariation(variation: TmpVariations) {
+		let variationString = ""
+
+
+		if (variation.lastPickedVariation != this.tmpLastPickedVariation) {
+			this.tmpLastPickedVariation = variation.lastPickedVariation
+			for (let variation of this.tmpLastPickedVariation) {
+				variationString += variation.name + ""
+			}
+		}
+		if (variationString != "") {
+			return variationString
+		}
+		return null;
+
+
+	}
+
+	checkForSendVariation() {
+		let count = 0
+		let maxCount = 0
+		let countVariations: TmpVariations[] = []
+
+		for (let variationMap of this.tmpPickedVariationResource) {
+			if (variationMap.get(this.tmpCountVariations)) {
+				for (let tmpVariation of variationMap.get(this.tmpCountVariations).values()) {
+					count += tmpVariation.count
+					// Prüfen, ob bereits ein Eintrag mit der gleichen lastPickedVariation existiert
+					const exists = countVariations.some(
+						v => v.lastPickedVariation === tmpVariation.lastPickedVariation
+					);
+
+					if (!exists) {
+						countVariations.push(tmpVariation);
+					}
+				}
+			}
+		}
+
+		for (let variation of countVariations) {
+			maxCount += variation.max
+		}
+
+		if (this.tmpCountVariations == 0) {
+			return count == 0
+		}
+
+
+
+		return count != maxCount
+
+	}
+
 }

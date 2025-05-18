@@ -18,6 +18,8 @@ import {
 } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { count } from "node:console"
+import { List, OrderItemVariationResource, VariationResource } from "src/app/types"
+import { threadId } from "node:worker_threads"
 
 interface AddProductsInput {
 	uuid: string
@@ -83,6 +85,8 @@ export class BookingPageComponent {
 	tmpCountVariations: number = 0
 
 	tmpPickedVariationResource: Map<number, TmpVariations[]>[] = []
+
+	tmpVariations: OrderItemVariation[] = []
 
 	constructor(
 		private dataService: DataService,
@@ -171,6 +175,10 @@ export class BookingPageComponent {
 		this.isItemPopupVisible = !this.isItemPopupVisible
 		this.tmpPickedVariationResource = []
 		this.tmpCountVariations = 0
+		if (this.minusUsed === true) {
+			this.minusUsed = false
+		}
+		this.tmpSelectedItem = undefined
 		this.showTotal()
 	}
 
@@ -242,7 +250,7 @@ export class BookingPageComponent {
 					this.selectedItem.count -= 1
 				}
 
-				this.sendOrderItem()
+				this.sendOrderItem(this.selectedItem)
 				this.removeEmptyItem(this.bookedItems)
 
 				this.showTotal()
@@ -285,22 +293,30 @@ export class BookingPageComponent {
 	}
 
 	removeVariationSubtraction(variation: OrderItemVariation) {
-		this.selectedItem.count -= 1
+		this.tmpSelectedItem.count -= 1
 		variation.count -= 1
 	}
 
 	addVariationSubtraction(variation: OrderItemVariation) {
-		this.selectedItem.count += 1
+		this.tmpSelectedItem.count += 1
 		variation.count += 1
 	}
 
-	sendDeleteVariation() {
+	sendDeleteVariation(orderItem: OrderItem) {
 		this.minusUsed = false
 		this.isItemPopupVisible = false
+		this.tmpVariations = []
+		this.selectedItem.count = this.tmpSelectedItem.count
+		this.selectedItem.orderItemVariations = this.tmpSelectedItem.orderItemVariations
 
 		if (this.tmpAllItemHandler === this.bookedItems) {
-			this.sendOrderItem()
+			this.sendOrderItem(orderItem)
 		}
+
+		//console.log(this.tmpSelectedItem)
+		this.tmpSelectedItem = undefined
+		console.log(this.selectedItem)
+
 
 		this.removeEmptyItem(this.tmpAllItemHandler)
 	}
@@ -785,10 +801,10 @@ export class BookingPageComponent {
 		}*/
 	}
 
-	async sendOrderItem() {
+	async sendOrderItem(orderItem: OrderItem) {
 		const orderItemVariations: { uuid: string; count: number }[] = []
 
-		for (let variation of this.selectedItem.orderItemVariations) {
+		for (let variation of orderItem.orderItemVariations) {
 			orderItemVariations.push({
 				uuid: variation.uuid,
 				count: variation.count
@@ -796,8 +812,8 @@ export class BookingPageComponent {
 		}
 
 		await this.apiService.updateOrderItem(`uuid`, {
-			uuid: this.selectedItem.uuid,
-			count: this.selectedItem.count,
+			uuid: orderItem.uuid,
+			count: orderItem.count,
 			orderItemVariations
 		})
 

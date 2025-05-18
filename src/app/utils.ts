@@ -189,9 +189,24 @@ export function convertOrderResourceToOrder(
 		return null
 	}
 
+	const orderItems: OrderItem[] = []
+
+	if (orderResource.orderItems != null) {
+		for (let orderItem of orderResource.orderItems.items) {
+			orderItems.push(
+				convertOrderItemResourceToOrderItem(
+					orderItem
+				)
+			)
+		}
+	}
+
 	return {
 		uuid: orderResource.uuid,
-		totalPrice: orderResource.totalPrice
+		totalPrice: orderResource.totalPrice,
+		paidAt: new Date(orderResource.paidAt),
+		table: convertTableResourceToTable(orderResource.table),
+		orderItems
 	}
 }
 

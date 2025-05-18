@@ -227,7 +227,7 @@
 			</div>
 			} }
 			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
-			<button mat-flat-button (click)="transferVariation()">
+			<button mat-flat-button [disabled]="checkifVariationPicked()" (click)="transferVariation()">
 				Auswählen
 			</button>
 		</div>

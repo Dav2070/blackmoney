@@ -42,7 +42,7 @@ export class TransferPageComponent {
 		private activatedRoute: ActivatedRoute,
 		private apiService: ApiService,
 		private router: Router
-	) {}
+	) { }
 
 	async ngOnInit() {
 		await this.dataService.companyPromiseHolder.AwaitResult()
@@ -145,7 +145,7 @@ export class TransferPageComponent {
 				.items) {
 				itemHandler.pushNewItem(convertOrderItemResourceToOrderItem(item))
 			}
-			return {...order.data.retrieveTable.orders.items[0]}
+			return { ...order.data.retrieveTable.orders.items[0] }
 		}
 
 		return null;
@@ -390,7 +390,7 @@ export class TransferPageComponent {
 		return false
 	}
 
-		calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
+	calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 		let total = 0
 
 
@@ -403,14 +403,29 @@ export class TransferPageComponent {
 		return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
 	}
 
-	async updateTables(route : string) {
+	async updateTables(route: string) {
 
-		await this.apiService.updateOrder("uuid",{uuid: this.tableLeftOrder.uuid, orderItems: this.bookedItemsLeft.getItemsCountandId()})
+		await this.apiService.updateOrder("uuid", { uuid: this.tableLeftOrder.uuid, orderItems: this.bookedItemsLeft.getItemsCountandId() })
 
-		await this.apiService.updateOrder("uuid",{uuid: this.tableRightOrder.uuid, orderItems: this.bookedItemsRight.getItemsCountandId()})
+		await this.apiService.updateOrder("uuid", { uuid: this.tableRightOrder.uuid, orderItems: this.bookedItemsRight.getItemsCountandId() })
 
 		this.router.navigate([route], { relativeTo: this.activatedRoute }).then(() => {
-			window.location.reload()});
+			window.location.reload()
+		});
 
 	}
+
+	checkifVariationPicked() {
+		let picked = true
+		if (this.tmpVariations != null) {
+
+			for (let variation of this.tmpVariations.orderItemVariations) {
+				if (variation.count > 0) {
+					picked = false
+				}
+			}
+		}
+		return picked
+	}
+
 }

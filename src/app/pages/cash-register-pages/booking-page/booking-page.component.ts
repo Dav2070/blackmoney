@@ -954,6 +954,7 @@ export class BookingPageComponent {
 				items {
 					uuid
 					totalPrice
+					paymentMethod
 					paidAt
 					table {
 						name

@@ -204,6 +204,7 @@ export function convertOrderResourceToOrder(
 	return {
 		uuid: orderResource.uuid,
 		totalPrice: orderResource.totalPrice,
+		paymentMethod: orderResource.paymentMethod,
 		paidAt: new Date(orderResource.paidAt),
 		table: convertTableResourceToTable(orderResource.table),
 		orderItems

@@ -397,7 +397,11 @@
 					[class.bill-selected]="pickedBill === bill"
 				>
 					<span>Tisch {{ bill.table.name }}</span>
-					<!--<span>{{ bill }}</span>-->
+						<span>					
+							{{
+								pickedBill.paidAt.toLocaleDateString("de-DE")
+							}}
+						</span>
 					<span
 						>{{
 							bill.paidAt.toLocaleTimeString([], {
@@ -418,9 +422,14 @@
 			<div class="bill-details">
 				<h2>
 					Tisch {{ pickedBill.table.name }}
-					<span class="bill-time">{{
+					<span class="bill-time">
+					{{
 						pickedBill.paidAt.toLocaleTimeString("de-DE")
-					}}</span>
+					}} -
+					{{
+						pickedBill.paidAt.toLocaleDateString("de-DE")
+					}}
+					</span>
 				</h2>
 				<div class="bill-items">
 					@for(item of pickedBill.orderItems; track item){

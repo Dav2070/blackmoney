@@ -944,7 +944,6 @@ export class BookingPageComponent {
 	}
 
 	async createBill(payment: PaymentMethod) {
-
 		await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
 		window.location.reload()
 	}
@@ -999,6 +998,7 @@ export class BookingPageComponent {
 
 		this.isBillPopupVisible = !this.isBillPopupVisible
 	}
+	
 	closeBills() {
 		this.isBillPopupVisible = !this.isBillPopupVisible
 		this.bills = []
@@ -1120,6 +1120,22 @@ export class BookingPageComponent {
 
 		return count != maxCount
 
+	}
+
+	calculateBillTotal(bill: Order): string {
+		let total = 0;
+		
+		for (const item of bill.orderItems) {
+			total += item.product.price * item.count;
+			
+			for (const variation of item.orderItemVariations) {
+			for (const variationItem of variation.variationItems) {
+				total += variation.count * variationItem.additionalCost;
+			}
+			}
+		}
+
+		return (total / 100).toFixed(2);
 	}
 
 }

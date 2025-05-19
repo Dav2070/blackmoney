@@ -384,7 +384,7 @@
 		</div>
 	</footer>
 
-	<!--Rechnungen
+	
 	<div class="bill-popup-overlay" [ngClass]="{ visible: isBillPopupVisible }">
 		@if(pickedBill){
 		<div class="bill-popup-content">
@@ -396,11 +396,11 @@
 					(click)="pickedBill = bill"
 					[class.bill-selected]="pickedBill === bill"
 				>
-					<span>Tisch {{ bill.table }}</span>
-					<span>{{ bill.payment }}</span>
+					<span>Tisch {{ bill.table.name }}</span>
+					<!--<span>{{ bill }}</span>-->
 					<span
 						>{{
-							bill.time.toLocaleTimeString([], {
+							bill.paidAt.toLocaleTimeString([], {
 								hour: "2-digit",
 								minute: "2-digit"
 							})
@@ -408,7 +408,7 @@
 						Uhr</span
 					>
 					<span
-						>{{ (bill.items.calculateTotal() / 100).toFixed(2) }} €</span
+						>{{ calculateBillTotal(bill) }} €</span
 					>
 				</div>
 				}
@@ -417,35 +417,42 @@
 			
 			<div class="bill-details">
 				<h2>
-					Tisch {{ pickedBill.table }}
+					Tisch {{ pickedBill.table.name }}
 					<span class="bill-time">{{
-						pickedBill.time.toLocaleTimeString("de-DE")
+						pickedBill.paidAt.toLocaleTimeString("de-DE")
 					}}</span>
 				</h2>
 				<div class="bill-items">
-					@for(item of pickedBill.items.getItems(); track item){
-					<div class="bill-item-detail">
+					@for(item of pickedBill.orderItems; track item){
+					<div class="bill-item-detail"> 
+						<div class="item-header">
+							<span>{{ item.count }} x {{ item.product.name }}</span>
+							<span class="total-price">{{ calculateTotalPriceOfOrderItem(item) }}€</span>
+						</div>
 						
-						<span>{{ item.count }}x {{ item.name }}</span>
-						<span
-							>{{ ((item.count * item.price) / 100).toFixed(2) }} €</span
-						>
-						
+						@if(item.orderItemVariations.length > 0){
+							@for(variation of item.orderItemVariations; track variation){
+								<span>{{ variation.count }} x 
+									@for(variationItem of variation.variationItems; track variationItem.uuid) {
+										{{ variationItem.name }} 
+										<span class="variationItem-price"> 
+											@if (variationItem.additionalCost > 0){
+												+
+												{{ ((variation.count * variationItem.additionalCost) / 100).toFixed(2)}}€
+											}
+										</span>
+										<br />	
+									} 
+								</span>
+							}
+						}
+					</div> 
+					}
+				</div>
+					<div class="bill-total">
+						<span>Gesamt</span>
+						<span>{{ calculateBillTotal(pickedBill)}}€</span>
 					</div>
-					@if(item.orderItemVariations){ @for(variation of
-					item.orderItemVariations; track variation) {
-					<div class="bill-item-detail">></div>
-					} } }
-				</div>
-				<div class="bill-total">
-					<span>Gesamt</span>
-					<span
-						>{{
-							(pickedBill.items.calculateTotal() / 100).toFixed(2)
-						}}
-						€</span
-					>
-				</div>
 				<div class="bill-buttons">
 					<button class="bill-back-button">Tisch zurückholen</button>
 					<button class="bill-close-button" (click)="closeBills()">
@@ -455,5 +462,5 @@
 			</div>
 		</div>
 		}
-	</div>-->
+	</div>
 </div>

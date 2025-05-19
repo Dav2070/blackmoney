@@ -397,6 +397,7 @@
 					[class.bill-selected]="pickedBill === bill"
 				>
 					<span>Tisch {{ bill.table.name }}</span>
+					<span>{{ bill.paymentMethod }}</span>
 						<span>					
 							{{
 								pickedBill.paidAt.toLocaleDateString("de-DE")

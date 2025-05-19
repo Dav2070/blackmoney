@@ -993,13 +993,23 @@ export class BookingPageComponent {
 			this.bills.push(
 				convertOrderResourceToOrder(orderResource)
 			)
+
+			this.bills.sort((a, b) => {
+				if (a.paidAt > b.paidAt) {
+					return -1
+				} else if (a.paidAt < b.paidAt) {
+					return 1
+				} else {
+					return 0
+				}
+			})
 		}
 		console.log(this.bills)
 		this.pickedBill = this.bills[0]
 
 		this.isBillPopupVisible = !this.isBillPopupVisible
 	}
-	
+
 	closeBills() {
 		this.isBillPopupVisible = !this.isBillPopupVisible
 		this.bills = []
@@ -1125,14 +1135,14 @@ export class BookingPageComponent {
 
 	calculateBillTotal(bill: Order): string {
 		let total = 0;
-		
+
 		for (const item of bill.orderItems) {
 			total += item.product.price * item.count;
-			
+
 			for (const variation of item.orderItemVariations) {
-			for (const variationItem of variation.variationItems) {
-				total += variation.count * variationItem.additionalCost;
-			}
+				for (const variationItem of variation.variationItems) {
+					total += variation.count * variationItem.additionalCost;
+				}
 			}
 		}
 

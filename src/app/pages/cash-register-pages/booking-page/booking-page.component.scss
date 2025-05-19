@@ -225,9 +225,12 @@ footer {
 }
 
 .bill-item-detail {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  border: black 0.5px solid;
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
 }
 
 .bill-total {

@@ -331,16 +331,12 @@ export class BookingPageComponent {
 
 	removeEmptyItem(itemHandler: AllItemHandler) {
 		if (this.selectedItem.count == 0) {
-			itemHandler.deleteItem(this.selectedItem)
+			itemHandler.deleteItem(this.selectedItem);
 		} else {
-			for (let variation of this.selectedItem.orderItemVariations) {
-				if (variation.count == 0) {
-					this.selectedItem.orderItemVariations.splice(
-						this.selectedItem.orderItemVariations.indexOf(variation),
-						1
-					)
-				}
-			}
+			// Verwende filter statt splice während der Iteration
+			this.selectedItem.orderItemVariations = this.selectedItem.orderItemVariations.filter(
+				variation => variation.count > 0
+			);
 		}
 	}
 
@@ -1073,7 +1069,7 @@ export class BookingPageComponent {
 			}
 		}
 
-			if (this.tmpAnzahl > 0) {
+		if (this.tmpAnzahl > 0) {
 			// Don't allow adding more variations than tmpAnzahl
 			if (totalCount >= this.tmpAnzahl) {
 				return true; // Disable the button

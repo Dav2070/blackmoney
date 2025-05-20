@@ -32,9 +32,8 @@ export class AllItemHandler {
 								variation.variationItems.length &&
 								v.variationItems.every(
 									(item, index) =>
-										item.id === variation.variationItems[index].id
-									//&&
-									//item.uuid === variation.variationItems[index].uuid
+										item.id === variation.variationItems[index].id &&
+										item.uuid === variation.variationItems[index].uuid
 								)
 						)
 					}

@@ -29,10 +29,10 @@ export class AllItemHandler {
 						existingVariation = item.orderItemVariations.find(
 							v =>
 								v.variationItems.length ===
-									variation.variationItems.length &&
+								variation.variationItems.length &&
 								v.variationItems.every(
 									(item, index) =>
-										item.name === variation.variationItems[index].name
+										item.id === variation.variationItems[index].id
 									//&&
 									//item.uuid === variation.variationItems[index].uuid
 								)
@@ -67,24 +67,44 @@ export class AllItemHandler {
 	calculateTotal() {
 		let total = 0
 
-		/*for (let item of this.allPickedItems.values()) {
-			if (item.variations != null) {
-				for (let variation of item.variations.items) {
-					for (let variationItem of variation.variationItems.items) {
-						//total += variationItem.price * variationItem.count
+		for (let item of this.allPickedItems) {
+			total += item.product.price * item.count
+
+			if (item.orderItemVariations) {
+				for (const variation of item.orderItemVariations) {
+					for (const variationItem of variation.variationItems) {
+						total += variationItem.additionalCost * variation.count
 					}
+
 				}
 			}
-
-			//total += item.price * item.count
-		}*/
+		}
 
 		return total
 	}
 
 	//Gib Liste mit jedem Item zurück
 	getItems() {
-		return this.allPickedItems.values()
+		return this.allPickedItems
+	}
+
+	getItemsCountandId() {
+		return this.allPickedItems.map(item => {
+			return {
+				count: item.count,
+				productId: item.product.id,
+				orderItemVariations: item.orderItemVariations.map(variation => {
+					return {
+						count: variation.count,
+						variationItems: variation.variationItems.map(variationItem => {
+							return {
+								id: variationItem.id,
+							};
+						}),
+					};
+				}),
+			};
+		});
 	}
 
 	//Gibt den Gesamtpreis der Variationen zurück

@@ -5,7 +5,7 @@ import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
-import { convertOrderItemResourceToOrderItem } from "src/app/utils"
+import { convertOrderItemResourceToOrderItem, convertOrderResourceToOrder } from "src/app/utils"
 import { Table } from "src/app/models/Table"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Room } from "src/app/models/Room"
@@ -90,7 +90,7 @@ export class TransferPageComponent {
 	async loadOrders(
 		tableUuid: string,
 		itemHandler: AllItemHandler,
-	) {
+	): Promise<Order> {
 		let order = await this.apiService.retrieveTable(
 			`
 				orders(paid: $paid) {
@@ -145,7 +145,7 @@ export class TransferPageComponent {
 				.items) {
 				itemHandler.pushNewItem(convertOrderItemResourceToOrderItem(item))
 			}
-			return { ...order.data.retrieveTable.orders.items[0] }
+			return convertOrderResourceToOrder(order.data.retrieveTable.orders.items[0])
 		}
 
 		return null;

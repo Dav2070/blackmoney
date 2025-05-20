@@ -360,7 +360,7 @@
 			<button
 				mat-flat-button
 				class="footerButton"
-				(click)="createBill('Bar')"
+				(click)="createBill('CASH')"
 				[disabled]="bookedItems.isEmpty()"
 			>
 				Bar
@@ -368,7 +368,7 @@
 			<button
 				mat-flat-button
 				class="footerButton"
-				(click)="createBill('Karte')"
+				(click)="createBill('CARD')"
 				[disabled]="bookedItems.isEmpty()"
 			>
 				Karte
@@ -384,11 +384,11 @@
 		</div>
 	</footer>
 
-	<!--Rechnungen-->
+	
 	<div class="bill-popup-overlay" [ngClass]="{ visible: isBillPopupVisible }">
 		@if(pickedBill){
 		<div class="bill-popup-content">
-			<!-- Rechnungsübersicht links -->
+			
 			<div class="bill-list">
 				@for(bill of bills; track bill){
 				<div
@@ -396,11 +396,16 @@
 					(click)="pickedBill = bill"
 					[class.bill-selected]="pickedBill === bill"
 				>
-					<span>Tisch {{ bill.table }}</span>
-					<span>{{ bill.payment }}</span>
+					<span>Tisch {{ bill.table.name }}</span>
+					<span class="bill-payment-method">{{ bill.paymentMethod }}</span>
+					<span>					
+						{{
+							pickedBill.paidAt.toLocaleDateString("de-DE")
+						}}
+					</span>
 					<span
 						>{{
-							bill.time.toLocaleTimeString([], {
+							bill.paidAt.toLocaleTimeString([], {
 								hour: "2-digit",
 								minute: "2-digit"
 							})
@@ -408,44 +413,56 @@
 						Uhr</span
 					>
 					<span
-						>{{ (bill.items.calculateTotal() / 100).toFixed(2) }} €</span
+						>{{ calculateBillTotal(bill) }} €</span
 					>
 				</div>
 				}
 			</div>
 
-			<!-- Details für ausgewählte Rechnung rechts -->
+			
 			<div class="bill-details">
 				<h2>
-					Tisch {{ pickedBill.table }}
-					<span class="bill-time">{{
-						pickedBill.time.toLocaleTimeString("de-DE")
-					}}</span>
+					Tisch {{ pickedBill.table.name }}
+					<span class="bill-time">
+					{{
+						pickedBill.paidAt.toLocaleTimeString("de-DE")
+					}} -
+					{{
+						pickedBill.paidAt.toLocaleDateString("de-DE")
+					}}
+					</span>
 				</h2>
 				<div class="bill-items">
-					@for(item of pickedBill.items.getItems(); track item){
-					<div class="bill-item-detail">
-						<!--
-						<span>{{ item.count }}x {{ item.name }}</span>
-						<span
-							>{{ ((item.count * item.price) / 100).toFixed(2) }} €</span
-						>
-						-->
+					@for(item of pickedBill.orderItems; track item){
+					<div class="bill-item-detail"> 
+						<div class="item-header">
+							<span>{{ item.count }} x {{ item.product.name }}</span>
+							<span class="total-price">{{ calculateTotalPriceOfOrderItem(item) }}€</span>
+						</div>
+						
+						@if(item.orderItemVariations.length > 0){
+							@for(variation of item.orderItemVariations; track variation){
+								<span>{{ variation.count }} x 
+									@for(variationItem of variation.variationItems; track variationItem.uuid) {
+										{{ variationItem.name }} 
+										<span class="variationItem-price"> 
+											@if (variationItem.additionalCost > 0){
+												+
+												{{ ((variation.count * variationItem.additionalCost) / 100).toFixed(2)}}€
+											}
+										</span>
+										<br />	
+									} 
+								</span>
+							}
+						}
+					</div> 
+					}
+				</div>
+					<div class="bill-total">
+						<span>Gesamt</span>
+						<span>{{ calculateBillTotal(pickedBill)}}€</span>
 					</div>
-					@if(item.orderItemVariations){ @for(variation of
-					item.orderItemVariations; track variation) {
-					<div class="bill-item-detail">></div>
-					} } }
-				</div>
-				<div class="bill-total">
-					<span>Gesamt</span>
-					<span
-						>{{
-							(pickedBill.items.calculateTotal() / 100).toFixed(2)
-						}}
-						€</span
-					>
-				</div>
 				<div class="bill-buttons">
 					<button class="bill-back-button">Tisch zurückholen</button>
 					<button class="bill-close-button" (click)="closeBills()">

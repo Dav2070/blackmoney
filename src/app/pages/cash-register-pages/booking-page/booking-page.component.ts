@@ -14,13 +14,16 @@ import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
 import {
 	convertCategoryResourceToCategory,
-	convertOrderItemResourceToOrderItem
+	convertOrderItemResourceToOrderItem,
+	convertOrderResourceToOrder
 } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { count } from "node:console"
-import { List, OrderItemVariationResource, VariationResource } from "src/app/types"
+import { List, OrderItemVariationResource, PaymentMethod, VariationResource } from "src/app/types"
 import { threadId } from "node:worker_threads"
 import { VariationItem } from "src/app/models/VariationItem"
+import { OrderResource } from "dav-js"
+import { Order } from "src/app/models/Order"
 
 interface AddProductsInput {
 	uuid: string
@@ -79,9 +82,9 @@ export class BookingPageComponent {
 
 	isBillPopupVisible: boolean = false
 
-	bills: Bill[] = []
+	bills: Order[] = []
 
-	pickedBill: Bill = null
+	pickedBill: Order = null
 
 	tmpCountVariations: number = 0
 
@@ -328,16 +331,12 @@ export class BookingPageComponent {
 
 	removeEmptyItem(itemHandler: AllItemHandler) {
 		if (this.selectedItem.count == 0) {
-			itemHandler.deleteItem(this.selectedItem)
+			itemHandler.deleteItem(this.selectedItem);
 		} else {
-			for (let variation of this.selectedItem.orderItemVariations) {
-				if (variation.count == 0) {
-					this.selectedItem.orderItemVariations.splice(
-						this.selectedItem.orderItemVariations.indexOf(variation),
-						1
-					)
-				}
-			}
+			// Verwende filter statt splice während der Iteration
+			this.selectedItem.orderItemVariations = this.selectedItem.orderItemVariations.filter(
+				variation => variation.count > 0
+			);
 		}
 	}
 
@@ -424,7 +423,7 @@ export class BookingPageComponent {
 			this.tmpPickedVariationResource = []
 			this.tmpCountVariations = 0
 			this.isItemPopupVisible = false
-			this.tmpLastPickedVariation=[]
+			this.tmpLastPickedVariation = []
 			this.showTotal()
 		}
 
@@ -940,21 +939,70 @@ export class BookingPageComponent {
 		this.clickItem(orderItem.product)
 	}
 
-	createBill(payment: string) {
-		let bill = new Bill(
-			"Bediener 1",
-			parseInt(this.table.uuid),
-			this.bookedItems,
-			new Date(),
-			payment,
-			false
-		)
-		this.bookedItems.clearItems()
+	async createBill(payment: PaymentMethod) {
+		await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
+		window.location.reload()
 	}
 
-	openBills() {
-		this.bills = this.hardCodedService.getBillsOfTable(20)
+	async openBills() {
+		let listOrdersResult = await this.apiService.listOrders(
+			`
+				items {
+					uuid
+					totalPrice
+					paymentMethod
+					paidAt
+					table {
+						name
+					}
+					orderItems {
+						items{
+							uuid
+							count
+							product {
+								id
+								name
+								price
+							}
+							orderItemVariations {
+								total
+								items {
+									uuid
+									count
+									variationItems {
+										total
+										items {
+											uuid
+											name
+											additionalCost
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			`, { completed: true })
+		this.bills = []
+
+		for (let orderResource of listOrdersResult.data.listOrders.items) {
+			this.bills.push(
+				convertOrderResourceToOrder(orderResource)
+			)
+
+			this.bills.sort((a, b) => {
+				if (a.paidAt > b.paidAt) {
+					return -1
+				} else if (a.paidAt < b.paidAt) {
+					return 1
+				} else {
+					return 0
+				}
+			})
+		}
+		console.log(this.bills)
 		this.pickedBill = this.bills[0]
+
 		this.isBillPopupVisible = !this.isBillPopupVisible
 	}
 
@@ -1008,24 +1056,33 @@ export class BookingPageComponent {
 	}
 
 	checkForPlusaddVariation(variation: TmpVariations) {
-		let count = variation.count
+		let totalCount = 0;
 
+		// Count all variations with the same lastPickedVariation
 		for (let variationMap of this.tmpPickedVariationResource) {
 			if (variationMap.get(this.tmpCountVariations)) {
-				for (let tmpVariation of
-					variationMap.get(this.tmpCountVariations).values()) {
-					if (variation.lastPickedVariation == tmpVariation.lastPickedVariation)
-						count += tmpVariation.count
+				for (let tmpVariation of variationMap.get(this.tmpCountVariations)) {
+					if (variation.lastPickedVariation === tmpVariation.lastPickedVariation) {
+						totalCount += tmpVariation.count;
+					}
 				}
 			}
 		}
 
-		if (count == variation.max && variation.count == 0) {
-			return true
+		if (this.tmpAnzahl > 0) {
+			// Don't allow adding more variations than tmpAnzahl
+			if (totalCount >= this.tmpAnzahl) {
+				return true; // Disable the button
+			}
 		}
 
-		return count > variation.max
+		// If no max is defined, allow adding
+		if (variation.max === undefined) {
+			return false;
+		}
 
+		// Return true to disable the button when total count reaches or exceeds max
+		return totalCount >= variation.max;
 	}
 
 	displayVariation(variation: TmpVariations) {
@@ -1079,6 +1136,22 @@ export class BookingPageComponent {
 
 		return count != maxCount
 
+	}
+
+	calculateBillTotal(bill: Order): string {
+		let total = 0;
+
+		for (const item of bill.orderItems) {
+			total += item.product.price * item.count;
+
+			for (const variation of item.orderItemVariations) {
+				for (const variationItem of variation.variationItems) {
+					total += variation.count * variationItem.additionalCost;
+				}
+			}
+		}
+
+		return (total / 100).toFixed(2);
 	}
 
 }

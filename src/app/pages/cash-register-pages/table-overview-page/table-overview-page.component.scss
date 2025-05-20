@@ -1,45 +1,127 @@
 .wrapper {
-	display: flex;
-	flex-direction: column;
-	height: 100vh;
-	background-color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    background-color: #f5f7fa;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
 }
 
 .header {
-	flex: 1;
+    flex: 1;
+    background: linear-gradient(135deg, #1d8099, #148faa);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .main {
-	flex: 15;
+    flex: 10;
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f7fa;
+    overflow: hidden;
+    padding: 20px;
+    
+    mat-form-field {
+        width: 300px;
+        margin-bottom: 20px;
+        
+        ::ng-deep .mat-mdc-form-field-flex {
+            background-color: white;
+            border-radius: 8px;
+            padding: 0 15px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08);
+        }
+    }
 }
+
 .tables {
-	overflow-y: scroll;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+    
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
 }
+
 .table {
-	margin-bottom: 1px;
+    height: 100px;
+    border-radius: 8px !important;
+    background-color: #fff;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.2s;
+    position: relative;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    mat-card-content {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        font-weight: 500;
+        font-size: 18px;
+    }
+}
+
+.card-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
 
 .bottom {
-	flex: 2;
-}
-
-// To stretch the link on top of the card div
-.card-link {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	width: 100%;
+    flex: 1;
+    background: linear-gradient(135deg, #1d8099, #148faa);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
 #footerButtonsContainer {
-	display: flex;
-	justify-content: space-around;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
 }
 
 .footerButton {
-	width: 100%;
-	margin: 25px;
-	height: 70px;
+    width: 100%;
+    margin: 5px 8px;
+    height: 70px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 15px;
+    background-color: white;
+    color: #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    
+    &:hover:not([disabled]) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+    
+    &:disabled {
+        background-color: #e9ecef;
+        color: #adb5bd;
+    }
 }
-

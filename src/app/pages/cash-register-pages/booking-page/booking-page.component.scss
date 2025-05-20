@@ -1,245 +1,500 @@
 #wrapper {
-	display: flex;
-	flex-direction: column;
-	height: 100vh;
-	background-color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    background-color: #f5f7fa;
+    color: black;
+    font-family: 'Roboto', sans-serif;
 }
 
 .header {
-	flex: 1;
-	background-color: deepskyblue;
+    flex: 1;
+    background: linear-gradient(135deg, #1d8099, #148faa);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 #mehrspaltig {
-	flex: 10;
-	display: flex;
-	flex-direction: row;
-	background-color: silver;
+    flex: 10;
+    display: flex;
+    flex-direction: row;
+    background-color: #f5f7fa;
+    overflow: hidden;
+    height: calc(100vh - 10vh);
+    max-height: calc(100vh - 10vh);
 }
 
 nav {
-	flex: 2;
-	background-color: darkgray;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	min-height: 100%;
+    flex: 2;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100%;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    border-right: 1px solid #e0e6ed;
 }
 
 .clickcolor {
-	box-shadow: 0px 0px 0px 0px rgba(102, 9, 179, 0.2),
-		0px 0px 0px 0px rgba(240, 9, 9, 0.14), 0px 0px 0px 0px rgb(0, 0, 0, 0.12);
-	--mat-outlined-card-outline-color: #fff;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    --mat-outlined-card-outline-color: #fff;
 }
 
-#drinks {
-	flex: 1;
-	background-color: purple;
-}
-
-#dishes {
-	flex: 1;
-	background-color: purple;
+#drinks, #dishes {
+    flex: 1;
+    background-color: #fff;
+    padding: 10px;
+    border-bottom: 1px solid #e0e6ed;
 }
 
 #order {
-	overflow-y: scroll;
-	flex: 1;
-	background-color: purple;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    background-color: #fff;
+    padding: 10px;
+    border-bottom: 1px solid #e0e6ed;
+    
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+}
+
+.tables mat-card {
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
 }
 
 #numpad {
-	flex: 1;
-	background-color: purple;
+    flex: 0 0 auto;
+    background-color: #fff;
+    padding: 15px;
+    
+    mat-card {
+        margin-bottom: 10px;
+        border-radius: 8px;
+        background-color: #f7f9fc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    button {
+        margin: 5px;
+        width: calc(25% - 10px);
+        height: 50px;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #333;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s;
+        
+        &:hover:not([disabled]) {
+            background-color: #f0f4f8;
+        }
+        
+        &:disabled {
+            background-color: #e9ecef;
+            color: #adb5bd;
+        }
+    }
 }
 
 article {
-	flex: 5;
-	background-color: orange;
+    flex: 5;
+    background-color: #f9fafb;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+    max-height: 100%;
+    
+    #items {
+        display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		overflow-y: auto;
+		height: 100%;
+		max-height: calc(100vh - 15vh);
+		
+		&::-webkit-scrollbar {
+			width: 8px;
+		}
+		
+		&::-webkit-scrollbar-track {
+			background: #f1f1f1;
+			border-radius: 4px;
+		}
+		
+		&::-webkit-scrollbar-thumb {
+			background: #c1c1c1;
+			border-radius: 4px;
+		}
+			
+        button {
+            min-width: 120px;
+            height: 80px;
+            margin: 5px;
+            border-radius: 8px;
+            background-color: #fff;
+            color: #333;
+            font-weight: 500;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s;
+            
+            &:hover {
+                background-color: #f0f4f8;
+                transform: translateY(-2px);
+            }
+        }
+    }
 }
 
+
+
 aside {
-	flex: 1;
-	background-color: gray;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	min-height: 100%;
+    flex: 1;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100%;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05);
+    border-left: 1px solid #e0e6ed;
+    
+    button {
+        width: calc(100% - 20px);
+        margin: 10px;
+        height: 50px;
+        border-radius: 8px;
+        background-color: #f0f4f8;
+        color: #333;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s;
+        
+        &:hover {
+            background-color: #e0e6ed;
+        }
+    }
 }
 
 footer {
-	flex: 1;
-	background-color: limegreen;
+    flex: 1;
+    background: linear-gradient(135deg, #1d8099, #148faa);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .selected-card {
-	background-color: rgba(27, 167, 251, 255);
+    background-color: #e1f5fe !important;
+    border-left: 4px solid #2196f3 !important;
 }
 
 .popup-overlay {
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	justify-content: center;
-	align-items: center;
-	z-index: 1000;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
 
-	&.visible {
-		display: flex;
-	}
+    &.visible {
+        display: flex;
+    }
 }
 
 .popup-content {
-	background: #e3e3e3;
-	padding: 20px;
-	border-radius: 10px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-	width: 300px;
-	text-align: center;
-	font-family: Arial, sans-serif;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 330px;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    
+    h2 {
+        margin-bottom: 20px;
+        color: black;
+        font-weight: 500;
+    }
+    
+    button {
+        margin-top: 15px;
+        margin-right: 8px;
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s;
+        
+        &:last-child {
+            background-color: #2196f3;
+            color: white;
+            
+            &:hover:not([disabled]) {
+                background-color: #1e88e5;
+            }
+            
+            &[disabled] {
+                background-color: #e9ecef !important;
+                color: #adb5bd !important;
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+        }
+    }
 }
 
 .popup-content-dish {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	background-color: #f8f8f8;
-	border-radius: 5px;
-	padding: 10px;
-	margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f7f9fc;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    
+    button {
+        margin: 0 5px;
+        min-width: 36px;
+        height: 36px;
+        
+        &[disabled] {
+            background-color: #e9ecef !important;
+            color: #adb5bd !important;
+            opacity: 0.7;
+        }
+        
+        mat-icon {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 18px;
+            width: 18px;
+        }
+    }
 
-	.variation-anzahl {
-		margin-left: auto;
-		font-weight: bold;
-	}
+    .variation-anzahl {
+        margin-left: auto;
+        font-weight: 500;
+    }
 }
 
 #footerButtonsContainer {
-	display: flex;
-	justify-content: space-around;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
 }
 
 .footerButton {
-	width: 100%;
-	margin: 25px;
-	height: 70px;
+    width: 100%;
+    margin: 5px 8px;
+    height: 70px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 15px;
+    background-color: white;
+    color: #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    
+    &:hover:not([disabled]) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+    
+    &:disabled {
+        background-color: #e9ecef;
+        color: #adb5bd;
+    }
 }
 
-.item-price {
-	float: right;
-}
-
-.variationItem-price {
-	float: right;
+.item-price, .variationItem-price {
+    float: right;
+    font-weight: 500;
+    color: black;
 }
 
 .total-price {
-	float: inline-end;
-	font-weight: bold;
+    float: inline-end;
+    font-weight: bold;
+    color: black;
 }
 
 .bill-popup-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	display: none;
-	align-items: center;
-	justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+    z-index: 1000;
 
-	&.visible {
-		display: flex;
-	}
+    &.visible {
+        display: flex;
+    }
 }
 
 .bill-popup-content {
-	background-color: #b0a6a6;
-	border-radius: 10px;
-	display: flex;
-	width: 800px; /* Erhöht die Breite des Popups */
-	max-height: 90%; /* Lässt das Popup nahezu den gesamten Bildschirm einnehmen */
-	overflow: hidden;
+    background-color: #fff;
+    border-radius: 12px;
+    display: flex;
+    width: 800px;
+    max-height: 90%;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
 .bill-list {
-	width: 40%;
-	background-color: #ececec;
-	padding: 10px;
-	display: flex;
-	flex-direction: column;
-	overflow-y: auto;
-	max-height: 500px; /* Feste max-height für Rechnungsliste, damit der Overflow unabhängig vom restlichen Layout funktioniert */
+    width: 40%;
+    background-color: #f5f7fa;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 500px;
+    border-right: 1px solid #e0e6ed;
+    
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
 }
 
 .bill-item {
-	padding: 10px;
-	background-color: #f4f4f4;
-	margin-bottom: 5px;
-	border-radius: 5px;
-	cursor: pointer;
-	display: flex;
-	flex-direction: column;
-	gap: 5px;
-	position: relative;
+    padding: 15px;
+    background-color: white;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 }
 
 .bill-selected {
-	background-color: #007aff;
-	color: white;
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    border-left: 4px solid #2196f3;
 }
 
 .bill-item span {
-	font-size: 14px;
+    font-size: 14px;
 }
 
 .bill-details {
-	width: 60%;
-	padding: 20px;
-	color: white;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	overflow-y: auto;
-	max-height: 100%; /* Ermöglicht, dass der Detailbereich ebenfalls scrollbar bleibt */
+    width: 60%;
+    padding: 25px;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    max-height: 100%;
+    
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
 }
 
 .bill-details h2 {
-	font-size: 18px;
-	margin: 0 0 10px;
+    font-size: 18px;
+    margin: 0 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e6ed;
 }
 
 .bill-time {
-	float: right;
-	font-size: 14px;
+    float: right;
+    font-size: 14px;
+    color: black;
 }
 
 .bill-items {
-	margin-bottom: 10px;
-	overflow-y: auto;
-	max-height: 300px; /* Begrenzt die Höhe der Rechnungsposten für eigenes Scrolling */
+    margin-bottom: 15px;
+    overflow-y: auto;
+    max-height: 300px;
 }
 
 .bill-item-detail {
-  display: flex;
-  flex-direction: column;
-  border: black 0.5px solid;
-  padding: 5px;
-  margin-bottom: 5px;
-  border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    border: none;
+    background-color: #f8f9fa;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    
+    .item-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
 }
 
 .bill-total {
-	display: flex;
-	justify-content: space-between;
-	font-weight: bold;
-	border-top: 1px solid #e0e0e0;
-	padding-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    border-top: 1px solid #e0e6ed;
+    padding-top: 15px;
+    font-size: 18px;
+    color: #1976d2;
 }
 
 .bill-payment-method {
@@ -247,37 +502,52 @@ footer {
     top: 10px;
     right: 10px;
     font-weight: bold;
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
 }
 
 .bill-buttons {
-	display: flex;
-	flex-direction: column;
-	gap: 5px;
-	margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
 }
 
 .bill-back-button {
-	background-color: #f7c001;
-	border: none;
-	padding: 10px;
-	width: 100%;
-	font-size: 16px;
-	font-weight: bold;
-	color: #333;
-	cursor: pointer;
-	border-radius: 5px;
-	text-align: center;
+    background-color: #2196f3;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.2s;
+    
+    &:hover {
+        background-color: #1e88e5;
+    }
 }
 
 .bill-close-button {
-	background-color: transparent;
-	border: 1px solid #ccc;
-	padding: 10px;
-	width: 100%;
-	font-size: 16px;
-	font-weight: bold;
-	color: #333;
-	cursor: pointer;
-	border-radius: 5px;
-	text-align: center;
+    background-color: #f0f4f8;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.2s;
+    
+    &:hover {
+        background-color: #e0e6ed;
+    }
 }

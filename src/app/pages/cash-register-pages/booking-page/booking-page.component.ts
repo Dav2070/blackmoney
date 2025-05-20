@@ -1060,24 +1060,33 @@ export class BookingPageComponent {
 	}
 
 	checkForPlusaddVariation(variation: TmpVariations) {
-		let count = variation.count
+		let totalCount = 0;
 
+		// Count all variations with the same lastPickedVariation
 		for (let variationMap of this.tmpPickedVariationResource) {
 			if (variationMap.get(this.tmpCountVariations)) {
-				for (let tmpVariation of
-					variationMap.get(this.tmpCountVariations).values()) {
-					if (variation.lastPickedVariation == tmpVariation.lastPickedVariation)
-						count += tmpVariation.count
+				for (let tmpVariation of variationMap.get(this.tmpCountVariations)) {
+					if (variation.lastPickedVariation === tmpVariation.lastPickedVariation) {
+						totalCount += tmpVariation.count;
+					}
 				}
 			}
 		}
 
-		if (count == variation.max && variation.count == 0) {
-			return true
+			if (this.tmpAnzahl > 0) {
+			// Don't allow adding more variations than tmpAnzahl
+			if (totalCount >= this.tmpAnzahl) {
+				return true; // Disable the button
+			}
 		}
 
-		return count > variation.max
+		// If no max is defined, allow adding
+		if (variation.max === undefined) {
+			return false;
+		}
 
+		// Return true to disable the button when total count reaches or exceeds max
+		return totalCount >= variation.max;
 	}
 
 	displayVariation(variation: TmpVariations) {

@@ -113,4 +113,22 @@ export class MenuePageComponent {
 		this.selectedInventory = inventory
 		console.log(inventory)
 	}
+
+		addNewCategory(type: 'food' | 'drink') {
+		const name = prompt("Bitte geben Sie den Kategorienamen ein:");
+		if (!name) return;
+
+		const newCategory: Inventory = {
+			name,
+			items: []
+		};
+
+		if (type === 'food') {
+			this.foodInventory.push(newCategory);
+		} else {
+			this.drinkInventory.push(newCategory);
+		}
+
+		this.selectedInventory = newCategory;
+	}
 }

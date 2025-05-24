@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core"
-import { AllItemHandler } from "../models/cash-register/all-item-handler.model"
 import { Bill } from "../models/cash-register/bill.model"
 
 @Injectable({
@@ -25,8 +24,8 @@ export class HardcodeService {
 	getBillsOfTable(tablenumber: number) {
 		let bills: Bill[] = []
 
-		bills.push(new Bill("Bediener1", 20, null, new Date(), "Bar", false))
-		bills.push(new Bill("Bediener1", 21, null, new Date(), "Bar", false))
+		bills.push(new Bill("Bediener1", "20", null, new Date(), "Bar", false))
+		bills.push(new Bill("Bediener1", "21", null, new Date(), "Bar", false))
 		return bills
 	}
 }

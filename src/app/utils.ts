@@ -23,6 +23,19 @@ import { Order } from "./models/Order"
 import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
 
+export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
+	let total = 0
+
+	for (let variation of orderItem.orderItemVariations) {
+		for (let variationItem of variation.variationItems) {
+			total += variation.count * variationItem.additionalCost
+		}
+	}
+
+	return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
+}
+
+//#region Converter functions
 export function convertCompanyResourceToCompany(
 	companyResource: CompanyResource
 ): Company {
@@ -193,11 +206,7 @@ export function convertOrderResourceToOrder(
 
 	if (orderResource.orderItems != null) {
 		for (let orderItem of orderResource.orderItems.items) {
-			orderItems.push(
-				convertOrderItemResourceToOrderItem(
-					orderItem
-				)
-			)
+			orderItems.push(convertOrderItemResourceToOrderItem(orderItem))
 		}
 	}
 
@@ -264,3 +273,4 @@ export function convertOrderItemVariationResourceToOrderItemVariation(
 		variationItems
 	}
 }
+//#endregion

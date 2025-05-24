@@ -9,6 +9,7 @@ import { OrderItem } from "src/app/models/OrderItem"
 import { ApiService } from "src/app/services/api-service"
 import { Table } from "src/app/models/Table"
 import { DataService } from "src/app/services/data-service"
+import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 
 @Component({
 	templateUrl: "./separate-pay-page.component.html",
@@ -32,6 +33,8 @@ export class SeparatePayPageComponent {
 
 	tmpSend: AllItemHandler
 	tmpReceiver: AllItemHandler
+
+	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 
 	constructor(
 		private hardcodeService: HardcodeService,
@@ -262,20 +265,5 @@ export class SeparatePayPageComponent {
 		if (this.bills.length > 1) {
 			this.deleteBill()
 		}
-	}
-
-	calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
-		let total = 0
-
-		for (let variation of orderItem.orderItemVariations) {
-			for (let variationItem of variation.variationItems) {
-				total += variation.count * variationItem.additionalCost
-			}
-		}
-
-		return (
-			(total + orderItem.product.price * orderItem.count) /
-			100
-		).toFixed(2)
 	}
 }

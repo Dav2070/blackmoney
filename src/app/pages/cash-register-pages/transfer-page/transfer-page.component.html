@@ -20,13 +20,17 @@
 						style="cursor: pointer"
 					>
 						<mat-card-content class="card-content">
-							
 							@if(item.orderItemVariations.length > 0){
-								<span class="item-price">
-									{{ (item.count * (item.product.price / 100)).toFixed(2) }} €
+							<span class="item-price">
+								{{
+									(item.count * (item.product.price / 100)).toFixed(2)
+								}}
+								€
 							</span>
 							} @else {
-									<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							<span class="total-price"
+								>{{ calculateTotalPriceOfOrderItem(item) }} €</span
+							>
 							}
 							<strong>
 								{{ item.count }} x
@@ -35,22 +39,32 @@
 							</strong>
 						</mat-card-content>
 						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations; track variation){
+						item.orderItemVariations; track variation) {
 						<mat-card-content>
-							{{ variation.count }} x
-							@for(variationItem of variation.variationItems; track
-							variationItem.uuid) {
+							{{ variation.count }} x @for(variationItem of
+							variation.variationItems; track variationItem.uuid) {
 
-							{{ variationItem.name }} @if (variationItem.additionalCost > 0){ 
-								<span class="variationItem-price"> + {{(variation.count*variationItem.additionalCost/100).toFixed(2)}}€</span>} <br>
+							{{ variationItem.name }} @if (variationItem.additionalCost
+							> 0){
+							<span class="variationItem-price">
+								+
+								{{
+									(
+										(variation.count * variationItem.additionalCost) /
+										100
+									).toFixed(2)
+								}}€</span
+							>} <br />
 
 							}
-						</mat-card-content>					
+						</mat-card-content>
 						} }
-						<mat-card-content> 
-							#{{ item.product.id }} 
+						<mat-card-content>
+							#{{ item.product.id }}
 							@if(item.orderItemVariations.length > 0){
-								<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
+							<span class="total-price">
+								{{ calculateTotalPriceOfOrderItem(item) }}€
+							</span>
 							}
 						</mat-card-content>
 					</mat-card>
@@ -126,39 +140,53 @@
 					style="cursor: pointer"
 				>
 					<mat-card-content class="card-content">
-							
-							@if(item.orderItemVariations.length > 0){
-								<span class="item-price">
-									{{ (item.count * (item.product.price / 100)).toFixed(2) }} €
-							</span>
-							} @else {
-									<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
-							}
-							<strong>
-								{{ item.count }} x
-								{{ item.product.name }}
-								{{ (item.product.price / 100).toFixed(2) }} €
-							</strong>
-						</mat-card-content>
-						@if (item.orderItemVariations) { @for (variation of
-						item.orderItemVariations; track variation){
-						<mat-card-content>
-							{{ variation.count }} x
-							@for(variationItem of variation.variationItems; track
-							variationItem.uuid) {
+						@if(item.orderItemVariations.length > 0){
+						<span class="item-price">
+							{{
+								(item.count * (item.product.price / 100)).toFixed(2)
+							}}
+							€
+						</span>
+						} @else {
+						<span class="total-price">
+							{{ calculateTotalPriceOfOrderItem(item) }}€
+						</span>
+						}
+						<strong>
+							{{ item.count }} x
+							{{ item.product.name }}
+							{{ (item.product.price / 100).toFixed(2) }} €
+						</strong>
+					</mat-card-content>
+					@if (item.orderItemVariations) { @for (variation of
+					item.orderItemVariations; track variation){
+					<mat-card-content>
+						{{ variation.count }} x @for(variationItem of
+						variation.variationItems; track variationItem.uuid) {
 
-							{{ variationItem.name }} @if (variationItem.additionalCost > 0){ 
-								<span class="variationItem-price"> + {{(variation.count*variationItem.additionalCost/100).toFixed(2)}}€</span>} <br>
+						{{ variationItem.name }} @if (variationItem.additionalCost >
+						0){
+						<span class="variationItem-price">
+							+
+							{{
+								(
+									(variation.count * variationItem.additionalCost) /
+									100
+								).toFixed(2)
+							}}€</span
+						>} <br />
 
-							}
-						</mat-card-content>					
-						} }
-						<mat-card-content> 
-							#{{ item.product.id }} 
-							@if(item.orderItemVariations.length > 0){
-								<span class="total-price"> {{calculateTotalPriceOfOrderItem(item)}}€  </span>
-							}
-						</mat-card-content>
+						}
+					</mat-card-content>
+					} }
+					<mat-card-content>
+						#{{ item.product.id }}
+						@if(item.orderItemVariations.length > 0){
+						<span class="total-price">
+							{{ calculateTotalPriceOfOrderItem(item) }}€
+						</span>
+						}
+					</mat-card-content>
 				</mat-card>
 				}
 			</div>
@@ -173,10 +201,18 @@
 	</div>
 	<footer>
 		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton"  (click)="updateTables('../')">
+			<button
+				mat-flat-button
+				class="footerButton"
+				(click)="updateTables('../')"
+			>
 				Tisch {{ tableLeft?.name }}
 			</button>
-			<button mat-flat-button class="footerButton"  (click)="updateTables('../../')">
+			<button
+				mat-flat-button
+				class="footerButton"
+				(click)="updateTables('../../')"
+			>
 				Tischplan
 			</button>
 			<button
@@ -227,7 +263,11 @@
 			</div>
 			} }
 			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
-			<button mat-flat-button [disabled]="checkifVariationPicked()" (click)="transferVariation()">
+			<button
+				mat-flat-button
+				[disabled]="checkifVariationPicked()"
+				(click)="transferVariation()"
+			>
 				Auswählen
 			</button>
 		</div>

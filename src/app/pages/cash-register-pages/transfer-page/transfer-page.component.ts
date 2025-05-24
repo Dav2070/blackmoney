@@ -1,11 +1,8 @@
 import { Component } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
-import { PickedItem } from "src/app/models/cash-register/picked-item.model"
-import { Variation } from "src/app/models/cash-register/variation.model"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
-import { convertOrderItemResourceToOrderItem, convertOrderResourceToOrder } from "src/app/utils"
 import { Table } from "src/app/models/Table"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Room } from "src/app/models/Room"
@@ -42,7 +39,7 @@ export class TransferPageComponent {
 		private activatedRoute: ActivatedRoute,
 		private apiService: ApiService,
 		private router: Router
-	) { }
+	) {}
 
 	async ngOnInit() {
 		await this.dataService.companyPromiseHolder.AwaitResult()
@@ -76,79 +73,14 @@ export class TransferPageComponent {
 			return
 		}
 
-		this.tableLeftOrder = await this.loadOrders(
-			this.tableLeft.uuid,
-			this.bookedItemsLeft
+		this.tableLeftOrder = await this.bookedItemsLeft.loadItemsFromOrder(
+			this.apiService,
+			this.tableLeft.uuid
 		)
-		this.tableRightOrder = await this.loadOrders(
-			this.tableRight.uuid,
-			this.bookedItemsRight
+		this.tableRightOrder = await this.bookedItemsRight.loadItemsFromOrder(
+			this.apiService,
+			this.tableRight.uuid
 		)
-	}
-
-	//Aktualisiere Bestellungen aus DB
-	async loadOrders(
-		tableUuid: string,
-		itemHandler: AllItemHandler,
-	): Promise<Order> {
-		let order = await this.apiService.retrieveTable(
-			`
-				orders(paid: $paid) {
-					total
-					items {
-						uuid
-						totalPrice
-						orderItems {
-							total
-							items {
-								uuid
-								count
-								order {
-									uuid
-								}
-								product {
-									id
-									uuid
-									name
-									price
-								}
-								orderItemVariations {
-									total
-									items {
-										count
-										variationItems {
-											total
-											items {
-												id
-												uuid
-												name
-												additionalCost
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			`,
-			{
-				uuid: tableUuid,
-				paid: false
-			}
-		)
-
-		if (order.data.retrieveTable.orders.total > 0) {
-			itemHandler.clearItems()
-
-			for (let item of order.data.retrieveTable.orders.items[0].orderItems
-				.items) {
-				itemHandler.pushNewItem(convertOrderItemResourceToOrderItem(item))
-			}
-			return convertOrderResourceToOrder(order.data.retrieveTable.orders.items[0])
-		}
-
-		return null;
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
@@ -393,32 +325,39 @@ export class TransferPageComponent {
 	calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 		let total = 0
 
-
 		for (let variation of orderItem.orderItemVariations) {
 			for (let variationItem of variation.variationItems) {
 				total += variation.count * variationItem.additionalCost
 			}
 		}
 
-		return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
+		return (
+			(total + orderItem.product.price * orderItem.count) /
+			100
+		).toFixed(2)
 	}
 
 	async updateTables(route: string) {
+		await this.apiService.updateOrder("uuid", {
+			uuid: this.tableLeftOrder.uuid,
+			orderItems: this.bookedItemsLeft.getItemsCountandId()
+		})
 
-		await this.apiService.updateOrder("uuid", { uuid: this.tableLeftOrder.uuid, orderItems: this.bookedItemsLeft.getItemsCountandId() })
+		await this.apiService.updateOrder("uuid", {
+			uuid: this.tableRightOrder.uuid,
+			orderItems: this.bookedItemsRight.getItemsCountandId()
+		})
 
-		await this.apiService.updateOrder("uuid", { uuid: this.tableRightOrder.uuid, orderItems: this.bookedItemsRight.getItemsCountandId() })
-
-		this.router.navigate([route], { relativeTo: this.activatedRoute }).then(() => {
-			window.location.reload()
-		});
-
+		this.router
+			.navigate([route], { relativeTo: this.activatedRoute })
+			.then(() => {
+				window.location.reload()
+			})
 	}
 
 	checkifVariationPicked() {
 		let picked = true
 		if (this.tmpVariations != null) {
-
 			for (let variation of this.tmpVariations.orderItemVariations) {
 				if (variation.count > 0) {
 					picked = false
@@ -427,5 +366,4 @@ export class TransferPageComponent {
 		}
 		return picked
 	}
-
 }

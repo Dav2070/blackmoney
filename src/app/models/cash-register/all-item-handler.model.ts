@@ -1,6 +1,11 @@
-import e from "express"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Variation } from "src/app/models/Variation"
+import { ApiService } from "src/app/services/api-service"
+import {
+	convertOrderItemResourceToOrderItem,
+	convertOrderResourceToOrder
+} from "src/app/utils"
+import { Order } from "../Order"
 
 export class AllItemHandler {
 	//private allPickedItems = new Map<string, OrderItem>()
@@ -8,6 +13,74 @@ export class AllItemHandler {
 
 	getAllPickedItems() {
 		return this.allPickedItems
+	}
+
+	// Lade alle Items einer Order
+	async loadItemsFromOrder(
+		apiService: ApiService,
+		tableUuid: string
+	): Promise<Order> {
+		let order = await apiService.retrieveTable(
+			`
+				orders(paid: $paid) {
+					total
+					items {
+						uuid
+						totalPrice
+						orderItems {
+							total
+							items {
+								uuid
+								count
+								order {
+									uuid
+								}
+								product {
+									id
+									uuid
+									name
+									price
+								}
+								orderItemVariations {
+									total
+									items {
+										count
+										variationItems {
+											total
+											items {
+												id
+												uuid
+												name
+												additionalCost
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			`,
+			{
+				uuid: tableUuid,
+				paid: false
+			}
+		)
+
+		if (order.data.retrieveTable.orders.total > 0) {
+			this.clearItems()
+
+			for (const item of order.data.retrieveTable.orders.items[0].orderItems
+				.items) {
+				this.pushNewItem(convertOrderItemResourceToOrderItem(item))
+			}
+
+			return convertOrderResourceToOrder(
+				order.data.retrieveTable.orders.items[0]
+			)
+		}
+
+		return null
 	}
 
 	//Füge neues Item in die Map hinzu
@@ -29,7 +102,7 @@ export class AllItemHandler {
 						existingVariation = item.orderItemVariations.find(
 							v =>
 								v.variationItems.length ===
-								variation.variationItems.length &&
+									variation.variationItems.length &&
 								v.variationItems.every(
 									(item, index) =>
 										item.id === variation.variationItems[index].id &&
@@ -74,7 +147,6 @@ export class AllItemHandler {
 					for (const variationItem of variation.variationItems) {
 						total += variationItem.additionalCost * variation.count
 					}
-
 				}
 			}
 		}
@@ -95,15 +167,17 @@ export class AllItemHandler {
 				orderItemVariations: item.orderItemVariations.map(variation => {
 					return {
 						count: variation.count,
-						variationItems: variation.variationItems.map(variationItem => {
-							return {
-								id: variationItem.id,
-							};
-						}),
-					};
-				}),
-			};
-		});
+						variationItems: variation.variationItems.map(
+							variationItem => {
+								return {
+									id: variationItem.id
+								}
+							}
+						)
+					}
+				})
+			}
+		})
 	}
 
 	//Gibt den Gesamtpreis der Variationen zurück

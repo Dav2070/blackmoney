@@ -16,7 +16,7 @@ export class SeparatePayPageComponent {
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 	bookedItems = new AllItemHandler()
 	bills: AllItemHandler[] = [new AllItemHandler()]
-	tableUuid: number
+	tableUuid: string
 	console: string
 	consoleActive: boolean = false
 
@@ -36,7 +36,7 @@ export class SeparatePayPageComponent {
 	) {}
 
 	async ngOnInit() {
-		this.tableUuid = +this.activatedRoute.snapshot.paramMap.get("uuid")
+		this.tableUuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 		//this.bookedItems = this.hardcodeService.getItemsofTable(40)
 	}
 

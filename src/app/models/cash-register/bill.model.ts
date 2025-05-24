@@ -2,7 +2,7 @@ import { AllItemHandler } from "./all-item-handler.model"
 
 export class Bill {
 	operator: string
-	table: number
+	table: string
 	items: AllItemHandler
 	time: Date
 	payment: string
@@ -10,7 +10,7 @@ export class Bill {
 
 	constructor(
 		operator: string,
-		table: number,
+		table: string,
 		items: AllItemHandler,
 		time: Date,
 		payment: string,

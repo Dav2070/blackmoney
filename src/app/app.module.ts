@@ -46,7 +46,7 @@ import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { DataService } from "./services/data-service"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
-import { SeparatePayComponent } from "./pages/cash-register-pages/separate-pay/separate-pay.component"
+import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
@@ -71,7 +71,7 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		TableOverviewPageComponent,
 		BookingPageComponent,
 		TransferPageComponent,
-		SeparatePayComponent,
+		SeparatePayPageComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,

@@ -8,7 +8,7 @@ import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
-import { SeparatePayComponent } from "./pages/cash-register-pages/separate-pay/separate-pay.component"
+import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 
@@ -55,7 +55,7 @@ const routes: Routes = [
 	},
 	{
 		path: "tables/:uuid/separate",
-		component: SeparatePayComponent
+		component: SeparatePayPageComponent
 	},
 	{
 		path: "tables/:uuid1/:uuid2",

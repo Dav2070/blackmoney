@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SeparatePayComponent } from './separate-pay.component';
+import { SeparatePayPageComponent } from './separate-pay-page.component';
 
-describe('SeparatePayComponent', () => {
-  let component: SeparatePayComponent;
-  let fixture: ComponentFixture<SeparatePayComponent>;
+describe('SeparatePayPageComponent', () => {
+  let component: SeparatePayPageComponent;
+  let fixture: ComponentFixture<SeparatePayPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SeparatePayComponent]
+      imports: [SeparatePayPageComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(SeparatePayComponent);
+    fixture = TestBed.createComponent(SeparatePayPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

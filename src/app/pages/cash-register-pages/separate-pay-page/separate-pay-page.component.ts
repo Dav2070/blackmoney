@@ -8,11 +8,11 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 import { OrderItem } from "src/app/models/OrderItem"
 
 @Component({
-	templateUrl: "./separate-pay.component.html",
-	styleUrl: "./separate-pay.component.scss",
+	templateUrl: "./separate-pay-page.component.html",
+	styleUrl: "./separate-pay-page.component.scss",
 	standalone: false
 })
-export class SeparatePayComponent {
+export class SeparatePayPageComponent {
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 	bookedItems = new AllItemHandler()
 	bills: AllItemHandler[] = [new AllItemHandler()]

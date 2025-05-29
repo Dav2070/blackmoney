@@ -10,6 +10,9 @@ import { ApiService } from "src/app/services/api-service"
 import { Table } from "src/app/models/Table"
 import { DataService } from "src/app/services/data-service"
 import { calculateTotalPriceOfOrderItem } from "src/app/utils"
+import { OrderItemVariation } from "src/app/models/OrderItemVariation"
+import { PaymentMethod } from "src/app/types"
+import { Order } from "src/app/models/Order"
 
 @Component({
 	templateUrl: "./separate-pay-page.component.html",
@@ -24,11 +27,12 @@ export class SeparatePayPageComponent {
 	console: string
 	consoleActive: boolean = false
 
+	orderUuid: string = ""
 	activeBill: AllItemHandler = this.bills[0]
 
 	isItemPopupVisible: boolean = false
-	lastClickedItem: PickedItem
-	tmpVariations = new Map<number, Variation>()
+	lastClickedItem: OrderItem
+	tmpVariations: OrderItem
 	tmpAnzahl: number
 
 	tmpSend: AllItemHandler
@@ -126,56 +130,125 @@ export class SeparatePayPageComponent {
 		send: AllItemHandler,
 		receiving: AllItemHandler
 	) {
-		// let anzahl = 0
-		// if (this.consoleActive) {
-		// 	anzahl = parseInt(this.console)
-		// }
-		// if (item.pickedVariation) {
-		// 	if (anzahl > item.anzahl) {
-		// 		window.alert(
-		// 			"Es können maximal " + item.anzahl + " Items übertragen werden"
-		// 		)
-		// 	} else {
-		// 		this.lastClickedItem = { ...item }
-		// 		this.tmpSend = send
-		// 		this.tmpReceiver = receiving
-		// 		this.isItemPopupVisible = true
-		// 		if (anzahl > 0) {
-		// 			this.tmpAnzahl = anzahl
-		// 		}
-		// 	}
-		// } else {
-		// 	if (anzahl === 0) {
-		// 		anzahl = 1
-		// 	}
-		// 	if (anzahl > item.anzahl) {
-		// 		window.alert(
-		// 			"Es können nur maximal " + item.anzahl + " übertragen werden"
-		// 		)
-		// 	} else {
-		// 		send.reduceItem(item, anzahl)
-		// 		receiving.pushNewItem(
-		// 			new PickedItem(
-		// 				{ id: item.id, price: item.price, name: item.name },
-		// 				anzahl
-		// 			)
-		// 		)
-		// 	}
-		// }
-		// this.clearInput()
+		let anzahl = 1
+		if (this.tmpAnzahl > 0) {
+			anzahl = this.tmpAnzahl
+		}
+		if (item.count < anzahl) {
+			window.alert(
+				"Es können maximal " + item.count + " Items übertragen werden"
+			)
+		} else {
+			if (item.orderItemVariations.length == 0) {
+				send.reduceItem(item, anzahl)
+				receiving.pushNewItem({ ...item, count: anzahl })
+			}
+			if (item.orderItemVariations.length == 1) {
+				this.tmpSend = send
+				this.tmpReceiver = receiving
+				this.lastClickedItem = item
+				this.tmpVariations = JSON.parse(JSON.stringify(item))
+
+				this.tmpVariations.count = anzahl
+				for (let variation of this.tmpVariations.orderItemVariations) {
+					variation.count = anzahl
+				}
+				this.transferVariation()
+			}
+			if (item.orderItemVariations.length > 1) {
+				this.tmpSend = send
+				this.tmpReceiver = receiving
+				this.lastClickedItem = item
+				this.tmpVariations = JSON.parse(JSON.stringify(item))
+				this.tmpVariations.count = 0
+				for (let variation of this.tmpVariations.orderItemVariations) {
+					variation.count = 0
+				}
+
+				this.isItemPopupVisible = true
+			}
+		}
+	}
+
+	transferVariation() {
+		this.tmpVariations.orderItemVariations =
+			this.tmpVariations.orderItemVariations.filter(v => v.count > 0)
+		this.tmpReceiver.pushNewItem(this.tmpVariations)
+		this.tmpSend.reduceItem(this.lastClickedItem, this.tmpVariations.count)
+		for (
+			let i = this.lastClickedItem.orderItemVariations.length - 1;
+			i >= 0;
+			i--
+		) {
+			const variation = this.lastClickedItem.orderItemVariations[i]
+			const matchingVariation = this.tmpVariations.orderItemVariations.find(
+				v =>
+					v.variationItems.length === variation.variationItems.length &&
+					v.variationItems.every(
+						(item, index) =>
+							item.id === variation.variationItems[index].id
+					)
+			)
+
+			if (matchingVariation) {
+				variation.count -= matchingVariation.count
+
+				// Entfernen, wenn der count kleiner oder gleich 0 ist
+				if (variation.count <= 0) {
+					this.lastClickedItem.orderItemVariations.splice(i, 1)
+				}
+			}
+		}
+
+		this.isItemPopupVisible = false
+	}
+
+	checkIfPlus(variation: OrderItemVariation) {
+		let variationCount = this.lastClickedItem.orderItemVariations.find(
+			v =>
+				v.variationItems.length === variation.variationItems.length &&
+				v.variationItems.every(
+					(item, index) =>
+						item.name === variation.variationItems[index].name
+					//&&
+					//item.uuid === variation.variationItems[index].uuid
+				)
+		)?.count
+
+		if (variationCount <= variation.count) {
+			return true
+		}
+		return false
+	}
+
+	checkIfMinus(variation: OrderItemVariation) {
+		if (variation.count <= 0) {
+			return true
+		}
+		return false
+	}
+
+	checkifVariationPicked() {
+		let picked = true
+		if (this.tmpVariations != null) {
+			for (let variation of this.tmpVariations.orderItemVariations) {
+				if (variation.count > 0) {
+					picked = false
+				}
+			}
+		}
+		return picked
 	}
 
 	//Entfernt eine Variation
-	removeVariation(variation: Variation) {
-		if (variation.anzahl === 1) {
-			this.tmpVariations.delete(variation.id)
-		} else {
-			this.tmpVariations.get(variation.id).anzahl -= 1
-		}
+	removeVariation(variation: OrderItemVariation) {
+			this.tmpVariations.count -= 1
+			variation.count -= 1
 	}
 
 	//Checkt ob Limit der Anzahl erreicht ist
 	checkLimitAnzahl(id: number) {
+		/*
 		let anzahl = this.lastClickedItem.pickedVariation.get(id).anzahl
 		if (this.tmpAnzahl > 0) {
 			anzahl = this.tmpAnzahl
@@ -187,20 +260,19 @@ export class SeparatePayPageComponent {
 			}
 		}
 
-		return false
+		return false 
+		*/
 	}
 
 	//Erhöht eine Variation um eins
-	addVariation(variation: Variation) {
-		if (this.tmpVariations.has(variation.id)) {
-			this.tmpVariations.get(variation.id).anzahl += 1
-		} else {
-			this.tmpVariations.set(variation.id, { ...variation, anzahl: 1 })
-		}
+	addVariation(variation: OrderItemVariation) {
+		this.tmpVariations.count += 1
+		variation.count += 1
 	}
 
 	//Checkt ob mindestens eine Variation ausgewählt wurde oder die Anzahl an Variationen ausgewählt wurde die man buchen möchte
 	checkPickedVariation() {
+		/*
 		if (this.tmpAnzahl > 0) {
 			let anzahl = 0
 			for (let variation of this.tmpVariations.values()) {
@@ -217,12 +289,13 @@ export class SeparatePayPageComponent {
 			}
 		}
 		return true
+		*/
 	}
 
 	//Schließt Popup und setzt alle Variablen default
 	closeItemPopup() {
 		this.isItemPopupVisible = !this.isItemPopupVisible
-		this.tmpVariations.clear()
+		this.tmpVariations = null
 		this.lastClickedItem = undefined
 		this.tmpAnzahl = 0
 	}
@@ -251,19 +324,8 @@ export class SeparatePayPageComponent {
 		// this.closeItemPopup()
 	}
 
-	createBill(payment: string) {
-		let bill = new Bill(
-			"Bediener 1",
-			this.table.uuid,
-			this.bookedItems,
-			new Date(),
-			payment,
-			true
-		)
-		this.activeBill.clearItems()
-
-		if (this.bills.length > 1) {
-			this.deleteBill()
-		}
+	async createBill(payment: PaymentMethod) {
+		await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
+		window.location.reload()
 	}
 }

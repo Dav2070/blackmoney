@@ -45,7 +45,7 @@ export class SeparatePayPageComponent {
 		private activatedRoute: ActivatedRoute,
 		private apiService: ApiService,
 		private dataService: DataService
-	) {}
+	) { }
 
 	async ngOnInit() {
 		await this.dataService.companyPromiseHolder.AwaitResult()
@@ -242,8 +242,8 @@ export class SeparatePayPageComponent {
 
 	//Entfernt eine Variation
 	removeVariation(variation: OrderItemVariation) {
-			this.tmpVariations.count -= 1
-			variation.count -= 1
+		this.tmpVariations.count -= 1
+		variation.count -= 1
 	}
 
 	//Checkt ob Limit der Anzahl erreicht ist
@@ -325,7 +325,15 @@ export class SeparatePayPageComponent {
 	}
 
 	async createBill(payment: PaymentMethod) {
-		await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
-		window.location.reload()
+		/*await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
+		window.location.reload()*/
+		console.log(this.activeBill, payment)
+		await this.apiService.updateOrder("uuid", { uuid: this.orderUuid, orderItems: this.bookedItems.getItemsCountandId() })
+		let newOrder = await this.apiService.createOrder("uuid", )
+		await this.apiService.addProductsToOrder("uuid", {
+			uuid: newOrder.data.createOrder.uuid,
+			products: this.activeBill.getAllPickedItems()
+		})
+		await this.apiService.completeOrder("uuid", { uuid: newOrder.data.createOrder.uuid, paymentMethod: payment })
 	}
 }

@@ -372,4 +372,21 @@ export class ApiService {
 			})
 			.toPromise()
 	}
+
+	async createOrder(
+		queryData: string,
+	): Promise<MutationResult<{ createOrder: OrderResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createOrder: OrderResource }>({
+				mutation: gql`
+					mutation CreateOrder {
+						createOrder {
+							${queryData}
+						}
+					}
+				`,
+				errorPolicy
+			})
+			.toPromise()
+	}
 }

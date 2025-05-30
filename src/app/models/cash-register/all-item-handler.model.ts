@@ -266,7 +266,7 @@ export class AllItemHandler {
 		let number = 0
 
 		for (let item of this.allPickedItems.values()) {
-			//number += item.count
+			number += item.count
 		}
 
 		return number

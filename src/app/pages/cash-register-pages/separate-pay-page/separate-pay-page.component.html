@@ -23,38 +23,40 @@
 								€
 							</span>
 							} @else {
-							<span class="total-price"
-								>{{ calculateTotalPriceOfOrderItem(item) }} €</span
-							>
+							<span class="total-price">
+								{{ calculateTotalPriceOfOrderItem(item) }}€
+							</span>
 							}
 							<strong>
 								{{ item.count }} x
 								{{ item.product.name }}
 								{{ (item.product.price / 100).toFixed(2) }} €
 							</strong>
+						</mat-card-content>
+						@if (item.orderItemVariations) { @for (variation of
+						item.orderItemVariations; track variation){
+						<mat-card-content>
+							{{ variation.count }} x @for(variationItem of
+							variation.variationItems; track variationItem.uuid) {
 
-							<!--
-							<span class="total-price">
-								@if(item.variations != null){
+							{{ variationItem.name }} @if (variationItem.additionalCost
+							> 0){
+							<span class="variationItem-price">
+								+
 								{{
 									(
-										item.price * item.count +
-										bookedItems.getTotalVariationPrice(
-											item.variations.items
-										)
+										(variation.count * variationItem.additionalCost) /
+										100
 									).toFixed(2)
-								}}€ }@else {
-								{{ (item.price * item.count).toFixed(2) }}€ }
-							</span>
-							<strong>
-								{{ item.count }} x
-								{{ item.name }}
-								{{ item.price.toFixed(2) }}€
-							</strong>
-						-->
+								}}€</span
+							>} <br />
+
+							}
 						</mat-card-content>
-						 <mat-card-content>
+						} }
+						<mat-card-content>
 							#{{ item.product.id }}
+
 							@if(item.orderItemVariations.length > 0){
 							<span class="total-price">
 								{{ calculateTotalPriceOfOrderItem(item) }}€
@@ -138,32 +140,58 @@
 					@for (item of bill.getItems(); track item) {
 					<mat-card
 						style="cursor: pointer"
-						(click)="transferItem(item, bill, bookedItems)"
+						(click)="setActiveBill(bill)"
+						(click)="transferItem(item, activeBill, bookedItems)"
 					>
 						<mat-card-content class="card-content">
-							<!--
-							<span class="total-price">
-								@if(item.variations != null){
+							@if(item.orderItemVariations.length > 0){
+							<span class="item-price">
 								{{
-									(
-										item.price * item.count +
-										bill.getTotalVariationPrice(item.variations.items)
-									).toFixed(2)
-								}}€ }@else {
-								{{ (item.price * item.count).toFixed(2) }}€ }
+									(item.count * (item.product.price / 100)).toFixed(2)
+								}}
+								€
 							</span>
+							} @else {
+							<span class="total-price">
+								{{ calculateTotalPriceOfOrderItem(item) }}€
+							</span>
+							}
 							<strong>
 								{{ item.count }} x
-								{{ item.name }}
-								{{ item.price.toFixed(2) }}€
+								{{ item.product.name }}
+								{{ (item.product.price / 100).toFixed(2) }} €
 							</strong>
-							-->
 						</mat-card-content>
-						@if(item.orderItemVariations){ @for(variation of
+						@if (item.orderItemVariations) { @for (variation of
 						item.orderItemVariations; track variation){
-						<mat-card-content></mat-card-content>
+						<mat-card-content>
+							{{ variation.count }} x @for(variationItem of
+							variation.variationItems; track variationItem.uuid) {
+
+							{{ variationItem.name }} @if (variationItem.additionalCost
+							> 0){
+							<span class="variationItem-price">
+								+
+								{{
+									(
+										(variation.count * variationItem.additionalCost) /
+										100
+									).toFixed(2)
+								}}€</span
+							>} <br />
+
+							}
+						</mat-card-content>
 						} }
-						<mat-card-content> #{{ item.uuid }} </mat-card-content>
+						<mat-card-content>
+							#{{ item.product.id }}
+
+							@if(item.orderItemVariations.length > 0){
+							<span class="total-price">
+								{{ calculateTotalPriceOfOrderItem(item) }}€
+							</span>
+							}
+						 </mat-card-content>
 					</mat-card>
 					} }
 				</div>
@@ -197,7 +225,7 @@
 				mat-flat-button
 				class="footerButton"
 				[disabled]="activeBill.isEmpty()"
-				(click)="createBill('Bar')"
+				(click)="createBill('CASH')"
 			>
 				Bar
 			</button>
@@ -205,7 +233,7 @@
 				mat-flat-button
 				class="footerButton"
 				[disabled]="activeBill.isEmpty()"
-				(click)="createBill('Karte')"
+				(click)="createBill('CARD')"
 			>
 				Karte
 			</button>
@@ -213,47 +241,39 @@
 	</footer>
 	<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
 		<div class="popup-content">
+			@if(tmpVariations!=null){
 			<h2>
-				@if(lastClickedItem) {
-				{{ lastClickedItem.anzahl }} x
-				{{ lastClickedItem.name }}
-				}
+				{{ tmpVariations.product.name }}
 			</h2>
-			@if(isItemPopupVisible){ @for (variation of
-			lastClickedItem.pickedVariation.values(); track variation){
+			@for(variation of tmpVariations.orderItemVariations; track variation){
 			<div class="popup-content-dish">
 				<button
-					[disabled]="
-						!tmpVariations.has(variation.id) ||
-						tmpVariations.get(variation.id).anzahl === 0
-					"
 					mat-mini-fab
+					[disabled]="checkIfMinus(variation)"
 					(click)="removeVariation(variation)"
 				>
 					<mat-icon>remove</mat-icon>
 				</button>
 				<b>
-					@if(tmpVariations.has(variation.id)){
-					{{ tmpVariations.get(variation.id).anzahl }}
-					} @else(){ 0 } x mit {{ variation.name }}
-					<br />
-					+ {{ variation.preis }}€
+					{{ variation.count }}x @for(variationItem of
+					variation.variationItems; track variationItem){
+					{{ variationItem.name }}
+					}
 				</b>
 				<button
 					mat-mini-fab
-					[disabled]="checkLimitAnzahl(variation.id)"
+					[disabled]="checkIfPlus(variation)"
 					(click)="addVariation(variation)"
 				>
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>
-
 			} }
 			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
 			<button
 				mat-flat-button
-				[disabled]="checkPickedVariation()"
-				(click)="sendVariation()"
+				[disabled]="checkifVariationPicked()"
+				(click)="transferVariation()"
 			>
 				Auswählen
 			</button>

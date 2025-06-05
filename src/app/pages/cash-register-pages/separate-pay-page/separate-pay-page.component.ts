@@ -28,6 +28,7 @@ export class SeparatePayPageComponent {
 	consoleActive: boolean = false
 
 	orderUuid: string = ""
+	billUuid: string = ""
 	activeBill: AllItemHandler = this.bills[0]
 
 	isItemPopupVisible: boolean = false
@@ -57,10 +58,13 @@ export class SeparatePayPageComponent {
 			if (this.table) break
 		}
 
-		await this.bookedItems.loadItemsFromOrder(
+		let order = await this.bookedItems.loadItemsFromOrder(
 			this.apiService,
 			this.table.uuid
 		)
+
+		this.orderUuid = order.uuid
+		this.billUuid = order.bill.uuid
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
@@ -329,11 +333,12 @@ export class SeparatePayPageComponent {
 		window.location.reload()*/
 		console.log(this.activeBill, payment)
 		await this.apiService.updateOrder("uuid", { uuid: this.orderUuid, orderItems: this.bookedItems.getItemsCountandId() })
-		let newOrder = await this.apiService.createOrder("uuid", )
+		let newOrder = await this.apiService.createOrder("uuid", { tableUuid: this.table.uuid })
 		await this.apiService.addProductsToOrder("uuid", {
 			uuid: newOrder.data.createOrder.uuid,
 			products: this.activeBill.getAllPickedItems()
 		})
-		await this.apiService.completeOrder("uuid", { uuid: newOrder.data.createOrder.uuid, paymentMethod: payment })
+		await this.apiService.completeOrder("uuid", { uuid: newOrder.data.createOrder.uuid, billUuid: this.billUuid, paymentMethod: payment })
+		this.deleteBill()
 	}
 }

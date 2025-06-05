@@ -61,11 +61,16 @@ export interface CategoryResource {
 	products: List<ProductResource>
 }
 
+export interface BillResource {
+	uuid: string
+}
+
 export interface OrderResource {
 	uuid: string
 	totalPrice: number
 	paymentMethod: PaymentMethod
 	paidAt: string
+	bill: BillResource
 	table: TableResource
 	orderItems: List<OrderItemResource>
 }
@@ -83,6 +88,7 @@ export interface OrderItemVariationResource {
 	count: number
 	variationItems: List<VariationItemResource>
 }
+
 
 export type CategoryType = "FOOD" | "DRINK"
 

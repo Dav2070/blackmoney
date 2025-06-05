@@ -12,7 +12,8 @@ import {
 	VariationItemResource,
 	OrderResource,
 	OrderItemResource,
-	OrderItemVariationResource
+	OrderItemVariationResource,
+	BillResource
 } from "./types"
 import { Table } from "./models/Table"
 import { Category } from "./models/Category"
@@ -22,6 +23,7 @@ import { VariationItem } from "./models/VariationItem"
 import { Order } from "./models/Order"
 import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
+import { Bill } from "./models/Bill"
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 	let total = 0
@@ -195,6 +197,15 @@ export function convertVariationItemResourceToVariationItem(
 	}
 }
 
+export function convertBillResourceToBill(billResource: BillResource): Bill {
+	if (billResource == null) {
+		return null
+	}
+	return {
+		uuid: billResource.uuid
+	}
+}
+
 export function convertOrderResourceToOrder(
 	orderResource: OrderResource
 ): Order {
@@ -215,6 +226,7 @@ export function convertOrderResourceToOrder(
 		totalPrice: orderResource.totalPrice,
 		paymentMethod: orderResource.paymentMethod,
 		paidAt: new Date(orderResource.paidAt),
+		bill: convertBillResourceToBill(orderResource.bill),
 		table: convertTableResourceToTable(orderResource.table),
 		orderItems
 	}

@@ -27,6 +27,9 @@ export class AllItemHandler {
 					items {
 						uuid
 						totalPrice
+						bill {
+							uuid
+						}
 						orderItems {
 							total
 							items {

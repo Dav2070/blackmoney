@@ -10,7 +10,8 @@ import {
 	OrderResource,
 	UserResource,
 	SessionResource,
-	PaymentMethod
+	PaymentMethod,
+	BillResource
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -329,7 +330,8 @@ export class ApiService {
 	async completeOrder(
 		queryData: string,
 		variables: {
-			uuid: string
+			uuid: string,
+			billUuid: string,
 			paymentMethod: PaymentMethod
 		}
 	): Promise<MutationResult<{ completeOrder: OrderResource }>> {
@@ -338,10 +340,12 @@ export class ApiService {
 				mutation: gql`
 					mutation CompleteOrder(
 						$uuid: String!
+						$billUuid: String!
 						$paymentMethod: PaymentMethod!
 					) {
 						completeOrder(
 							uuid: $uuid
+							billUuid: $billUuid
 							paymentMethod: $paymentMethod
 						) {
 							${queryData}
@@ -375,12 +379,36 @@ export class ApiService {
 
 	async createOrder(
 		queryData: string,
+		variables: { tableUuid: string }
 	): Promise<MutationResult<{ createOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createOrder: OrderResource }>({
 				mutation: gql`
-					mutation CreateOrder {
-						createOrder {
+					mutation CreateOrder(
+						$tableUuid: String!
+					) {
+						createOrder(
+							tableUuid: $tableUuid
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+	
+	async createBill(
+		queryData: string,
+	): Promise<MutationResult<{ createOrder: BillResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createOrder: BillResource }>({
+				mutation: gql`
+					mutation CreateBill {
+						createBill(
+						) {
 							${queryData}
 						}
 					}

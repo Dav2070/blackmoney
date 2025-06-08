@@ -1,14 +1,4 @@
 .full-width-table {
-	width: 100%;
-}
-
-.add-item-button {
-	margin: 16px 0;
-	text-align: center;
-}
-
-// filepath: \\wsl.localhost\Ubuntu\home\adamw\blackmoney\src\app\components\settings\items-table\items-table.component.scss
-.full-width-table {
     width: 100%;
 }
 
@@ -17,11 +7,56 @@
     text-align: center;
 }
 
+// Formularfelder mit Abstand statt negativem Margin
 mat-form-field {
+    width: 95%; // Etwas weniger als 100% für besseren Abstand
+    margin: 8px auto; // Positiver Margin statt negativ
+    display: block; // Zentrieren im Container
+}
+
+// Zellen im Bearbeitungsmodus mehr Platz geben
+td.mat-cell {
+    padding: 8px 16px;
+}
+
+// Space-Around für Formularfelder-Container
+.form-field-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
     width: 100%;
-    margin: -16px 0;
 }
 
 .mat-column-actions {
-    width: 80px;
+    width: 120px;
+    text-align: center;
+    white-space: nowrap; 
+}
+
+td.mat-cell:last-of-type button {
+    margin: 0 2px;
+}
+
+.mat-column-actions .mat-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.variations-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.variation-chip {
+    background-color: #e0e0e0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin: 2px;
+}
+
+.mat-column-variations {
+    min-width: 200px;
 }

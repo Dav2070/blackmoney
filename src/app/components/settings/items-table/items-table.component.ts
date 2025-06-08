@@ -12,6 +12,7 @@ import { MatSort } from "@angular/material/sort"
 import { ItemsTableDataSource, ItemsTableItem } from "./items-table-datasource"
 import { Item } from "src/app/models/cash-register/item.model"
 import { Inventory } from "src/app/models/cash-register/inventory.model"
+import { Variation } from "src/app/models/cash-register/variation.model"
 
 @Component({
     selector: "app-items-table",
@@ -24,6 +25,7 @@ export class ItemsTableComponent implements AfterViewInit, OnChanges {
     @ViewChild(MatSort) sort!: MatSort
     @ViewChild(MatTable) table!: MatTable<ItemsTableItem>
     @Input() Inventory: Inventory
+    @Input() availableVariations: Variation[] = []
 
     dataSource: ItemsTableDataSource = new ItemsTableDataSource([])
     editingItem: Item | null = null;
@@ -81,6 +83,14 @@ export class ItemsTableComponent implements AfterViewInit, OnChanges {
             });
         }
     }
+
+    deleteItem(item: Item): void {
+        const index = this.Inventory.items.findIndex(i => i.id === item.id);   
+        if (index !== -1) {
+            this.Inventory.items.splice(index, 1);
+            this.initializeDataSource();
+        }
+    }
     
     getNextItemId(): number {
         return this.Inventory.items.length > 0 
@@ -114,4 +124,19 @@ export class ItemsTableComponent implements AfterViewInit, OnChanges {
 	isEditing(item: Item): boolean {
 		return item === this.editingItem;
 	}
+    
+    getSelectedVariationIds(item: Item): number[] {
+        return item.variations?.map(v => v.id) || [];
+    }
+    
+    updateVariations(item: Item, selectedIds: number[]): void {
+        if (!item.variations) {
+            item.variations = [];
+        }
+        
+        item.variations = selectedIds
+            .map(id => this.availableVariations.find(v => v.id === id))
+            .filter(v => v !== undefined)
+            .map(v => ({...v!}));
+    }
 }

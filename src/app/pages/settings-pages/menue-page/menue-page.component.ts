@@ -1,5 +1,6 @@
 import { Component } from "@angular/core"
 import { Inventory } from "src/app/models/cash-register/inventory.model"
+import { Variation } from "src/app/models/cash-register/variation.model" 
 
 @Component({
 	selector: "app-menue-page",
@@ -8,6 +9,14 @@ import { Inventory } from "src/app/models/cash-register/inventory.model"
 	standalone: false
 })
 export class MenuePageComponent {
+	allVariations: Variation[] = [
+        { id: 1, name: "Klein", preis: 0 },
+        { id: 2, name: "Mittel", preis: 1 },
+        { id: 3, name: "Groß", preis: 2 },
+        { id: 6, name: "Pommes", preis: 0 },
+        { id: 7, name: "Reis", preis: 0.5 },
+        { id: 8, name: "Kroketten", preis: 1 }
+    ];
 	selectedInventory: Inventory = {
 		name: "Vorspeisen",
 		items: [

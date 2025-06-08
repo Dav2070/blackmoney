@@ -49,14 +49,29 @@
         <ng-container matColumnDef="variations">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Variationen</th>
             <td mat-cell *matCellDef="let row">
-                <ng-container *ngIf="!isEditing(row)">
-                    {{ row.variations?.length ? row.variations.length + ' Variationen' : 'Keine' }}
+                <ng-container *ngIf="!isEditing(row); else variationsEdit">
+                    <div class="variations-display">
+                        <ng-container *ngIf="row.variations?.length">
+                            <span *ngFor="let variation of row.variations" class="variation-chip">
+                                {{ variation.name }} ({{ variation.preis }}€)
+                            </span>
+                        </ng-container>
+                        <span *ngIf="!row.variations?.length">Keine</span>
+                    </div>
                 </ng-container>
-                <ng-container *ngIf="isEditing(row)">
-                    <button mat-button color="accent" disabled>
-                        Variationen später bearbeiten
-                    </button>
-                </ng-container>
+                <ng-template #variationsEdit>
+                    <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+                        <mat-label>Variationen auswählen</mat-label>
+                        <mat-select multiple [value]="getSelectedVariationIds(row)" 
+                                (selectionChange)="updateVariations(row, $event.value)"
+                                (click)="$event.stopPropagation()">
+                            <mat-option *ngFor="let variation of availableVariations" 
+                                    [value]="variation.id">
+                                {{ variation.name }} ({{ variation.preis }}€)
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-template>
             </td>
         </ng-container>
         
@@ -67,6 +82,9 @@
                 <ng-container *ngIf="!isEditing(row); else editActions">
                     <button mat-icon-button color="primary" (click)="editItem(row)">
                         <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteItem(row)">
+                        <mat-icon>delete</mat-icon>
                     </button>
                 </ng-container>
                 <ng-template #editActions>

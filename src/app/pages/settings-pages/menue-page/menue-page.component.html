@@ -42,13 +42,18 @@
 </mat-list>
 		</div>
 		<mat-tab-group class="tab">
-			<mat-tab label="Items">
-				<app-items-table [Inventory]="selectedInventory"></app-items-table>
-			</mat-tab>
-			<mat-tab label="Variationen">
-				<app-variations-table></app-variations-table>
-			</mat-tab>
-			<mat-tab label="Menüs"> Menüs </mat-tab>
-		</mat-tab-group>
+    <mat-tab label="Items">
+        <app-items-table 
+            [Inventory]="selectedInventory"
+            [availableVariations]="allVariations">
+        </app-items-table>
+    </mat-tab>
+    <mat-tab label="Variationen">
+        <app-variations-table
+            [variations]="allVariations">
+        </app-variations-table>
+    </mat-tab>
+    <mat-tab label="Menüs"> Menüs </mat-tab>
+</mat-tab-group>
 	</div>
 </app-settings-bar>

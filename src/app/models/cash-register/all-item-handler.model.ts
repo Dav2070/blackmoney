@@ -27,6 +27,9 @@ export class AllItemHandler {
 					items {
 						uuid
 						totalPrice
+						bill {
+							uuid
+						}
 						orderItems {
 							total
 							items {
@@ -266,7 +269,7 @@ export class AllItemHandler {
 		let number = 0
 
 		for (let item of this.allPickedItems.values()) {
-			//number += item.count
+			number += item.count
 		}
 
 		return number

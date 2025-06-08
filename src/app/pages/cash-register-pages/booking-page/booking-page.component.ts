@@ -70,6 +70,7 @@ export class BookingPageComponent {
 	room: Room = null
 	table: Table = null
 	orderUuid: string = ""
+	billUuid: string = ""
 
 	xUsed: boolean = false
 	minusUsed: boolean = false
@@ -581,6 +582,9 @@ export class BookingPageComponent {
 					total
 					items {
 						uuid
+						bill {
+							uuid
+						}
 						totalPrice
 						orderItems {
 							total
@@ -640,6 +644,7 @@ export class BookingPageComponent {
 		if (order.data.retrieveTable.orders.total > 0) {
 			if (this.orderUuid === "") {
 				this.orderUuid = order.data.retrieveTable.orders.items[0].uuid
+				this.billUuid = order.data.retrieveTable.orders.items[0].bill.uuid
 			}
 			this.bookedItems.clearItems()
 			for (let item of order.data.retrieveTable.orders.items[0].orderItems
@@ -940,7 +945,7 @@ export class BookingPageComponent {
 	}
 
 	async createBill(payment: PaymentMethod) {
-		await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
+		await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, billUuid:this.billUuid, paymentMethod: payment })
 		window.location.reload()
 	}
 

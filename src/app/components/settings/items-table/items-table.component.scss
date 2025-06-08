@@ -6,3 +6,22 @@
 	margin: 16px 0;
 	text-align: center;
 }
+
+// filepath: \\wsl.localhost\Ubuntu\home\adamw\blackmoney\src\app\components\settings\items-table\items-table.component.scss
+.full-width-table {
+    width: 100%;
+}
+
+.add-item-button {
+    margin: 16px 0;
+    text-align: center;
+}
+
+mat-form-field {
+    width: 100%;
+    margin: -16px 0;
+}
+
+.mat-column-actions {
+    width: 80px;
+}

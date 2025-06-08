@@ -1,10 +1,10 @@
 import {
-	AfterViewInit,
-	Component,
-	Input,
-	OnChanges,
-	SimpleChanges,
-	ViewChild
+    AfterViewInit,
+    Component,
+    Input,
+    OnChanges,
+    SimpleChanges,
+    ViewChild
 } from "@angular/core"
 import { MatTable } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
@@ -14,35 +14,104 @@ import { Item } from "src/app/models/cash-register/item.model"
 import { Inventory } from "src/app/models/cash-register/inventory.model"
 
 @Component({
-	selector: "app-items-table",
-	templateUrl: "./items-table.component.html",
-	styleUrl: "./items-table.component.scss",
-	standalone: false
+    selector: "app-items-table",
+    templateUrl: "./items-table.component.html",
+    styleUrl: "./items-table.component.scss",
+    standalone: false
 })
 export class ItemsTableComponent implements AfterViewInit, OnChanges {
-	@ViewChild(MatPaginator) paginator!: MatPaginator
-	@ViewChild(MatSort) sort!: MatSort
-	@ViewChild(MatTable) table!: MatTable<ItemsTableItem>
-	@Input() Inventory: Inventory
+    @ViewChild(MatPaginator) paginator!: MatPaginator
+    @ViewChild(MatSort) sort!: MatSort
+    @ViewChild(MatTable) table!: MatTable<ItemsTableItem>
+    @Input() Inventory: Inventory
 
-	dataSource: ItemsTableDataSource = new ItemsTableDataSource([])
+    dataSource: ItemsTableDataSource = new ItemsTableDataSource([])
+    editingItem: Item | null = null;
+    newItem: Item | null = null;
 
-	/** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-	displayedColumns = ["id", "name", "price", "variations"]
+    displayedColumns = ["id", "name", "price", "variations", "actions"]
 
-	ngAfterViewInit(): void {
-		this.dataSource = new ItemsTableDataSource(this.Inventory.items)
-		this.dataSource.sort = this.sort
-		this.dataSource.paginator = this.paginator
-		this.table.dataSource = this.dataSource
-	}
+    ngAfterViewInit(): void {
+        this.initializeDataSource();
+    }
 
-	ngOnChanges(changes: SimpleChanges) {
-		this.dataSource = new ItemsTableDataSource(
-			changes["Inventory"].currentValue.items
-		)
-		this.dataSource.sort = this.sort
-		this.dataSource.paginator = this.paginator
-		this.table.dataSource = this.dataSource
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes["Inventory"] && changes["Inventory"].currentValue) {
+            this.initializeDataSource();
+            this.cancelEdit();
+        }
+    }
+
+    initializeDataSource(): void {
+        if (this.Inventory && this.Inventory.items) {
+            this.dataSource = new ItemsTableDataSource(this.Inventory.items);
+            
+            if (this.sort && this.paginator && this.table) {
+                this.dataSource.sort = this.sort;
+                this.dataSource.paginator = this.paginator;
+                this.table.dataSource = this.dataSource;
+            }
+        }
+    }
+
+    addNewItem(): void {
+        // Create a new item with default values
+        this.newItem = {
+            id: this.getNextItemId(),
+            name: "",
+            price: 0,
+            variations: []
+        };
+        
+        // Add to inventory temporarily
+        this.Inventory.items.push(this.newItem);
+        this.initializeDataSource();
+        
+        // Set it as the currently edited item
+        this.editingItem = this.newItem;
+        
+        // Navigate to the page containing the new item
+        if (this.paginator) {
+            const lastPage = Math.ceil(this.Inventory.items.length / this.paginator.pageSize) - 1;
+            this.paginator.pageIndex = lastPage;
+            this.paginator.page.emit({
+                pageIndex: lastPage,
+                pageSize: this.paginator.pageSize,
+                length: this.Inventory.items.length
+            });
+        }
+    }
+    
+    getNextItemId(): number {
+        return this.Inventory.items.length > 0 
+            ? Math.max(...this.Inventory.items.map(item => item.id)) + 1 
+            : 1;
+    }
+    
+    editItem(item: Item): void {
+        this.editingItem = item;
+    }
+    
+    saveItem(item: Item): void {
+        this.editingItem = null;
+        this.newItem = null;
+        this.initializeDataSource();
+    }
+    
+    cancelEdit(): void {
+        if (this.newItem) { // Wenn item neu ist, und nicht gespeichert wurde, entfernen
+            const index = this.Inventory.items.findIndex(item => item === this.newItem);
+            if (index !== -1) {
+                this.Inventory.items.splice(index, 1);
+            }
+        }
+        
+        this.editingItem = null;
+        this.newItem = null;
+        this.initializeDataSource();
+    }
+    
+	isEditing(item: Item): boolean {
+		return item === this.editingItem;
 	}
 }

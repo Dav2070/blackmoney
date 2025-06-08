@@ -219,10 +219,7 @@ export class SeparatePayPageComponent {
 				)
 		)?.count
 
-		if (variationCount <= variation.count) {
-			return true
-		}
-		return false
+		return variationCount <= variation.count
 	}
 
 	checkIfMinus(variation: OrderItemVariation) {
@@ -329,6 +326,15 @@ export class SeparatePayPageComponent {
 	}
 
 	async createBill(payment: PaymentMethod) {
+		interface AddProductsInput {
+			uuid: string
+			count: number
+			variations?: AddProductsInputVariation[]
+		}
+		interface AddProductsInputVariation {
+			variationItemUuids: string[]
+			count: number
+		}
 		/*await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
 		window.location.reload()*/
 		console.log(this.activeBill, payment)
@@ -336,7 +342,20 @@ export class SeparatePayPageComponent {
 		let newOrder = await this.apiService.createOrder("uuid", { tableUuid: this.table.uuid })
 		await this.apiService.addProductsToOrder("uuid", {
 			uuid: newOrder.data.createOrder.uuid,
-			products: this.activeBill.getAllPickedItems()
+			products: this.activeBill.getAllPickedItems().map(item => {
+				let variations: AddProductsInputVariation[] = []
+				if (item.orderItemVariations.length > 0) {
+					variations = item.orderItemVariations.map(variation => ({
+						variationItemUuids: variation.variationItems.map(v => v.uuid),
+						count: variation.count
+					}))
+				}
+				return {
+					uuid: item.product.uuid,
+					count: item.count,
+					variations
+				} as AddProductsInput
+			})
 		})
 		await this.apiService.completeOrder("uuid", { uuid: newOrder.data.createOrder.uuid, billUuid: this.billUuid, paymentMethod: payment })
 		this.deleteBill()

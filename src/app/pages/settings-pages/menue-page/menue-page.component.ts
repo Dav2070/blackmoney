@@ -164,27 +164,71 @@ export class MenuePageComponent {
         }
     ]
 
+    addCategoryType: 'FOOD' | 'DRINK' | null = null;
+    newCategoryName = '';
+    editCategory: Category | null = null;
+    editCategoryName = '';
+
     setCategory(category: Category) {
         this.selectedCategory = category;
     }
 
-    addNewCategory(type: 'FOOD' | 'DRINK') {
-        const name = prompt("Bitte geben Sie den Kategorienamen ein:");
-        if (!name) return;
+    startAddCategory(type: 'FOOD' | 'DRINK') {
+        this.addCategoryType = type;
+        this.newCategoryName = '';
+        this.editCategory = null;
+    }
 
+    cancelAddCategory() {
+        this.addCategoryType = null;
+        this.newCategoryName = '';
+    }
+
+    addNewCategory(type: 'FOOD' | 'DRINK') {
+        const name = this.newCategoryName.trim();
+        if (!name) return;
         const newCategory: Category = {
             uuid: 'category_' + Date.now(),
             name,
             type,
             products: []
         };
-
         if (type === 'FOOD') {
             this.foodCategories.push(newCategory);
         } else {
             this.drinkCategories.push(newCategory);
         }
-
         this.selectedCategory = newCategory;
+        this.cancelAddCategory();
+    }
+
+    startEditCategory(category: Category) {
+        this.editCategory = category;
+        this.editCategoryName = category.name;
+        this.addCategoryType = null;
+    }
+
+    cancelEditCategory() {
+        this.editCategory = null;
+        this.editCategoryName = '';
+    }
+
+    saveEditCategory() {
+        if (this.editCategory && this.editCategoryName.trim()) {
+            this.editCategory.name = this.editCategoryName.trim();
+            this.editCategory = null;
+            this.editCategoryName = '';
+        }
+    }
+
+    deleteCategory(category: Category) {
+        if (category.type === 'FOOD') {
+            this.foodCategories = this.foodCategories.filter(c => c.uuid !== category.uuid);
+        } else {
+            this.drinkCategories = this.drinkCategories.filter(c => c.uuid !== category.uuid);
+        }
+        if (this.selectedCategory?.uuid === category.uuid) {
+            this.selectedCategory = this.foodCategories[0] || this.drinkCategories[0] || null;
+        }
     }
 }

@@ -4,7 +4,7 @@ import {
 	provideClientHydration
 } from "@angular/platform-browser"
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
-import { FormsModule } from "@angular/forms"
+import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 
 // Material Design modules
 import { MatIconModule } from "@angular/material/icon"
@@ -18,6 +18,12 @@ import { MatSidenavModule } from "@angular/material/sidenav"
 import { MatMenuModule } from "@angular/material/menu"
 import { MatListModule } from "@angular/material/list"
 import { MatTabsModule } from "@angular/material/tabs"
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
@@ -40,6 +46,7 @@ import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
+import { OpeningDaysComponent } from "./pages/settings-pages/opening-days/opening-days.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -55,6 +62,7 @@ import { MatTableModule } from "@angular/material/table"
 import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
+
 
 @NgModule({
 	declarations: [
@@ -72,6 +80,7 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		BookingPageComponent,
 		TransferPageComponent,
 		SeparatePayPageComponent,
+		OpeningDaysComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,
@@ -84,6 +93,7 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		BrowserModule,
 		BrowserAnimationsModule,
 		FormsModule,
+		ReactiveFormsModule,
 		ApolloModule,
 		GraphQLModule,
 		AppRoutingModule,
@@ -99,6 +109,11 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		MatListModule,
 		MatMenuModule,
 		MatTabsModule,
+		MatCheckboxModule,
+		MatDatepickerModule,
+		MatSnackBarModule,
+		MatDialogModule,
+		MatSlideToggleModule,
 
 		//ServiceWorker
 		ServiceWorkerModule.register("ngsw-worker.js", {
@@ -120,4 +135,4 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		provideHttpClient(withInterceptorsFromDi())
 	]
 })
-export class AppModule {}
+export class AppModule { }

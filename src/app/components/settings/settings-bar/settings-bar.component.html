@@ -10,7 +10,7 @@
 		<mat-toolbar>Menu</mat-toolbar>
 		<mat-nav-list>
 			<a mat-list-item href="/tables/settings/menue">Menue</a>
-			<a mat-list-item href="#">Link 2</a>
+			<a mat-list-item href="/tables/settings/opening-days">Restaurant</a>
 			<a mat-list-item href="#">Link 3</a>
 		</mat-nav-list>
 	</mat-sidenav>
@@ -26,15 +26,12 @@
 			</button>
 
 			<span>blackmoney</span>
-			
+
 			<span class="spacer"></span>
 
-			<button 
-				mat-icon-button 
-				(click)="goBack()" aria-label="Back">
+			<button mat-icon-button (click)="goBack()" aria-label="Back">
 				<mat-icon>arrow_back</mat-icon>
 			</button>
-
 		</mat-toolbar>
 		<!-- Add Content Here -->
 		<ng-content></ng-content>

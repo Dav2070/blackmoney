@@ -1,0 +1,85 @@
+<app-settings-bar>
+	<form [formGroup]="daysForm">
+		<p>Öffnungstage</p>
+
+		<mat-form-field>
+			<mat-label>Auswählen</mat-label>
+			<mat-select
+				formControlName="days"
+				(selectionChange)="changeDays()"
+				multiple
+			>
+				<mat-option *ngFor="let day of dayList" [value]="day">
+					{{ day }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+		<div *ngIf="daysForm.value.days?.length > 1">
+			<p>Sind Öffnungszeiten an einigen Tagen gleich?</p>
+			<mat-slide-toggle
+				formControlName="togetherCheck"
+				(change)="changeTogether()"
+			>
+			</mat-slide-toggle>
+			<br /><br />
+			<div *ngIf="isChecked">
+				<div *ngFor="let group of groups">
+					<div>
+						<p>
+							Tage mit gleichen Öffnungszeiten
+							<button
+								mat-icon-button
+								color="warn"
+								(click)="removeGroup(group.id)"
+							>
+								<mat-icon>delete</mat-icon>
+							</button>
+						</p>
+						<mat-form-field>
+							<mat-label>Auswählen</mat-label>
+							<mat-select
+								[value]="group.selectedDays"
+								(selectionChange)="
+									changeDaysTogether($event.value, group.id)
+								"
+								multiple
+							>
+								<mat-option
+									*ngFor="let day of getAvailableDaysForGroup(group)"
+									[value]="day"
+								>
+									{{ day }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+				</div>
+				<button
+					mat-stroked-button
+					type="button"
+					(click)="addGroup()"
+					[disabled]="
+						getAvailableDaysForGroup({ id: 0, selectedDays: [] })
+							.length === 0
+					"
+				>
+					Weitere Gruppe hinzufügen
+				</button>
+				<div *ngIf="!isGroupingValid()" style="color: red">
+					Bitte ordnen Sie alle ausgewählten Tage eindeutig den Gruppen zu.
+				</div>
+			</div>
+		</div>
+		<p *ngIf="daysForm.value.days?.length > 0">
+			<button
+				mat-raised-button
+				type="button"
+				(click)="saveDays()"
+				[disabled]="isChecked && !isGroupingValid()"
+			>
+				Speichern
+			</button>
+		</p>
+	</form>
+</app-settings-bar>

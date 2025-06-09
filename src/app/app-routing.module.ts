@@ -11,7 +11,7 @@ import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page
 import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
-import { OpeningDaysComponent } from "./pages/settings-pages/opening-days/opening-days.component"
+import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 
 
 const routes: Routes = [
@@ -25,8 +25,8 @@ const routes: Routes = [
 		component: MenuePageComponent
 	},
 	{
-		path: "tables/settings/opening-days",
-		component: OpeningDaysComponent
+		path: "tables/settings/restaurant",
+		component: RestaurantOverviewComponent
 	},
 	//Cash-Register Pages
 	{

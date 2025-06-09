@@ -23,6 +23,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 // Apollo
@@ -46,7 +47,6 @@ import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
-import { OpeningDaysComponent } from "./pages/settings-pages/opening-days/opening-days.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -62,6 +62,7 @@ import { MatTableModule } from "@angular/material/table"
 import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
+import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 
 
 @NgModule({
@@ -80,12 +81,12 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		BookingPageComponent,
 		TransferPageComponent,
 		SeparatePayPageComponent,
-		OpeningDaysComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,
 		ItemsTableComponent,
-		VariationsTableComponent
+		VariationsTableComponent,
+		RestaurantOverviewComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],
@@ -114,6 +115,7 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		MatSnackBarModule,
 		MatDialogModule,
 		MatSlideToggleModule,
+		MatRadioModule,
 
 		//ServiceWorker
 		ServiceWorkerModule.register("ngsw-worker.js", {

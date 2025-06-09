@@ -13,6 +13,7 @@ import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
+import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 
 
 const routes: Routes = [
@@ -32,6 +33,10 @@ const routes: Routes = [
 	{
 		path: "tables/settings/rooms",
 		component: RoomManagementComponent 	
+	},
+	{
+		path: "tables/settings/employees",
+		component: EmployeeManagementComponent,
 	},
 	//Cash-Register Pages
 	{

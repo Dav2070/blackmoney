@@ -65,6 +65,7 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
+import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 
 @NgModule({
 	declarations: [
@@ -82,13 +83,14 @@ import { RoomManagementComponent } from "./pages/settings-pages/room-management/
 		BookingPageComponent,
 		TransferPageComponent,
 		SeparatePayPageComponent,
-		RoomManagementComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,
 		ItemsTableComponent,
 		VariationsTableComponent,
-		RestaurantOverviewComponent
+		RestaurantOverviewComponent,
+		RoomManagementComponent,
+		EmployeeManagementComponent,
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

@@ -1,45 +1,119 @@
 <div class="mat-elevation-z2">
-	<table mat-table class="full-width-table" matSort aria-label="Elements">
-		<!-- Id Column -->
+    <table mat-table class="full-width-table" matSort aria-label="Elements">
+        <!-- Id Column -->
 		<ng-container matColumnDef="id">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-			<td mat-cell *matCellDef="let row">{{ row.id }}</td>
+			<td mat-cell *matCellDef="let row">
+				<ng-container *ngIf="!isEditing(row); else idEdit">
+					{{ row.id }}
+				</ng-container>
+				<ng-template #idEdit>
+					<mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+						<input matInput type="number" [(ngModel)]="row.id" placeholder="ID eingeben" (click)="$event.stopPropagation()">
+					</mat-form-field>
+				</ng-template>
+			</td>
 		</ng-container>
 
 		<!-- Name Column -->
 		<ng-container matColumnDef="name">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-			<td mat-cell *matCellDef="let row">{{ row.name }}</td>
+			<td mat-cell *matCellDef="let row">
+				<ng-container *ngIf="!isEditing(row); else nameEdit">
+					{{ row.name }}
+				</ng-container>
+				<ng-template #nameEdit>
+					<mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+						<input matInput [(ngModel)]="row.name" placeholder="Name eingeben" (click)="$event.stopPropagation()">
+					</mat-form-field>
+				</ng-template>
+			</td>
 		</ng-container>
 
 		<!-- Price Column -->
 		<ng-container matColumnDef="price">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header>Preis</th>
-			<td mat-cell *matCellDef="let row">{{ row.price }}</td>
+			<td mat-cell *matCellDef="let row">
+				<ng-container *ngIf="!isEditing(row); else priceEdit">
+					{{ row.price }}
+				</ng-container>
+				<ng-template #priceEdit>
+					<mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+						<input matInput type="number" step="0.1" [(ngModel)]="row.price" placeholder="Preis eingeben" (click)="$event.stopPropagation()">
+					</mat-form-field>
+				</ng-template>
+			</td>
 		</ng-container>
 
-		<!-- Variations Column -->
-		<ng-container matColumnDef="variations">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>Variationen</th>
-			<td mat-cell *matCellDef="let row">{{ row.variations }}</td>
-		</ng-container>
+        <!-- Variations Column -->
+        <ng-container matColumnDef="variations">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Variationen</th>
+            <td mat-cell *matCellDef="let row">
+                <ng-container *ngIf="!isEditing(row); else variationsEdit">
+                    <div class="variations-display">
+                        <ng-container *ngIf="row.variations?.length">
+                            <span *ngFor="let variation of row.variations" class="variation-chip">
+                                {{ variation.name }} ({{ variation.preis }}€)
+                            </span>
+                        </ng-container>
+                        <span *ngIf="!row.variations?.length">Keine</span>
+                    </div>
+                </ng-container>
+                <ng-template #variationsEdit>
+                    <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+                        <mat-label>Variationen auswählen</mat-label>
+                        <mat-select multiple [value]="getSelectedVariationIds(row)" 
+                                (selectionChange)="updateVariations(row, $event.value)"
+                                (click)="$event.stopPropagation()">
+                            <mat-option *ngFor="let variation of availableVariations" 
+                                    [value]="variation.id">
+                                {{ variation.name }} ({{ variation.preis }}€)
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-template>
+            </td>
+        </ng-container>
+        
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Aktionen</th>
+            <td mat-cell *matCellDef="let row">
+                <ng-container *ngIf="!isEditing(row); else editActions">
+                    <button mat-icon-button color="primary" (click)="editItem(row)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteItem(row)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </ng-container>
+                <ng-template #editActions>
+                    <button mat-icon-button color="primary" (click)="saveItem(row)">
+                        <mat-icon>check</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="cancelEdit()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </ng-template>
+            </td>
+        </ng-container>
 
-		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-		<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-	</table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
 
-	<!-- Button zum Hinzufügen eines neuen Items -->
-	<div class="add-item-button">
-		<button mat-raised-button color="primary">Neues Item hinzufügen</button>
-	</div>
+    <!-- Button zum Hinzufügen eines neuen Items -->
+    <div class="add-item-button">
+        <button (click)="addNewItem()" mat-raised-button color="primary">Neues Item hinzufügen</button>
+    </div>
 
-	<mat-paginator
-		#paginator
-		[length]="dataSource.data.length"
-		[pageIndex]="0"
-		[pageSize]="10"
-		[pageSizeOptions]="[5, 10, 20]"
-		aria-label="Select page"
-	>
-	</mat-paginator>
+    <mat-paginator
+        #paginator
+        [length]="dataSource?.data?.length || 0"
+        [pageIndex]="0"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 20]"
+        aria-label="Select page"
+    >
+    </mat-paginator>
 </div>

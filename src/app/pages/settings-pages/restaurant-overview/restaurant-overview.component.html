@@ -1,0 +1,66 @@
+<app-settings-bar>
+  <div>
+    <h2>{{ restaurant.name }}</h2>
+    <button mat-raised-button color="primary" *ngIf="!editMode" (click)="startEdit()">Bearbeiten</button>
+    <div *ngIf="!editMode">
+      <ul>
+        <li *ngFor="let group of restaurant.openingDaysGroups">
+          <strong>{{ group.days.join(', ') }}:</strong>
+          <span *ngFor="let period of group.periods; let last = last">
+            {{ period.from }}–{{ period.to }}<span *ngIf="!last">, </span>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <form *ngIf="editMode" autocomplete="off">
+      <mat-form-field appearance="outline">
+        <mat-label>Restaurant-Name</mat-label>
+        <input matInput [(ngModel)]="restaurant.name" name="restaurantName" required />
+      </mat-form-field>
+
+      <div *ngFor="let group of restaurant.openingDaysGroups; let i = index" class="group-block">
+        <mat-card>
+          <div style="display: flex; align-items: center; gap: 1em;">
+            <mat-form-field appearance="fill">
+              <mat-label>Tage</mat-label>
+              <mat-select [(ngModel)]="group.days" [name]="'days'+i" multiple>
+                <mat-option *ngFor="let day of getAvailableDays(group)" [value]="day">{{ day }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button mat-icon-button color="warn" (click)="removeGroup(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+          <mat-radio-group [value]="isDurchgehend(group) ? 'durchgehend' : 'pause'" (change)="setPeriodsType(group, $event.value)">
+            <mat-radio-button value="durchgehend">Durchgehend geöffnet</mat-radio-button>
+            <mat-radio-button value="pause">Mit Pause</mat-radio-button>
+          </mat-radio-group>
+          <div *ngFor="let period of group.periods; let j = index" style="margin-top: 0.5em;">
+            <mat-form-field appearance="fill">
+              <mat-label>Von</mat-label>
+              <input matInput [(ngModel)]="period.from" [name]="'from' + i + j" type="time" step="60" required />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Bis</mat-label>
+              <input matInput [(ngModel)]="period.to" [name]="'to' + i + j" type="time" step="60" required />
+            </mat-form-field>
+          </div>
+        </mat-card>
+      </div>
+      <!-- Button ist deaktiviert, wenn alle Tage vergeben sind -->
+      <button
+        mat-stroked-button
+        color="primary"
+        type="button"
+        (click)="addGroup()"
+        [disabled]="getAvailableDays(null).length === 0"
+      >
+        + Weitere Tage hinzufügen
+      </button>
+      <br /><br />
+      <mat-error *ngFor="let err of validationErrors">{{ err }}</mat-error>
+      <button mat-raised-button color="primary" type="button" (click)="save()">Speichern</button>
+    </form>
+  </div>
+</app-settings-bar>

@@ -4,7 +4,7 @@ import {
 	provideClientHydration
 } from "@angular/platform-browser"
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
-import { FormsModule } from "@angular/forms"
+import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 
 // Material Design modules
 import { MatIconModule } from "@angular/material/icon"
@@ -18,6 +18,13 @@ import { MatSidenavModule } from "@angular/material/sidenav"
 import { MatMenuModule } from "@angular/material/menu"
 import { MatListModule } from "@angular/material/list"
 import { MatTabsModule } from "@angular/material/tabs"
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatRadioModule } from '@angular/material/radio';
+
 
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
@@ -55,6 +62,8 @@ import { MatTableModule } from "@angular/material/table"
 import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
+import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
+
 
 @NgModule({
 	declarations: [
@@ -76,7 +85,8 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		SettingsPageComponent,
 		MenuePageComponent,
 		ItemsTableComponent,
-		VariationsTableComponent
+		VariationsTableComponent,
+		RestaurantOverviewComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],
@@ -84,6 +94,7 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		BrowserModule,
 		BrowserAnimationsModule,
 		FormsModule,
+		ReactiveFormsModule,
 		ApolloModule,
 		GraphQLModule,
 		AppRoutingModule,
@@ -99,6 +110,12 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		MatListModule,
 		MatMenuModule,
 		MatTabsModule,
+		MatCheckboxModule,
+		MatDatepickerModule,
+		MatSnackBarModule,
+		MatDialogModule,
+		MatSlideToggleModule,
+		MatRadioModule,
 
 		//ServiceWorker
 		ServiceWorkerModule.register("ngsw-worker.js", {
@@ -120,4 +137,4 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 		provideHttpClient(withInterceptorsFromDi())
 	]
 })
-export class AppModule {}
+export class AppModule { }

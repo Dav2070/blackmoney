@@ -11,6 +11,8 @@ import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page
 import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
+import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
+
 
 const routes: Routes = [
 	//Settings-Pages
@@ -21,6 +23,10 @@ const routes: Routes = [
 	{
 		path: "tables/settings/menue",
 		component: MenuePageComponent
+	},
+	{
+		path: "tables/settings/restaurant",
+		component: RestaurantOverviewComponent
 	},
 	//Cash-Register Pages
 	{
@@ -67,4 +73,4 @@ const routes: Routes = [
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

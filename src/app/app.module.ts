@@ -64,6 +64,7 @@ import { MatSortModule } from "@angular/material/sort"
 import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 
 @NgModule({
 	declarations: [
@@ -81,6 +82,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 		BookingPageComponent,
 		TransferPageComponent,
 		SeparatePayPageComponent,
+		RoomManagementComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,

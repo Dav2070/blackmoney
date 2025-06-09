@@ -15,6 +15,16 @@ export class RestaurantOverviewComponent {
   allDays = ALL_DAYS;
   restaurant: RestaurantSettings = {
     name: 'Mein Restaurant',
+    adresse: {
+      strasse: '',
+      plz: '',
+      ort: '',
+      land: ''
+    },
+    telefonnummer: '',
+    email: '',
+    steuerId: '',
+    inhaber: '',
     openingDaysGroups: [
       { days: ['Montag', 'Dienstag'], periods: [{ from: '09:00', to: '22:00' }] },
       { days: ['Mittwoch'], periods: [{ from: '09:00', to: '14:00' }, { from: '17:00', to: '22:00' }] }

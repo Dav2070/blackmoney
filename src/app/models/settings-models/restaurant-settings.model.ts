@@ -8,7 +8,19 @@ export interface OpeningDaysGroup {
     periods: OpeningPeriod[];
 }
 
+export interface Adresse {
+    strasse?: string;
+    plz?: string;
+    ort?: string;
+    land?: string;
+}
+
 export interface RestaurantSettings {
     name: string;
+    adresse?: Adresse;
+    telefonnummer?: string;
+    email?: string;
+    steuerId?: string;
+    inhaber?: string;
     openingDaysGroups: OpeningDaysGroup[];
 }

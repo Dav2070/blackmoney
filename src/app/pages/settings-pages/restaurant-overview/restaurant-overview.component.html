@@ -1,8 +1,22 @@
 <app-settings-bar>
   <div>
     <h2>{{ restaurant.name }}</h2>
-    <button mat-raised-button color="primary" *ngIf="!editMode" (click)="startEdit()">Bearbeiten</button>
+
+    <!-- Anzeige-Modus -->
     <div *ngIf="!editMode">
+      <button mat-raised-button color="primary" (click)="startEdit()">Bearbeiten</button>
+      <ul>
+        <li>
+          <strong>Adresse:</strong>
+          {{ restaurant.adresse?.strasse || '' }},
+          {{ restaurant.adresse?.plz || '' }} {{ restaurant.adresse?.ort || '' }},
+          {{ restaurant.adresse?.land || '' }}
+        </li>
+        <li><strong>Telefon:</strong> {{ restaurant.telefonnummer }}</li>
+        <li><strong>E-Mail:</strong> {{ restaurant.email }}</li>
+        <li><strong>Steuer-ID:</strong> {{ restaurant.steuerId }}</li>
+        <li><strong>Inhaber:</strong> {{ restaurant.inhaber }}</li>
+      </ul>
       <ul>
         <li *ngFor="let group of restaurant.openingDaysGroups">
           <strong>{{ group.days.join(', ') }}:</strong>
@@ -13,10 +27,47 @@
       </ul>
     </div>
 
+    <!-- Bearbeiten-Modus -->
     <form *ngIf="editMode" autocomplete="off">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="full-width">
         <mat-label>Restaurant-Name</mat-label>
         <input matInput [(ngModel)]="restaurant.name" name="restaurantName" required />
+      </mat-form-field>
+
+      <div class="address-fields">
+        <mat-form-field appearance="outline">
+          <mat-label>Straße</mat-label>
+          <input matInput [(ngModel)]="restaurant.adresse.strasse" name="strasse" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>PLZ</mat-label>
+          <input matInput [(ngModel)]="restaurant.adresse.plz" name="plz" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Ort</mat-label>
+          <input matInput [(ngModel)]="restaurant.adresse.ort" name="ort" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Land</mat-label>
+          <input matInput [(ngModel)]="restaurant.adresse.land" name="land" />
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Telefonnummer</mat-label>
+        <input matInput [(ngModel)]="restaurant.telefonnummer" name="telefonnummer" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>E-Mail</mat-label>
+        <input matInput [(ngModel)]="restaurant.email" name="email" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Steuer-ID</mat-label>
+        <input matInput [(ngModel)]="restaurant.steuerId" name="steuerId" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Inhaber</mat-label>
+        <input matInput [(ngModel)]="restaurant.inhaber" name="inhaber" />
       </mat-form-field>
 
       <div *ngFor="let group of restaurant.openingDaysGroups; let i = index" class="group-block">
@@ -48,7 +99,7 @@
           </div>
         </mat-card>
       </div>
-      <!-- Button ist deaktiviert, wenn alle Tage vergeben sind -->
+
       <button
         mat-stroked-button
         color="primary"

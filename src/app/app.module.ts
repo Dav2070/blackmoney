@@ -63,7 +63,7 @@ import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
 	declarations: [
@@ -116,7 +116,8 @@ import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-o
 		MatDialogModule,
 		MatSlideToggleModule,
 		MatRadioModule,
-
+		MatTooltipModule,
+		
 		//ServiceWorker
 		ServiceWorkerModule.register("ngsw-worker.js", {
 			enabled: !isDevMode(),

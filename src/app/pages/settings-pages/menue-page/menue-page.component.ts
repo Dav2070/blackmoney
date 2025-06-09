@@ -1,143 +1,190 @@
 import { Component } from "@angular/core"
-import { Inventory } from "src/app/models/cash-register/inventory.model"
-import { Variation } from "src/app/models/cash-register/variation.model" 
+import { Category } from "src/app/models/Category"
+import { Variation } from "src/app/models/Variation"
+import { CategoryType } from "src/app/types"
 
 @Component({
-	selector: "app-menue-page",
-	templateUrl: "./menue-page.component.html",
-	styleUrl: "./menue-page.component.scss",
-	standalone: false
+    selector: "app-menue-page",
+    templateUrl: "./menue-page.component.html",
+    styleUrl: "./menue-page.component.scss",
+    standalone: false
 })
 export class MenuePageComponent {
-	allVariations: Variation[] = [
-        { id: 1, name: "Klein", preis: 0 },
-        { id: 2, name: "Mittel", preis: 1 },
-        { id: 3, name: "Groß", preis: 2 },
-        { id: 6, name: "Pommes", preis: 0 },
-        { id: 7, name: "Reis", preis: 0.5 },
-        { id: 8, name: "Kroketten", preis: 1 }
+    allVariations: Variation[] = [
+        {
+            uuid: "groessen",
+            name: "Größen",
+            variationItems: [
+                { id: 1, uuid: "klein", name: "Klein", additionalCost: 0 },
+                { id: 2, uuid: "mittel", name: "Mittel", additionalCost: 1 },
+                { id: 3, uuid: "gross", name: "Groß", additionalCost: 2 }
+            ]
+        },
+        {
+            uuid: "beilagen",
+            name: "Beilagen",
+            variationItems: [
+                { id: 1, uuid: "pommes", name: "Pommes", additionalCost: 0 },
+                { id: 2, uuid: "reis", name: "Reis", additionalCost: 0.5 },
+                { id: 3, uuid: "kroketten", name: "Kroketten", additionalCost: 1 }
+            ]
+        }
     ];
-	selectedInventory: Inventory = {
-		name: "Vorspeisen",
-		items: [
-			{
-				id: 5,
-				price: 14.7,
-				name: "Vorspeisenteller"
-			}
-		]
-	}
-	foodInventory: Inventory[] = [
-		{
-			name: "Vorspeisen",
-			items: [
-				{
-					id: 5,
-					price: 14.7,
-					name: "Vorspeisenteller"
-				}
-			]
-		},
-		{
-			name: "Hauptgerichte",
-			items: [
-				{
-					id: 6,
-					price: 35.7,
-					name: "Rinderfilet",
-					variations: [
-						{ id: 1, name: "Pommes", preis: 0 },
-						{ id: 2, name: "Reis", preis: 1 },
-						{ id: 3, name: "Kroketten", preis: 1.5 }
-					]
-				}
-			]
-		},
-		{
-			name: "Beilagen",
-			items: [
-				{
-					id: 7,
-					price: 4.7,
-					name: "Pommes"
-				}
-			]
-		},
-		{
-			name: "Dessert",
-			items: [
-				{
-					id: 8,
-					price: 6.4,
-					name: "Tiramisu"
-				}
-			]
-		}
-	]
 
-	drinkInventory: Inventory[] = [
-		{
-			name: "Alkoholfrei",
-			items: [
-				{
-					id: 1,
-					price: 5.0,
-					name: "Cola 0,5"
-				}
-			]
-		},
-		{
-			name: "Bier",
-			items: [
-				{
-					id: 2,
-					price: 3.7,
-					name: "Pils 0,4"
-				}
-			]
-		},
-		{
-			name: "Wein",
-			items: [
-				{
-					id: 3,
-					price: 6.7,
-					name: "Grauburunder 0,2"
-				}
-			]
-		},
-		{
-			name: "Schnapps",
-			items: [
-				{
-					id: 4,
-					price: 3.0,
-					name: "Ouzo"
-				}
-			]
-		}
-	]
+    selectedCategory: Category = {
+        uuid: "vorspeisen",
+        name: "Vorspeisen",
+        type: "FOOD",
+        products: [
+            {
+                id: 5,
+                uuid: "vorspeisenteller",
+                price: 14.7,
+                name: "Vorspeisenteller",
+                variations: []
+            }
+        ]
+    }
 
-	setInventory(inventory: Inventory) {
-		this.selectedInventory = inventory
-		console.log(inventory)
-	}
+    foodCategories: Category[] = [
+        {
+            uuid: "vorspeisen",
+            name: "Vorspeisen",
+            type: "FOOD",
+            products: [
+                {
+                    id: 5,
+                    uuid: "vorspeisenteller",
+                    price: 14.7,
+                    name: "Vorspeisenteller",
+                    variations: []
+                }
+            ]
+        },
+        {
+            uuid: "hauptgerichte",
+            name: "Hauptgerichte",
+            type: "FOOD",
+            products: [
+                {
+                    id: 6,
+                    uuid: "rinderfilet",
+                    price: 35.7,
+                    name: "Rinderfilet",
+                    variations: []
+                }
+            ]
+        },
+        {
+            uuid: "beilagen",
+            name: "Beilagen",
+            type: "FOOD",
+            products: [
+                {
+                    id: 7,
+                    uuid: "pommes",
+                    price: 4.7,
+                    name: "Pommes",
+                    variations: []
+                }
+            ]
+        },
+        {
+            uuid: "dessert",
+            name: "Dessert",
+            type: "FOOD",
+            products: [
+                {
+                    id: 8,
+                    uuid: "tiramisu",
+                    price: 6.4,
+                    name: "Tiramisu",
+                    variations: []
+                }
+            ]
+        }
+    ]
 
-		addNewCategory(type: 'food' | 'drink') {
-		const name = prompt("Bitte geben Sie den Kategorienamen ein:");
-		if (!name) return;
+    drinkCategories: Category[] = [
+        {
+            uuid: "alkoholfrei",
+            name: "Alkoholfrei",
+            type: "DRINK",
+            products: [
+                {
+                    id: 1,
+                    uuid: "cola",
+                    price: 5.0,
+                    name: "Cola 0,5",
+                    variations: []
+                }
+            ]
+        },
+        {
+            uuid: "bier",
+            name: "Bier",
+            type: "DRINK",
+            products: [
+                {
+                    id: 2,
+                    uuid: "pils",
+                    price: 3.7,
+                    name: "Pils 0,4",
+                    variations: []
+                }
+            ]
+        },
+        {
+            uuid: "wein",
+            name: "Wein",
+            type: "DRINK",
+            products: [
+                {
+                    id: 3,
+                    uuid: "grauburunder",
+                    price: 6.7,
+                    name: "Grauburunder 0,2",
+                    variations: []
+                }
+            ]
+        },
+        {
+            uuid: "schnapps",
+            name: "Schnapps",
+            type: "DRINK",
+            products: [
+                {
+                    id: 4,
+                    uuid: "ouzo",
+                    price: 3.0,
+                    name: "Ouzo",
+                    variations: []
+                }
+            ]
+        }
+    ]
 
-		const newCategory: Inventory = {
-			name,
-			items: []
-		};
+    setCategory(category: Category) {
+        this.selectedCategory = category;
+    }
 
-		if (type === 'food') {
-			this.foodInventory.push(newCategory);
-		} else {
-			this.drinkInventory.push(newCategory);
-		}
+    addNewCategory(type: 'FOOD' | 'DRINK') {
+        const name = prompt("Bitte geben Sie den Kategorienamen ein:");
+        if (!name) return;
 
-		this.selectedInventory = newCategory;
-	}
+        const newCategory: Category = {
+            uuid: 'category_' + Date.now(),
+            name,
+            type,
+            products: []
+        };
+
+        if (type === 'FOOD') {
+            this.foodCategories.push(newCategory);
+        } else {
+            this.drinkCategories.push(newCategory);
+        }
+
+        this.selectedCategory = newCategory;
+    }
 }

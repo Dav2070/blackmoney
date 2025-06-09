@@ -1,59 +1,59 @@
 <app-settings-bar>
-	<div class="container">
-		<div class="divider">
-     <mat-list role="list" class="list">
-       <mat-list-item role="listitem">Speisen</mat-list-item>
-      @for(dishCategory of foodInventory; track dishCategory) {
-    <mat-list-item
-      (click)="setInventory(dishCategory)"
-      role="listitem"
-      style="cursor: pointer"
-    >
-      {{ dishCategory.name }}
-    </mat-list-item>
-  }
-  <mat-list-item
-    (click)="addNewCategory('food')"
-    role="listitem"
-    style="cursor: pointer"
-  >
-    Hinzufügen
-  </mat-list-item>
-</mat-list>
+    <div class="container">
+        <div class="divider">
+            <mat-list role="list" class="list">
+                <mat-list-item role="listitem">Speisen</mat-list-item>
+                @for(category of foodCategories; track category) {
+                    <mat-list-item
+                        (click)="setCategory(category)"
+                        role="listitem"
+                        style="cursor: pointer"
+                    >
+                        {{ category.name }}
+                    </mat-list-item>
+                }
+                <mat-list-item
+                    (click)="addNewCategory('FOOD')"
+                    role="listitem"
+                    style="cursor: pointer"
+                >
+                    Hinzufügen
+                </mat-list-item>
+            </mat-list>
 
-<mat-list role="list" class="list">
-  <mat-list-item role="listitem">Getränke</mat-list-item>
-  @for(drinkCategory of drinkInventory; track drinkCategory) {
-    <mat-list-item
-      (click)="setInventory(drinkCategory)"
-      role="listitem"
-      style="cursor: pointer"
-    >
-      {{ drinkCategory.name }}
-    </mat-list-item>
-  }
-  <mat-list-item
-    (click)="addNewCategory('drink')"
-    role="listitem"
-    style="cursor: pointer"
-  >
-    Hinzufügen
-  </mat-list-item>
-</mat-list>
-		</div>
-		<mat-tab-group class="tab">
-    <mat-tab label="Items">
-        <app-items-table 
-            [Inventory]="selectedInventory"
-            [availableVariations]="allVariations">
-        </app-items-table>
-    </mat-tab>
-    <mat-tab label="Variationen">
-        <app-variations-table
-            [variations]="allVariations">
-        </app-variations-table>
-    </mat-tab>
-    <mat-tab label="Menüs"> Menüs </mat-tab>
-</mat-tab-group>
-	</div>
+            <mat-list role="list" class="list">
+                <mat-list-item role="listitem">Getränke</mat-list-item>
+                @for(category of drinkCategories; track category) {
+                    <mat-list-item
+                        (click)="setCategory(category)"
+                        role="listitem"
+                        style="cursor: pointer"
+                    >
+                        {{ category.name }}
+                    </mat-list-item>
+                }
+                <mat-list-item
+                    (click)="addNewCategory('DRINK')"
+                    role="listitem"
+                    style="cursor: pointer"
+                >
+                    Hinzufügen
+                </mat-list-item>
+            </mat-list>
+        </div>
+        <mat-tab-group class="tab">
+            <mat-tab label="Produkte">
+                <app-items-table 
+                    [category]="selectedCategory"
+                    [availableVariations]="allVariations">
+                </app-items-table>
+            </mat-tab>
+            <mat-tab label="Variationen">
+                <app-variations-table
+                    [variations]="allVariations">
+                </app-variations-table>
+            </mat-tab>
+            <mat-tab label="Menüs"> Menüs </mat-tab>
+        </mat-tab-group>
+    </div>
 </app-settings-bar>

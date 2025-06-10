@@ -6,8 +6,7 @@
 }
 
 .tab {
-	flex: 7;
-	background-color: grey;
+	width: 100%;
 }
 
 .divider {
@@ -27,6 +26,19 @@
 	align-items: flex-start;
 	flex-wrap: wrap;
 	padding: 24px;
+}
+
+.products-layout {
+	display: flex;
+	gap: 32px;
+	align-items: flex-start;
+	flex-wrap: wrap;
+}
+
+.category-sidebar {
+	min-width: 260px;
+	max-width: 320px;
+	flex: 0 0 260px;
 }
 
 .category-section {
@@ -69,6 +81,12 @@
 	padding: 16px 0 0 0;
 }
 
+.category-row {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
 .category-name {
 	cursor: pointer;
 	font-size: 16px;
@@ -83,6 +101,18 @@
 	width: 140px;
 	margin-right: 8px;
 }
+.category-actions {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	min-width: 88px;
+	justify-content: flex-end;
+}
 .spacer {
 	flex: 1 1 auto;
+}
+.add-btn-row {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 8px;
 }

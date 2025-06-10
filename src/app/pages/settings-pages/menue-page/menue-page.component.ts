@@ -168,9 +168,13 @@ export class MenuePageComponent {
     newCategoryName = '';
     editCategory: Category | null = null;
     editCategoryName = '';
+    selectedTab = 0; // 0 = Produkte, 1 = Variationen, 2 = Menüs
+    categoryTabIndex = 0; // 0 = Speisen, 1 = Getränke
 
     setCategory(category: Category) {
         this.selectedCategory = category;
+        // Optional: Setze categoryTabIndex passend, falls du z.B. von außen eine Kategorie auswählst
+        this.categoryTabIndex = category.type === 'FOOD' ? 0 : 1;
     }
 
     startAddCategory(type: 'FOOD' | 'DRINK') {

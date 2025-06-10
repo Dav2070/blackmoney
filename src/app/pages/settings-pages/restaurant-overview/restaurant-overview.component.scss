@@ -1,0 +1,69 @@
+.restaurant-overview-container {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 32px 16px;
+}
+
+.main-card {
+	padding-bottom: 24px;
+}
+
+.spacer {
+	flex: 1 1 auto;
+}
+
+.info-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px 32px;
+	margin: 24px 0 16px 0;
+	align-items: center;
+}
+
+.opening-section {
+	margin-top: 24px;
+}
+
+.group-block {
+	margin-bottom: 16px;
+}
+
+.group-header {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-bottom: 8px;
+}
+
+.period-row {
+	display: flex;
+	gap: 16px;
+	margin-top: 8px;
+}
+
+.form-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.full-width {
+	grid-column: 1 / -1;
+}
+
+.validation-errors {
+	margin: 16px 0;
+}
+
+.form-actions {
+	display: flex;
+	gap: 16px;
+	margin-top: 16px;
+}
+
+.edit-btn-row {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 24px;
+}

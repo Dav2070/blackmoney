@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
 import { RestaurantSettings, OpeningDaysGroup } from 'src/app/models/settings-models/restaurant-settings.model';
 
-const ALL_DAYS = [
-  'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'
-];
-
 @Component({
   selector: 'app-restaurant-overview',
   templateUrl: './restaurant-overview.component.html',
@@ -12,7 +8,11 @@ const ALL_DAYS = [
   standalone: false
 })
 export class RestaurantOverviewComponent {
-  allDays = ALL_DAYS;
+  readonly WEEKDAYS = [
+    'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'
+  ];
+
+  allDays = this.WEEKDAYS;
   restaurant: RestaurantSettings = {
     name: 'Mein Restaurant',
     adresse: {
@@ -162,5 +162,19 @@ export class RestaurantOverviewComponent {
     }
 
     return errors;
+  }
+
+  getOpeningHoursPerDay(): { day: string, periods: { from: string, to: string }[] }[] {
+    if (!this.restaurant?.openingDaysGroups) return [];
+    const result: { day: string, periods: { from: string, to: string }[] }[] = [];
+    for (const day of this.WEEKDAYS) {
+      // Finde alle Gruppen, die diesen Tag enthalten
+      const group = this.restaurant.openingDaysGroups.find(g => g.days.includes(day));
+      result.push({
+        day,
+        periods: group ? group.periods : []
+      });
+    }
+    return result;
   }
 }

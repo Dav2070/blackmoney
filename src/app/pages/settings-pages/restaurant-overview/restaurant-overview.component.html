@@ -1,117 +1,247 @@
 <app-settings-bar>
-  <div>
-    <h2>{{ restaurant.name }}</h2>
+	<div class="restaurant-overview-container">
+		<mat-card class="main-card">
+			<mat-card-title>
+				<mat-icon color="primary" style="margin-right: 8px"
+					>storefront</mat-icon
+				>
+				<span>{{ restaurant.name }}</span>
+			</mat-card-title>
+			<mat-divider></mat-divider>
 
-    <!-- Anzeige-Modus -->
-    <div *ngIf="!editMode">
-      <button mat-raised-button color="primary" (click)="startEdit()">Bearbeiten</button>
-      <ul>
-        <li>
-          <strong>Adresse:</strong>
-          {{ restaurant.adresse?.strasse || '' }},
-          {{ restaurant.adresse?.plz || '' }} {{ restaurant.adresse?.ort || '' }},
-          {{ restaurant.adresse?.land || '' }}
-        </li>
-        <li><strong>Telefon:</strong> {{ restaurant.telefonnummer }}</li>
-        <li><strong>E-Mail:</strong> {{ restaurant.email }}</li>
-        <li><strong>Steuer-ID:</strong> {{ restaurant.steuerId }}</li>
-        <li><strong>Inhaber:</strong> {{ restaurant.inhaber }}</li>
-      </ul>
-      <ul>
-        <li *ngFor="let group of restaurant.openingDaysGroups">
-          <strong>{{ group.days.join(', ') }}:</strong>
-          <span *ngFor="let period of group.periods; let last = last">
-            {{ period.from }}–{{ period.to }}<span *ngIf="!last">, </span>
-          </span>
-        </li>
-      </ul>
-    </div>
+			<!-- Anzeige-Modus -->
+			<div *ngIf="!editMode" class="display-section">
+				<div class="info-grid">
+					<div>
+						<mat-icon>location_on</mat-icon>
+						<span>
+							{{ restaurant.adresse?.strasse || "" }},
+							{{ restaurant.adresse?.plz || "" }}
+							{{ restaurant.adresse?.ort || "" }},
+							{{ restaurant.adresse?.land || "" }}
+						</span>
+					</div>
+					<div>
+						<mat-icon>call</mat-icon>
+						<span>{{ restaurant.telefonnummer }}</span>
+					</div>
+					<div>
+						<mat-icon>mail</mat-icon>
+						<span>{{ restaurant.email }}</span>
+					</div>
+					<div>
+						<mat-icon>badge</mat-icon>
+						<span>Inhaber: {{ restaurant.inhaber }}</span>
+					</div>
+					<div>
+						<mat-icon>receipt_long</mat-icon>
+						<span>Steuer-ID: {{ restaurant.steuerId }}</span>
+					</div>
+				</div>
+				<div class="opening-section">
+					<h3>Öffnungszeiten</h3>
+					<mat-list>
+						<mat-list-item *ngFor="let entry of getOpeningHoursPerDay()">
+							<strong style="min-width: 110px; display: inline-block"
+								>{{ entry.day }}:</strong
+							>
+							<span *ngIf="entry.periods.length; else geschlossen">
+								<span
+									*ngFor="let period of entry.periods; let last = last"
+								>
+									{{ period.from }}–{{ period.to
+									}}<span *ngIf="!last">, </span>
+								</span>
+							</span>
+							<ng-template #geschlossen>
+								<span>geschlossen</span>
+							</ng-template>
+						</mat-list-item>
+					</mat-list>
+				</div>
+				<div class="edit-btn-row">
+					<button mat-raised-button color="primary" (click)="startEdit()">
+						<mat-icon>edit</mat-icon> Bearbeiten
+					</button>
+				</div>
+			</div>
 
-    <!-- Bearbeiten-Modus -->
-    <form *ngIf="editMode" autocomplete="off">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Restaurant-Name</mat-label>
-        <input matInput [(ngModel)]="restaurant.name" name="restaurantName" required />
-      </mat-form-field>
+			<!-- Bearbeiten-Modus -->
+			<form *ngIf="editMode" autocomplete="off" class="edit-section">
+				<div class="form-grid">
+					<mat-form-field appearance="outline" class="full-width">
+						<mat-label>Restaurant-Name</mat-label>
+						<input
+							matInput
+							[(ngModel)]="restaurant.name"
+							name="restaurantName"
+							required
+						/>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Straße</mat-label>
+						<input
+							matInput
+							[(ngModel)]="restaurant.adresse.strasse"
+							name="strasse"
+						/>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>PLZ</mat-label>
+						<input
+							matInput
+							[(ngModel)]="restaurant.adresse.plz"
+							name="plz"
+						/>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Ort</mat-label>
+						<input
+							matInput
+							[(ngModel)]="restaurant.adresse.ort"
+							name="ort"
+						/>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Land</mat-label>
+						<input
+							matInput
+							[(ngModel)]="restaurant.adresse.land"
+							name="land"
+						/>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Telefonnummer</mat-label>
+						<input
+							matInput
+							[(ngModel)]="restaurant.telefonnummer"
+							name="telefonnummer"
+						/>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>E-Mail</mat-label>
+						<input matInput [(ngModel)]="restaurant.email" name="email" />
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Steuer-ID</mat-label>
+						<input
+							matInput
+							[(ngModel)]="restaurant.steuerId"
+							name="steuerId"
+						/>
+					</mat-form-field>
+					<mat-form-field appearance="outline">
+						<mat-label>Inhaber</mat-label>
+						<input
+							matInput
+							[(ngModel)]="restaurant.inhaber"
+							name="inhaber"
+						/>
+					</mat-form-field>
+				</div>
 
-      <div class="address-fields">
-        <mat-form-field appearance="outline">
-          <mat-label>Straße</mat-label>
-          <input matInput [(ngModel)]="restaurant.adresse.strasse" name="strasse" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>PLZ</mat-label>
-          <input matInput [(ngModel)]="restaurant.adresse.plz" name="plz" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Ort</mat-label>
-          <input matInput [(ngModel)]="restaurant.adresse.ort" name="ort" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Land</mat-label>
-          <input matInput [(ngModel)]="restaurant.adresse.land" name="land" />
-        </mat-form-field>
-      </div>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Telefonnummer</mat-label>
-        <input matInput [(ngModel)]="restaurant.telefonnummer" name="telefonnummer" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>E-Mail</mat-label>
-        <input matInput [(ngModel)]="restaurant.email" name="email" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Steuer-ID</mat-label>
-        <input matInput [(ngModel)]="restaurant.steuerId" name="steuerId" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Inhaber</mat-label>
-        <input matInput [(ngModel)]="restaurant.inhaber" name="inhaber" />
-      </mat-form-field>
-
-      <div *ngFor="let group of restaurant.openingDaysGroups; let i = index" class="group-block">
-        <mat-card>
-          <div style="display: flex; align-items: center; gap: 1em;">
-            <mat-form-field appearance="fill">
-              <mat-label>Tage</mat-label>
-              <mat-select [(ngModel)]="group.days" [name]="'days'+i" multiple>
-                <mat-option *ngFor="let day of getAvailableDays(group)" [value]="day">{{ day }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <button mat-icon-button color="warn" (click)="removeGroup(i)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-          <mat-radio-group [value]="isDurchgehend(group) ? 'durchgehend' : 'pause'" (change)="setPeriodsType(group, $event.value)">
-            <mat-radio-button value="durchgehend">Durchgehend geöffnet</mat-radio-button>
-            <mat-radio-button value="pause">Mit Pause</mat-radio-button>
-          </mat-radio-group>
-          <div *ngFor="let period of group.periods; let j = index" style="margin-top: 0.5em;">
-            <mat-form-field appearance="fill">
-              <mat-label>Von</mat-label>
-              <input matInput [(ngModel)]="period.from" [name]="'from' + i + j" type="time" step="60" required />
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-              <mat-label>Bis</mat-label>
-              <input matInput [(ngModel)]="period.to" [name]="'to' + i + j" type="time" step="60" required />
-            </mat-form-field>
-          </div>
-        </mat-card>
-      </div>
-
-      <button
-        mat-stroked-button
-        color="primary"
-        type="button"
-        (click)="addGroup()"
-        [disabled]="getAvailableDays(null).length === 0"
-      >
-        + Weitere Tage hinzufügen
-      </button>
-      <br /><br />
-      <mat-error *ngFor="let err of validationErrors">{{ err }}</mat-error>
-      <button mat-raised-button color="primary" type="button" (click)="save()">Speichern</button>
-    </form>
-  </div>
+				<div class="opening-section">
+					<h3>Öffnungszeiten</h3>
+					<div
+						*ngFor="
+							let group of restaurant.openingDaysGroups;
+							let i = index
+						"
+						class="group-block"
+					>
+						<mat-card>
+							<div class="group-header">
+								<mat-form-field appearance="fill">
+									<mat-label>Tage</mat-label>
+									<mat-select
+										[(ngModel)]="group.days"
+										[name]="'days' + i"
+										multiple
+									>
+										<mat-option
+											*ngFor="let day of getAvailableDays(group)"
+											[value]="day"
+											>{{ day }}</mat-option
+										>
+									</mat-select>
+								</mat-form-field>
+								<button
+									mat-icon-button
+									color="warn"
+									(click)="removeGroup(i)"
+								>
+									<mat-icon>delete</mat-icon>
+								</button>
+							</div>
+							<mat-radio-group
+								[value]="isDurchgehend(group) ? 'durchgehend' : 'pause'"
+								(change)="setPeriodsType(group, $event.value)"
+							>
+								<mat-radio-button value="durchgehend"
+									>Durchgehend geöffnet</mat-radio-button
+								>
+								<mat-radio-button value="pause"
+									>Mit Pause</mat-radio-button
+								>
+							</mat-radio-group>
+							<div
+								*ngFor="let period of group.periods; let j = index"
+								class="period-row"
+							>
+								<mat-form-field appearance="fill">
+									<mat-label>Von</mat-label>
+									<input
+										matInput
+										[(ngModel)]="period.from"
+										[name]="'from' + i + j"
+										type="time"
+										step="60"
+										required
+									/>
+								</mat-form-field>
+								<mat-form-field appearance="fill">
+									<mat-label>Bis</mat-label>
+									<input
+										matInput
+										[(ngModel)]="period.to"
+										[name]="'to' + i + j"
+										type="time"
+										step="60"
+										required
+									/>
+								</mat-form-field>
+							</div>
+						</mat-card>
+					</div>
+					<button
+						mat-stroked-button
+						color="primary"
+						type="button"
+						(click)="addGroup()"
+						[disabled]="getAvailableDays(null).length === 0"
+					>
+						<mat-icon>add</mat-icon> Weitere Tage hinzufügen
+					</button>
+				</div>
+				<div class="validation-errors">
+					<mat-error *ngFor="let err of validationErrors">{{
+						err
+					}}</mat-error>
+				</div>
+				<div class="form-actions">
+					<button
+						mat-raised-button
+						color="primary"
+						type="button"
+						(click)="save()"
+					>
+						Speichern
+					</button>
+					<button mat-button type="button" (click)="editMode = false">
+						Abbrechen
+					</button>
+				</div>
+			</form>
+		</mat-card>
+	</div>
 </app-settings-bar>

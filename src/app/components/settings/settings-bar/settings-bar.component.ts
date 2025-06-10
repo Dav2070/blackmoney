@@ -3,6 +3,7 @@ import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout"
 import { Observable } from "rxjs"
 import { map, shareReplay } from "rxjs/operators"
 import { Location } from "@angular/common"
+import { Router, ActivatedRoute } from "@angular/router"
 
 @Component({
 	selector: "app-settings-bar",
@@ -11,6 +12,7 @@ import { Location } from "@angular/common"
 	standalone: false
 })
 export class SettingsBarComponent {
+	constructor(private router: Router, private route: ActivatedRoute) { }
 	private breakpointObserver = inject(BreakpointObserver)
 	private location = inject(Location)
 
@@ -20,7 +22,7 @@ export class SettingsBarComponent {
 			map(result => result.matches),
 			shareReplay()
 		)
-		goBack(): void {
-			this.location.back()
-		}
+	goBack(): void {
+		this.router.navigate(['..'], { relativeTo: this.route });
+	}
 }

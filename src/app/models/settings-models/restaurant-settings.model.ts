@@ -17,6 +17,14 @@ export interface Adresse {
     land?: string;
 }
 
+export interface SpecialDay {
+    from: string;
+    to: string;
+    reason?: string;
+    openType: 'geschlossen' | 'durchgehend' | 'pause';
+    periods: OpeningPeriod[];
+}
+
 export interface RestaurantSettings {
     name: string;
     adresse?: Adresse;
@@ -25,5 +33,6 @@ export interface RestaurantSettings {
     steuerId?: string;
     inhaber?: string;
     openingDaysGroups: OpeningDaysGroup[];
-    tses?: TSE[]; // <--- NEU
+    tses?: TSE[];
+    specialDays?: SpecialDay[];
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { RestaurantSettings, OpeningDaysGroup } from 'src/app/models/settings-models/restaurant-settings.model';
+import { RestaurantSettings, OpeningDaysGroup, SpecialDay } from 'src/app/models/settings-models/restaurant-settings.model';
 import { TSE, TSEClient } from 'src/app/models/settings-models/tse.model';
+
 
 @Component({
   selector: 'app-restaurant-overview',
@@ -255,5 +256,33 @@ export class RestaurantOverviewComponent {
       openingDaysGroups: []
     });
     this.selectedRestaurantIndex = this.restaurants.length - 1;
+  }
+
+  // Hilfsmethode für besondere Tage: Typ setzen und Perioden anpassen
+  setSpecialDayType(day: SpecialDay, type: 'geschlossen' | 'durchgehend' | 'pause') {
+    day.openType = type;
+    if (type === 'geschlossen') {
+      day.periods = [];
+    } else if (type === 'durchgehend') {
+      day.periods = [day.periods && day.periods[0] ? day.periods[0] : { from: '', to: '' }];
+    } else if (type === 'pause') {
+      if (!day.periods || day.periods.length < 2) {
+        day.periods = [
+          day.periods && day.periods[0] ? day.periods[0] : { from: '', to: '' },
+          day.periods && day.periods[1] ? day.periods[1] : { from: '', to: '' }
+        ];
+      }
+    }
+  }
+
+  addSpecialDay() {
+    this.restaurant.specialDays = this.restaurant.specialDays || [];
+    this.restaurant.specialDays.push({
+      from: '',
+      to: '',
+      reason: '',
+      openType: 'geschlossen',
+      periods: []
+    });
   }
 }

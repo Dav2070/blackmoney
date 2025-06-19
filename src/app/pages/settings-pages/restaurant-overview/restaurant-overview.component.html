@@ -1,5 +1,17 @@
 <app-settings-bar>
 	<div class="restaurant-overview-container">
+		<mat-form-field appearance="outline" style="width: 350px; margin-bottom: 1em;">
+			<mat-label>Restaurant auswählen</mat-label>
+			<mat-select [(ngModel)]="selectedRestaurantIndex">
+				<mat-option *ngFor="let r of restaurants; let i = index" [value]="i">
+					{{ r.name }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<button mat-stroked-button color="primary" (click)="addRestaurant()">
+  <mat-icon>add</mat-icon> Restaurant hinzufügen
+</button>
+
 		<mat-card class="main-card">
 			<mat-card-title>
 				<mat-icon color="primary" style="margin-right: 8px"
@@ -243,5 +255,87 @@
 				</div>
 			</form>
 		</mat-card>
+		<!-- TSE Verwaltung Card -->
+<mat-card class="main-card tse-card" style="margin-top: 2em;">
+  <mat-card-title>
+    <mat-icon color="primary" style="margin-right: 8px">security</mat-icon>
+    TSE Verwaltung
+    <span style="flex:1 1 auto"></span>
+    <button *ngIf="!tseEditMode" mat-icon-button color="primary" (click)="tseEditMode = true">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button *ngIf="tseEditMode" mat-icon-button color="primary" (click)="tseEditMode = false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-card-title>
+  <mat-divider></mat-divider>
+
+  <div *ngIf="!tseEditMode">
+    <!-- Beispiel -->
+    <div *ngFor="let tse of tses" class="tse-block">
+      <div class="tse-header">
+        <strong>{{ tse.name }}</strong>
+        <span class="tse-status" [ngClass]="tse.status">{{ tse.status }}</span>
+      </div>
+      <div class="tse-clients">
+        <div *ngFor="let client of tse.clients" class="client-row">
+          <mat-icon>devices</mat-icon>
+          <span>{{ client.name }} ({{ client.seriennummer }})</span>
+        </div>
+        <div *ngIf="!tse.clients.length" class="client-row">
+          <em>Keine Clients</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form *ngIf="tseEditMode" autocomplete="off">
+    <div *ngFor="let tse of tses" class="tse-block-edit">
+      <div class="tse-header-edit">
+        <mat-form-field appearance="outline">
+          <mat-label>TSE-Name</mat-label>
+          <input matInput [(ngModel)]="tse.name" [name]="'tsename' + tse.id" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="tse.status" [name]="'tsestatus' + tse.id">
+            <mat-option value="aktiv">Aktiv</mat-option>
+            <mat-option value="inaktiv">Inaktiv</mat-option>
+            <mat-option value="wartung">Wartung</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>PIN</mat-label>
+          <input matInput [(ngModel)]="tse.pin" [name]="'tsepin' + tse.id" type="password" />
+        </mat-form-field>
+        <button mat-icon-button color="warn" (click)="deleteTSE(tse)" type="button">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <div class="tse-clients-edit">
+        <div *ngFor="let client of tse.clients" class="client-row-edit">
+          <mat-form-field appearance="outline">
+            <mat-label>Client-Name</mat-label>
+            <input matInput [(ngModel)]="client.name" [name]="'clientname' + tse.id + client.id" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Seriennummer</mat-label>
+            <input matInput [(ngModel)]="client.seriennummer" [name]="'clientseriennummer' + tse.id + client.id" />
+          </mat-form-field>
+          <button mat-icon-button color="warn" (click)="deleteClient(tse, client)" type="button">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <button mat-stroked-button color="primary" type="button" (click)="addClient(tse)">
+          <mat-icon>add</mat-icon> Client hinzufügen
+        </button>
+      </div>
+      <mat-divider style="margin: 1em 0;"></mat-divider>
+    </div>
+    <button mat-stroked-button color="primary" type="button" (click)="addTSE()">
+      <mat-icon>add</mat-icon> TSE hinzufügen
+    </button>
+  </form>
+</mat-card>
 	</div>
 </app-settings-bar>

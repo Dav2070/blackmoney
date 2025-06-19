@@ -1,3 +1,5 @@
+import { TSE } from "./tse.model";
+
 export interface OpeningPeriod {
     from: string; // "09:00"
     to: string;   // "14:00"
@@ -23,4 +25,5 @@ export interface RestaurantSettings {
     steuerId?: string;
     inhaber?: string;
     openingDaysGroups: OpeningDaysGroup[];
+    tses?: TSE[]; // <--- NEU
 }

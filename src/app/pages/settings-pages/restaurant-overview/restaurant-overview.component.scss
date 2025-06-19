@@ -67,3 +67,25 @@
 	justify-content: flex-end;
 	margin-top: 24px;
 }
+
+.tse-block, .tse-block-edit {
+  margin-bottom: 2em;
+}
+.tse-header, .tse-header-edit {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 0.5em;
+}
+.tse-status.aktiv { color: green; }
+.tse-status.inaktiv { color: gray; }
+.tse-status.wartung { color: orange; }
+.tse-clients, .tse-clients-edit {
+  margin-left: 2em;
+}
+.client-row, .client-row-edit {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 0.5em;
+}

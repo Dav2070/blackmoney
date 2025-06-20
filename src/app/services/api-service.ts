@@ -11,7 +11,8 @@ import {
 	UserResource,
 	SessionResource,
 	PaymentMethod,
-	BillResource
+	BillResource,
+	RestaurantResource
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -123,6 +124,27 @@ export class ApiService {
 				mutation: gql`
 					mutation CreateCompany($name: String!) {
 						createCompany(name: $name) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveRestaurant(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloQueryResult<{ retrieveRestaurant: RestaurantResource }>> {
+		return await this.davAuthApollo
+			.query<{
+				retrieveRestaurant: RestaurantResource
+			}>({
+				query: gql`
+					query RetrieveRestaurant($uuid: String!) {
+						retrieveRestaurant(uuid: $uuid) {
 							${queryData}
 						}
 					}
@@ -330,8 +352,8 @@ export class ApiService {
 	async completeOrder(
 		queryData: string,
 		variables: {
-			uuid: string,
-			billUuid: string,
+			uuid: string
+			billUuid: string
 			paymentMethod: PaymentMethod
 		}
 	): Promise<MutationResult<{ completeOrder: OrderResource }>> {
@@ -360,7 +382,7 @@ export class ApiService {
 
 	async listOrders(
 		queryData: string,
-		variables: { completed?: boolean },
+		variables: { completed?: boolean }
 	): Promise<ApolloQueryResult<{ listOrders: List<OrderResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ listOrders: List<OrderResource> }>({
@@ -399,9 +421,9 @@ export class ApiService {
 			})
 			.toPromise()
 	}
-	
+
 	async createBill(
-		queryData: string,
+		queryData: string
 	): Promise<MutationResult<{ createOrder: BillResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createOrder: BillResource }>({

@@ -7,6 +7,7 @@ import { Dav, PromiseHolder } from "dav-js"
 import { environment } from "src/environments/environment"
 import { User } from "../models/User"
 import { Company } from "../models/Company"
+import { Restaurant } from "../models/Restaurant"
 
 @Injectable()
 export class DataService {
@@ -14,8 +15,10 @@ export class DataService {
 	davUserPromiseHolder = new PromiseHolder()
 	blackmoneyUserPromiseHolder = new PromiseHolder()
 	companyPromiseHolder = new PromiseHolder()
+	restaurantPromiseHolder = new PromiseHolder()
 	user: User = null
 	company: Company = null
+	restaurant: Restaurant = null
 
 	constructor(private apollo: Apollo, private httpLink: HttpLink) {}
 

@@ -16,6 +16,7 @@ import {
 	convertUserResourceToUser
 } from "src/app/utils"
 import { davAuthClientName, blackmoneyAuthClientName } from "src/app/constants"
+import { SettingsService } from "./services/settings-service"
 
 @Component({
 	selector: "app-root",
@@ -28,6 +29,7 @@ export class AppComponent {
 		private dataService: DataService,
 		private apiService: ApiService,
 		private authService: AuthService,
+		private settingsService: SettingsService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private apollo: Apollo,
@@ -72,30 +74,15 @@ export class AppComponent {
 		let accessToken = this.authService.getAccessToken()
 		this.setupApollo(Dav.accessToken, accessToken)
 
-		// Get the company
 		let retrieveCompanyResponse = await this.apiService.retrieveCompany(
 			`
 				uuid
 				name
-				users {
+				restaurants {
 					total
 					items {
 						uuid
 						name
-					}
-				}
-				rooms {
-					total
-					items {
-						uuid
-						name
-						tables {
-							total
-							items {
-								uuid
-								name
-							}
-						}
 					}
 				}
 			`
@@ -104,15 +91,70 @@ export class AppComponent {
 		let retrieveCompanyResponseData =
 			retrieveCompanyResponse.data.retrieveCompany
 
-		if (retrieveCompanyResponseData == null) {
+		if (
+			retrieveCompanyResponseData == null ||
+			retrieveCompanyResponseData.restaurants.total == 0
+		) {
 			// Redirect to the onboarding page
 			this.router.navigate(["onboarding"])
-		} else if (retrieveCompanyResponseData != null) {
+		} else {
 			this.dataService.company = convertCompanyResourceToCompany(
 				retrieveCompanyResponseData
 			)
 
-			if (retrieveCompanyResponseData.users.total == 0) {
+			// Try to get the current restaurant
+			if (this.dataService.company.restaurants.length == 1) {
+				this.dataService.restaurant =
+					this.dataService.company.restaurants[0]
+			} else {
+				const restaurantUuid = await this.settingsService.getRestaurant()
+
+				if (restaurantUuid != null) {
+					this.dataService.restaurant =
+						this.dataService.company.restaurants.find(
+							r => r.uuid == restaurantUuid
+						)
+				} else {
+					this.dataService.restaurant =
+						this.dataService.company.restaurants[0]
+				}
+			}
+
+			// Retrieve the restaurant with rooms and users
+			const retrieveRestaurantResponse =
+				await this.apiService.retrieveRestaurant(
+					`
+					users {
+						total
+						items {
+							uuid
+							name
+						}
+					}
+					rooms {
+						total
+						items {
+							uuid
+							name
+							tables {
+								total
+								items {
+									uuid
+									name
+								}
+							}
+						}
+					}
+				`,
+					{
+						uuid: this.dataService.restaurant.uuid
+					}
+				)
+
+			const retrieveRestaurantResponseData =
+				retrieveRestaurantResponse.data.retrieveRestaurant
+
+			if (retrieveRestaurantResponseData.users.total == 0) {
 				// Redirect to the onboarding page
 				this.router.navigate(["onboarding"])
 			} else if (accessToken == null) {

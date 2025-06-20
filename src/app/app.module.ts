@@ -25,7 +25,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRadioModule } from '@angular/material/radio';
 
-
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { ApolloModule } from "apollo-angular"
@@ -52,6 +51,7 @@ import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/b
 import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { DataService } from "./services/data-service"
+import { SettingsService } from "./services/settings-service"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
@@ -63,7 +63,6 @@ import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
-
 
 @NgModule({
 	declarations: [
@@ -133,8 +132,9 @@ import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-o
 		ApiService,
 		AuthService,
 		DataService,
+		SettingsService,
 		provideClientHydration(),
 		provideHttpClient(withInterceptorsFromDi())
 	]
 })
-export class AppModule { }
+export class AppModule {}

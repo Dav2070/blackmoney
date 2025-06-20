@@ -559,7 +559,7 @@ export class BookingPageComponent {
 	async loadTable(uuid: string) {
 		if (uuid == null) return
 
-		for (let room of this.dataService.company.rooms) {
+		for (let room of this.dataService.restaurant.rooms) {
 			for (let table of room.tables) {
 				if (table.uuid === uuid) {
 					this.room = room

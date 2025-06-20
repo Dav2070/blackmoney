@@ -11,6 +11,12 @@ export interface SessionResource {
 export interface CompanyResource {
 	uuid: string
 	name: string
+	restaurants: List<RestaurantResource>
+}
+
+export interface RestaurantResource {
+	uuid: string
+	name: string
 	users: List<UserResource>
 	rooms: List<RoomResource>
 }

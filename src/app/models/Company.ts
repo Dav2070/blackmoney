@@ -1,9 +1,7 @@
-import { User } from "./User"
-import { Room } from "./Room"
+import { Restaurant } from "./Restaurant"
 
 export class Company {
 	uuid: string
 	name: string
-	users: User[]
-	rooms: Room[]
+	restaurants: Restaurant[]
 }

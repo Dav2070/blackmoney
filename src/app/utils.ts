@@ -13,7 +13,8 @@ import {
 	OrderResource,
 	OrderItemResource,
 	OrderItemVariationResource,
-	BillResource
+	BillResource,
+	RestaurantResource
 } from "./types"
 import { Table } from "./models/Table"
 import { Category } from "./models/Category"
@@ -24,6 +25,7 @@ import { Order } from "./models/Order"
 import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
 import { Bill } from "./models/Bill"
+import { Restaurant } from "./models/Restaurant"
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 	let total = 0
@@ -45,25 +47,47 @@ export function convertCompanyResourceToCompany(
 		return null
 	}
 
-	const users: User[] = []
+	const restaurants: Restaurant[] = []
 
-	if (companyResource.users != null) {
-		for (let user of companyResource.users.items) {
-			users.push(convertUserResourceToUser(user))
-		}
-	}
-
-	const rooms: Room[] = []
-
-	if (companyResource.rooms != null) {
-		for (let room of companyResource.rooms.items) {
-			rooms.push(convertRoomResourceToRoom(room))
+	if (companyResource.restaurants != null) {
+		for (let restaurant of companyResource.restaurants.items) {
+			restaurants.push(convertRestaurantResourceToRestaurant(restaurant))
 		}
 	}
 
 	return {
 		uuid: companyResource.uuid,
 		name: companyResource.name,
+		restaurants
+	}
+}
+
+export function convertRestaurantResourceToRestaurant(
+	restaurantResource: RestaurantResource
+): Restaurant {
+	if (restaurantResource == null) {
+		return null
+	}
+
+	const users: User[] = []
+
+	if (restaurantResource.users != null) {
+		for (let user of restaurantResource.users.items) {
+			users.push(convertUserResourceToUser(user))
+		}
+	}
+
+	const rooms: Room[] = []
+
+	if (restaurantResource.rooms != null) {
+		for (let room of restaurantResource.rooms.items) {
+			rooms.push(convertRoomResourceToRoom(room))
+		}
+	}
+
+	return {
+		uuid: restaurantResource.uuid,
+		name: restaurantResource.name,
 		users,
 		rooms
 	}

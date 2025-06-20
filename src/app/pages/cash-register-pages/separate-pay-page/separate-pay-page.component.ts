@@ -49,11 +49,11 @@ export class SeparatePayPageComponent {
 	) { }
 
 	async ngOnInit() {
-		await this.dataService.companyPromiseHolder.AwaitResult()
+		await this.dataService.restaurantPromiseHolder.AwaitResult()
 
 		const uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 
-		for (let room of this.dataService.company.rooms) {
+		for (let room of this.dataService.restaurant.rooms) {
 			this.table = room.tables.find(table => table.uuid === uuid)
 			if (this.table) break
 		}

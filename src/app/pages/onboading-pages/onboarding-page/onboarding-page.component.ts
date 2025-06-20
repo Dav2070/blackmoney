@@ -25,7 +25,8 @@ export class OnboardingPageComponent {
 
 		if (this.dataService.company == null) {
 			this.context = "createCompany"
-		} else if (this.dataService.company.users.length === 0) {
+			// TODO: Case for createRestaurant
+		} else if (this.dataService.restaurant.users.length === 0) {
 			this.context = "createUsers"
 		}
 	}

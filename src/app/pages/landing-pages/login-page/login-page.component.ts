@@ -34,7 +34,7 @@ export class LoginPageComponent {
 
 		await this.dataService.companyPromiseHolder.AwaitResult()
 
-		for (let user of this.dataService.company.users) {
+		for (let user of this.dataService.restaurant.users) {
 			this.userDropdownOptions.push({
 				key: user.uuid,
 				value: user.name,
@@ -45,7 +45,7 @@ export class LoginPageComponent {
 
 	userDropdownChange(event: Event) {
 		this.userDropdownSelectedKey = (event as CustomEvent).detail.key
-		let selectedUser = this.dataService.company.users.find(
+		let selectedUser = this.dataService.restaurant.users.find(
 			u => u.uuid === this.userDropdownSelectedKey
 		)
 		this.username = selectedUser?.name ?? ""

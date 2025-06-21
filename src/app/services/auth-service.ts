@@ -25,4 +25,11 @@ export class AuthService {
 		this.accessToken = accessToken
 		localStorage.setItem(accessTokenKey, accessToken)
 	}
+
+	removeAccessToken() {
+		if (isPlatformServer(this.platformId)) return
+
+		this.accessToken = null
+		localStorage.removeItem(accessTokenKey)
+	}
 }

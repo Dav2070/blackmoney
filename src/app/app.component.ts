@@ -13,7 +13,8 @@ import { AuthService } from "./services/auth-service"
 import { environment } from "src/environments/environment"
 import {
 	convertCompanyResourceToCompany,
-	convertUserResourceToUser
+	convertUserResourceToUser,
+	getGraphQLErrorCodes
 } from "src/app/utils"
 import { davAuthClientName, blackmoneyAuthClientName } from "src/app/constants"
 import { SettingsService } from "./services/settings-service"
@@ -170,7 +171,17 @@ export class AppComponent {
 					`
 				)
 
-				if (retrieveUserResponse.data.retrieveUser != null) {
+				if (
+					getGraphQLErrorCodes(retrieveUserResponse).includes(
+						"NOT_AUTHENTICATED"
+					)
+				) {
+					// Remove the access token
+					this.authService.removeAccessToken()
+
+					// Redirect to the login page
+					this.router.navigate(["login"])
+				} else if (retrieveUserResponse.data.retrieveUser != null) {
 					this.dataService.user = convertUserResourceToUser(
 						retrieveUserResponse.data.retrieveUser
 					)

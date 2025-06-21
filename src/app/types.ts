@@ -97,5 +97,6 @@ export interface OrderItemVariationResource {
 
 
 export type CategoryType = "FOOD" | "DRINK"
-
 export type PaymentMethod = "CASH" | "CARD"
+
+export type ErrorCode = "NOT_AUTHENTICATED"

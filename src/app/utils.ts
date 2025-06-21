@@ -1,3 +1,4 @@
+import { ApolloQueryResult } from "@apollo/client"
 import { Company } from "./models/Company"
 import { User } from "./models/User"
 import { Room } from "./models/Room"
@@ -14,7 +15,8 @@ import {
 	OrderItemResource,
 	OrderItemVariationResource,
 	BillResource,
-	RestaurantResource
+	RestaurantResource,
+	ErrorCode
 } from "./types"
 import { Table } from "./models/Table"
 import { Category } from "./models/Category"
@@ -37,6 +39,24 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 	}
 
 	return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
+}
+
+export function getGraphQLErrorCodes(
+	response: ApolloQueryResult<any>
+): ErrorCode[] {
+	if (response.errors == null) {
+		return []
+	}
+
+	const errorCodes: ErrorCode[] = []
+
+	for (let error of response.errors) {
+		if (error.extensions != null && error.extensions["code"] != null) {
+			errorCodes.push(error.extensions["code"] as ErrorCode)
+		}
+	}
+
+	return errorCodes
 }
 
 //#region Converter functions

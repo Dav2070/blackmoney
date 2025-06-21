@@ -56,7 +56,7 @@ export class AppComponent {
 
 	async ngOnInit() {
 		if (isPlatformServer(this.platformId)) {
-			this.userLoaded()
+			await this.userLoaded()
 			return
 		}
 
@@ -65,15 +65,15 @@ export class AppComponent {
 			appId: environment.davAppId,
 			tableNames: [],
 			callbacks: {
-				UserLoaded: () => this.userLoaded(),
-				AccessTokenRenewed: (accessToken: string) =>
-					this.accessTokenRenewed(accessToken)
+				UserLoaded: async () => await this.userLoaded(),
+				AccessTokenRenewed: async (accessToken: string) =>
+					await this.accessTokenRenewed(accessToken)
 			}
 		})
 
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
-		let accessToken = this.authService.getAccessToken()
+		let accessToken = await this.authService.getAccessToken()
 		this.setupApollo(Dav.accessToken, accessToken)
 
 		let retrieveCompanyResponse = await this.apiService.retrieveCompany(
@@ -89,6 +89,14 @@ export class AppComponent {
 				}
 			`
 		)
+
+		if (
+			getGraphQLErrorCodes(retrieveCompanyResponse).includes(
+				"NOT_AUTHENTICATED"
+			)
+		) {
+			return
+		}
 
 		let retrieveCompanyResponseData =
 			retrieveCompanyResponse.data.retrieveCompany
@@ -157,12 +165,12 @@ export class AppComponent {
 
 			this.dataService.restaurant = restaurant
 
-			if (restaurant.users.length == 0) {
-				// Redirect to the onboarding page
-				this.router.navigate(["onboarding"])
-			} else if (accessToken == null) {
+			if (accessToken == null) {
 				// Redirect to the login page
 				this.router.navigate(["login"])
+			} else if (restaurant.users.length == 0) {
+				// Redirect to the onboarding page
+				this.router.navigate(["onboarding"])
 			} else {
 				// Load the current user
 				let retrieveUserResponse = await this.apiService.retrieveUser(
@@ -237,8 +245,8 @@ export class AppComponent {
 	}
 
 	//#region dav callback functions
-	userLoaded() {
-		let accessToken = this.authService.getAccessToken()
+	async userLoaded() {
+		let accessToken = await this.authService.getAccessToken()
 
 		// Setup the apollo client with the access token
 		this.setupApollo(this.dataService.dav.accessToken, accessToken)
@@ -246,8 +254,8 @@ export class AppComponent {
 		this.dataService.davUserPromiseHolder.Resolve()
 	}
 
-	accessTokenRenewed(davAccessToken: string) {
-		this.setupApollo(davAccessToken, this.authService.getAccessToken())
+	async accessTokenRenewed(davAccessToken: string) {
+		this.setupApollo(davAccessToken, await this.authService.getAccessToken())
 	}
 	//#endregion
 }

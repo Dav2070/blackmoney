@@ -26,7 +26,7 @@ export class LoginPageComponent {
 	) {}
 
 	async ngOnInit() {
-		if (this.authService.getAccessToken() != null) {
+		if ((await this.authService.getAccessToken()) != null) {
 			// Redirect to tables page
 			this.router.navigate(["tables"])
 			return
@@ -77,7 +77,7 @@ export class LoginPageComponent {
 		let accessToken = loginResponse?.data?.login.uuid
 
 		if (accessToken != null) {
-			this.authService.setAccessToken(accessToken)
+			await this.authService.setAccessToken(accessToken)
 			this.dataService.loadApollo(accessToken)
 
 			this.dataService.user = convertUserResourceToUser(

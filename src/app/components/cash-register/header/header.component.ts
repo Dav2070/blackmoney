@@ -21,7 +21,10 @@ export class HeaderComponent {
 			this.timer = setInterval(() => {
 				this.ngZone.run(() => {
 					let date = new Date()
-					this.currentDate = `${date.toLocaleDateString()} – ${date.getHours()}:${date.getMinutes()}:${date
+					this.currentDate = `${date.toLocaleDateString()} – ${date.getHours()}:${date
+						.getMinutes()
+						.toString()
+						.padStart(2, "0")}:${date
 						.getSeconds()
 						.toString()
 						.padStart(2, "0")}`

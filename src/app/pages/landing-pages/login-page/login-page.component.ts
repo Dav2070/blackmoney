@@ -1,7 +1,6 @@
 import { Component } from "@angular/core"
 import { Router } from "@angular/router"
 import { DropdownOption, DropdownOptionType } from "dav-ui-components"
-import { User } from "src/app/models/User"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
@@ -15,7 +14,6 @@ import { convertUserResourceToUser } from "src/app/utils"
 export class LoginPageComponent {
 	userDropdownOptions: DropdownOption[] = []
 	userDropdownSelectedKey: string = ""
-	users: User[] = []
 	username: string = ""
 	password: string = ""
 	errorMessage: string = ""
@@ -36,38 +34,18 @@ export class LoginPageComponent {
 
 		await this.dataService.restaurantPromiseHolder.AwaitResult()
 
-		// Load the users of the restaurant
-		const retrieveRestaurantResponse =
-			await this.apiService.retrieveRestaurant(
-				`
-					users {
-						items {
-							uuid
-							name
-						}
-					}
-				`,
-				{
-					uuid: this.dataService.restaurant.uuid
-				}
-			)
-
-		if (retrieveRestaurantResponse.data.retrieveRestaurant != null) {
-			for (let user of retrieveRestaurantResponse.data.retrieveRestaurant
-				.users.items) {
-				this.users.push(convertUserResourceToUser(user))
-				this.userDropdownOptions.push({
-					key: user.uuid,
-					value: user.name,
-					type: DropdownOptionType.option
-				})
-			}
+		for (let user of this.dataService.restaurant.users) {
+			this.userDropdownOptions.push({
+				key: user.uuid,
+				value: user.name,
+				type: DropdownOptionType.option
+			})
 		}
 	}
 
 	userDropdownChange(event: Event) {
 		this.userDropdownSelectedKey = (event as CustomEvent).detail.key
-		let selectedUser = this.users.find(
+		let selectedUser = this.dataService.restaurant.users.find(
 			u => u.uuid === this.userDropdownSelectedKey
 		)
 		this.username = selectedUser?.name ?? ""

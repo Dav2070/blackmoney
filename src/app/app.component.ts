@@ -13,6 +13,7 @@ import { AuthService } from "./services/auth-service"
 import { environment } from "src/environments/environment"
 import {
 	convertCompanyResourceToCompany,
+	convertRestaurantResourceToRestaurant,
 	convertUserResourceToUser,
 	getGraphQLErrorCodes
 } from "src/app/utils"
@@ -103,61 +104,60 @@ export class AppComponent {
 				retrieveCompanyResponseData
 			)
 
-			// Try to get the current restaurant
-			if (this.dataService.company.restaurants.length == 1) {
-				this.dataService.restaurant =
-					this.dataService.company.restaurants[0]
-			} else {
+			let restaurant = this.dataService.company.restaurants[0]
+
+			if (this.dataService.company.restaurants.length > 1) {
 				const restaurantUuid = await this.settingsService.getRestaurant()
 
 				if (restaurantUuid != null) {
-					this.dataService.restaurant =
-						this.dataService.company.restaurants.find(
-							r => r.uuid == restaurantUuid
-						)
+					restaurant = this.dataService.company.restaurants.find(
+						r => r.uuid == restaurantUuid
+					)
 				} else {
-					this.dataService.restaurant =
-						this.dataService.company.restaurants[0]
+					restaurant = this.dataService.company.restaurants[0]
 				}
 			}
-
-			this.dataService.restaurantPromiseHolder.Resolve()
 
 			// Retrieve the restaurant with rooms and users
 			const retrieveRestaurantResponse =
 				await this.apiService.retrieveRestaurant(
 					`
-					users {
-						total
-						items {
-							uuid
-							name
+						uuid
+						name
+						users {
+							total
+							items {
+								uuid
+								name
+							}
 						}
-					}
-					rooms {
-						total
-						items {
-							uuid
-							name
-							tables {
-								total
-								items {
-									uuid
-									name
+						rooms {
+							total
+							items {
+								uuid
+								name
+								tables {
+									total
+									items {
+										uuid
+										name
+									}
 								}
 							}
 						}
-					}
-				`,
+					`,
 					{
-						uuid: this.dataService.restaurant.uuid
+						uuid: restaurant.uuid
 					}
 				)
 
-			const retrieveRestaurantResponseData =
+			restaurant = convertRestaurantResourceToRestaurant(
 				retrieveRestaurantResponse.data.retrieveRestaurant
+			)
 
-			if (retrieveRestaurantResponseData.users.total == 0) {
+			this.dataService.restaurant = restaurant
+
+			if (restaurant.users.length == 0) {
 				// Redirect to the onboarding page
 				this.router.navigate(["onboarding"])
 			} else if (accessToken == null) {
@@ -197,6 +197,7 @@ export class AppComponent {
 		}
 
 		this.dataService.companyPromiseHolder.Resolve()
+		this.dataService.restaurantPromiseHolder.Resolve()
 		this.dataService.blackmoneyUserPromiseHolder.Resolve()
 	}
 

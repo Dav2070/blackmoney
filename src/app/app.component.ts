@@ -101,10 +101,7 @@ export class AppComponent {
 		let retrieveCompanyResponseData =
 			retrieveCompanyResponse.data.retrieveCompany
 
-		if (
-			retrieveCompanyResponseData == null ||
-			retrieveCompanyResponseData.restaurants.total == 0
-		) {
+		if (retrieveCompanyResponseData == null) {
 			// Redirect to the onboarding page
 			this.router.navigate(["onboarding"])
 		} else {
@@ -165,12 +162,12 @@ export class AppComponent {
 
 			this.dataService.restaurant = restaurant
 
-			if (accessToken == null) {
-				// Redirect to the login page
-				this.router.navigate(["login"])
-			} else if (restaurant.users.length == 0) {
+			if (restaurant.users.length == 0) {
 				// Redirect to the onboarding page
 				this.router.navigate(["onboarding"])
+			} else if (accessToken == null) {
+				// Redirect to the login page
+				this.router.navigate(["login"])
 			} else {
 				// Load the current user
 				let retrieveUserResponse = await this.apiService.retrieveUser(

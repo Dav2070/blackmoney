@@ -10,6 +10,7 @@ import { DataService } from "src/app/services/data-service"
 })
 export class OnboardingPageComponent {
 	context: "createCompany" | "createUsers" = null
+	restaurantUuid: string = ""
 	restaurantName: string = ""
 	employeeName: string = ""
 	employees: string[] = []
@@ -25,8 +26,8 @@ export class OnboardingPageComponent {
 
 		if (this.dataService.company == null) {
 			this.context = "createCompany"
-			// TODO: Case for createRestaurant
 		} else if (this.dataService.restaurant.users.length === 0) {
+			this.restaurantUuid = this.dataService.restaurant.uuid
 			this.context = "createUsers"
 		}
 	}
@@ -40,7 +41,10 @@ export class OnboardingPageComponent {
 	}
 
 	async addEmployeeButtonClick() {
-		await this.apiService.createUser(`uuid`, { name: this.employeeName })
+		await this.apiService.createUser(`uuid`, {
+			restaurantUuid: this.restaurantUuid,
+			name: this.employeeName
+		})
 		this.employees.push(this.employeeName)
 		this.employeeName = ""
 	}
@@ -48,9 +52,22 @@ export class OnboardingPageComponent {
 	async continueButtonClick() {
 		if (this.context === "createCompany") {
 			// TODO: Implement error handling
-			await this.apiService.createCompany(`uuid`, {
-				name: this.restaurantName
-			})
+			const createCompanyResponse = await this.apiService.createCompany(
+				`
+					uuid
+					restaurants {
+						items {
+							uuid
+						}
+					}
+				`,
+				{
+					name: this.restaurantName
+				}
+			)
+
+			this.restaurantUuid =
+				createCompanyResponse.data.createCompany.restaurants.items[0].uuid
 
 			this.context = "createUsers"
 		} else if (this.context === "createUsers") {

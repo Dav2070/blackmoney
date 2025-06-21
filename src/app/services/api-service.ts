@@ -84,13 +84,19 @@ export class ApiService {
 
 	async createUser(
 		queryData: string,
-		variables: { name: string }
+		variables: { restaurantUuid: string; name: string }
 	): Promise<MutationResult<{ createUser: UserResource }>> {
 		return await this.davAuthApollo
 			.mutate<{ createUser: UserResource }>({
 				mutation: gql`
-					mutation CreateUser($name: String!) {
-						createUser(name: $name) {
+					mutation CreateUser(
+						$restaurantUuid: String!
+						$name: String!
+					) {
+						createUser(
+							restaurantUuid: $restaurantUuid
+							name: $name
+						) {
 							${queryData}
 						}
 					}

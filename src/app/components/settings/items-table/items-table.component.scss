@@ -60,3 +60,30 @@ td.mat-cell:last-of-type button {
 .mat-column-variations {
     min-width: 200px;
 }
+
+.variation-category-chip {
+    background-color: #673ab7;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    margin: 4px;
+    display: inline-block;
+}
+
+.variations-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+::ng-deep .mat-tooltip {
+  white-space: pre-line !important; // Zeilenumbrüche im Tooltip anzeigen
+  font-size: 12px !important;
+  padding: 8px 12px !important;
+  max-width: 300px !important;
+}
+
+.variation-category-chip {
+  cursor: help; // Zeigt an, dass Hover-Info verfügbar ist
+}

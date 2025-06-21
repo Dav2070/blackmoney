@@ -10,7 +10,8 @@ import { MatTable } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 import { MatSort } from "@angular/material/sort"
 import { VariationsTableDataSource, VariationsTableItem } from "./variations-table-datasource"
-import { Variation } from "src/app/models/cash-register/variation.model"
+import { Variation } from "src/app/models/Variation"
+import { VariationItem } from "src/app/models/VariationItem"
 
 @Component({
     selector: "app-variations-table",
@@ -24,12 +25,13 @@ export class VariationsTableComponent implements AfterViewInit, OnChanges {
     @ViewChild(MatTable) table!: MatTable<VariationsTableItem>
     @Input() variations: Variation[] = [];
 
-    dataSource: VariationsTableDataSource = new VariationsTableDataSource();
+    dataSource: VariationsTableDataSource = new VariationsTableDataSource([]);
     editingVariation: Variation | null = null;
+    editingVariationItem: VariationItem | null = null;
     newVariation: Variation | null = null;
 
     /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-    displayedColumns = ["id", "name", "preis", "actions"]
+    displayedColumns = ["name", "items", "actions"]
 
     ngAfterViewInit(): void {
         this.initializeDataSource();
@@ -42,24 +44,24 @@ export class VariationsTableComponent implements AfterViewInit, OnChanges {
         }
     }
 
-	initializeDataSource(): void {
-		if (this.variations) {
-			this.dataSource = new VariationsTableDataSource(this.variations); // Variations werden übergeben
-			
-			if (this.sort && this.paginator && this.table) {
-				this.dataSource.sort = this.sort;
-				this.dataSource.paginator = this.paginator;
-				this.table.dataSource = this.dataSource;
-			}
-		}
-	}
+    initializeDataSource(): void {
+        if (this.variations) {
+            this.dataSource = new VariationsTableDataSource(this.variations); // Variations werden übergeben
+            
+            if (this.sort && this.paginator && this.table) {
+                this.dataSource.sort = this.sort;
+                this.dataSource.paginator = this.paginator;
+                this.table.dataSource = this.dataSource;
+            }
+        }
+    }
 
     addNewVariation(): void {
         // Create a new variation with default values
         this.newVariation = {
-            id: this.getNextVariationId(),
-            name: "",
-            preis: 0
+            uuid: 'var_' + Date.now(), // Generate a unique ID
+            name: "Neue Kategorie",
+            variationItems: []
         };
         
         // Add to variations temporarily
@@ -71,17 +73,11 @@ export class VariationsTableComponent implements AfterViewInit, OnChanges {
     }
     
     deleteVariation(variation: Variation): void {
-        const index = this.variations.findIndex(v => v.id === variation.id);   
+        const index = this.variations.findIndex(v => v.uuid === variation.uuid);   
         if (index !== -1) {
             this.variations.splice(index, 1);
             this.initializeDataSource();
         }
-    }
-    
-    getNextVariationId(): number {
-        return this.variations.length > 0 
-            ? Math.max(...this.variations.map(variation => variation.id)) + 1 
-            : 1;
     }
     
     editVariation(variation: Variation): void {
@@ -110,5 +106,30 @@ export class VariationsTableComponent implements AfterViewInit, OnChanges {
     
     isEditing(variation: Variation): boolean {
         return variation === this.editingVariation;
+    }
+    
+    addVariationItem(variation: Variation): void {
+        const newItem: VariationItem = {
+            id: this.getNextVariationItemId(variation),
+            uuid: 'item_' + Date.now(),
+            name: "Neuer Eintrag",
+            additionalCost: 0
+        };
+        
+        variation.variationItems.push(newItem);
+        this.editingVariationItem = newItem;
+    }
+    
+    deleteVariationItem(variation: Variation, item: VariationItem): void {
+        const index = variation.variationItems.findIndex(vi => vi.uuid === item.uuid);
+        if (index !== -1) {
+            variation.variationItems.splice(index, 1);
+        }
+    }
+    
+    getNextVariationItemId(variation: Variation): number {
+        return variation.variationItems.length > 0
+            ? Math.max(...variation.variationItems.map(item => item.id)) + 1
+            : 1;
     }
 }

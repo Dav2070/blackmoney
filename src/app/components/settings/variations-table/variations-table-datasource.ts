@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge, BehaviorSubject } from 'rxjs';
-import { Variation } from 'src/app/models/cash-register/variation.model';
+import { Variation } from 'src/app/models/Variation';
 
 export interface VariationsTableItem extends Variation {}
 
@@ -20,11 +20,6 @@ export class VariationsTableDataSource extends DataSource<VariationsTableItem> {
     this.dataSubject.next(this.data);
   }
 
-  /**
-   * Connect this data source to the table. The table will only update when
-   * the returned stream emits new items.
-   * @returns A stream of the items to be rendered.
-   */
   connect(): Observable<VariationsTableItem[]> {
     if (this.paginator && this.sort) {
       // Combine everything that affects the rendered data into one update
@@ -60,8 +55,6 @@ export class VariationsTableDataSource extends DataSource<VariationsTableItem> {
       const isAsc = this.sort?.direction === 'asc';
       switch (this.sort?.active) {
         case 'name': return compare(a.name, b.name, isAsc);
-        case 'id': return compare(+a.id, +b.id, isAsc);
-        case 'preis': return compare(+a.preis, +b.preis, isAsc);
         default: return 0;
       }
     });

@@ -1,0 +1,209 @@
+<app-settings-bar>
+	<div class="employee-management-container">
+		<h2 class="headline">Mitarbeiterverwaltung</h2>
+
+		<!-- Rollenverwaltung -->
+		<mat-card class="role-card">
+			<mat-card-title>
+				<mat-icon color="primary">supervisor_account</mat-icon>
+				<span>Rollen</span>
+			</mat-card-title>
+			<mat-divider></mat-divider>
+			<div class="role-add-row">
+				<mat-form-field appearance="outline" class="role-field">
+					<mat-label>Neue Rolle</mat-label>
+					<input matInput [(ngModel)]="newRoleName" />
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="role-field">
+					<mat-label>Berechtigungen</mat-label>
+					<mat-select multiple [(ngModel)]="newRolePermissions">
+						<mat-option
+							*ngFor="let perm of ALL_PERMISSIONS"
+							[value]="perm.code"
+						>
+							{{ perm.label }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="addRole()"
+					[disabled]="!newRoleName.trim()"
+				>
+					Hinzufügen
+				</button>
+			</div>
+			<mat-list>
+				<mat-list-item *ngFor="let role of roles">
+					<div
+						class="role-list-row"
+						*ngIf="editRole?.uuid !== role.uuid; else editRoleTpl"
+					>
+						<span class="role-name">{{ role.name }}</span>
+						<mat-chip-list>
+							<mat-chip *ngFor="let perm of role.permissions">{{
+								getPermissionLabel(perm)
+							}}</mat-chip>
+						</mat-chip-list>
+						<span class="spacer"></span>
+						<button
+							mat-icon-button
+							color="primary"
+							(click)="startEditRole(role)"
+						>
+							<mat-icon>edit</mat-icon>
+						</button>
+						<button
+							mat-icon-button
+							color="warn"
+							(click)="deleteRole(role)"
+						>
+							<mat-icon>delete</mat-icon>
+						</button>
+					</div>
+					<ng-template #editRoleTpl>
+						<mat-form-field appearance="outline" class="role-field">
+							<input matInput [(ngModel)]="editRoleName" />
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="role-field">
+							<mat-label>Berechtigungen</mat-label>
+							<mat-select multiple [(ngModel)]="editRolePermissions">
+								<mat-option
+									*ngFor="let perm of ALL_PERMISSIONS"
+									[value]="perm.code"
+								>
+									{{ perm.label }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+						<button
+							mat-icon-button
+							color="primary"
+							(click)="saveEditRole()"
+						>
+							<mat-icon>check</mat-icon>
+						</button>
+						<button mat-icon-button (click)="cancelEditRole()">
+							<mat-icon>close</mat-icon>
+						</button>
+					</ng-template>
+				</mat-list-item>
+			</mat-list>
+		</mat-card>
+
+		<!-- Mitarbeiterverwaltung -->
+		<mat-card class="employee-card">
+			<mat-card-title>
+				<mat-icon color="primary">people</mat-icon>
+				<span>Mitarbeiter</span>
+			</mat-card-title>
+			<mat-divider></mat-divider>
+			<div class="employee-add-row">
+				<mat-form-field appearance="outline" class="employee-field">
+					<mat-label>Name</mat-label>
+					<input matInput [(ngModel)]="newEmployeeName" />
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="employee-field">
+					<mat-label>PIN</mat-label>
+					<input matInput [(ngModel)]="newEmployeePin" maxlength="6" />
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="employee-field">
+					<mat-label>Rolle</mat-label>
+					<mat-select [(ngModel)]="newEmployeeRoleUuid">
+						<mat-option *ngFor="let role of roles" [value]="role.uuid">{{
+							role.name
+						}}</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="addEmployee()"
+					[disabled]="
+						!newEmployeeName.trim() ||
+						!newEmployeePin.trim() ||
+						!newEmployeeRoleUuid
+					"
+				>
+					Hinzufügen
+				</button>
+			</div>
+			<mat-list>
+				<mat-list-item *ngFor="let emp of employees">
+					<div
+						class="role-list-row"
+						*ngIf="editEmployee?.uuid !== emp.uuid; else editEmpTpl"
+					>
+						<span>{{ emp.name }}</span>
+						<span class="employee-role">{{
+							getRole(emp.roleUuid)?.name || "Keine"
+						}}</span>
+						<span class="spacer"></span>
+						<button
+							mat-icon-button
+							color="primary"
+							(click)="startEditEmployee(emp)"
+						>
+							<mat-icon>edit</mat-icon>
+						</button>
+						<button
+							mat-icon-button
+							color="warn"
+							(click)="deleteEmployee(emp)"
+						>
+							<mat-icon>delete</mat-icon>
+						</button>
+					</div>
+					<ng-template #editEmpTpl>
+						<mat-form-field appearance="outline" class="employee-field">
+							<input matInput [(ngModel)]="editEmployeeName" />
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="employee-field">
+							<mat-label>PIN</mat-label>
+							<input
+								matInput
+								[(ngModel)]="editEmployeePin"
+								maxlength="6"
+							/>
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="employee-field">
+							<mat-label>Rolle</mat-label>
+							<mat-select [(ngModel)]="editEmployeeRoleUuid">
+								<mat-option
+									*ngFor="let role of roles"
+									[value]="role.uuid"
+									>{{ role.name }}</mat-option
+								>
+							</mat-select>
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="employee-field">
+							<mat-label>Zusätzliche Rechte</mat-label>
+							<mat-select
+								multiple
+								[(ngModel)]="editEmployeeExtraPermissions"
+							>
+								<mat-option
+									*ngFor="let perm of ALL_PERMISSIONS"
+									[value]="perm.code"
+								>
+									{{ perm.label }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+						<button
+							mat-icon-button
+							color="primary"
+							(click)="saveEditEmployee()"
+						>
+							<mat-icon>check</mat-icon>
+						</button>
+						<button mat-icon-button (click)="cancelEditEmployee()">
+							<mat-icon>close</mat-icon>
+						</button>
+					</ng-template>
+				</mat-list-item>
+			</mat-list>
+		</mat-card>
+	</div>
+</app-settings-bar>

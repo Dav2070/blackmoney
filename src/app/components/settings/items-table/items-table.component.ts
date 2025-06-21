@@ -10,9 +10,10 @@ import { MatTable } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 import { MatSort } from "@angular/material/sort"
 import { ItemsTableDataSource, ItemsTableItem } from "./items-table-datasource"
-import { Item } from "src/app/models/cash-register/item.model"
-import { Inventory } from "src/app/models/cash-register/inventory.model"
-import { Variation } from "src/app/models/cash-register/variation.model"
+import { Product } from "src/app/models/Product"
+import { Category } from "src/app/models/Category"
+import { Variation } from "src/app/models/Variation"
+import { VariationItem } from "src/app/models/VariationItem"
 
 @Component({
     selector: "app-items-table",
@@ -24,12 +25,12 @@ export class ItemsTableComponent implements AfterViewInit, OnChanges {
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild(MatSort) sort!: MatSort
     @ViewChild(MatTable) table!: MatTable<ItemsTableItem>
-    @Input() Inventory: Inventory
+    @Input() category: Category
     @Input() availableVariations: Variation[] = []
 
     dataSource: ItemsTableDataSource = new ItemsTableDataSource([])
-    editingItem: Item | null = null;
-    newItem: Item | null = null;
+    editingProduct: Product | null = null;
+    newProduct: Product | null = null;
 
     displayedColumns = ["id", "name", "price", "variations", "actions"]
 
@@ -38,15 +39,15 @@ export class ItemsTableComponent implements AfterViewInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes["Inventory"] && changes["Inventory"].currentValue) {
+        if (changes["category"] && changes["category"].currentValue) {
             this.initializeDataSource();
             this.cancelEdit();
         }
     }
 
     initializeDataSource(): void {
-        if (this.Inventory && this.Inventory.items) {
-            this.dataSource = new ItemsTableDataSource(this.Inventory.items);
+        if (this.category && this.category.products) {
+            this.dataSource = new ItemsTableDataSource(this.category.products);
             
             if (this.sort && this.paginator && this.table) {
                 this.dataSource.sort = this.sort;
@@ -56,87 +57,96 @@ export class ItemsTableComponent implements AfterViewInit, OnChanges {
         }
     }
 
-    addNewItem(): void {
-        // Create a new item with default values
-        this.newItem = {
-            id: this.getNextItemId(),
+    addNewProduct(): void {
+        // Create a new product with default values
+        this.newProduct = {
+            id: this.getNextProductId(),
+            uuid: 'product_' + Date.now(),
             name: "",
             price: 0,
             variations: []
         };
         
-        // Add to inventory temporarily
-        this.Inventory.items.push(this.newItem);
+        // Add to category temporarily
+        this.category.products.push(this.newProduct);
         this.initializeDataSource();
         
-        // Set it as the currently edited item
-        this.editingItem = this.newItem;
-        
-        // Navigate to the page containing the new item
-        if (this.paginator) {
-            const lastPage = Math.ceil(this.Inventory.items.length / this.paginator.pageSize) - 1;
-            this.paginator.pageIndex = lastPage;
-            this.paginator.page.emit({
-                pageIndex: lastPage,
-                pageSize: this.paginator.pageSize,
-                length: this.Inventory.items.length
-            });
-        }
+        // Set it as the currently edited product
+        this.editingProduct = this.newProduct;
     }
 
-    deleteItem(item: Item): void {
-        const index = this.Inventory.items.findIndex(i => i.id === item.id);   
+    deleteProduct(product: Product): void {
+        const index = this.category.products.findIndex(p => p.uuid === product.uuid);   
         if (index !== -1) {
-            this.Inventory.items.splice(index, 1);
+            this.category.products.splice(index, 1);
             this.initializeDataSource();
         }
     }
     
-    getNextItemId(): number {
-        return this.Inventory.items.length > 0 
-            ? Math.max(...this.Inventory.items.map(item => item.id)) + 1 
+    getNextProductId(): number {
+        return this.category.products.length > 0 
+            ? Math.max(...this.category.products.map(product => product.id)) + 1 
             : 1;
     }
     
-    editItem(item: Item): void {
-        this.editingItem = item;
+    editProduct(product: Product): void {
+        this.editingProduct = product;
     }
     
-    saveItem(item: Item): void {
-        this.editingItem = null;
-        this.newItem = null;
+    saveProduct(product: Product): void {
+        this.editingProduct = null;
+        this.newProduct = null;
         this.initializeDataSource();
     }
     
     cancelEdit(): void {
-        if (this.newItem) { // Wenn item neu ist, und nicht gespeichert wurde, entfernen
-            const index = this.Inventory.items.findIndex(item => item === this.newItem);
+        if (this.newProduct) {
+            const index = this.category.products.findIndex(product => product === this.newProduct);
             if (index !== -1) {
-                this.Inventory.items.splice(index, 1);
+                this.category.products.splice(index, 1);
             }
         }
         
-        this.editingItem = null;
-        this.newItem = null;
+        this.editingProduct = null;
+        this.newProduct = null;
         this.initializeDataSource();
     }
     
-	isEditing(item: Item): boolean {
-		return item === this.editingItem;
-	}
-    
-    getSelectedVariationIds(item: Item): number[] {
-        return item.variations?.map(v => v.id) || [];
+    isEditing(product: Product): boolean {
+        return product === this.editingProduct;
     }
     
-    updateVariations(item: Item, selectedIds: number[]): void {
-        if (!item.variations) {
-            item.variations = [];
+    getSelectedCategories(product: Product): string[] {
+        if (!product.variations || product.variations.length === 0) return [];
+        
+        return product.variations.map(variation => variation.uuid);
+    }
+
+    updateProductVariations(product: Product, selectedVariationIds: string[]): void {
+        if (!product.variations) {
+            product.variations = [];
+        } else {
+            product.variations = [];
         }
         
-        item.variations = selectedIds
-            .map(id => this.availableVariations.find(v => v.id === id))
-            .filter(v => v !== undefined)
-            .map(v => ({...v!}));
+        // Für jede ausgewählte Variation eine Kopie zum Produkt hinzufügen
+        for (const variationId of selectedVariationIds) {
+            const variation = this.availableVariations.find(v => v.uuid === variationId);
+            if (variation) {
+                product.variations.push({...variation});
+            }
+        }
+    }
+
+    getVariationItemsTooltip(product: Product, variation: Variation): string {
+        if (!variation.variationItems || variation.variationItems.length === 0) 
+            return 'Keine Einträge';
+        
+        return variation.variationItems.map(varItem => {
+            const priceStr = varItem.additionalCost !== 0 
+                ? ` (${varItem.additionalCost > 0 ? '+' : ''}${varItem.additionalCost}€)` 
+                : '';
+            return `• ${varItem.name}${priceStr}`;
+        }).join('\n');
     }
 }

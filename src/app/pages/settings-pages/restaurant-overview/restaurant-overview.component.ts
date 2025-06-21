@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { RestaurantSettings, OpeningDaysGroup } from 'src/app/models/settings-models/restaurant-settings.model';
+import { RestaurantSettings, OpeningDaysGroup, SpecialDay } from 'src/app/models/settings-models/restaurant-settings.model';
+import { TSE, TSEClient } from 'src/app/models/settings-models/tse.model';
 
-const ALL_DAYS = [
-  'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'
-];
 
 @Component({
   selector: 'app-restaurant-overview',
@@ -11,17 +9,60 @@ const ALL_DAYS = [
   styleUrls: ['./restaurant-overview.component.scss'],
   standalone: false
 })
+
 export class RestaurantOverviewComponent {
-  allDays = ALL_DAYS;
-  restaurant: RestaurantSettings = {
-    name: 'Mein Restaurant',
-    openingDaysGroups: [
-      { days: ['Montag', 'Dienstag'], periods: [{ from: '09:00', to: '22:00' }] },
-      { days: ['Mittwoch'], periods: [{ from: '09:00', to: '14:00' }, { from: '17:00', to: '22:00' }] }
-    ]
-  };
+  readonly WEEKDAYS = [
+    'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'
+  ];
+
+
+  allDays = this.WEEKDAYS;
+  restaurants: RestaurantSettings[] = [
+    {
+      name: 'Mein Restaurant',
+      adresse: { strasse: '', plz: '', ort: '', land: '' },
+      telefonnummer: '',
+      email: '',
+      steuerId: '',
+      inhaber: '',
+      openingDaysGroups: [
+        { days: ['Montag', 'Dienstag'], periods: [{ from: '09:00', to: '22:00' }] },
+        { days: ['Mittwoch'], periods: [{ from: '09:00', to: '14:00' }, { from: '17:00', to: '22:00' }] }
+      ],
+      tses: [
+        {
+          id: 1,
+          name: 'TSE Hauptkasse',
+          status: 'aktiv',
+          pin: '123456',
+          clients: [
+            { id: 1, name: 'Kasse 1', seriennummer: 'SN-123456' }
+          ]
+        }
+      ]
+    },
+    {
+      name: 'Filiale 2',
+      adresse: { strasse: 'Nebenstr. 2', plz: '54321', ort: 'Nebenstadt', land: 'DE' },
+      telefonnummer: '01234 567890',
+      email: 'filiale2@beispiel.de',
+      steuerId: '987654321',
+      inhaber: 'Max Mustermann',
+      openingDaysGroups: [
+        { days: ['Donnerstag', 'Freitag'], periods: [{ from: '10:00', to: '20:00' }] }
+      ],
+      tses: []
+    }
+  ];
+
+  selectedRestaurantIndex = 0;
+
+  get restaurant(): RestaurantSettings {
+    return this.restaurants[this.selectedRestaurantIndex];
+  }
 
   editMode = false;
+  tseEditMode = false;
   validationErrors: string[] = [];
 
   startEdit() {
@@ -152,5 +193,96 @@ export class RestaurantOverviewComponent {
     }
 
     return errors;
+  }
+
+  getOpeningHoursPerDay(): { day: string, periods: { from: string, to: string }[] }[] {
+    if (!this.restaurant?.openingDaysGroups) return [];
+    const result: { day: string, periods: { from: string, to: string }[] }[] = [];
+    for (const day of this.WEEKDAYS) {
+      // Finde alle Gruppen, die diesen Tag enthalten
+      const group = this.restaurant.openingDaysGroups.find(g => g.days.includes(day));
+      result.push({
+        day,
+        periods: group ? group.periods : []
+      });
+    }
+    return result;
+  }
+
+  get tses(): TSE[] {
+    return this.restaurant.tses ?? [];
+  }
+
+  addTSE() {
+    const tses = this.restaurant.tses ?? (this.restaurant.tses = []);
+    const nextId = tses.length ? Math.max(...tses.map(t => t.id)) + 1 : 1;
+    tses.push({
+      id: nextId,
+      name: 'Neue TSE',
+      status: 'inaktiv',
+      pin: '',
+      clients: []
+    });
+  }
+
+  deleteTSE(tse: TSE) {
+    const tses = this.restaurant.tses ?? [];
+    const idx = tses.indexOf(tse);
+    if (idx > -1) tses.splice(idx, 1);
+  }
+
+  addClient(tse: TSE) {
+    const nextId = tse.clients.length ? Math.max(...tse.clients.map(c => c.id)) + 1 : 1;
+    tse.clients.push({
+      id: nextId,
+      name: 'Neuer Client',
+      seriennummer: ''
+    });
+  }
+
+  deleteClient(tse: TSE, client: TSEClient) {
+    const idx = tse.clients.indexOf(client);
+    if (idx > -1) tse.clients.splice(idx, 1);
+  }
+
+  addRestaurant() {
+    this.restaurants.push({
+      name: 'Neues Restaurant',
+      adresse: { strasse: '', plz: '', ort: '', land: '' },
+      telefonnummer: '',
+      email: '',
+      steuerId: '',
+      inhaber: '',
+      openingDaysGroups: []
+    });
+    this.selectedRestaurantIndex = this.restaurants.length - 1;
+  }
+
+  // Hilfsmethode für besondere Tage: Typ setzen und Perioden anpassen
+  setSpecialDayType(day: SpecialDay, type: 'geschlossen' | 'durchgehend' | 'pause') {
+    day.openType = type;
+    if (type === 'geschlossen') {
+      day.periods = [];
+    } else if (type === 'durchgehend') {
+      day.periods = [day.periods && day.periods[0] ? day.periods[0] : { from: '', to: '' }];
+    } else if (type === 'pause') {
+      if (!day.periods || day.periods.length < 2) {
+        day.periods = [
+          day.periods && day.periods[0] ? day.periods[0] : { from: '', to: '' },
+          day.periods && day.periods[1] ? day.periods[1] : { from: '', to: '' }
+        ];
+      }
+    }
+  }
+
+  addSpecialDay() {
+    this.restaurant.specialDays = this.restaurant.specialDays || [];
+    this.restaurant.specialDays.push({
+      from: '',
+      to: '',
+      reason: '',
+      openType: 'geschlossen',
+      periods: []
+    });
   }
 }

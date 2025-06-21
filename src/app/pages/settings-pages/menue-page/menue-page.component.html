@@ -1,59 +1,266 @@
 <app-settings-bar>
-	<div class="container">
-		<div class="divider">
-     <mat-list role="list" class="list">
-       <mat-list-item role="listitem">Speisen</mat-list-item>
-      @for(dishCategory of foodInventory; track dishCategory) {
-    <mat-list-item
-      (click)="setInventory(dishCategory)"
-      role="listitem"
-      style="cursor: pointer"
-    >
-      {{ dishCategory.name }}
-    </mat-list-item>
-  }
-  <mat-list-item
-    (click)="addNewCategory('food')"
-    role="listitem"
-    style="cursor: pointer"
-  >
-    Hinzufügen
-  </mat-list-item>
-</mat-list>
+	<div class="menue-page-container">
+		<mat-tab-group class="tab" [(selectedIndex)]="selectedTab">
+			<!-- PRODUKTE -->
+			<mat-tab label="Produkte">
+				<div class="products-layout">
+					<!-- Kategorien als Umschalter -->
+					<mat-card class="category-sidebar">
+						<mat-tab-group
+							[(selectedIndex)]="categoryTabIndex"
+							mat-stretch-tabs
+						>
+							<mat-tab label="Speisen">
+								<mat-list>
+									<mat-list-item
+										*ngFor="let category of foodCategories"
+									>
+										<div class="category-row">
+											<ng-container
+												*ngIf="
+													editCategory?.uuid !== category.uuid;
+													else editFood
+												"
+											>
+												<span
+													class="category-name"
+													(click)="setCategory(category)"
+													[class.selected]="
+														selectedCategory?.uuid ===
+														category.uuid
+													"
+												>
+													{{ category.name }}
+												</span>
+												<span class="category-actions">
+													<button
+														mat-icon-button
+														color="primary"
+														(click)="startEditCategory(category)"
+													>
+														<mat-icon>edit</mat-icon>
+													</button>
+													<button
+														mat-icon-button
+														color="warn"
+														(click)="deleteCategory(category)"
+													>
+														<mat-icon>delete</mat-icon>
+													</button>
+												</span>
+											</ng-container>
+											<ng-template #editFood>
+												<mat-form-field
+													appearance="outline"
+													class="category-edit-field"
+												>
+													<input
+														matInput
+														[(ngModel)]="editCategoryName"
+														(keydown.enter)="saveEditCategory()"
+													/>
+												</mat-form-field>
+												<span class="category-actions">
+													<button
+														mat-icon-button
+														color="primary"
+														(click)="saveEditCategory()"
+													>
+														<mat-icon>check</mat-icon>
+													</button>
+													<button
+														mat-icon-button
+														(click)="cancelEditCategory()"
+													>
+														<mat-icon>close</mat-icon>
+													</button>
+												</span>
+											</ng-template>
+										</div>
+									</mat-list-item>
+									<mat-list-item *ngIf="addCategoryType === 'FOOD'">
+										<div class="category-row">
+											<mat-form-field
+												appearance="outline"
+												class="category-edit-field"
+											>
+												<input
+													matInput
+													[(ngModel)]="newCategoryName"
+													(keydown.enter)="addNewCategory('FOOD')"
+													placeholder="Neue Kategorie"
+												/>
+											</mat-form-field>
+											<span class="category-actions">
+												<button
+													mat-icon-button
+													color="primary"
+													(click)="addNewCategory('FOOD')"
+													[disabled]="!newCategoryName?.trim()"
+												>
+													<mat-icon>check</mat-icon>
+												</button>
+												<button
+													mat-icon-button
+													(click)="cancelAddCategory()"
+												>
+													<mat-icon>close</mat-icon>
+												</button>
+											</span>
+										</div>
+									</mat-list-item>
+								</mat-list>
+								<div class="add-btn-row">
+									<button
+										mat-mini-fab
+										color="primary"
+										(click)="startAddCategory('FOOD')"
+										[disabled]="addCategoryType"
+									>
+										<mat-icon>add</mat-icon>
+									</button>
+								</div>
+							</mat-tab>
+							<mat-tab label="Getränke">
+								<mat-list>
+									<mat-list-item
+										*ngFor="let category of drinkCategories"
+									>
+										<div class="category-row">
+											<ng-container
+												*ngIf="
+													editCategory?.uuid !== category.uuid;
+													else editDrink
+												"
+											>
+												<span
+													class="category-name"
+													(click)="setCategory(category)"
+													[class.selected]="
+														selectedCategory?.uuid ===
+														category.uuid
+													"
+												>
+													{{ category.name }}
+												</span>
+												<span class="category-actions">
+													<button
+														mat-icon-button
+														color="primary"
+														(click)="startEditCategory(category)"
+													>
+														<mat-icon>edit</mat-icon>
+													</button>
+													<button
+														mat-icon-button
+														color="warn"
+														(click)="deleteCategory(category)"
+													>
+														<mat-icon>delete</mat-icon>
+													</button>
+												</span>
+											</ng-container>
+											<ng-template #editDrink>
+												<mat-form-field
+													appearance="outline"
+													class="category-edit-field"
+												>
+													<input
+														matInput
+														[(ngModel)]="editCategoryName"
+														(keydown.enter)="saveEditCategory()"
+													/>
+												</mat-form-field>
+												<span class="category-actions">
+													<button
+														mat-icon-button
+														color="primary"
+														(click)="saveEditCategory()"
+													>
+														<mat-icon>check</mat-icon>
+													</button>
+													<button
+														mat-icon-button
+														(click)="cancelEditCategory()"
+													>
+														<mat-icon>close</mat-icon>
+													</button>
+												</span>
+											</ng-template>
+										</div>
+									</mat-list-item>
+									<mat-list-item *ngIf="addCategoryType === 'DRINK'">
+										<div class="category-row">
+											<mat-form-field
+												appearance="outline"
+												class="category-edit-field"
+											>
+												<input
+													matInput
+													[(ngModel)]="newCategoryName"
+													(keydown.enter)="addNewCategory('DRINK')"
+													placeholder="Neue Kategorie"
+												/>
+											</mat-form-field>
+											<span class="category-actions">
+												<button
+													mat-icon-button
+													color="primary"
+													(click)="addNewCategory('DRINK')"
+													[disabled]="!newCategoryName?.trim()"
+												>
+													<mat-icon>check</mat-icon>
+												</button>
+												<button
+													mat-icon-button
+													(click)="cancelAddCategory()"
+												>
+													<mat-icon>close</mat-icon>
+												</button>
+											</span>
+										</div>
+									</mat-list-item>
+								</mat-list>
+								<div class="add-btn-row">
+									<button
+										mat-mini-fab
+										color="primary"
+										(click)="startAddCategory('DRINK')"
+										[disabled]="addCategoryType"
+									>
+										<mat-icon>add</mat-icon>
+									</button>
+								</div>
+							</mat-tab>
+						</mat-tab-group>
+					</mat-card>
 
-<mat-list role="list" class="list">
-  <mat-list-item role="listitem">Getränke</mat-list-item>
-  @for(drinkCategory of drinkInventory; track drinkCategory) {
-    <mat-list-item
-      (click)="setInventory(drinkCategory)"
-      role="listitem"
-      style="cursor: pointer"
-    >
-      {{ drinkCategory.name }}
-    </mat-list-item>
-  }
-  <mat-list-item
-    (click)="addNewCategory('drink')"
-    role="listitem"
-    style="cursor: pointer"
-  >
-    Hinzufügen
-  </mat-list-item>
-</mat-list>
-		</div>
-		<mat-tab-group class="tab">
-    <mat-tab label="Items">
-        <app-items-table 
-            [Inventory]="selectedInventory"
-            [availableVariations]="allVariations">
-        </app-items-table>
-    </mat-tab>
-    <mat-tab label="Variationen">
-        <app-variations-table
-            [variations]="allVariations">
-        </app-variations-table>
-    </mat-tab>
-    <mat-tab label="Menüs"> Menüs </mat-tab>
-</mat-tab-group>
+					<!-- Produkt-Tabelle -->
+					<mat-card class="content-card">
+						<app-items-table
+							[category]="selectedCategory"
+							[availableVariations]="allVariations"
+						>
+						</app-items-table>
+					</mat-card>
+				</div>
+			</mat-tab>
+
+			<!-- VARIATIONEN -->
+			<mat-tab label="Variationen">
+				<mat-card class="content-card">
+					<app-variations-table
+						[variations]="allVariations"
+					></app-variations-table>
+				</mat-card>
+			</mat-tab>
+
+			<!-- MENÜS -->
+			<mat-tab label="Menüs">
+				<mat-card class="content-card">
+					<!-- Hier kannst du später Menüs verwalten -->
+				</mat-card>
+			</mat-tab>
+		</mat-tab-group>
 	</div>
 </app-settings-bar>

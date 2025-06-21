@@ -37,6 +37,7 @@ export class ApiService {
 	async login(
 		queryData: string,
 		variables: {
+			restaurantUuid: string
 			userName: string
 			password: string
 		}
@@ -45,10 +46,12 @@ export class ApiService {
 			.mutate<{ login: SessionResource }>({
 				mutation: gql`
 					mutation Login(
+						$restaurantUuid: String!
 						$userName: String!
 						$password: String!
 					) {
 						login(
+							restaurantUuid: $restaurantUuid
 							userName: $userName
 							password: $password
 						) {

@@ -121,6 +121,8 @@ export class AppComponent {
 				}
 			}
 
+			this.dataService.restaurantPromiseHolder.Resolve()
+
 			// Retrieve the restaurant with rooms and users
 			const retrieveRestaurantResponse =
 				await this.apiService.retrieveRestaurant(

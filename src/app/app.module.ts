@@ -5,6 +5,7 @@ import {
 } from "@angular/platform-browser"
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome"
 
 // Material Design modules
 import { MatIconModule } from "@angular/material/icon"
@@ -18,12 +19,12 @@ import { MatSidenavModule } from "@angular/material/sidenav"
 import { MatMenuModule } from "@angular/material/menu"
 import { MatListModule } from "@angular/material/list"
 import { MatTabsModule } from "@angular/material/tabs"
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from "@angular/material/checkbox"
+import { MatDatepickerModule } from "@angular/material/datepicker"
+import { MatSnackBarModule } from "@angular/material/snack-bar"
+import { MatDialogModule } from "@angular/material/dialog"
+import { MatSlideToggleModule } from "@angular/material/slide-toggle"
+import { MatRadioModule } from "@angular/material/radio"
 
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
@@ -63,7 +64,7 @@ import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTooltipModule } from "@angular/material/tooltip"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 
@@ -99,6 +100,7 @@ import { EmployeeManagementComponent } from "./pages/settings-pages/employee-man
 		BrowserAnimationsModule,
 		FormsModule,
 		ReactiveFormsModule,
+		FontAwesomeModule,
 		ApolloModule,
 		GraphQLModule,
 		AppRoutingModule,

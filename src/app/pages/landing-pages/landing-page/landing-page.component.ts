@@ -1,8 +1,9 @@
 import { Component } from "@angular/core"
 import { Router, NavigationEnd } from "@angular/router"
-import { faCircleUser as faCircleUserSolid } from "@fortawesome/free-solid-svg-icons"
 import { faCircleUser as faCircleUserRegular } from "@fortawesome/pro-regular-svg-icons"
+import { Dav } from "dav-js"
 import { DataService } from "src/app/services/data-service"
+import { environment } from "src/environments/environment"
 
 @Component({
 	templateUrl: "./landing-page.component.html",
@@ -10,7 +11,6 @@ import { DataService } from "src/app/services/data-service"
 	standalone: false
 })
 export class LandingPageComponent {
-	faCircleUserSolid = faCircleUserSolid
 	faCircleUserRegular = faCircleUserRegular
 	overviewTabActive: boolean = false
 	pricingTabActive: boolean = false
@@ -34,6 +34,10 @@ export class LandingPageComponent {
 	}
 
 	navigateToUserPage() {
-		this.router.navigate(["user"])
+		if (this.dataService.dav.isLoggedIn) {
+			this.router.navigate(["user"])
+		} else {
+			Dav.ShowLoginPage(environment.davApiKey, window.location.origin)
+		}
 	}
 }

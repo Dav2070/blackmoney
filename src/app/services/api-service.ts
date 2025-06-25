@@ -432,18 +432,19 @@ export class ApiService {
 	}
 
 	async createBill(
-		queryData: string
-	): Promise<MutationResult<{ createOrder: BillResource }>> {
+		queryData: string,
+		variables: { registerClientUuid: string }
+	): Promise<MutationResult<{ createBill: BillResource }>> {
 		return await this.blackmoneyAuthApollo
-			.mutate<{ createOrder: BillResource }>({
+			.mutate<{ createBill: BillResource }>({
 				mutation: gql`
-					mutation CreateBill {
-						createBill(
-						) {
+					mutation CreateBill($registerClientUuid: String!) {
+						createBill(registerClientUuid: $registerClientUuid) {
 							${queryData}
 						}
 					}
 				`,
+				variables,
 				errorPolicy
 			})
 			.toPromise()

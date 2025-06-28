@@ -2,6 +2,7 @@ import { Component } from "@angular/core"
 import { Category } from "src/app/models/Category"
 import { Variation } from "src/app/models/Variation"
 import { CategoryType } from "src/app/types"
+import { Menu } from "src/app/models/Menu"
 
 @Component({
     selector: "app-menue-page",
@@ -10,6 +11,24 @@ import { CategoryType } from "src/app/types"
     standalone: false
 })
 export class MenuePageComponent {
+
+    menus: Menu[] = [
+        {
+            uuid: "menu_1",
+            name: "Tageskarte",
+            categories: [],
+            selectedProducts: [],
+            isActive: true
+        },
+        {
+            uuid: "menu_2",
+            name: "Abendkarte",
+            categories: [],
+            selectedProducts: [],
+            isActive: false
+        }
+    ];
+
     allVariations: Variation[] = [
         {
             uuid: "groessen",
@@ -234,5 +253,9 @@ export class MenuePageComponent {
         if (this.selectedCategory?.uuid === category.uuid) {
             this.selectedCategory = this.foodCategories[0] || this.drinkCategories[0] || null;
         }
+    }
+
+    getAllCategories(): Category[] {
+        return [...this.foodCategories, ...this.drinkCategories];
     }
 }

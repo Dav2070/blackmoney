@@ -117,7 +117,7 @@ export class ApiService {
 		queryData: string,
 		variables: { restaurantUuid: string; name: string }
 	): Promise<MutationResult<{ createUser: UserResource }>> {
-		return await this.davAuthApollo
+		return await this.blackmoneyAuthApollo
 			.mutate<{ createUser: UserResource }>({
 				mutation: gql`
 					mutation CreateUser(

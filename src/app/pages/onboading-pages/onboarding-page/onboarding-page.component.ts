@@ -1,7 +1,9 @@
 import { Component } from "@angular/core"
 import { Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
+import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
+import { convertUserResourceToUser } from "src/app/utils"
 
 @Component({
 	templateUrl: "./onboarding-page.component.html",
@@ -20,6 +22,7 @@ export class OnboardingPageComponent {
 	constructor(
 		public dataService: DataService,
 		private apiService: ApiService,
+		private authService: AuthService,
 		private router: Router
 	) {}
 
@@ -92,6 +95,35 @@ export class OnboardingPageComponent {
 			})
 
 			if (createOwnerResponse.errors == null) {
+				// Log in as the owner
+				const loginResponse = await this.apiService.login(
+					`
+						uuid
+						user {
+							uuid
+							name
+							role
+						}
+					`,
+					{
+						restaurantUuid: this.restaurantUuid,
+						userName: this.ownerName,
+						password: this.ownerPassword
+					}
+				)
+
+				const accessToken = loginResponse?.data?.login.uuid
+
+				if (accessToken != null) {
+					await this.authService.setAccessToken(accessToken)
+					this.dataService.loadApollo(accessToken)
+					this.apiService.loadApolloClients()
+
+					this.dataService.user = convertUserResourceToUser(
+						loginResponse.data.login.user
+					)
+				}
+
 				this.context = "createUsers"
 			}
 		} else if (this.context === "createUsers") {

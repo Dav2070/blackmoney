@@ -139,7 +139,7 @@ export class LoginPageComponent {
 	async login() {
 		this.errorMessage = ""
 
-		let loginResponse = await this.apiService.login(
+		const loginResponse = await this.apiService.login(
 			`
 				uuid
 				user {
@@ -155,11 +155,12 @@ export class LoginPageComponent {
 			}
 		)
 
-		let accessToken = loginResponse?.data?.login.uuid
+		const accessToken = loginResponse?.data?.login.uuid
 
 		if (accessToken != null) {
 			await this.authService.setAccessToken(accessToken)
 			this.dataService.loadApollo(accessToken)
+			this.apiService.loadApolloClients()
 
 			this.dataService.user = convertUserResourceToUser(
 				loginResponse.data.login.user

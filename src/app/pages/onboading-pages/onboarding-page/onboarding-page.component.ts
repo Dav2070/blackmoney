@@ -9,9 +9,11 @@ import { DataService } from "src/app/services/data-service"
 	standalone: false
 })
 export class OnboardingPageComponent {
-	context: "createCompany" | "createUsers" = null
+	context: "createCompany" | "createOwner" | "createUsers" = null
 	restaurantUuid: string = ""
 	restaurantName: string = ""
+	ownerName: string = ""
+	ownerPassword: string = ""
 	employeeName: string = ""
 	employees: string[] = []
 
@@ -28,12 +30,23 @@ export class OnboardingPageComponent {
 			this.context = "createCompany"
 		} else if (this.dataService.restaurant.users.length === 0) {
 			this.restaurantUuid = this.dataService.restaurant.uuid
+			this.context = "createOwner"
+		} else if (this.dataService.restaurant.users.length === 1) {
+			this.restaurantUuid = this.dataService.restaurant.uuid
 			this.context = "createUsers"
 		}
 	}
 
 	restaurantNameChange(event: Event) {
 		this.restaurantName = (event as CustomEvent).detail.value
+	}
+
+	ownerNameChange(event: Event) {
+		this.ownerName = (event as CustomEvent).detail.value
+	}
+
+	ownerPasswordChange(event: Event) {
+		this.ownerPassword = (event as CustomEvent).detail.value
 	}
 
 	employeeNameChange(event: Event) {
@@ -69,7 +82,18 @@ export class OnboardingPageComponent {
 			this.restaurantUuid =
 				createCompanyResponse.data.createCompany.restaurants.items[0].uuid
 
-			this.context = "createUsers"
+			this.context = "createOwner"
+		} else if (this.context === "createOwner") {
+			// TODO: Implement error handling
+			const createOwnerResponse = await this.apiService.createOwner(`uuid`, {
+				restaurantUuid: this.restaurantUuid,
+				name: this.ownerName,
+				password: this.ownerPassword
+			})
+
+			if (createOwnerResponse.errors == null) {
+				this.context = "createUsers"
+			}
 		} else if (this.context === "createUsers") {
 			this.router.navigate(["login"])
 		}

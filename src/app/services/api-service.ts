@@ -82,6 +82,37 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createOwner(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			name: string
+			password: string
+		}
+	): Promise<MutationResult<{ createOwner: UserResource }>> {
+		return await this.davAuthApollo
+			.mutate<{ createOwner: UserResource }>({
+				mutation: gql`
+					mutation CreateOwner(
+						$restaurantUuid: String!
+						$name: String!
+						$password: String!
+					) {
+						createOwner(
+							restaurantUuid: $restaurantUuid
+							name: $name
+							password: $password
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async createUser(
 		queryData: string,
 		variables: { restaurantUuid: string; name: string }

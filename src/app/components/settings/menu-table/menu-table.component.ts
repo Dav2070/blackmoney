@@ -10,8 +10,8 @@ import { MatTable } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MenuTableDataSource, MenuTableItem } from "./menu-table-datasource";
-import { Menu } from "src/app/models/Menu";
 import { Category } from "src/app/models/Category";
+import { Menu, Weekday, MenuItem } from "src/app/models/Menu";
 import { Product } from "src/app/models/Product";
 
 @Component({
@@ -30,9 +30,21 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
     dataSource: MenuTableDataSource = new MenuTableDataSource([]);
     editingMenu: Menu | null = null;
     newMenu: Menu | null = null;
+    expandedMenu: Menu | null = null;
+    editingItem: MenuItem | null = null;
+    newItem: MenuItem | null = null;
 
-    selectedCategoryForProducts: Category | null = null;
-    displayedColumns = ["name", "categories", "products", "isActive", "actions"];
+    displayedColumns = ["expand", "id", "name", "Angebot", "Gültig", "actions"];
+
+    weekdays: { value: Weekday, label: string }[] = [
+        { value: 'MONDAY', label: 'Montag' },
+        { value: 'TUESDAY', label: 'Dienstag' },
+        { value: 'WEDNESDAY', label: 'Mittwoch' },
+        { value: 'THURSDAY', label: 'Donnerstag' },
+        { value: 'FRIDAY', label: 'Freitag' },
+        { value: 'SATURDAY', label: 'Samstag' },
+        { value: 'SUNDAY', label: 'Sonntag' }
+    ];
 
     ngAfterViewInit(): void {
         this.initializeDataSource();
@@ -57,21 +69,28 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
         }
     }
 
+    // Menu CRUD
     addNewMenu(): void {
-        // Create a new menu with default values
         this.newMenu = {
             uuid: 'menu_' + Date.now(),
+            id: this.menus.length + 1,
             name: "Neues Menü",
-            categories: [],
-            selectedProducts: [], // Initialize empty products array
-            isActive: false
+            offerType: 'NONE',
+            discountType: undefined,
+            offerValue: 0,
+            selectedProducts: [],
+            validity: {
+                startDate: undefined,
+                endDate: undefined,
+                startTime: undefined,
+                endTime: undefined,
+                weekdays: []
+            },
+            items: []
         };
-        
-        // Add to menus temporarily
+
         this.menus.push(this.newMenu);
         this.initializeDataSource();
-        
-        // Set it as the currently edited menu
         this.editingMenu = this.newMenu;
     }
 
@@ -105,90 +124,114 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
         this.newMenu = null;
         this.initializeDataSource();
     }
-    
-    isEditing(menu: Menu): boolean {
-        return menu === this.editingMenu;
-    }
-    
-    getSelectedCategories(menu: Menu): string[] {
-        if (!menu.categories || menu.categories.length === 0) return [];
-        
-        return menu.categories.map(category => category.uuid);
+
+    // Expand/Collapse
+    toggleExpandMenu(menu: Menu): void {
+        this.expandedMenu = this.expandedMenu === menu ? null : menu;
+        this.editingItem = null;
+        this.newItem = null;
     }
 
-    updateMenuCategories(menu: Menu, selectedCategoryIds: string[]): void {
-        if (!menu.categories) {
-            menu.categories = [];
+    // Item CRUD
+    addNewItem(menu: Menu): void {
+        this.newItem = {
+            uuid: 'item_' + Date.now(),
+            name: "Neues Item",
+            categories: [],
+            products: [],
+            maxSelections: 1 
+        };
+        
+        menu.items.push(this.newItem);
+        this.editingItem = this.newItem;
+    }
+
+    editItem(item: MenuItem): void {
+        this.editingItem = item;
+        this.newItem = null;
+    }
+
+    saveItem(): void {
+        this.editingItem = null;
+        this.newItem = null;
+    }
+
+    cancelItemEdit(menu: Menu): void {
+        if (this.newItem) {
+            const index = menu.items.findIndex(item => item === this.newItem);
+            if (index !== -1) {
+                menu.items.splice(index, 1);
+            }
+        }
+        this.editingItem = null;
+        this.newItem = null;
+    }
+
+    deleteItem(menu: Menu, item: MenuItem): void {
+        const index = menu.items.findIndex(i => i.uuid === item.uuid);
+        if (index !== -1) {
+            menu.items.splice(index, 1);
+        }
+    }
+
+    // Product/Category Selection
+    toggleProductSelection(item: MenuItem, product: Product): void {
+        const index = item.products.findIndex(p => p.uuid === product.uuid);
+        if (index > -1) {
+            item.products.splice(index, 1);
         } else {
-            menu.categories = [];
-        }
-        
-        // Add each selected category to the menu
-        for (const categoryId of selectedCategoryIds) {
-            const category = this.availableCategories.find(c => c.uuid === categoryId);
-            if (category) {
-                menu.categories.push(category);
-            }
+            item.products.push(product);
         }
     }
-    
-    getAvailableProductsForMenu(menu: Menu): Product[] {
-        if (!menu.categories || menu.categories.length === 0) return [];
-        
-        const products: Product[] = [];
-        for (const category of menu.categories) {
-            if (category.products && category.products.length > 0) {
-                products.push(...category.products);
-            }
-        }
-        return products;
-    }
-    
-    isProductSelected(menu: Menu, product: Product): boolean {
-        if (!menu.selectedProducts) return false;
-        return menu.selectedProducts.some(p => p.uuid === product.uuid);
-    }
-    
-    toggleProductSelection(menu: Menu, product: Product): void {
-        if (!menu.selectedProducts) {
-            menu.selectedProducts = [];
-        }
-        
-        const index = menu.selectedProducts.findIndex(p => p.uuid === product.uuid);
-        if (index === -1) {
-            // Add product
-            menu.selectedProducts.push(product);
+
+    toggleCategorySelection(item: MenuItem, category: Category): void {
+        const index = item.categories.findIndex(c => c.uuid === category.uuid);
+        if (index > -1) {
+            item.categories.splice(index, 1);
         } else {
-            // Remove product
-            menu.selectedProducts.splice(index, 1);
+            item.categories.push(category);
         }
-    }
-    
-    selectAllProductsInCategory(menu: Menu, category: Category): void {
-        if (!menu.selectedProducts) {
-            menu.selectedProducts = [];
-        }
-        
-        if (!category.products || category.products.length === 0) return;
-        
-        // Add all products from this category if not already selected
-        for (const product of category.products) {
-            if (!this.isProductSelected(menu, product)) {
-                menu.selectedProducts.push(product);
+        // Produktauswahl aktualisieren
+        const availableProducts: Product[] = [];
+        item.categories.forEach(cat => {
+            if (cat.products) {
+                availableProducts.push(...cat.products);
             }
-        }
-    }
-    
-    deselectAllProductsInCategory(menu: Menu, category: Category): void {
-        if (!menu.selectedProducts || !category.products) return;
-        
-        // Remove all products that belong to this category
-        menu.selectedProducts = menu.selectedProducts.filter(p => {
-            return !category.products.some(catProduct => catProduct.uuid === p.uuid);
         });
+        // Nur Produkte behalten, die noch verfügbar sind
+        item.products = item.products.filter(product => 
+            availableProducts.some(p => p.uuid === product.uuid)
+        );
     }
-    
-    setSelectedCategoryForProducts(category: Category | null): void {
-        this.selectedCategoryForProducts = category;
+
+    toggleWeekday(menu: Menu, weekday: Weekday): void {
+        const index = menu.validity.weekdays.indexOf(weekday);
+        if (index > -1) {
+            menu.validity.weekdays.splice(index, 1);
+        } else {
+            menu.validity.weekdays.push(weekday);
+        }
+    }
+
+    // Utility
+    parseDateFromInput(dateString: string): Date | undefined {
+        return dateString ? new Date(dateString) : undefined;
+    }
+
+    getWeekdayLabel(weekday: Weekday): string {
+        const found = this.weekdays.find(w => w.value === weekday);
+        return found ? found.label : weekday;
+    }
+
+    isCategorySelected(item: MenuItem, category: Category): boolean {
+        return item.categories.some(c => c.uuid === category.uuid);
+    }
+
+    isProductSelected(item: MenuItem, product: Product): boolean {
+        return item.products.some(p => p.uuid === product.uuid);
+    }
+
+    isWeekdaySelected(menu: Menu, weekday: Weekday): boolean {
+        return menu.validity.weekdays.includes(weekday);
     }
 }

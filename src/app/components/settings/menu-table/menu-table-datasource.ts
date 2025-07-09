@@ -52,8 +52,8 @@ export class MenuTableDataSource extends DataSource<MenuTableItem> {
     return data.sort((a, b) => {
       const isAsc = this.sort?.direction === 'asc';
       switch (this.sort?.active) {
+        case 'id': return compare(a.id, b.id, isAsc);
         case 'name': return compare(a.name, b.name, isAsc);
-        case 'isActive': return compare(Number(a.isActive), Number(b.isActive), isAsc);
         default: return 0;
       }
     });

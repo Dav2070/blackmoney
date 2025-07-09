@@ -12,23 +12,6 @@ import { Menu } from "src/app/models/Menu"
 })
 export class MenuePageComponent {
 
-    menus: Menu[] = [
-        {
-            uuid: "menu_1",
-            name: "Tageskarte",
-            categories: [],
-            selectedProducts: [],
-            isActive: true
-        },
-        {
-            uuid: "menu_2",
-            name: "Abendkarte",
-            categories: [],
-            selectedProducts: [],
-            isActive: false
-        }
-    ];
-
     allVariations: Variation[] = [
         {
             uuid: "groessen",
@@ -123,6 +106,51 @@ export class MenuePageComponent {
             ]
         }
     ]
+
+    menus: Menu[] = [
+        {
+            uuid: "menu_1",
+            name: "Tageskarte",
+            id: 1,
+            offerType: 'NONE',
+            discountType: undefined,
+            offerValue: 0,
+            selectedProducts: [],
+            validity: {
+                startDate: undefined,
+                endDate: undefined,
+                startTime: undefined,
+                endTime: undefined,
+                weekdays: []
+            },
+            items: [
+                {
+                    uuid: "item_1",
+                    name: "Vorspeise",
+                    categories: [this.foodCategories[0]],
+                    products: [this.foodCategories[0].products[0]],
+                    maxSelections: 1
+                }
+            ]
+        },
+        {
+            uuid: "menu_2",
+            name: "Abendkarte",
+            id: 2,
+            offerType: 'NONE',
+            discountType: undefined,
+            offerValue: 0,
+            selectedProducts: [],
+            validity: {
+                startDate: undefined,
+                endDate: undefined,
+                startTime: undefined,
+                endTime: undefined,
+                weekdays: []
+            },
+            items: []
+        }
+    ];
 
     drinkCategories: Category[] = [
         {

@@ -11,7 +11,8 @@ import {
 	UserResource,
 	SessionResource,
 	PaymentMethod,
-	BillResource
+	BillResource,
+	RestaurantResource
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -36,6 +37,7 @@ export class ApiService {
 	async login(
 		queryData: string,
 		variables: {
+			restaurantUuid: string
 			userName: string
 			password: string
 		}
@@ -44,10 +46,12 @@ export class ApiService {
 			.mutate<{ login: SessionResource }>({
 				mutation: gql`
 					mutation Login(
+						$restaurantUuid: String!
 						$userName: String!
 						$password: String!
 					) {
 						login(
+							restaurantUuid: $restaurantUuid
 							userName: $userName
 							password: $password
 						) {
@@ -78,15 +82,52 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createOwner(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			name: string
+			password: string
+		}
+	): Promise<MutationResult<{ createOwner: UserResource }>> {
+		return await this.davAuthApollo
+			.mutate<{ createOwner: UserResource }>({
+				mutation: gql`
+					mutation CreateOwner(
+						$restaurantUuid: String!
+						$name: String!
+						$password: String!
+					) {
+						createOwner(
+							restaurantUuid: $restaurantUuid
+							name: $name
+							password: $password
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async createUser(
 		queryData: string,
-		variables: { name: string }
+		variables: { restaurantUuid: string; name: string }
 	): Promise<MutationResult<{ createUser: UserResource }>> {
-		return await this.davAuthApollo
+		return await this.blackmoneyAuthApollo
 			.mutate<{ createUser: UserResource }>({
 				mutation: gql`
-					mutation CreateUser($name: String!) {
-						createUser(name: $name) {
+					mutation CreateUser(
+						$restaurantUuid: String!
+						$name: String!
+					) {
+						createUser(
+							restaurantUuid: $restaurantUuid
+							name: $name
+						) {
 							${queryData}
 						}
 					}
@@ -123,6 +164,27 @@ export class ApiService {
 				mutation: gql`
 					mutation CreateCompany($name: String!) {
 						createCompany(name: $name) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveRestaurant(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloQueryResult<{ retrieveRestaurant: RestaurantResource }>> {
+		return await this.davAuthApollo
+			.query<{
+				retrieveRestaurant: RestaurantResource
+			}>({
+				query: gql`
+					query RetrieveRestaurant($uuid: String!) {
+						retrieveRestaurant(uuid: $uuid) {
 							${queryData}
 						}
 					}
@@ -330,8 +392,8 @@ export class ApiService {
 	async completeOrder(
 		queryData: string,
 		variables: {
-			uuid: string,
-			billUuid: string,
+			uuid: string
+			billUuid: string
 			paymentMethod: PaymentMethod
 		}
 	): Promise<MutationResult<{ completeOrder: OrderResource }>> {
@@ -360,7 +422,7 @@ export class ApiService {
 
 	async listOrders(
 		queryData: string,
-		variables: { completed?: boolean },
+		variables: { completed?: boolean }
 	): Promise<ApolloQueryResult<{ listOrders: List<OrderResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ listOrders: List<OrderResource> }>({
@@ -399,20 +461,21 @@ export class ApiService {
 			})
 			.toPromise()
 	}
-	
+
 	async createBill(
 		queryData: string,
-	): Promise<MutationResult<{ createOrder: BillResource }>> {
+		variables: { registerClientUuid: string }
+	): Promise<MutationResult<{ createBill: BillResource }>> {
 		return await this.blackmoneyAuthApollo
-			.mutate<{ createOrder: BillResource }>({
+			.mutate<{ createBill: BillResource }>({
 				mutation: gql`
-					mutation CreateBill {
-						createBill(
-						) {
+					mutation CreateBill($registerClientUuid: String!) {
+						createBill(registerClientUuid: $registerClientUuid) {
 							${queryData}
 						}
 					}
 				`,
+				variables,
 				errorPolicy
 			})
 			.toPromise()

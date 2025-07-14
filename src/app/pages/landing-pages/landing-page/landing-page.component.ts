@@ -1,5 +1,9 @@
 import { Component } from "@angular/core"
 import { Router, NavigationEnd } from "@angular/router"
+import { faCircleUser as faCircleUserRegular } from "@fortawesome/pro-regular-svg-icons"
+import { Dav } from "dav-js"
+import { DataService } from "src/app/services/data-service"
+import { environment } from "src/environments/environment"
 
 @Component({
 	templateUrl: "./landing-page.component.html",
@@ -7,10 +11,12 @@ import { Router, NavigationEnd } from "@angular/router"
 	standalone: false
 })
 export class LandingPageComponent {
+	faCircleUserRegular = faCircleUserRegular
 	overviewTabActive: boolean = false
 	pricingTabActive: boolean = false
+	userButtonSelected: boolean = false
 
-	constructor(private router: Router) {
+	constructor(private router: Router, public dataService: DataService) {
 		this.router.events.forEach((data: any) => {
 			if (data instanceof NavigationEnd) {
 				this.overviewTabActive = data.url == "/"
@@ -20,10 +26,18 @@ export class LandingPageComponent {
 	}
 
 	navigateToOverviewPage() {
-		this.router.navigate(["/"])
+		this.router.navigate([""])
 	}
 
 	navigateToPricingPage() {
-		this.router.navigate(["/pricing"])
+		this.router.navigate(["pricing"])
+	}
+
+	navigateToUserPage() {
+		if (this.dataService.dav.isLoggedIn) {
+			this.router.navigate(["user"])
+		} else {
+			Dav.ShowLoginPage(environment.davApiKey, window.location.origin)
+		}
 	}
 }

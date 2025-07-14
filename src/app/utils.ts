@@ -1,3 +1,4 @@
+import { ApolloQueryResult } from "@apollo/client"
 import { Company } from "./models/Company"
 import { User } from "./models/User"
 import { Room } from "./models/Room"
@@ -13,7 +14,9 @@ import {
 	OrderResource,
 	OrderItemResource,
 	OrderItemVariationResource,
-	BillResource
+	BillResource,
+	RestaurantResource,
+	ErrorCode
 } from "./types"
 import { Table } from "./models/Table"
 import { Category } from "./models/Category"
@@ -24,6 +27,7 @@ import { Order } from "./models/Order"
 import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
 import { Bill } from "./models/Bill"
+import { Restaurant } from "./models/Restaurant"
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 	let total = 0
@@ -37,6 +41,28 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 	return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
 }
 
+export function getGraphQLErrorCodes(
+	response: ApolloQueryResult<any>
+): ErrorCode[] {
+	if (response.errors == null) {
+		return []
+	}
+
+	const errorCodes: ErrorCode[] = []
+
+	for (let error of response.errors) {
+		if (error.extensions != null && error.extensions["code"] != null) {
+			errorCodes.push(error.extensions["code"] as ErrorCode)
+		}
+	}
+
+	return errorCodes
+}
+
+export function randomNumber(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 //#region Converter functions
 export function convertCompanyResourceToCompany(
 	companyResource: CompanyResource
@@ -45,25 +71,47 @@ export function convertCompanyResourceToCompany(
 		return null
 	}
 
-	const users: User[] = []
+	const restaurants: Restaurant[] = []
 
-	if (companyResource.users != null) {
-		for (let user of companyResource.users.items) {
-			users.push(convertUserResourceToUser(user))
-		}
-	}
-
-	const rooms: Room[] = []
-
-	if (companyResource.rooms != null) {
-		for (let room of companyResource.rooms.items) {
-			rooms.push(convertRoomResourceToRoom(room))
+	if (companyResource.restaurants != null) {
+		for (let restaurant of companyResource.restaurants.items) {
+			restaurants.push(convertRestaurantResourceToRestaurant(restaurant))
 		}
 	}
 
 	return {
 		uuid: companyResource.uuid,
 		name: companyResource.name,
+		restaurants
+	}
+}
+
+export function convertRestaurantResourceToRestaurant(
+	restaurantResource: RestaurantResource
+): Restaurant {
+	if (restaurantResource == null) {
+		return null
+	}
+
+	const users: User[] = []
+
+	if (restaurantResource.users != null) {
+		for (let user of restaurantResource.users.items) {
+			users.push(convertUserResourceToUser(user))
+		}
+	}
+
+	const rooms: Room[] = []
+
+	if (restaurantResource.rooms != null) {
+		for (let room of restaurantResource.rooms.items) {
+			rooms.push(convertRoomResourceToRoom(room))
+		}
+	}
+
+	return {
+		uuid: restaurantResource.uuid,
+		name: restaurantResource.name,
 		users,
 		rooms
 	}

@@ -13,9 +13,12 @@ import { AuthService } from "./services/auth-service"
 import { environment } from "src/environments/environment"
 import {
 	convertCompanyResourceToCompany,
-	convertUserResourceToUser
+	convertRestaurantResourceToRestaurant,
+	convertUserResourceToUser,
+	getGraphQLErrorCodes
 } from "src/app/utils"
 import { davAuthClientName, blackmoneyAuthClientName } from "src/app/constants"
+import { SettingsService } from "./services/settings-service"
 
 @Component({
 	selector: "app-root",
@@ -28,6 +31,7 @@ export class AppComponent {
 		private dataService: DataService,
 		private apiService: ApiService,
 		private authService: AuthService,
+		private settingsService: SettingsService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private apollo: Apollo,
@@ -52,7 +56,7 @@ export class AppComponent {
 
 	async ngOnInit() {
 		if (isPlatformServer(this.platformId)) {
-			this.userLoaded()
+			await this.userLoaded()
 			return
 		}
 
@@ -61,45 +65,38 @@ export class AppComponent {
 			appId: environment.davAppId,
 			tableNames: [],
 			callbacks: {
-				UserLoaded: () => this.userLoaded(),
-				AccessTokenRenewed: (accessToken: string) =>
-					this.accessTokenRenewed(accessToken)
+				UserLoaded: async () => await this.userLoaded(),
+				AccessTokenRenewed: async (accessToken: string) =>
+					await this.accessTokenRenewed(accessToken)
 			}
 		})
 
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
-		let accessToken = this.authService.getAccessToken()
+		let accessToken = await this.authService.getAccessToken()
 		this.setupApollo(Dav.accessToken, accessToken)
 
-		// Get the company
 		let retrieveCompanyResponse = await this.apiService.retrieveCompany(
 			`
 				uuid
 				name
-				users {
+				restaurants {
 					total
 					items {
 						uuid
 						name
-					}
-				}
-				rooms {
-					total
-					items {
-						uuid
-						name
-						tables {
-							total
-							items {
-								uuid
-								name
-							}
-						}
 					}
 				}
 			`
 		)
+
+		if (
+			getGraphQLErrorCodes(retrieveCompanyResponse).includes(
+				"NOT_AUTHENTICATED"
+			)
+		) {
+			return
+		}
 
 		let retrieveCompanyResponseData =
 			retrieveCompanyResponse.data.retrieveCompany
@@ -107,12 +104,65 @@ export class AppComponent {
 		if (retrieveCompanyResponseData == null) {
 			// Redirect to the onboarding page
 			this.router.navigate(["onboarding"])
-		} else if (retrieveCompanyResponseData != null) {
+		} else {
 			this.dataService.company = convertCompanyResourceToCompany(
 				retrieveCompanyResponseData
 			)
 
-			if (retrieveCompanyResponseData.users.total == 0) {
+			let restaurant = this.dataService.company.restaurants[0]
+
+			if (this.dataService.company.restaurants.length > 1) {
+				const restaurantUuid = await this.settingsService.getRestaurant()
+
+				if (restaurantUuid != null) {
+					restaurant = this.dataService.company.restaurants.find(
+						r => r.uuid == restaurantUuid
+					)
+				} else {
+					restaurant = this.dataService.company.restaurants[0]
+				}
+			}
+
+			// Retrieve the restaurant with rooms and users
+			const retrieveRestaurantResponse =
+				await this.apiService.retrieveRestaurant(
+					`
+						uuid
+						name
+						users {
+							total
+							items {
+								uuid
+								name
+							}
+						}
+						rooms {
+							total
+							items {
+								uuid
+								name
+								tables {
+									total
+									items {
+										uuid
+										name
+									}
+								}
+							}
+						}
+					`,
+					{
+						uuid: restaurant.uuid
+					}
+				)
+
+			restaurant = convertRestaurantResourceToRestaurant(
+				retrieveRestaurantResponse.data.retrieveRestaurant
+			)
+
+			this.dataService.restaurant = restaurant
+
+			if (restaurant.users.length == 0) {
 				// Redirect to the onboarding page
 				this.router.navigate(["onboarding"])
 			} else if (accessToken == null) {
@@ -128,7 +178,17 @@ export class AppComponent {
 					`
 				)
 
-				if (retrieveUserResponse.data.retrieveUser != null) {
+				if (
+					getGraphQLErrorCodes(retrieveUserResponse).includes(
+						"NOT_AUTHENTICATED"
+					)
+				) {
+					// Remove the access token
+					this.authService.removeAccessToken()
+
+					// Redirect to the login page
+					this.router.navigate(["login"])
+				} else if (retrieveUserResponse.data.retrieveUser != null) {
 					this.dataService.user = convertUserResourceToUser(
 						retrieveUserResponse.data.retrieveUser
 					)
@@ -142,6 +202,7 @@ export class AppComponent {
 		}
 
 		this.dataService.companyPromiseHolder.Resolve()
+		this.dataService.restaurantPromiseHolder.Resolve()
 		this.dataService.blackmoneyUserPromiseHolder.Resolve()
 	}
 
@@ -181,8 +242,8 @@ export class AppComponent {
 	}
 
 	//#region dav callback functions
-	userLoaded() {
-		let accessToken = this.authService.getAccessToken()
+	async userLoaded() {
+		let accessToken = await this.authService.getAccessToken()
 
 		// Setup the apollo client with the access token
 		this.setupApollo(this.dataService.dav.accessToken, accessToken)
@@ -190,8 +251,8 @@ export class AppComponent {
 		this.dataService.davUserPromiseHolder.Resolve()
 	}
 
-	accessTokenRenewed(davAccessToken: string) {
-		this.setupApollo(davAccessToken, this.authService.getAccessToken())
+	async accessTokenRenewed(davAccessToken: string) {
+		this.setupApollo(davAccessToken, await this.authService.getAccessToken())
 	}
 	//#endregion
 }

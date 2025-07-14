@@ -1,5 +1,10 @@
 <div id="headerContainer">
-	<p>{{ dataService.user?.name ?? "" }}</p>
+	@if (dataService.user?.name && dataService.restaurant?.name) {
+	<p>
+		{{ dataService.user?.name ?? "" }} –
+		{{ dataService.restaurant?.name ?? "" }}
+	</p>
+	}
 	<h2>BMKS</h2>
 	<p>{{ currentDate }}</p>
 </div>

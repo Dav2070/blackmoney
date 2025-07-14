@@ -11,7 +11,7 @@
 	flex-direction: column;
 	align-items: center;
 	color: white;
-	margin-top: 20%;
+	margin-top: 10%;
 }
 
 .headline {
@@ -23,8 +23,7 @@
 	text-align: center;
 }
 
-.restaurant-name-input-container,
-.employee-name-input-container {
+.input-container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;

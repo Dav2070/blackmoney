@@ -11,6 +11,12 @@ export interface SessionResource {
 export interface CompanyResource {
 	uuid: string
 	name: string
+	restaurants: List<RestaurantResource>
+}
+
+export interface RestaurantResource {
+	uuid: string
+	name: string
 	users: List<UserResource>
 	rooms: List<RoomResource>
 }
@@ -91,5 +97,6 @@ export interface OrderItemVariationResource {
 
 
 export type CategoryType = "FOOD" | "DRINK"
-
 export type PaymentMethod = "CASH" | "CARD"
+
+export type ErrorCode = "NOT_AUTHENTICATED"

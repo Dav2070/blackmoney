@@ -28,7 +28,7 @@
 }
 
 .navbar-header-text-1 {
-	font-size: 32px;
+	font-size: 28px;
 	line-height: 34px;
 }
 
@@ -36,13 +36,23 @@
 	font-size: 12.5px;
 }
 
-.navbar-content {
-	display: flex;
-	width: 100%;
-	margin-left: 4%;
-}
-
 .navbar-tab-bar-container {
 	display: flex;
 	align-items: center;
+	margin-left: 4%;
+}
+
+.navbar-spacer {
+	width: 100%;
+}
+
+.navbar-icon-buttons-container {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 16px;
+}
+
+.profile-image {
+	border-radius: 50%;
 }

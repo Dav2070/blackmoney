@@ -24,6 +24,7 @@ export class TableOverviewPageComponent {
 
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 		await this.dataService.companyPromiseHolder.AwaitResult()
+		await this.dataService.restaurantPromiseHolder.AwaitResult()
 
 		if (!this.dataService.dav.isLoggedIn) {
 			this.router.navigate([""])
@@ -36,7 +37,7 @@ export class TableOverviewPageComponent {
 			return
 		}
 
-		for (let room of this.dataService.company.rooms) {
+		for (let room of this.dataService.restaurant.rooms) {
 			this.rooms.push(room)
 		}
 

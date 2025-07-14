@@ -45,12 +45,12 @@ export class TransferPageComponent {
 	) {}
 
 	async ngOnInit() {
-		await this.dataService.companyPromiseHolder.AwaitResult()
+		await this.dataService.restaurantPromiseHolder.AwaitResult()
 
 		const uuid1 = this.activatedRoute.snapshot.paramMap.get("uuid1")
 		const uuid2 = this.activatedRoute.snapshot.paramMap.get("uuid2")
 
-		for (let room of this.dataService.company.rooms) {
+		for (let room of this.dataService.restaurant.rooms) {
 			for (let table of room.tables) {
 				if (table.uuid === uuid1) {
 					this.tableLeft = table

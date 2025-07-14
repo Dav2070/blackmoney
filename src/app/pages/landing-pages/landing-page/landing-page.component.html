@@ -4,29 +4,47 @@
 		<img src="/assets/icons/icon-72.png" width="68" height="68" />
 
 		<div class="navbar-header-text-container">
-			<span class="navbar-header-text-1">black</span>
+			<span class="navbar-header-text-1">butler</span>
 			<span class="navbar-header-text-2">Kassensysteme</span>
 		</div>
 	</a>
 
-	<div class="navbar-content">
-		<div class="navbar-tab-bar-container">
-			<dav-tab-bar>
-				<dav-tab-bar-item
-					[active]="overviewTabActive"
-					(click)="navigateToOverviewPage()"
-				>
-					Übersicht
-				</dav-tab-bar-item>
+	<div class="navbar-tab-bar-container">
+		<dav-tab-bar>
+			<dav-tab-bar-item
+				[active]="overviewTabActive"
+				(click)="navigateToOverviewPage()"
+			>
+				Übersicht
+			</dav-tab-bar-item>
 
-				<dav-tab-bar-item
-					[active]="pricingTabActive"
-					(click)="navigateToPricingPage()"
-				>
-					Preise
-				</dav-tab-bar-item>
-			</dav-tab-bar>
-		</div>
+			<dav-tab-bar-item
+				[active]="pricingTabActive"
+				(click)="navigateToPricingPage()"
+			>
+				Preise
+			</dav-tab-bar-item>
+		</dav-tab-bar>
+	</div>
+
+	<div class="navbar-spacer"></div>
+
+	<div class="navbar-icon-buttons-container">
+		<dav-icon-button
+			[selected]="userButtonSelected"
+			(click)="navigateToUserPage()"
+		>
+			@if (!userButtonSelected && !dataService.dav.isLoggedIn) {
+			<fa-icon [icon]="faCircleUserRegular"></fa-icon>
+			} @else if (dataService.dav.isLoggedIn) {
+			<img
+				[src]="dataService.dav.user.ProfileImage"
+				class="profile-image"
+				width="28"
+				height="28"
+			/>
+			}
+		</dav-icon-button>
 	</div>
 </div>
 

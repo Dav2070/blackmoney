@@ -1,0 +1,172 @@
+<div class="mat-elevation-z2">
+  <table mat-table class="full-width-table" matSort aria-label="Elements">
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+      <td mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!isEditing(row); else nameEdit">
+          {{row.name}}
+          <div *ngIf="row.description" class="menu-description">{{row.description}}</div>
+        </ng-container>
+        <ng-template #nameEdit>
+          <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+            <input matInput [(ngModel)]="row.name" placeholder="Menüname eingeben" (click)="$event.stopPropagation()">
+          </mat-form-field>
+          <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+            <textarea matInput [(ngModel)]="row.description" placeholder="Beschreibung" (click)="$event.stopPropagation()"></textarea>
+          </mat-form-field>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- Categories Column -->
+    <ng-container matColumnDef="categories">
+      <th mat-header-cell *matHeaderCellDef>Kategorien</th>
+      <td mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!isEditing(row); else categoriesEdit">
+          <div class="categories-display">
+            <ng-container *ngIf="row.categories?.length">
+              <div *ngFor="let category of row.categories" class="category-chip">
+                {{ category.name }}
+              </div>
+            </ng-container>
+            <span *ngIf="!row.categories?.length">Keine</span>
+          </div>
+        </ng-container>
+        <ng-template #categoriesEdit>
+          <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+            <mat-label>Kategorien auswählen</mat-label>                      
+            <mat-select multiple [value]="getSelectedCategories(row)" 
+                (selectionChange)="updateMenuCategories(row, $event.value)"
+                (click)="$event.stopPropagation()">
+              <mat-option *ngFor="let category of availableCategories" 
+                      [value]="category.uuid">
+                  {{ category.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- Products Column -->
+    <ng-container matColumnDef="products">
+      <th mat-header-cell *matHeaderCellDef>Produkte</th>
+      <td mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!isEditing(row); else productsEdit">
+          <div class="products-display">
+            <ng-container *ngIf="row.selectedProducts?.length">
+              <div *ngFor="let product of row.selectedProducts" class="product-chip">
+                {{ product.name }}
+              </div>
+            </ng-container>
+            <span *ngIf="!row.selectedProducts?.length">Keine Produkte ausgewählt</span>
+          </div>
+        </ng-container>
+        <ng-template #productsEdit>
+          <div class="products-selector">
+            <!-- Category selector for products -->
+            <mat-form-field appearance="outline" class="category-selector">
+              <mat-label>Kategorie auswählen</mat-label>
+              <mat-select (selectionChange)="setSelectedCategoryForProducts($event.value)">
+                <mat-option [value]="null">-- Alle --</mat-option>
+                <mat-option *ngFor="let category of row.categories" [value]="category">
+                  {{ category.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <!-- Product selection area -->
+            <div class="products-list" *ngIf="row.categories?.length">
+              <div *ngFor="let category of row.categories" 
+                  [hidden]="selectedCategoryForProducts && selectedCategoryForProducts !== category"
+                  class="product-category">
+                <div class="category-header">
+                  <span class="category-title">{{ category.name }}</span>
+                  <div class="category-actions">
+                    <button mat-button 
+                            color="primary" 
+                            (click)="selectAllProductsInCategory(row, category)">
+                      Alle auswählen
+                    </button>
+                    <button mat-button 
+                            color="warn" 
+                            (click)="deselectAllProductsInCategory(row, category)">
+                      Alle abwählen
+                    </button>
+                  </div>
+                </div>
+                <div class="product-items">
+                  <mat-checkbox *ngFor="let product of category.products" 
+                              class="product-item"
+                              [checked]="isProductSelected(row, product)"
+                              (change)="toggleProductSelection(row, product)">
+                    {{ product.name }} ({{ product.price | currency:'EUR' }})
+                  </mat-checkbox>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!row.categories?.length" class="no-categories-message">
+              Bitte zuerst Kategorien auswählen
+            </div>
+          </div>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- Is Active Column -->
+    <ng-container matColumnDef="isActive">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Aktiv</th>
+      <td mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!isEditing(row); else activeEdit">
+          <mat-icon *ngIf="row.isActive" class="active-icon">check_circle</mat-icon>
+          <mat-icon *ngIf="!row.isActive" class="inactive-icon">cancel</mat-icon>
+        </ng-container>
+        <ng-template #activeEdit>
+          <mat-checkbox [(ngModel)]="row.isActive" (click)="$event.stopPropagation()">
+            Aktiv
+          </mat-checkbox>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Aktionen</th>
+      <td mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!isEditing(row); else editActions">
+          <button mat-icon-button color="primary" (click)="editMenu(row)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteMenu(row)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </ng-container>
+        <ng-template #editActions>
+          <button mat-icon-button color="primary" (click)="saveMenu(row)">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="cancelEdit()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <!-- Button zum Hinzufügen eines neuen Menüs -->
+  <div class="add-menu-button">
+    <button (click)="addNewMenu()" mat-raised-button color="primary">Neues Menü hinzufügen</button>
+  </div>
+
+  <mat-paginator #paginator
+      [length]="dataSource?.data?.length || 0"
+      [pageIndex]="0"
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 20]"
+      aria-label="Select page">
+  </mat-paginator>
+</div>

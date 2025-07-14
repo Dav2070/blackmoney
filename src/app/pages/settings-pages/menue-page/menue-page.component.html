@@ -258,7 +258,10 @@
 			<!-- MENÜS -->
 			<mat-tab label="Menüs">
 				<mat-card class="content-card">
-					<!-- Hier kannst du später Menüs verwalten -->
+					<app-menu-table 
+						[menus]="menus" 
+						[availableCategories]="getAllCategories()">
+					</app-menu-table>
 				</mat-card>
 			</mat-tab>
 		</mat-tab-group>

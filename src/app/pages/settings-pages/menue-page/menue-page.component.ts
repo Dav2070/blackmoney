@@ -2,6 +2,7 @@ import { Component } from "@angular/core"
 import { Category } from "src/app/models/Category"
 import { Variation } from "src/app/models/Variation"
 import { CategoryType } from "src/app/types"
+import { Menu } from "src/app/models/Menu"
 
 @Component({
     selector: "app-menue-page",
@@ -10,6 +11,7 @@ import { CategoryType } from "src/app/types"
     standalone: false
 })
 export class MenuePageComponent {
+
     allVariations: Variation[] = [
         {
             uuid: "groessen",
@@ -104,6 +106,51 @@ export class MenuePageComponent {
             ]
         }
     ]
+
+    menus: Menu[] = [
+        {
+            uuid: "menu_1",
+            name: "Tageskarte",
+            id: 1,
+            offerType: 'NONE',
+            discountType: undefined,
+            offerValue: 0,
+            selectedProducts: [],
+            validity: {
+                startDate: undefined,
+                endDate: undefined,
+                startTime: undefined,
+                endTime: undefined,
+                weekdays: []
+            },
+            items: [
+                {
+                    uuid: "item_1",
+                    name: "Vorspeise",
+                    categories: [this.foodCategories[0]],
+                    products: [this.foodCategories[0].products[0]],
+                    maxSelections: 1
+                }
+            ]
+        },
+        {
+            uuid: "menu_2",
+            name: "Abendkarte",
+            id: 2,
+            offerType: 'NONE',
+            discountType: undefined,
+            offerValue: 0,
+            selectedProducts: [],
+            validity: {
+                startDate: undefined,
+                endDate: undefined,
+                startTime: undefined,
+                endTime: undefined,
+                weekdays: []
+            },
+            items: []
+        }
+    ];
 
     drinkCategories: Category[] = [
         {
@@ -234,5 +281,9 @@ export class MenuePageComponent {
         if (this.selectedCategory?.uuid === category.uuid) {
             this.selectedCategory = this.foodCategories[0] || this.drinkCategories[0] || null;
         }
+    }
+
+    getAllCategories(): Category[] {
+        return [...this.foodCategories, ...this.drinkCategories];
     }
 }

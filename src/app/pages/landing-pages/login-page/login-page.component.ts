@@ -65,6 +65,11 @@ export class LoginPageComponent {
 			retrieveCompanyResponse.data.retrieveCompany
 		)
 
+		if (this.company == null) {
+			this.router.navigate([""])
+			return
+		}
+
 		for (let restaurant of this.company.restaurants) {
 			this.restaurantDropdownOptions.push({
 				key: restaurant.uuid,

@@ -48,4 +48,36 @@
 	</div>
 </div>
 
-<router-outlet></router-outlet>
+<div #contentContainer class="content-container">
+	<router-outlet></router-outlet>
+</div>
+
+<div class="bottom-navbar acrylic">
+	<dav-navigation-bar>
+		<dav-navigation-bar-item
+			[active]="overviewTabActive"
+			(click)="navigateToOverviewPage()"
+		>
+			@if (overviewTabActive) {
+			<fa-icon slot="icon" [icon]="faHouseSolid"></fa-icon>
+			} @else {
+			<fa-icon slot="icon" [icon]="faHouseRegular"></fa-icon>
+			}
+
+			<p slot="label">Übersicht</p>
+		</dav-navigation-bar-item>
+
+		<dav-navigation-bar-item
+			[active]="pricingTabActive"
+			(click)="navigateToPricingPage()"
+		>
+			@if (pricingTabActive) {
+			<fa-icon slot="icon" [icon]="faCircleDollarSolid"></fa-icon>
+			} @else {
+			<fa-icon slot="icon" [icon]="faCircleDollarRegular"></fa-icon>
+			}
+
+			<p slot="label">Preise</p>
+		</dav-navigation-bar-item>
+	</dav-navigation-bar>
+</div>

@@ -1,6 +1,12 @@
 import { Component } from "@angular/core"
 import { Router, NavigationEnd } from "@angular/router"
-import { faCircleUser as faCircleUserRegular } from "@fortawesome/pro-regular-svg-icons"
+import { faHouse as faHouseSolid } from "@fortawesome/free-solid-svg-icons"
+import { faCircleDollar as faCircleDollarSolid } from "@fortawesome/pro-solid-svg-icons"
+import {
+	faHouse as faHouseRegular,
+	faCircleUser as faCircleUserRegular,
+	faCircleDollar as faCircleDollarRegular
+} from "@fortawesome/pro-regular-svg-icons"
 import { Dav } from "dav-js"
 import { DataService } from "src/app/services/data-service"
 import { environment } from "src/environments/environment"
@@ -12,6 +18,10 @@ import { environment } from "src/environments/environment"
 })
 export class LandingPageComponent {
 	faCircleUserRegular = faCircleUserRegular
+	faHouseSolid = faHouseSolid
+	faHouseRegular = faHouseRegular
+	faCircleDollarSolid = faCircleDollarSolid
+	faCircleDollarRegular = faCircleDollarRegular
 	overviewTabActive: boolean = false
 	pricingTabActive: boolean = false
 	userButtonSelected: boolean = false

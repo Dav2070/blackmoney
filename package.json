@@ -28,6 +28,7 @@
 		"@fortawesome/angular-fontawesome": "^1.0.0",
 		"@fortawesome/free-solid-svg-icons": "^6.7.2",
 		"@fortawesome/pro-regular-svg-icons": "^6.7.2",
+		"@fortawesome/pro-solid-svg-icons": "^6.7.2",
 		"apollo-angular": "^8.0.0",
 		"dav-js": "git+https://github.com/dav-apps/dav-js.git#v3.2.2",
 		"dav-ui-components": "git+https://github.com/dav-apps/dav-ui-components.git#v1.7",

@@ -3,56 +3,56 @@
 	--black-rgb: 0, 0, 0; /* #000000 */
 	--white-rgb: 255, 255, 255; /* #ffffff */
 
-	/* primary */
-	--dav-color-palette-primary10-rgb: 47, 20, 0; /* #2f1400 */
-	--dav-color-palette-primary20-rgb: 78, 38, 0; /* #4e2600 */
-	--dav-color-palette-primary25-rgb: 95, 47, 0; /* #5f2f00 */
-	--dav-color-palette-primary30-rgb: 111, 56, 0; /* #6f3800 */
-	--dav-color-palette-primary35-rgb: 129, 66, 0; /* #814200 */
-	--dav-color-palette-primary40-rgb: 147, 75, 0; /* #934b00 */
-	--dav-color-palette-primary50-rgb: 183, 96, 0; /* #b76000 */
-	--dav-color-palette-primary60-rgb: 220, 118, 11; /* #dc760b */
-	--dav-color-palette-primary70-rgb: 253, 143, 43; /* #fd8f2b */
-	--dav-color-palette-primary80-rgb: 255, 183, 129; /* #ffb781 */
-	--dav-color-palette-primary85-rgb: 255, 202, 164; /* #ffcaa4 */
-	--dav-color-palette-primary90-rgb: 255, 220, 196; /* #ffdcc4 */
-	--dav-color-palette-primary95-rgb: 255, 237, 227; /* #ffede3 */
-	--dav-color-palette-primary98-rgb: 255, 248, 245; /* #fff8f5 */
+	/* primary #5e1e12 */
+	--dav-color-palette-primary10-rgb: 61, 6, 1; /* #3d0601 */
+	--dav-color-palette-primary20-rgb: 90, 27, 15; /* #5a1b0f */
+	--dav-color-palette-primary25-rgb: 105, 38, 25; /* #692619 */
+	--dav-color-palette-primary30-rgb: 119, 49, 35; /* #773123 */
+	--dav-color-palette-primary35-rgb: 134, 60, 45; /* #863c2d */
+	--dav-color-palette-primary40-rgb: 149, 71, 56; /* #954738 */
+	--dav-color-palette-primary50-rgb: 179, 95, 78; /* #b35f4e */
+	--dav-color-palette-primary60-rgb: 210, 120, 102; /* #d27866 */
+	--dav-color-palette-primary70-rgb: 242, 145, 126; /* #f2917e */
+	--dav-color-palette-primary80-rgb: 255, 180, 165; /* #ffb4a5 */
+	--dav-color-palette-primary85-rgb: 255, 200, 188; /* #ffc8bc */
+	--dav-color-palette-primary90-rgb: 255, 218, 211; /* #ffdad3 */
+	--dav-color-palette-primary95-rgb: 255, 237, 233; /* #ffede9 */
+	--dav-color-palette-primary98-rgb: 255, 248, 246; /* #fff8f6 */
 	--dav-color-palette-primary99-rgb: 255, 251, 255; /* #fffbff */
 
-	/* secondary */
-	--dav-color-palette-secondary10-rgb: 8, 25, 64; /* #081940 */
-	--dav-color-palette-secondary20-rgb: 32, 47, 86; /* #202f56 */
-	--dav-color-palette-secondary25-rgb: 43, 58, 97; /* #2b3a61 */
-	--dav-color-palette-secondary30-rgb: 55, 69, 110; /* #37456e */
-	--dav-color-palette-secondary35-rgb: 67, 81, 122; /* #43517a */
-	--dav-color-palette-secondary40-rgb: 79, 93, 135; /* #4f5d87 */
-	--dav-color-palette-secondary50-rgb: 103, 118, 161; /* #6776a1 */
-	--dav-color-palette-secondary60-rgb: 129, 144, 188; /* #8190bc */
-	--dav-color-palette-secondary70-rgb: 155, 170, 216; /* #9baad8 */
-	--dav-color-palette-secondary80-rgb: 183, 197, 245; /* #b7c5f5 */
-	--dav-color-palette-secondary85-rgb: 198, 211, 255; /* #c6d3ff */
-	--dav-color-palette-secondary90-rgb: 218, 226, 255; /* #dae2ff */
-	--dav-color-palette-secondary95-rgb: 238, 240, 255; /* #eef0ff */
-	--dav-color-palette-secondary98-rgb: 250, 248, 255; /* #faf8ff */
-	--dav-color-palette-secondary99-rgb: 254, 251, 255; /* #fefbff */
+	/* secondary #00032c */
+	--dav-color-palette-secondary10-rgb: 18, 24, 63; /* #12183f */
+	--dav-color-palette-secondary20-rgb: 39, 45, 85; /* #272d55 */
+	--dav-color-palette-secondary25-rgb: 51, 56, 97; /* #333861 */
+	--dav-color-palette-secondary30-rgb: 62, 68, 109; /* #3e446d */
+	--dav-color-palette-secondary35-rgb: 74, 79, 121; /* #4a4f79 */
+	--dav-color-palette-secondary40-rgb: 86, 91, 134; /* #565b86 */
+	--dav-color-palette-secondary50-rgb: 111, 116, 160; /* #6f74a0 */
+	--dav-color-palette-secondary60-rgb: 136, 142, 188; /* #888ebc */
+	--dav-color-palette-secondary70-rgb: 163, 168, 215; /* #a3a8d7 */
+	--dav-color-palette-secondary80-rgb: 190, 195, 244; /* #bec3f4 */
+	--dav-color-palette-secondary85-rgb: 205, 209, 255; /* #cdd1ff */
+	--dav-color-palette-secondary90-rgb: 223, 224, 255; /* #dfe0ff */
+	--dav-color-palette-secondary95-rgb: 240, 239, 255; /* #f0efff */
+	--dav-color-palette-secondary98-rgb: 251, 248, 255; /* #fbf8ff */
+	--dav-color-palette-secondary99-rgb: 255, 251, 255; /* #fffbff */
 
-	/* tertiary */
-	--dav-color-palette-tertiary10-rgb: 0, 29, 50; /* #001d32 */
-	--dav-color-palette-tertiary20-rgb: 19, 51, 75; /* #13334b */
-	--dav-color-palette-tertiary25-rgb: 32, 62, 86; /* #203e56 */
-	--dav-color-palette-tertiary30-rgb: 44, 73, 98; /* #2c4962 */
-	--dav-color-palette-tertiary35-rgb: 56, 85, 111; /* #38556f */
-	--dav-color-palette-tertiary40-rgb: 68, 97, 123; /* #44617b */
-	--dav-color-palette-tertiary50-rgb: 93, 122, 149; /* #5d7a95 */
-	--dav-color-palette-tertiary60-rgb: 119, 148, 176; /* #7794b0 */
-	--dav-color-palette-tertiary70-rgb: 145, 174, 203; /* #91aecb */
-	--dav-color-palette-tertiary80-rgb: 172, 202, 232; /* #accae8 */
-	--dav-color-palette-tertiary85-rgb: 186, 216, 246; /* #bad8f6 */
-	--dav-color-palette-tertiary90-rgb: 205, 229, 255; /* #cde5ff */
-	--dav-color-palette-tertiary95-rgb: 231, 242, 255; /* #e7f2ff */
-	--dav-color-palette-tertiary98-rgb: 247, 249, 255; /* #f7f9ff */
-	--dav-color-palette-tertiary99-rgb: 252, 252, 255; /* #fcfcff */
+	/* tertiary #1a5dba */
+	--dav-color-palette-tertiary10-rgb: 0, 26, 65; /* #001a41 */
+	--dav-color-palette-tertiary20-rgb: 0, 46, 104; /* #002e68 */
+	--dav-color-palette-tertiary25-rgb: 0, 57, 125; /* #00397d */
+	--dav-color-palette-tertiary30-rgb: 0, 68, 147; /* #004493 */
+	--dav-color-palette-tertiary35-rgb: 0, 79, 169; /* #004fa9 */
+	--dav-color-palette-tertiary40-rgb: 23, 92, 185; /* #175cb9 */
+	--dav-color-palette-tertiary50-rgb: 60, 117, 211; /* #3c75d3 */
+	--dav-color-palette-tertiary60-rgb: 89, 143, 239; /* #598fef */
+	--dav-color-palette-tertiary70-rgb: 127, 171, 255; /* #7fabff */
+	--dav-color-palette-tertiary80-rgb: 173, 199, 255; /* #adc7ff */
+	--dav-color-palette-tertiary85-rgb: 194, 212, 255; /* #c2d4ff */
+	--dav-color-palette-tertiary90-rgb: 216, 226, 255; /* #d8e2ff */
+	--dav-color-palette-tertiary95-rgb: 237, 240, 255; /* #edf0ff */
+	--dav-color-palette-tertiary98-rgb: 249, 249, 255; /* #f9f9ff */
+	--dav-color-palette-tertiary99-rgb: 254, 251, 255; /* #fefbff */
 
 	/* neutral */
 	--dav-color-palette-neutral4-rgb: 12, 14, 15; /* #0c0e0f */
@@ -420,6 +420,28 @@ body {
 	margin: 0;
 	font-family: "Geist Mono", sans-serif;
 	background-color: black;
+}
+
+::-webkit-scrollbar {
+	background-color: var(--dav-color-surface);
+	height: 4px;
+	width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: var(--dav-color-inverse-on-surface);
+	border-radius: 2px;
+}
+
+::-webkit-scrollbar-track {
+	margin-top: calc(env(safe-area-inset-top) + 76px);
+	margin-bottom: calc(env(safe-area-inset-bottom));
+}
+
+@media screen and (max-width: 639px) {
+	::-webkit-scrollbar-track {
+		margin-bottom: calc(env(safe-area-inset-bottom) + 80px);
+	}
 }
 
 // Animation classes

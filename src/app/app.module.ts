@@ -44,6 +44,7 @@ import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
+import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page/restaurants-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
@@ -81,6 +82,7 @@ import { MenuTableComponent } from "./components/settings/menu-table/menu-table.
 		LandingOverviewPageComponent,
 		LandingPricingPageComponent,
 		UserPageComponent,
+		RestaurantsPageComponent,
 		LoginPageComponent,
 		OnboardingPageComponent,
 		TableOverviewPageComponent,

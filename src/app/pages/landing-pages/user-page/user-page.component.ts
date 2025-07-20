@@ -36,9 +36,15 @@ export class UserPageComponent {
 		this.title = this.titles[n].replace("{0}", this.dataService.user.name)
 	}
 
-	navigateToDashboard(event: MouseEvent) {
+	navigateToDashboardPage(event: MouseEvent) {
 		event.preventDefault()
 
 		this.router.navigate(["dashboard"])
+	}
+
+	navigateToRestaurantsPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "restaurants"])
 	}
 }

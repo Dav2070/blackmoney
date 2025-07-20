@@ -1,4 +1,5 @@
 import { Component, Inject, PLATFORM_ID } from "@angular/core"
+import { Router } from "@angular/router"
 import { isPlatformServer } from "@angular/common"
 import { DataService } from "src/app/services/data-service"
 import { randomNumber } from "src/app/utils"
@@ -20,6 +21,7 @@ export class UserPageComponent {
 	]
 
 	constructor(
+		private router: Router,
 		public dataService: DataService,
 		@Inject(PLATFORM_ID) private platformId: object
 	) {}
@@ -27,13 +29,16 @@ export class UserPageComponent {
 	async ngOnInit() {
 		if (isPlatformServer(this.platformId)) return
 
-		await this.dataService.davUserPromiseHolder.AwaitResult()
+		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
 
 		const n = randomNumber(0, this.titles.length - 1)
 
-		this.title = this.titles[n].replace(
-			"{0}",
-			this.dataService.dav.user.FirstName
-		)
+		this.title = this.titles[n].replace("{0}", this.dataService.user.name)
+	}
+
+	navigateToDashboard(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["dashboard"])
 	}
 }

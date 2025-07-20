@@ -4,16 +4,19 @@
 
 		<dav-list>
 			<dav-list-item
+				headline="Zum Kassensystem"
+				href="dashboard"
+				(click)="navigateToDashboard($event)"
+			></dav-list-item>
+
+			@if (dataService.user != null && ["OWNER",
+			"ADMIN"].includes(dataService.user.role)) {
+			<dav-list-item
 				headline="Unternehmensdetails bearbeiten"
 			></dav-list-item>
 
-			<dav-list-item
-				headline="Restaurants verwalten"
-			></dav-list-item>
-
-			<dav-list-item
-				headline="Zum Mitarbeiter-Login"
-			></dav-list-item>
+			<dav-list-item headline="Restaurants verwalten"></dav-list-item>
+			}
 		</dav-list>
 	</div>
 </div>

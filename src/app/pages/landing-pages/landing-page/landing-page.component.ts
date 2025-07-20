@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/pro-regular-svg-icons"
 import { Dav } from "dav-js"
 import { DataService } from "src/app/services/data-service"
+import { AuthService } from "src/app/services/auth-service"
 import { environment } from "src/environments/environment"
 
 @Component({
@@ -26,7 +27,11 @@ export class LandingPageComponent {
 	pricingTabActive: boolean = false
 	userButtonSelected: boolean = false
 
-	constructor(private router: Router, public dataService: DataService) {
+	constructor(
+		private router: Router,
+		public dataService: DataService,
+		private authService: AuthService
+	) {
 		this.router.events.forEach((data: any) => {
 			if (data instanceof NavigationEnd) {
 				this.overviewTabActive = data.url == "/"
@@ -43,11 +48,13 @@ export class LandingPageComponent {
 		this.router.navigate(["pricing"])
 	}
 
-	navigateToUserPage() {
-		if (this.dataService.dav.isLoggedIn) {
+	async navigateToUserPage() {
+		if (!this.dataService.dav.isLoggedIn) {
+			Dav.ShowLoginPage(environment.davApiKey, window.location.origin)
+		} else if ((await this.authService.getAccessToken()) != null) {
 			this.router.navigate(["user"])
 		} else {
-			Dav.ShowLoginPage(environment.davApiKey, window.location.origin)
+			this.router.navigate(["login"])
 		}
 	}
 }

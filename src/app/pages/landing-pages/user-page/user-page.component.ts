@@ -29,7 +29,7 @@ export class UserPageComponent {
 
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
-		const n = randomNumber(0, this.titles.length)
+		const n = randomNumber(0, this.titles.length - 1)
 
 		this.title = this.titles[n].replace(
 			"{0}",

@@ -101,10 +101,7 @@ export class AppComponent {
 		let retrieveCompanyResponseData =
 			retrieveCompanyResponse.data.retrieveCompany
 
-		if (retrieveCompanyResponseData == null) {
-			// Redirect to the onboarding page
-			this.router.navigate(["onboarding"])
-		} else {
+		if (retrieveCompanyResponseData != null) {
 			this.dataService.company = convertCompanyResourceToCompany(
 				retrieveCompanyResponseData
 			)
@@ -162,13 +159,7 @@ export class AppComponent {
 
 			this.dataService.restaurant = restaurant
 
-			if (restaurant.users.length == 0) {
-				// Redirect to the onboarding page
-				this.router.navigate(["onboarding"])
-			} else if (accessToken == null) {
-				// Redirect to the login page
-				this.router.navigate(["login"])
-			} else {
+			if (restaurant.users.length > 0 && accessToken != null) {
 				// Load the current user
 				let retrieveUserResponse = await this.apiService.retrieveUser(
 					`
@@ -185,18 +176,10 @@ export class AppComponent {
 				) {
 					// Remove the access token
 					this.authService.removeAccessToken()
-
-					// Redirect to the login page
-					this.router.navigate(["login"])
 				} else if (retrieveUserResponse.data.retrieveUser != null) {
 					this.dataService.user = convertUserResourceToUser(
 						retrieveUserResponse.data.retrieveUser
 					)
-
-					if (this.router.url == "/") {
-						// Redirect to the tables page
-						this.router.navigate(["tables"])
-					}
 				}
 			}
 		}

@@ -17,27 +17,6 @@ import { RoomManagementComponent } from "./pages/settings-pages/room-management/
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 
 const routes: Routes = [
-	//Settings-Pages
-	{
-		path: "tables/settings",
-		component: SettingsPageComponent
-	},
-	{
-		path: "tables/settings/menue",
-		component: MenuePageComponent
-	},
-	{
-		path: "tables/settings/restaurant",
-		component: RestaurantOverviewComponent
-	},
-	{
-		path: "tables/settings/rooms",
-		component: RoomManagementComponent
-	},
-	{
-		path: "tables/settings/employees",
-		component: EmployeeManagementComponent
-	},
 	{
 		path: "",
 		component: LandingPageComponent,
@@ -65,20 +44,46 @@ const routes: Routes = [
 		component: OnboardingPageComponent
 	},
 	{
-		path: "tables",
-		component: TableOverviewPageComponent
-	},
-	{
-		path: "tables/:uuid",
-		component: BookingPageComponent
-	},
-	{
-		path: "tables/:uuid/separate",
-		component: SeparatePayPageComponent
-	},
-	{
-		path: "tables/:uuid1/:uuid2",
-		component: TransferPageComponent
+		path: "dashboard",
+		children: [
+			{
+				path: "",
+				component: TableOverviewPageComponent
+			},
+			{
+				path: "tables/:uuid",
+				component: BookingPageComponent
+			},
+			{
+				path: "tables/:uuid/separate",
+				component: SeparatePayPageComponent
+			},
+			{
+				path: "tables/:uuid1/:uuid2",
+				component: TransferPageComponent
+			},
+			//Settings-Pages
+			{
+				path: "settings",
+				component: SettingsPageComponent
+			},
+			{
+				path: "settings/menue",
+				component: MenuePageComponent
+			},
+			{
+				path: "settings/restaurant",
+				component: RestaurantOverviewComponent
+			},
+			{
+				path: "settings/rooms",
+				component: RoomManagementComponent
+			},
+			{
+				path: "settings/employees",
+				component: EmployeeManagementComponent
+			}
+		]
 	}
 ]
 

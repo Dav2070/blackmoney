@@ -1055,7 +1055,7 @@ export class BookingPageComponent {
 		if (table == null) return
 
 		// Navigate to the transfer page with the table UUID
-		this.router.navigate(["tables", this.table.uuid, table.uuid])
+		this.router.navigate(["dashboard", "tables", this.table.uuid, table.uuid])
 	}
 
 	checkForPlus(variation: OrderItemVariation) {

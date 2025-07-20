@@ -69,10 +69,10 @@ export class TransferPageComponent {
 		}
 
 		if (this.tableLeft != null && this.tableRight == null) {
-			this.router.navigate(["tables", this.tableLeft.uuid])
+			this.router.navigate(["dashboard", "tables", this.tableLeft.uuid])
 			return
 		} else if (this.tableLeft == null || this.tableRight == null) {
-			this.router.navigate(["tables"])
+			this.router.navigate(["dashboard"])
 			return
 		}
 

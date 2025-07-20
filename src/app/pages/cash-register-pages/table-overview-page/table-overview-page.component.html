@@ -15,7 +15,7 @@
 			table.uuid) {
 			<mat-card class="table">
 				<mat-card-content>{{ table.name }}</mat-card-content>
-				<a [routerLink]="[table.uuid]" class="card-link"></a>
+				<a [routerLink]="['tables', table.uuid]" class="card-link"></a>
 			</mat-card>
 			} }
 		</div>

@@ -37,7 +37,7 @@ export class LoginPageComponent {
 	async ngOnInit() {
 		if ((await this.authService.getAccessToken()) != null) {
 			// Redirect to tables page
-			this.router.navigate(["tables"])
+			this.router.navigate(["dashboard"])
 			return
 		}
 
@@ -176,8 +176,8 @@ export class LoginPageComponent {
 				this.restaurantDropdownSelectedKey
 			)
 
-			// Redirect to tables page
-			this.router.navigate(["tables"])
+			// Redirect to user page
+			this.router.navigate(["user"])
 		} else {
 			this.errorMessage = "Login failed"
 		}

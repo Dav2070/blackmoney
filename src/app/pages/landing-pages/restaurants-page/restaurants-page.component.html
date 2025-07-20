@@ -1,1 +1,15 @@
-<h1>Hello World</h1>
+<div class="container slide-up-in">
+	<div class="content-container">
+		<h1>Deine Restaurants</h1>
+
+		<dav-list>
+			@for (restaurant of restaurants; track restaurant.uuid) {
+			<dav-list-item
+				[headline]="restaurant.name"
+				[href]="'/user/restaurants/' + restaurant.uuid"
+				(click)="navigateToRestaurant($event, restaurant)"
+			></dav-list-item>
+			}
+		</dav-list>
+	</div>
+</div>

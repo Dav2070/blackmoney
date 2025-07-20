@@ -24,6 +24,7 @@ export interface RestaurantResource {
 export interface UserResource {
 	uuid: string
 	name: string
+	role: UserRole
 }
 
 export interface RoomResource {
@@ -95,8 +96,8 @@ export interface OrderItemVariationResource {
 	variationItems: List<VariationItemResource>
 }
 
-
 export type CategoryType = "FOOD" | "DRINK"
 export type PaymentMethod = "CASH" | "CARD"
+export type UserRole = "OWNER" | "ADMIN" | "USER"
 
 export type ErrorCode = "NOT_AUTHENTICATED"

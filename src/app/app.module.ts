@@ -71,6 +71,7 @@ import { MatTooltipModule } from "@angular/material/tooltip"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
+import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
 
 @NgModule({
 	declarations: [
@@ -99,7 +100,8 @@ import { MenuTableComponent } from "./components/settings/menu-table/menu-table.
 		RestaurantOverviewComponent,
 		RoomManagementComponent,
 		EmployeeManagementComponent,
-		MenuTableComponent
+		MenuTableComponent,
+		SpecialsTableComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

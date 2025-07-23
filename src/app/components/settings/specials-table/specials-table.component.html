@@ -6,9 +6,9 @@
       <td mat-cell *matCellDef="let row">
         <button 
           mat-icon-button 
-          (click)="toggleExpandMenu(row); $event.stopPropagation()">
+          (click)="toggleExpandSpecial(row); $event.stopPropagation()">
           <mat-icon>
-            {{expandedMenu === row ? 'expand_less' : 'expand_more'}}
+            {{expandedSpecial === row ? 'expand_less' : 'expand_more'}}
           </mat-icon>
         </button>
       </td>
@@ -18,7 +18,7 @@
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
       <td mat-cell *matCellDef="let row">
-        @if (editingMenu !== row) {
+        @if (editingSpecial !== row) {
           {{row.id}}
         } @else {
           <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
@@ -38,14 +38,14 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
       <td mat-cell *matCellDef="let row">
-        @if (editingMenu !== row) {
+        @if (editingSpecial !== row) {
           {{row.name}}
           @if (row.description) {
-            <div class="menu-description">{{row.description}}</div>
+            <div class="special-description">{{row.description}}</div>
           }
         } @else {
           <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
-            <input matInput [(ngModel)]="row.name" placeholder="Menüname eingeben" (click)="$event.stopPropagation()">
+            <input matInput [(ngModel)]="row.name" placeholder="Special-Name eingeben" (click)="$event.stopPropagation()">
           </mat-form-field>
         }
       </td>
@@ -55,7 +55,7 @@
     <ng-container matColumnDef="Angebot">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Angebot</th>
       <td mat-cell *matCellDef="let row">
-        @if (editingMenu !== row) {
+        @if (editingSpecial !== row) {
           @if (row.offerType === 'FIXED_PRICE') {
             <span>{{row.offerValue | number:'1.2-2'}}€</span>
           }
@@ -141,44 +141,48 @@
     <ng-container matColumnDef="Gültig">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Gültigkeit</th>
       <td mat-cell *matCellDef="let row">
-        @if (editingMenu !== row) {
+        @if (editingSpecial !== row) {
           <div class="validity-display">
             <!-- Direkte Gültigkeit-Anzeige -->
             <div>
               @if (!row.validity.startDate && !row.validity.endDate) {
                 <span>Datum: Immer</span>
               } @else {
-                <span>
-                  Datum: {{row.validity.startDate ? (row.validity.startDate | date:'dd.MM.yyyy') : 'Offen'}} - 
-                  {{row.validity.endDate ? (row.validity.endDate | date:'dd.MM.yyyy') : 'Offen'}}
+                <span>Datum: 
+                  {{row.validity.startDate ? (row.validity.startDate | date:'dd.MM.yyyy') : '∞'}} - 
+                  {{row.validity.endDate ? (row.validity.endDate | date:'dd.MM.yyyy') : '∞'}}
                 </span>
               }
             </div>
+            
             <div>
               @if (!row.validity.startTime && !row.validity.endTime) {
-                <span>Zeit: Immer</span>
+                <span>Zeit: Ganztägig</span>
               } @else {
-                <span>Zeit: {{row.validity.startTime || '00:00'}} - {{row.validity.endTime || '23:59'}}</span>
+                <span>Zeit: 
+                  {{row.validity.startTime || '00:00'}} - 
+                  {{row.validity.endTime || '23:59'}}
+                </span>
               }
             </div>
+            
             <div>
               @if (row.validity.weekdays.length === 0) {
-                <span>Tage: Immer</span>
+                <span>Wochentage: Alle</span>
               } @else {
-                <span>
-                  Tage: 
-                  @for (day of row.validity.weekdays; track day; let i = $index) {
-                    {{getWeekdayLabel(day)}}@if (i < row.validity.weekdays.length - 1) {<span>, </span>}
+                <span>Wochentage: 
+                  @for (weekday of row.validity.weekdays; track weekday; let i = $index) {
+                    {{getWeekdayLabel(weekday)}}@if (i < row.validity.weekdays.length - 1) {<span>, </span>}
                   }
                 </span>
               }
             </div>
           </div>
         } @else {
-          <div style="display: flex; flex-direction: column; gap: 12px;" (click)="$event.stopPropagation()">
-            <!-- Datum Bereich -->
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Datumsbereich -->
             <div style="display: flex; gap: 8px;">
-              <mat-form-field appearance="outline" style="flex: 1;">
+              <mat-form-field appearance="outline" style="flex: 1;" (click)="$event.stopPropagation()">
                 <mat-label>Von Datum</mat-label>
                 <input 
                   matInput 
@@ -186,7 +190,8 @@
                   [value]="row.validity.startDate ? row.validity.startDate.toISOString().split('T')[0] : ''"
                   (input)="row.validity.startDate = parseDateFromInput($any($event.target).value)">
               </mat-form-field>
-              <mat-form-field appearance="outline" style="flex: 1;">
+              
+              <mat-form-field appearance="outline" style="flex: 1;" (click)="$event.stopPropagation()">
                 <mat-label>Bis Datum</mat-label>
                 <input 
                   matInput 
@@ -195,36 +200,37 @@
                   (input)="row.validity.endDate = parseDateFromInput($any($event.target).value)">
               </mat-form-field>
             </div>
-
-            <!-- Uhrzeit Bereich -->
+            
+            <!-- Zeitbereich -->
             <div style="display: flex; gap: 8px;">
-              <mat-form-field appearance="outline" style="flex: 1;">
-                <mat-label>Von Uhrzeit</mat-label>
+              <mat-form-field appearance="outline" style="flex: 1;" (click)="$event.stopPropagation()">
+                <mat-label>Von Zeit</mat-label>
                 <input 
                   matInput 
                   type="time" 
                   [(ngModel)]="row.validity.startTime"
-                  placeholder="HH:mm">
+                  (click)="$event.stopPropagation()">
               </mat-form-field>
-              <mat-form-field appearance="outline" style="flex: 1;">
-                <mat-label>Bis Uhrzeit</mat-label>
+              
+              <mat-form-field appearance="outline" style="flex: 1;" (click)="$event.stopPropagation()">
+                <mat-label>Bis Zeit</mat-label>
                 <input 
                   matInput 
                   type="time" 
                   [(ngModel)]="row.validity.endTime"
-                  placeholder="HH:mm">
+                  (click)="$event.stopPropagation()">
               </mat-form-field>
             </div>
-
-            <!-- Wochentage -->
-            <div>
-              <mat-label style="font-size: 14px; color: rgba(0,0,0,0.6); display: block; margin-bottom: 8px;">Wochentage</mat-label>
-              <div class="weekdays-selector">
+            
+            <!-- Wochentage Auswahl -->
+            <div class="weekdays-selection">
+              <mat-label>Wochentage:</mat-label>
+              <div class="weekday-checkboxes">
                 @for (weekday of weekdays; track weekday.value) {
                   <mat-checkbox 
                     [checked]="isWeekdaySelected(row, weekday.value)"
                     (change)="toggleWeekday(row, weekday.value)"
-                    class="weekday-checkbox">
+                    (click)="$event.stopPropagation()">
                     {{weekday.label}}
                   </mat-checkbox>
                 }
@@ -239,15 +245,15 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Aktionen</th>
       <td mat-cell *matCellDef="let row">
-        @if (editingMenu !== row) {
-          <button mat-icon-button color="primary" (click)="editMenu(row)">
+        @if (editingSpecial !== row) {
+          <button mat-icon-button color="primary" (click)="editSpecial(row)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="deleteMenu(row)">
+          <button mat-icon-button color="warn" (click)="deleteSpecial(row)">
             <mat-icon>delete</mat-icon>
           </button>
         } @else {
-          <button mat-icon-button color="primary" (click)="saveMenu(row)">
+          <button mat-icon-button color="primary" (click)="saveSpecial(row)">
             <mat-icon>check</mat-icon>
           </button>
           <button mat-icon-button color="warn" (click)="cancelEdit()">
@@ -259,22 +265,22 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
-        class="menu-row"
-        [class.expanded-row]="expandedMenu === row"></tr>
+        class="special-row"
+        [class.expanded-row]="expandedSpecial === row"></tr>
   </table>
 
   <!-- Items anzeigen nach jeder Zeile -->
-  @for (menu of dataSource.data; track menu.uuid) {
-    @if (expandedMenu === menu) {
-      <div class="menu-items-container">
-        <div class="menu-detail">
-          <div class="menu-items-section">
-            <h3>Items für "{{menu.name}}"</h3>
+  @for (special of dataSource.data; track special.uuid) {
+    @if (expandedSpecial === special) {
+      <div class="special-items-container">
+        <div class="special-detail">
+          <div class="special-items-section">
+            <h3>Item für "{{special.name}}"</h3>
             
             <!-- Items List -->
-            @if (menu.items.length > 0) {
+            @if (special.items.length > 0) {
               <div class="items-list">
-                @for (item of menu.items; track item.uuid) {
+                @for (item of special.items; track item.uuid) {
                   <div class="item-card">
                     @if (editingItem !== item) {
                       <div class="item-display">
@@ -284,7 +290,7 @@
                             <button mat-icon-button color="primary" (click)="editItem(item)">
                               <mat-icon>edit</mat-icon>
                             </button>
-                            <button mat-icon-button color="warn" (click)="deleteItem(menu, item)">
+                            <button mat-icon-button color="warn" (click)="deleteItem(special, item)">
                               <mat-icon>delete</mat-icon>
                             </button>
                           </div>
@@ -300,8 +306,6 @@
                               }
                             }
                           </p>
-                          <!-- Direkte Auswahl-Anzeige -->
-                          <p><strong>Auswahl:</strong> {{item.maxSelections}} aus {{item.products.length}} Produkten auswählbar</p>
                           <!-- Direkte Produkte-Anzeige -->
                           <p><strong>Produkte:</strong> 
                             @if (item.products.length === 0) {
@@ -319,18 +323,6 @@
                         <mat-form-field appearance="outline">
                           <mat-label>Item Name</mat-label>
                           <input matInput [(ngModel)]="item.name" placeholder="Item Name eingeben">
-                        </mat-form-field>
-                        
-                        <!-- Einfache Anzahl-Auswahl -->
-                        <mat-form-field appearance="outline">
-                          <mat-label>Maximale Auswahl</mat-label>
-                          <input 
-                            matInput 
-                            type="number" 
-                            [(ngModel)]="item.maxSelections" 
-                            min="1" 
-                            placeholder="Wie viele Produkte darf der Kunde auswählen?">
-                          <mat-hint>Der Kunde kann maximal {{item.maxSelections}} Produkt(e) aus diesem Item auswählen</mat-hint>
                         </mat-form-field>
                         
                         <!-- Kategorien Multi-Select -->
@@ -378,7 +370,7 @@
                           <button mat-raised-button color="primary" (click)="saveItem()">
                             Speichern
                           </button>
-                          <button mat-raised-button (click)="cancelItemEdit(menu)">
+                          <button mat-raised-button (click)="cancelItemEdit(special)">
                             Abbrechen
                           </button>
                         </div>
@@ -388,24 +380,26 @@
                 }
               </div>
             } @else {
-              <p class="no-items-message">Keine Items vorhanden</p>
+              <p class="no-items-message">Kein Item vorhanden</p>
             }
             
-            <!-- Add New Item Button -->
-            <div class="add-item-section">
-              <button mat-raised-button color="accent" (click)="addNewItem(menu)">
-                Neues Item hinzufügen
-              </button>
-            </div>
+            <!-- Add New Item Button - Only show if no item exists -->
+            @if (canAddItem(special)) {
+              <div class="add-item-section">
+                <button mat-raised-button color="accent" (click)="addNewItem(special)">
+                  Item hinzufügen
+                </button>
+              </div>
+            }
           </div>
         </div>
       </div>
     }
   }
 
-  <!-- Button zum Hinzufügen eines neuen Menüs -->
-  <div class="add-menu-button">
-    <button (click)="addNewMenu()" mat-raised-button color="primary">Neues Menü hinzufügen</button>
+  <!-- Button zum Hinzufügen eines neuen Specials -->
+  <div class="add-special-button">
+    <button (click)="addNewSpecial()" mat-raised-button color="primary">Neues Special hinzufügen</button>
   </div>
 
   <mat-paginator #paginator

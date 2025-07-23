@@ -264,6 +264,16 @@
 					</app-menu-table>
 				</mat-card>
 			</mat-tab>
+
+			<!-- SPECIALS -->
+			<mat-tab label="Specials">
+				<mat-card class="content-card">
+					<app-specials-table 
+						[specials]="specials" 
+						[availableCategories]="getAllCategories()">
+					</app-specials-table>
+				</mat-card>
+			</mat-tab>
 		</mat-tab-group>
 	</div>
 </app-settings-bar>

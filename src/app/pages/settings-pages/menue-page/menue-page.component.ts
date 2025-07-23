@@ -112,7 +112,7 @@ export class MenuePageComponent {
             uuid: "menu_1",
             name: "Tageskarte",
             id: 1,
-            offerType: 'NONE',
+            offerType: undefined,
             discountType: undefined,
             offerValue: 0,
             selectedProducts: [],
@@ -137,7 +137,7 @@ export class MenuePageComponent {
             uuid: "menu_2",
             name: "Abendkarte",
             id: 2,
-            offerType: 'NONE',
+            offerType: undefined,
             discountType: undefined,
             offerValue: 0,
             selectedProducts: [],
@@ -147,6 +147,51 @@ export class MenuePageComponent {
                 startTime: undefined,
                 endTime: undefined,
                 weekdays: []
+            },
+            items: []
+        }
+    ];
+
+    specials: Menu[] = [
+        {
+            uuid: "special_1",
+            name: "Happy Hour Special",
+            id: 1,
+            offerType: 'DISCOUNT',
+            discountType: 'PERCENTAGE',
+            offerValue: 20,
+            selectedProducts: [],
+            validity: {
+                startDate: undefined,
+                endDate: undefined,
+                startTime: "17:00",
+                endTime: "19:00",
+                weekdays: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']
+            },
+            items: [
+                {
+                    uuid: "special_item_1",
+                    name: "Happy Hour Getränke",
+                    categories: [],
+                    products: [],
+                    maxSelections: 1
+                }
+            ]
+        },
+        {
+            uuid: "special_2",
+            name: "Wochenend-Brunch",
+            id: 2,
+            offerType: 'FIXED_PRICE',
+            discountType: undefined,
+            offerValue: 15.90,
+            selectedProducts: [],
+            validity: {
+                startDate: undefined,
+                endDate: undefined,
+                startTime: "10:00",
+                endTime: "14:00",
+                weekdays: ['SATURDAY', 'SUNDAY']
             },
             items: []
         }
@@ -215,7 +260,7 @@ export class MenuePageComponent {
     newCategoryName = '';
     editCategory: Category | null = null;
     editCategoryName = '';
-    selectedTab = 0; // 0 = Produkte, 1 = Variationen, 2 = Menüs
+    selectedTab = 0; // 0 = Produkte, 1 = Variationen, 2 = Menüs, 3 = Specials
     categoryTabIndex = 0; // 0 = Speisen, 1 = Getränke
 
     setCategory(category: Category) {

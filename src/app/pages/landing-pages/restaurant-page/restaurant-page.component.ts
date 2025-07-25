@@ -2,6 +2,7 @@ import { Component } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
+import { faLocationDot, faPen } from "@fortawesome/pro-regular-svg-icons"
 
 @Component({
 	templateUrl: "./restaurant-page.component.html",
@@ -9,7 +10,14 @@ import { DataService } from "src/app/services/data-service"
 	standalone: false
 })
 export class RestaurantPageComponent {
+	faLocationDot = faLocationDot
+	faPen = faPen
 	name: string = ""
+	city: string = ""
+	country: string = ""
+	line1: string = ""
+	line2: string = ""
+	postalCode: string = ""
 
 	constructor(
 		private apiService: ApiService,
@@ -23,10 +31,29 @@ export class RestaurantPageComponent {
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
 		const retrieveRestaurantResponse =
-			await this.apiService.retrieveRestaurant(`name`, { uuid })
+			await this.apiService.retrieveRestaurant(
+				`
+					name
+					city
+					country
+					line1
+					line2
+					postalCode
+				`,
+				{ uuid }
+			)
 
 		if (retrieveRestaurantResponse.data == null) return
 
 		this.name = retrieveRestaurantResponse.data.retrieveRestaurant.name
+		this.city = retrieveRestaurantResponse.data.retrieveRestaurant.city
+		this.country =
+			retrieveRestaurantResponse.data.retrieveRestaurant.country
+		this.line1 =
+			retrieveRestaurantResponse.data.retrieveRestaurant.line1
+		this.line2 =
+			retrieveRestaurantResponse.data.retrieveRestaurant.line2
+		this.postalCode =
+			retrieveRestaurantResponse.data.retrieveRestaurant.postalCode
 	}
 }

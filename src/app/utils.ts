@@ -112,6 +112,11 @@ export function convertRestaurantResourceToRestaurant(
 	return {
 		uuid: restaurantResource.uuid,
 		name: restaurantResource.name,
+		city: restaurantResource.city,
+		country: restaurantResource.country,
+		line1: restaurantResource.line1,
+		line2: restaurantResource.line2,
+		postalCode: restaurantResource.postalCode,
 		users,
 		rooms
 	}

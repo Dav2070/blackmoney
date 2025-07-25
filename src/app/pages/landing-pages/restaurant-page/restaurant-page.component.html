@@ -1,5 +1,30 @@
 <div class="container slide-up-in">
 	<div class="content-container">
 		<h1>{{ name }}</h1>
+
+		<dav-card>
+			<div class="address-card-container">
+				<fa-icon [icon]="faLocationDot"></fa-icon>
+
+				<div class="address-card-content">
+					@if (city || country || line1 || line2 || postalCode) { @if
+					(line1) {
+					<p>{{ line1 }}</p>
+					} @if (line2) {
+					<p>{{ line2 }}</p>
+					} @if (postalCode || city) {
+					<p>{{ postalCode }} {{ city }}</p>
+					} @if (country) {
+					<p>{{ country === "DE" ? "Deutschland" : "" }}</p>
+					} } @else {
+					<p class="no-address">Adresse angeben</p>
+					}
+				</div>
+
+				<dav-icon-button size="xs">
+					<fa-icon [icon]="faPen"></fa-icon>
+				</dav-icon-button>
+			</div>
+		</dav-card>
 	</div>
 </div>

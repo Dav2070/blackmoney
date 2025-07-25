@@ -17,6 +17,11 @@ export interface CompanyResource {
 export interface RestaurantResource {
 	uuid: string
 	name: string
+	city: string
+	country: Country
+	line1: string
+	line2: string
+	postalCode: string
 	users: List<UserResource>
 	rooms: List<RoomResource>
 }
@@ -99,5 +104,6 @@ export interface OrderItemVariationResource {
 export type CategoryType = "FOOD" | "DRINK"
 export type PaymentMethod = "CASH" | "CARD"
 export type UserRole = "OWNER" | "ADMIN" | "USER"
+export type Country = "DE"
 
 export type ErrorCode = "NOT_AUTHENTICATED"

@@ -1,10 +1,13 @@
 <dav-dialog
 	#dialog
 	headline="Adresse bearbeiten"
-	defaultButtonText="Schließen"
+	primaryButtonText="Speichern"
+	defaultButtonText="Abbrechen"
 	[visible]="visible"
 	maxWidth="450"
+	[loading]="loading"
 	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"
 >
 	<!-- Line 1 -->

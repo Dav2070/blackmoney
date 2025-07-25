@@ -195,6 +195,49 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async updateRestaurant(
+		queryData: string,
+		variables: {
+			uuid: string
+			name?: string
+			city?: string
+			country?: string
+			line1?: string
+			line2?: string
+			postalCode?: string
+		}
+	): Promise<MutationResult<{ updateRestaurant: RestaurantResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateRestaurant: RestaurantResource }>({
+				mutation: gql`
+					mutation UpdateRestaurant(
+						$uuid: String!
+						$name: String
+						$city: String
+						$country: Country
+						$line1: String
+						$line2: String
+						$postalCode: String
+					) {
+						updateRestaurant(
+							uuid: $uuid
+							name: $name
+							city: $city
+							country: $country
+							line1: $line1
+							line2: $line2
+							postalCode: $postalCode
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async listRooms(
 		queryData: string
 	): Promise<ApolloQueryResult<{ listRooms: List<RoomResource> }>> {

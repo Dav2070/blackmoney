@@ -13,12 +13,17 @@ import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/
 export class RestaurantPageComponent {
 	faLocationDot = faLocationDot
 	faPen = faPen
+	uuid: string = null
 	name: string = ""
 	city: string = ""
+	cityError: string = ""
 	country: string = ""
 	line1: string = ""
+	line1Error: string = ""
 	line2: string = ""
+	line2Error: string = ""
 	postalCode: string = ""
+	postalCodeError: string = ""
 
 	//#region EditAddressDialog
 	@ViewChild("editAddressDialog")
@@ -33,7 +38,7 @@ export class RestaurantPageComponent {
 	) {}
 
 	async ngOnInit() {
-		const uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
@@ -47,10 +52,10 @@ export class RestaurantPageComponent {
 					line2
 					postalCode
 				`,
-				{ uuid }
+				{ uuid: this.uuid }
 			)
 
-		if (retrieveRestaurantResponse.data == null) return
+		if (retrieveRestaurantResponse.data.retrieveRestaurant == null) return
 
 		this.name = retrieveRestaurantResponse.data.retrieveRestaurant.name
 		this.city = retrieveRestaurantResponse.data.retrieveRestaurant.city
@@ -64,5 +69,46 @@ export class RestaurantPageComponent {
 	showEditAddressDialog() {
 		this.editAddressDialogLoading = false
 		this.editAddressDialog.show()
+	}
+
+	async editAddressDialogPrimaryButtonClick(event: {
+		city?: string
+		line1?: string
+		line2?: string
+		postalCode?: string
+	}) {
+		this.editAddressDialogLoading = true
+
+		const updateRestaurantResponse = await this.apiService.updateRestaurant(
+			`
+				uuid
+				city
+				line1
+				line2
+				postalCode
+			`,
+			{
+				uuid: this.uuid,
+				city: event.city ?? "",
+				line1: event.line1 ?? "",
+				line2: event.line2 ?? "",
+				postalCode: event.postalCode ?? "",
+				country: "DE"
+			}
+		)
+
+		if (updateRestaurantResponse.data == null) {
+			// TODO: Error handling
+		} else {
+			const responseData = updateRestaurantResponse.data.updateRestaurant
+
+			this.city = responseData.city ?? ""
+			this.line1 = responseData.line1 ?? ""
+			this.line2 = responseData.line2 ?? ""
+			this.postalCode = responseData.postalCode ?? ""
+
+			this.editAddressDialogLoading = false
+			this.editAddressDialog.hide()
+		}
 	}
 }

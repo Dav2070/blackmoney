@@ -32,4 +32,13 @@
 <app-edit-address-dialog
 	#editAddressDialog
 	[loading]="editAddressDialogLoading"
+	[city]="city"
+	[cityError]="cityError"
+	[line1]="line1"
+	[line1Error]="line1Error"
+	[line2]="line2"
+	[line2Error]="line2Error"
+	[postalCode]="postalCode"
+	[postalCodeError]="postalCodeError"
+	(primaryButtonClick)="editAddressDialogPrimaryButtonClick($event)"
 ></app-edit-address-dialog>

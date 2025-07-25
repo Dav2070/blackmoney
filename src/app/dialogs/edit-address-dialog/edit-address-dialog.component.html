@@ -1,8 +1,8 @@
 <dav-dialog
 	#dialog
-	headline="Adresse bearbeiten"
-	primaryButtonText="Speichern"
-	defaultButtonText="Abbrechen"
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
 	maxWidth="450"
 	[loading]="loading"
@@ -15,7 +15,7 @@
 		<div class="dialog-formfield-container">
 			<dav-textfield
 				[value]="line1"
-				label="Adresszeile 1"
+				[label]="locale.line1"
 				[disabled]="loading"
 				[errorMessage]="line1Error"
 				(change)="line1TextfieldChange($event)"
@@ -26,7 +26,7 @@
 		<div class="dialog-formfield-container">
 			<dav-textfield
 				[value]="line2"
-				label="Adresszeile 2"
+				[label]="locale.line2"
 				[disabled]="loading"
 				[errorMessage]="line2Error"
 				(change)="line2TextfieldChange($event)"
@@ -37,7 +37,7 @@
 			<!-- Postal code -->
 			<dav-textfield
 				[value]="postalCode"
-				label="Postleitzahl"
+				[label]="locale.postalCode"
 				[disabled]="loading"
 				[errorMessage]="postalCodeError"
 				(change)="postalCodeTextfieldChange($event)"
@@ -46,7 +46,7 @@
 			<!-- City -->
 			<dav-textfield
 				[value]="city"
-				label="Stadt"
+				[label]="locale.city"
 				[disabled]="loading"
 				[errorMessage]="cityError"
 				(change)="cityTextfieldChange($event)"

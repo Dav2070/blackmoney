@@ -10,6 +10,7 @@ import {
 } from "@angular/core"
 import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	selector: "app-edit-address-dialog",
@@ -17,6 +18,8 @@ import { Dialog } from "dav-ui-components"
 	standalone: false
 })
 export class EditAddressDialogComponent {
+	locale = this.localizationService.locale.dialogs.editRestaurantDialog
+	actionsLocale = this.localizationService.locale.actions
 	@Input() loading: boolean = false
 	@Input() city: string = ""
 	@Input() cityError: string = ""
@@ -31,7 +34,10 @@ export class EditAddressDialogComponent {
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
 
-	constructor(@Inject(PLATFORM_ID) private platformId: object) {}
+	constructor(
+		private localizationService: LocalizationService,
+		@Inject(PLATFORM_ID) private platformId: object
+	) {}
 
 	ngAfterViewInit() {
 		if (isPlatformBrowser(this.platformId)) {

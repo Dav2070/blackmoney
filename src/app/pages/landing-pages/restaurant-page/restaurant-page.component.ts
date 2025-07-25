@@ -5,6 +5,7 @@ import { DataService } from "src/app/services/data-service"
 import { faLocationDot, faPen } from "@fortawesome/pro-regular-svg-icons"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
 import * as ErrorCodes from "src/app/errorCodes"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	templateUrl: "./restaurant-page.component.html",
@@ -12,6 +13,7 @@ import * as ErrorCodes from "src/app/errorCodes"
 	standalone: false
 })
 export class RestaurantPageComponent {
+	errorsLocale = this.localizationService.locale.errors
 	faLocationDot = faLocationDot
 	faPen = faPen
 	uuid: string = null
@@ -35,7 +37,8 @@ export class RestaurantPageComponent {
 	constructor(
 		private apiService: ApiService,
 		private dataService: DataService,
-		private activatedRoute: ActivatedRoute
+		private activatedRoute: ActivatedRoute,
+		private localizationService: LocalizationService
 	) {}
 
 	async ngOnInit() {
@@ -119,19 +122,19 @@ export class RestaurantPageComponent {
 			for (const errorCode of errors) {
 				switch (errorCode) {
 					case ErrorCodes.cityTooLong:
-						this.cityError = "Der Stadtname ist zu lang."
+						this.cityError = this.errorsLocale.cityTooLong
 						break
 					case ErrorCodes.line1TooLong:
-						this.line1Error = "Die erste Zeile der Adresse ist zu lang."
+						this.line1Error = this.errorsLocale.line1TooLong
 						break
 					case ErrorCodes.line2TooLong:
-						this.line2Error = "Die zweite Zeile der Adresse ist zu lang."
+						this.line2Error = this.errorsLocale.line2TooLong
 						break
 					case ErrorCodes.postalCodeInvalid:
-						this.postalCodeError = "Die Postleitzahl ist ungültig."
+						this.postalCodeError = this.errorsLocale.postalCodeInvalid
 						break
 					default:
-						this.cityError = "Ein unbekannter Fehler ist aufgetreten."
+						this.cityError = this.errorsLocale.unexpectedError
 						break
 				}
 			}

@@ -59,6 +59,8 @@ import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { DataService } from "./services/data-service"
 import { SettingsService } from "./services/settings-service"
+import { LocalizationService } from "./services/localization-service"
+
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
@@ -154,6 +156,7 @@ import { SpecialsTableComponent } from "./components/settings/specials-table/spe
 		AuthService,
 		DataService,
 		SettingsService,
+		LocalizationService,
 		provideClientHydration(),
 		provideHttpClient(withInterceptorsFromDi())
 	]

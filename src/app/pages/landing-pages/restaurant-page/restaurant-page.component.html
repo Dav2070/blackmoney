@@ -21,10 +21,15 @@
 					}
 				</div>
 
-				<dav-icon-button size="xs">
+				<dav-icon-button size="xs" (click)="showEditAddressDialog()">
 					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-button>
 			</div>
 		</dav-card>
 	</div>
 </div>
+
+<app-edit-address-dialog
+	#editAddressDialog
+	[loading]="editAddressDialogLoading"
+></app-edit-address-dialog>

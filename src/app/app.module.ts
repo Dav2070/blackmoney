@@ -39,6 +39,9 @@ import { AppComponent } from "./app.component"
 import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 
+// Dialogs
+import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
+
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
@@ -79,6 +82,8 @@ import { SpecialsTableComponent } from "./components/settings/specials-table/spe
 		AppComponent,
 		HeaderComponent,
 		SettingsBarComponent,
+		// Dialog
+		EditAddressDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

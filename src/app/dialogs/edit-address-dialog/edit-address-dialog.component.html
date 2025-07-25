@@ -1,0 +1,51 @@
+<dav-dialog
+	#dialog
+	headline="Adresse bearbeiten"
+	defaultButtonText="Schließen"
+	[visible]="visible"
+	maxWidth="450"
+	(dismiss)="hide()"
+	(defaultButtonClick)="hide()"
+>
+	<!-- Line 1 -->
+	<div class="dialog-formfield-container">
+		<dav-textfield
+			[value]="line1"
+			label="Adresszeile 1"
+			[disabled]="loading"
+			[errorMessage]="line1Error"
+			(change)="line1TextfieldChange($event)"
+		></dav-textfield>
+	</div>
+
+	<!-- Line 2 -->
+	<div class="dialog-formfield-container">
+		<dav-textfield
+			[value]="line2"
+			label="Adresszeile 2"
+			[disabled]="loading"
+			[errorMessage]="line2Error"
+			(change)="line2TextfieldChange($event)"
+		></dav-textfield>
+	</div>
+
+	<div class="dialog-horizontal-formfield-container">
+		<!-- Postal code -->
+		<dav-textfield
+			[value]="postalCode"
+			label="Postleitzahl"
+			[disabled]="loading"
+			[errorMessage]="postalCodeError"
+			(change)="postalCodeTextfieldChange($event)"
+		></dav-textfield>
+
+		<!-- City -->
+		<dav-textfield
+			[value]="city"
+			label="Stadt"
+			[disabled]="loading"
+			[errorMessage]="cityError"
+			(change)="cityTextfieldChange($event)"
+		></dav-textfield>
+	</div>
+</dav-dialog>

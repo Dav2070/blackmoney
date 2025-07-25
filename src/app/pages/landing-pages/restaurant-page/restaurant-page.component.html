@@ -41,4 +41,5 @@
 	[postalCode]="postalCode"
 	[postalCodeError]="postalCodeError"
 	(primaryButtonClick)="editAddressDialogPrimaryButtonClick($event)"
+	(clearErrors)="cityError = ''; line1Error = ''; line2Error = ''; postalCodeError = ''"
 ></app-edit-address-dialog>

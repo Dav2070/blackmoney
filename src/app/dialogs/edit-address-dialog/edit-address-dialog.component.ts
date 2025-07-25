@@ -27,6 +27,7 @@ export class EditAddressDialogComponent {
 	@Input() postalCode: string = ""
 	@Input() postalCodeError: string = ""
 	@Output() primaryButtonClick = new EventEmitter()
+	@Output() clearErrors = new EventEmitter()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
 
@@ -54,22 +55,22 @@ export class EditAddressDialogComponent {
 
 	cityTextfieldChange(event: Event) {
 		this.city = (event as CustomEvent).detail.value
-		this.cityError = ""
+		this.clearErrors.emit()
 	}
 
 	line1TextfieldChange(event: Event) {
 		this.line1 = (event as CustomEvent).detail.value
-		this.line1Error = ""
+		this.clearErrors.emit()
 	}
 
 	line2TextfieldChange(event: Event) {
 		this.line2 = (event as CustomEvent).detail.value
-		this.line2Error = ""
+		this.clearErrors.emit()
 	}
 
 	postalCodeTextfieldChange(event: Event) {
 		this.postalCode = (event as CustomEvent).detail.value
-		this.postalCodeError = ""
+		this.clearErrors.emit()
 	}
 
 	submit() {

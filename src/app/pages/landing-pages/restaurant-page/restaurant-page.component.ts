@@ -4,6 +4,7 @@ import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { faLocationDot, faPen } from "@fortawesome/pro-regular-svg-icons"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
+import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
 	templateUrl: "./restaurant-page.component.html",
@@ -97,9 +98,9 @@ export class RestaurantPageComponent {
 			}
 		)
 
-		if (updateRestaurantResponse.data == null) {
-			// TODO: Error handling
-		} else {
+		this.editAddressDialogLoading = false
+
+		if (updateRestaurantResponse.data?.updateRestaurant != null) {
 			const responseData = updateRestaurantResponse.data.updateRestaurant
 
 			this.city = responseData.city ?? ""
@@ -107,8 +108,33 @@ export class RestaurantPageComponent {
 			this.line2 = responseData.line2 ?? ""
 			this.postalCode = responseData.postalCode ?? ""
 
-			this.editAddressDialogLoading = false
 			this.editAddressDialog.hide()
+		} else if (updateRestaurantResponse.errors.length > 0) {
+			// Error handling
+			let errors = updateRestaurantResponse.errors[0].extensions?.[
+				"errors"
+			] as string[] | undefined
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.cityTooLong:
+						this.cityError = "Der Stadtname ist zu lang."
+						break
+					case ErrorCodes.line1TooLong:
+						this.line1Error = "Die erste Zeile der Adresse ist zu lang."
+						break
+					case ErrorCodes.line2TooLong:
+						this.line2Error = "Die zweite Zeile der Adresse ist zu lang."
+						break
+					case ErrorCodes.postalCodeInvalid:
+						this.postalCodeError = "Die Postleitzahl ist ungültig."
+						break
+					default:
+						this.cityError = "Ein unbekannter Fehler ist aufgetreten."
+						break
+				}
+			}
 		}
 	}
 }

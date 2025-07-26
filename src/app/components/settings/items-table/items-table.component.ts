@@ -13,7 +13,6 @@ import { ItemsTableDataSource, ItemsTableItem } from "./items-table-datasource"
 import { Product } from "src/app/models/Product"
 import { Category } from "src/app/models/Category"
 import { Variation } from "src/app/models/Variation"
-import { VariationItem } from "src/app/models/VariationItem"
 
 @Component({
     selector: "app-items-table",

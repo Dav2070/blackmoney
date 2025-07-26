@@ -196,17 +196,23 @@ export class RestaurantOverviewComponent {
   }
 
   getOpeningHoursPerDay(): { day: string, periods: { from: string, to: string }[] }[] {
-    if (!this.restaurant?.openingDaysGroups) return [];
-    const result: { day: string, periods: { from: string, to: string }[] }[] = [];
-    for (const day of this.WEEKDAYS) {
-      // Finde alle Gruppen, die diesen Tag enthalten
-      const group = this.restaurant.openingDaysGroups.find(g => g.days.includes(day));
-      result.push({
-        day,
-        periods: group ? group.periods : []
-      });
-    }
-    return result;
+		if (!this.restaurant?.openingDaysGroups) return []
+		const result: { day: string; periods: { from: string; to: string }[] }[] =
+			[]
+
+		for (const day of this.WEEKDAYS) {
+			// Finde alle Gruppen, die diesen Tag enthalten
+			const group = this.restaurant.openingDaysGroups.find(g =>
+				g.days.includes(day)
+			)
+
+			result.push({
+				day,
+				periods: group ? group.periods : []
+			})
+		}
+
+		return result
   }
 
   get tses(): TSE[] {

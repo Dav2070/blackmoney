@@ -12,16 +12,12 @@
 						>
 							<mat-tab label="Speisen">
 								<mat-list>
-									<mat-list-item
-										*ngFor="let category of foodCategories"
-									>
+									@for (category of foodCategories; track
+									category.uuid) {
+									<mat-list-item>
 										<div class="category-row">
-											<ng-container
-												*ngIf="
-													editCategory?.uuid !== category.uuid;
-													else editFood
-												"
-											>
+											@if (editCategory?.uuid !== category.uuid) {
+											<ng-container>
 												<span
 													class="category-name"
 													(click)="setCategory(category)"
@@ -49,6 +45,7 @@
 													</button>
 												</span>
 											</ng-container>
+											} @else {
 											<ng-template #editFood>
 												<mat-form-field
 													appearance="outline"
@@ -76,9 +73,11 @@
 													</button>
 												</span>
 											</ng-template>
+											}
 										</div>
 									</mat-list-item>
-									<mat-list-item *ngIf="addCategoryType === 'FOOD'">
+									} @if (addCategoryType === 'FOOD') {
+									<mat-list-item>
 										<div class="category-row">
 											<mat-form-field
 												appearance="outline"
@@ -109,6 +108,7 @@
 											</span>
 										</div>
 									</mat-list-item>
+									}
 								</mat-list>
 								<div class="add-btn-row">
 									<button
@@ -123,16 +123,12 @@
 							</mat-tab>
 							<mat-tab label="Getränke">
 								<mat-list>
-									<mat-list-item
-										*ngFor="let category of drinkCategories"
-									>
+									@for (category of drinkCategories; track
+									category.uuid) {
+									<mat-list-item>
 										<div class="category-row">
-											<ng-container
-												*ngIf="
-													editCategory?.uuid !== category.uuid;
-													else editDrink
-												"
-											>
+											@if (editCategory?.uuid !== category.uuid) {
+											<ng-container>
 												<span
 													class="category-name"
 													(click)="setCategory(category)"
@@ -160,6 +156,7 @@
 													</button>
 												</span>
 											</ng-container>
+											} @else {
 											<ng-template #editDrink>
 												<mat-form-field
 													appearance="outline"
@@ -187,9 +184,11 @@
 													</button>
 												</span>
 											</ng-template>
+											}
 										</div>
 									</mat-list-item>
-									<mat-list-item *ngIf="addCategoryType === 'DRINK'">
+									} @if (addCategoryType === 'DRINK') {
+									<mat-list-item>
 										<div class="category-row">
 											<mat-form-field
 												appearance="outline"
@@ -220,6 +219,7 @@
 											</span>
 										</div>
 									</mat-list-item>
+									}
 								</mat-list>
 								<div class="add-btn-row">
 									<button
@@ -240,8 +240,7 @@
 						<app-items-table
 							[category]="selectedCategory"
 							[availableVariations]="allVariations"
-						>
-						</app-items-table>
+						></app-items-table>
 					</mat-card>
 				</div>
 			</mat-tab>
@@ -258,20 +257,20 @@
 			<!-- MENÜS -->
 			<mat-tab label="Menüs">
 				<mat-card class="content-card">
-					<app-menu-table 
-						[menus]="menus" 
-						[availableCategories]="getAllCategories()">
-					</app-menu-table>
+					<app-menu-table
+						[menus]="menus"
+						[availableCategories]="getAllCategories()"
+					></app-menu-table>
 				</mat-card>
 			</mat-tab>
 
 			<!-- SPECIALS -->
 			<mat-tab label="Specials">
 				<mat-card class="content-card">
-					<app-specials-table 
-						[specials]="specials" 
-						[availableCategories]="getAllCategories()">
-					</app-specials-table>
+					<app-specials-table
+						[specials]="specials"
+						[availableCategories]="getAllCategories()"
+					></app-specials-table>
 				</mat-card>
 			</mat-tab>
 		</mat-tab-group>

@@ -23,7 +23,8 @@
 			<mat-card class="room-list">
 				<h3>Räume</h3>
 				<mat-nav-list>
-					<mat-list-item *ngFor="let room of rooms">
+					@for (room of rooms; track room.uuid) {
+					<mat-list-item>
 						<button
 							mat-button
 							(click)="selectRoom(room)"
@@ -47,31 +48,29 @@
 							<mat-icon>delete</mat-icon>
 						</button>
 					</mat-list-item>
+					}
 				</mat-nav-list>
 			</mat-card>
 
+			@if (selectedRoom) {
 			<!-- Raumdetails -->
-			<mat-card class="room-details" *ngIf="selectedRoom">
+			<mat-card class="room-details">
 				<h3>
-					<span *ngIf="!editRoomMode">{{ selectedRoom.name }}</span>
-					<mat-form-field *ngIf="editRoomMode" appearance="outline">
+					@if (!editRoomMode) {
+					<span>{{ selectedRoom.name }}</span>
+					} @if (editRoomMode) {
+					<mat-form-field appearance="outline">
 						<input matInput [(ngModel)]="editRoomName" />
 					</mat-form-field>
-					<button
-						*ngIf="editRoomMode"
-						mat-icon-button
-						color="primary"
-						(click)="saveRoomName()"
-					>
+					} @if (editRoomMode) {
+					<button mat-icon-button color="primary" (click)="saveRoomName()">
 						<mat-icon>check</mat-icon>
 					</button>
-					<button
-						*ngIf="editRoomMode"
-						mat-icon-button
-						(click)="cancelEditRoom()"
-					>
+					} @if (editRoomMode) {
+					<button mat-icon-button (click)="cancelEditRoom()">
 						<mat-icon>close</mat-icon>
 					</button>
+					}
 				</h3>
 
 				<!-- Einzelner Tisch hinzufügen -->
@@ -147,11 +146,11 @@
 						Tische vorbereiten
 					</button>
 				</div>
-				<div *ngIf="multiTablesToAdd.length > 0" class="multi-table-list">
+				@if (multiTablesToAdd.length > 0) {
+				<div class="multi-table-list">
 					<mat-list>
-						<mat-list-item
-							*ngFor="let t of multiTablesToAdd; let i = index"
-						>
+						@for (t of multiTablesToAdd; let i = $index; track t.number) {
+						<mat-list-item>
 							<mat-form-field
 								appearance="outline"
 								class="multi-table-number"
@@ -177,6 +176,7 @@
 								/>
 							</mat-form-field>
 						</mat-list-item>
+						}
 					</mat-list>
 					<button
 						mat-raised-button
@@ -189,10 +189,12 @@
 						Abbrechen
 					</button>
 				</div>
+				}
 
 				<!-- Tischliste -->
 				<mat-list>
-					<mat-list-item *ngFor="let table of selectedRoom.tables">
+					@for (table of selectedRoom.tables; track table.uuid) {
+					<mat-list-item>
 						<span>Tisch {{ table.name }} ({{ table.seats }} Plätze)</span>
 						<span class="spacer"></span>
 						<button
@@ -203,6 +205,7 @@
 							<mat-icon>delete</mat-icon>
 						</button>
 					</mat-list-item>
+					}
 				</mat-list>
 
 				<!-- Kombinationen -->
@@ -211,12 +214,11 @@
 					<mat-form-field appearance="outline" class="combination-select">
 						<mat-label>Tische kombinieren</mat-label>
 						<mat-select multiple [(ngModel)]="combinationTables">
-							<mat-option
-								*ngFor="let table of selectedRoom.tables"
-								[value]="table.uuid"
-							>
+							@for (table of selectedRoom.tables; track table.uuid) {
+							<mat-option [value]="table.uuid">
 								Tisch {{ table.name }}
 							</mat-option>
+							}
 						</mat-select>
 					</mat-form-field>
 					<mat-form-field appearance="outline">
@@ -238,16 +240,17 @@
 					</button>
 				</div>
 				<mat-list>
-					<mat-list-item *ngFor="let combi of selectedRoom.combinations">
+					@for (combi of selectedRoom.combinations; let i = $index; track
+					i) {
+					<mat-list-item>
 						<span>
-							Tische:
-							<ng-container
-								*ngFor="let uuid of combi.tableUuids; let last = last"
-							>
-								{{ getTableNumber(selectedRoom, uuid)
-								}}<span *ngIf="!last">, </span>
+							Tische: @for (uuid of combi.tableUuids; let i = $index;
+							track uuid) {
+							<ng-container>
+								{{ i !== 0 ? ", " : "" }}
+								{{ getTableNumber(selectedRoom, uuid) }}
 							</ng-container>
-							({{ combi.seats }} Plätze)
+							({{ combi.seats }} Plätze) }
 						</span>
 						<span class="spacer"></span>
 						<button
@@ -258,8 +261,10 @@
 							<mat-icon>delete</mat-icon>
 						</button>
 					</mat-list-item>
+					}
 				</mat-list>
 			</mat-card>
+			}
 		</div>
 	</div>
 </app-settings-bar>

@@ -17,12 +17,11 @@
 				<mat-form-field appearance="outline" class="role-field">
 					<mat-label>Berechtigungen</mat-label>
 					<mat-select multiple [(ngModel)]="newRolePermissions">
-						<mat-option
-							*ngFor="let perm of ALL_PERMISSIONS"
-							[value]="perm.code"
-						>
+						@for (perm of ALL_PERMISSIONS; track perm.code) {
+						<mat-option [value]="perm.code">
 							{{ perm.label }}
 						</mat-option>
+						}
 					</mat-select>
 				</mat-form-field>
 				<button
@@ -35,16 +34,15 @@
 				</button>
 			</div>
 			<mat-list>
-				<mat-list-item *ngFor="let role of roles">
-					<div
-						class="role-list-row"
-						*ngIf="editRole?.uuid !== role.uuid; else editRoleTpl"
-					>
+				@for (role of roles; track role.uuid) {
+				<mat-list-item>
+					@if (editRole?.uuid !== role.uuid) {
+					<div class="role-list-row">
 						<span class="role-name">{{ role.name }}</span>
 						<mat-chip-list>
-							<mat-chip *ngFor="let perm of role.permissions">{{
-								getPermissionLabel(perm)
-							}}</mat-chip>
+							@for (perm of role.permissions; track perm) {
+							<mat-chip>{{ getPermissionLabel(perm) }}</mat-chip>
+							}
 						</mat-chip-list>
 						<span class="spacer"></span>
 						<button
@@ -62,6 +60,7 @@
 							<mat-icon>delete</mat-icon>
 						</button>
 					</div>
+					} @else {
 					<ng-template #editRoleTpl>
 						<mat-form-field appearance="outline" class="role-field">
 							<input matInput [(ngModel)]="editRoleName" />
@@ -69,12 +68,11 @@
 						<mat-form-field appearance="outline" class="role-field">
 							<mat-label>Berechtigungen</mat-label>
 							<mat-select multiple [(ngModel)]="editRolePermissions">
-								<mat-option
-									*ngFor="let perm of ALL_PERMISSIONS"
-									[value]="perm.code"
-								>
+								@for (perm of ALL_PERMISSIONS; track perm.code) {
+								<mat-option [value]="perm.code">
 									{{ perm.label }}
 								</mat-option>
+								}
 							</mat-select>
 						</mat-form-field>
 						<button
@@ -88,7 +86,9 @@
 							<mat-icon>close</mat-icon>
 						</button>
 					</ng-template>
+					}
 				</mat-list-item>
+				}
 			</mat-list>
 		</mat-card>
 
@@ -111,9 +111,9 @@
 				<mat-form-field appearance="outline" class="employee-field">
 					<mat-label>Rolle</mat-label>
 					<mat-select [(ngModel)]="newEmployeeRoleUuid">
-						<mat-option *ngFor="let role of roles" [value]="role.uuid">{{
-							role.name
-						}}</mat-option>
+						@for (role of roles; track role.uuid) {
+						<mat-option [value]="role.uuid">{{ role.name }}</mat-option>
+						}
 					</mat-select>
 				</mat-form-field>
 				<button
@@ -130,11 +130,10 @@
 				</button>
 			</div>
 			<mat-list>
-				<mat-list-item *ngFor="let emp of employees">
-					<div
-						class="role-list-row"
-						*ngIf="editEmployee?.uuid !== emp.uuid; else editEmpTpl"
-					>
+				@for (emp of employees; track emp.uuid) {
+				<mat-list-item>
+					@if (editEmployee?.uuid !== emp.uuid) {
+					<div class="role-list-row">
 						<span>{{ emp.name }}</span>
 						<span class="employee-role">{{
 							getRole(emp.roleUuid)?.name || "Keine"
@@ -155,6 +154,7 @@
 							<mat-icon>delete</mat-icon>
 						</button>
 					</div>
+					} @else {
 					<ng-template #editEmpTpl>
 						<mat-form-field appearance="outline" class="employee-field">
 							<input matInput [(ngModel)]="editEmployeeName" />
@@ -170,11 +170,11 @@
 						<mat-form-field appearance="outline" class="employee-field">
 							<mat-label>Rolle</mat-label>
 							<mat-select [(ngModel)]="editEmployeeRoleUuid">
-								<mat-option
-									*ngFor="let role of roles"
-									[value]="role.uuid"
-									>{{ role.name }}</mat-option
-								>
+								@for (role of roles; track role.uuid) {
+								<mat-option [value]="role.uuid">
+									{{ role.name }}
+								</mat-option>
+								}
 							</mat-select>
 						</mat-form-field>
 						<mat-form-field appearance="outline" class="employee-field">
@@ -183,12 +183,11 @@
 								multiple
 								[(ngModel)]="editEmployeeExtraPermissions"
 							>
-								<mat-option
-									*ngFor="let perm of ALL_PERMISSIONS"
-									[value]="perm.code"
-								>
+								@for (perm of ALL_PERMISSIONS; track perm.code) {
+								<mat-option [value]="perm.code">
 									{{ perm.label }}
 								</mat-option>
+								}
 							</mat-select>
 						</mat-form-field>
 						<button
@@ -202,7 +201,9 @@
 							<mat-icon>close</mat-icon>
 						</button>
 					</ng-template>
+					}
 				</mat-list-item>
+				}
 			</mat-list>
 		</mat-card>
 	</div>

@@ -1,23 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing"
 
-import { RoomManagementComponent } from './room-management.component';
+import { RoomManagementComponent } from "./room-management.component"
 
-describe('RoomManagementComponent', () => {
-  let component: RoomManagementComponent;
-  let fixture: ComponentFixture<RoomManagementComponent>;
+describe("RoomManagementComponent", () => {
+	let component: RoomManagementComponent
+	let fixture: ComponentFixture<RoomManagementComponent>
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RoomManagementComponent]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [RoomManagementComponent]
+		}).compileComponents()
 
-    fixture = TestBed.createComponent(RoomManagementComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(RoomManagementComponent)
+		component = fixture.componentInstance
+		fixture.detectChanges()
+	})
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+	it("should create", () => {
+		expect(component).toBeTruthy()
+	})
+})

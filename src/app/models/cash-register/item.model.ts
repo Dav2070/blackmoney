@@ -1,8 +1,8 @@
-import { Variation } from "./variation.model";
+import { Variation } from "./variation.model"
 
 export class Item {
-    id:number;
-    price:number;
-    name:string;
-    variations?:Variation[];
+	id: number
+	price: number
+	name: string
+	variations?: Variation[]
 }

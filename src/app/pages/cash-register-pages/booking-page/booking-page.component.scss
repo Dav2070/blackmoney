@@ -27,8 +27,10 @@ nav {
 }
 
 .clickcolor {
-	box-shadow: 0px 0px 0px 0px rgba(102, 9, 179, 0.2),
-		0px 0px 0px 0px rgba(240, 9, 9, 0.14), 0px 0px 0px 0px rgb(0, 0, 0, 0.12);
+	box-shadow:
+		0px 0px 0px 0px rgba(102, 9, 179, 0.2),
+		0px 0px 0px 0px rgba(240, 9, 9, 0.14),
+		0px 0px 0px 0px rgb(0, 0, 0, 0.12);
 	--mat-outlined-card-outline-color: #fff;
 }
 
@@ -226,12 +228,12 @@ footer {
 }
 
 .bill-item-detail {
-  display: flex;
-  flex-direction: column;
-  border: black 0.5px solid;
-  padding: 5px;
-  margin-bottom: 5px;
-  border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	border: black 0.5px solid;
+	padding: 5px;
+	margin-bottom: 5px;
+	border-radius: 5px;
 }
 
 .bill-total {
@@ -243,10 +245,10 @@ footer {
 }
 
 .bill-payment-method {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-weight: bold;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-weight: bold;
 }
 
 .bill-buttons {

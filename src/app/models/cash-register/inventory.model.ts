@@ -1,7 +1,6 @@
-import { Item } from "./item.model";
-
+import { Item } from "./item.model"
 
 export class Inventory {
-    name: string;
-    items: Item[];
+	name: string
+	items: Item[]
 }

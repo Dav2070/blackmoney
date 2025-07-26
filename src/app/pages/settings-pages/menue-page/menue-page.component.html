@@ -12,102 +12,113 @@
 						>
 							<mat-tab label="Speisen">
 								<mat-list>
-									@for (category of foodCategories; track
-									category.uuid) {
-									<mat-list-item>
-										<div class="category-row">
-											@if (editCategory?.uuid !== category.uuid) {
-											<ng-container>
-												<span
-													class="category-name"
-													(click)="setCategory(category)"
-													[class.selected]="
-														selectedCategory?.uuid ===
-														category.uuid
-													"
-												>
-													{{ category.name }}
-												</span>
-												<span class="category-actions">
-													<button
-														mat-icon-button
-														color="primary"
-														(click)="startEditCategory(category)"
-													>
-														<mat-icon>edit</mat-icon>
-													</button>
-													<button
-														mat-icon-button
-														color="warn"
-														(click)="deleteCategory(category)"
-													>
-														<mat-icon>delete</mat-icon>
-													</button>
-												</span>
-											</ng-container>
-											} @else {
-											<ng-template #editFood>
+									@for (
+										category of foodCategories;
+										track category.uuid
+									) {
+										<mat-list-item>
+											<div class="category-row">
+												@if (editCategory?.uuid !== category.uuid) {
+													<ng-container>
+														<span
+															class="category-name"
+															(click)="setCategory(category)"
+															[class.selected]="
+																selectedCategory?.uuid ===
+																category.uuid
+															"
+														>
+															{{ category.name }}
+														</span>
+														<span class="category-actions">
+															<button
+																mat-icon-button
+																color="primary"
+																(click)="
+																	startEditCategory(category)
+																"
+															>
+																<mat-icon>edit</mat-icon>
+															</button>
+															<button
+																mat-icon-button
+																color="warn"
+																(click)="
+																	deleteCategory(category)
+																"
+															>
+																<mat-icon>delete</mat-icon>
+															</button>
+														</span>
+													</ng-container>
+												} @else {
+													<ng-template #editFood>
+														<mat-form-field
+															appearance="outline"
+															class="category-edit-field"
+														>
+															<input
+																matInput
+																[(ngModel)]="editCategoryName"
+																(keydown.enter)="
+																	saveEditCategory()
+																"
+															/>
+														</mat-form-field>
+														<span class="category-actions">
+															<button
+																mat-icon-button
+																color="primary"
+																(click)="saveEditCategory()"
+															>
+																<mat-icon>check</mat-icon>
+															</button>
+															<button
+																mat-icon-button
+																(click)="cancelEditCategory()"
+															>
+																<mat-icon>close</mat-icon>
+															</button>
+														</span>
+													</ng-template>
+												}
+											</div>
+										</mat-list-item>
+									}
+									@if (addCategoryType === "FOOD") {
+										<mat-list-item>
+											<div class="category-row">
 												<mat-form-field
 													appearance="outline"
 													class="category-edit-field"
 												>
 													<input
 														matInput
-														[(ngModel)]="editCategoryName"
-														(keydown.enter)="saveEditCategory()"
+														[(ngModel)]="newCategoryName"
+														(keydown.enter)="
+															addNewCategory('FOOD')
+														"
+														placeholder="Neue Kategorie"
 													/>
 												</mat-form-field>
 												<span class="category-actions">
 													<button
 														mat-icon-button
 														color="primary"
-														(click)="saveEditCategory()"
+														(click)="addNewCategory('FOOD')"
+														[disabled]="!newCategoryName?.trim()"
 													>
 														<mat-icon>check</mat-icon>
 													</button>
 													<button
 														mat-icon-button
-														(click)="cancelEditCategory()"
+														(click)="cancelAddCategory()"
 													>
 														<mat-icon>close</mat-icon>
 													</button>
 												</span>
-											</ng-template>
-											}
-										</div>
-									</mat-list-item>
-									} @if (addCategoryType === 'FOOD') {
-									<mat-list-item>
-										<div class="category-row">
-											<mat-form-field
-												appearance="outline"
-												class="category-edit-field"
-											>
-												<input
-													matInput
-													[(ngModel)]="newCategoryName"
-													(keydown.enter)="addNewCategory('FOOD')"
-													placeholder="Neue Kategorie"
-												/>
-											</mat-form-field>
-											<span class="category-actions">
-												<button
-													mat-icon-button
-													color="primary"
-													(click)="addNewCategory('FOOD')"
-													[disabled]="!newCategoryName?.trim()"
-												>
-													<mat-icon>check</mat-icon>
-												</button>
-												<button
-													mat-icon-button
-													(click)="cancelAddCategory()"
-												>
-													<mat-icon>close</mat-icon>
-												</button>
-											</span>
-										</div>
-									</mat-list-item>
+											</div>
+										</mat-list-item>
 									}
 								</mat-list>
 								<div class="add-btn-row">
@@ -123,102 +134,113 @@
 							</mat-tab>
 							<mat-tab label="Getränke">
 								<mat-list>
-									@for (category of drinkCategories; track
-									category.uuid) {
-									<mat-list-item>
-										<div class="category-row">
-											@if (editCategory?.uuid !== category.uuid) {
-											<ng-container>
-												<span
-													class="category-name"
-													(click)="setCategory(category)"
-													[class.selected]="
-														selectedCategory?.uuid ===
-														category.uuid
-													"
-												>
-													{{ category.name }}
-												</span>
-												<span class="category-actions">
-													<button
-														mat-icon-button
-														color="primary"
-														(click)="startEditCategory(category)"
-													>
-														<mat-icon>edit</mat-icon>
-													</button>
-													<button
-														mat-icon-button
-														color="warn"
-														(click)="deleteCategory(category)"
-													>
-														<mat-icon>delete</mat-icon>
-													</button>
-												</span>
-											</ng-container>
-											} @else {
-											<ng-template #editDrink>
+									@for (
+										category of drinkCategories;
+										track category.uuid
+									) {
+										<mat-list-item>
+											<div class="category-row">
+												@if (editCategory?.uuid !== category.uuid) {
+													<ng-container>
+														<span
+															class="category-name"
+															(click)="setCategory(category)"
+															[class.selected]="
+																selectedCategory?.uuid ===
+																category.uuid
+															"
+														>
+															{{ category.name }}
+														</span>
+														<span class="category-actions">
+															<button
+																mat-icon-button
+																color="primary"
+																(click)="
+																	startEditCategory(category)
+																"
+															>
+																<mat-icon>edit</mat-icon>
+															</button>
+															<button
+																mat-icon-button
+																color="warn"
+																(click)="
+																	deleteCategory(category)
+																"
+															>
+																<mat-icon>delete</mat-icon>
+															</button>
+														</span>
+													</ng-container>
+												} @else {
+													<ng-template #editDrink>
+														<mat-form-field
+															appearance="outline"
+															class="category-edit-field"
+														>
+															<input
+																matInput
+																[(ngModel)]="editCategoryName"
+																(keydown.enter)="
+																	saveEditCategory()
+																"
+															/>
+														</mat-form-field>
+														<span class="category-actions">
+															<button
+																mat-icon-button
+																color="primary"
+																(click)="saveEditCategory()"
+															>
+																<mat-icon>check</mat-icon>
+															</button>
+															<button
+																mat-icon-button
+																(click)="cancelEditCategory()"
+															>
+																<mat-icon>close</mat-icon>
+															</button>
+														</span>
+													</ng-template>
+												}
+											</div>
+										</mat-list-item>
+									}
+									@if (addCategoryType === "DRINK") {
+										<mat-list-item>
+											<div class="category-row">
 												<mat-form-field
 													appearance="outline"
 													class="category-edit-field"
 												>
 													<input
 														matInput
-														[(ngModel)]="editCategoryName"
-														(keydown.enter)="saveEditCategory()"
+														[(ngModel)]="newCategoryName"
+														(keydown.enter)="
+															addNewCategory('DRINK')
+														"
+														placeholder="Neue Kategorie"
 													/>
 												</mat-form-field>
 												<span class="category-actions">
 													<button
 														mat-icon-button
 														color="primary"
-														(click)="saveEditCategory()"
+														(click)="addNewCategory('DRINK')"
+														[disabled]="!newCategoryName?.trim()"
 													>
 														<mat-icon>check</mat-icon>
 													</button>
 													<button
 														mat-icon-button
-														(click)="cancelEditCategory()"
+														(click)="cancelAddCategory()"
 													>
 														<mat-icon>close</mat-icon>
 													</button>
 												</span>
-											</ng-template>
-											}
-										</div>
-									</mat-list-item>
-									} @if (addCategoryType === 'DRINK') {
-									<mat-list-item>
-										<div class="category-row">
-											<mat-form-field
-												appearance="outline"
-												class="category-edit-field"
-											>
-												<input
-													matInput
-													[(ngModel)]="newCategoryName"
-													(keydown.enter)="addNewCategory('DRINK')"
-													placeholder="Neue Kategorie"
-												/>
-											</mat-form-field>
-											<span class="category-actions">
-												<button
-													mat-icon-button
-													color="primary"
-													(click)="addNewCategory('DRINK')"
-													[disabled]="!newCategoryName?.trim()"
-												>
-													<mat-icon>check</mat-icon>
-												</button>
-												<button
-													mat-icon-button
-													(click)="cancelAddCategory()"
-												>
-													<mat-icon>close</mat-icon>
-												</button>
-											</span>
-										</div>
-									</mat-list-item>
+											</div>
+										</mat-list-item>
 									}
 								</mat-list>
 								<div class="add-btn-row">

@@ -1,3 +1,3 @@
 export class Bill {
-    uuid: string
+	uuid: string
 }

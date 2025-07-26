@@ -1,7 +1,7 @@
-import { PickedItem } from './picked-item.model';
+import { PickedItem } from "./picked-item.model"
 
-describe('PickedItem', () => {
-  it('should create an instance', () => {
-    expect(new PickedItem()).toBeTruthy();
-  });
-});
+describe("PickedItem", () => {
+	it("should create an instance", () => {
+		expect(new PickedItem()).toBeTruthy()
+	})
+})

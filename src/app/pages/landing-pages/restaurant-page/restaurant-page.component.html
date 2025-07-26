@@ -7,17 +7,21 @@
 				<fa-icon [icon]="faLocationDot"></fa-icon>
 
 				<div class="address-card-content">
-					@if (city || country || line1 || line2 || postalCode) { @if
-					(line1) {
-					<p>{{ line1 }}</p>
-					} @if (line2) {
-					<p>{{ line2 }}</p>
-					} @if (postalCode || city) {
-					<p>{{ postalCode }} {{ city }}</p>
-					} @if (country) {
-					<p>{{ country === "DE" ? "Deutschland" : "" }}</p>
-					} } @else {
-					<p class="no-address">Adresse angeben</p>
+					@if (city || country || line1 || line2 || postalCode) {
+						@if (line1) {
+							<p>{{ line1 }}</p>
+						}
+						@if (line2) {
+							<p>{{ line2 }}</p>
+						}
+						@if (postalCode || city) {
+							<p>{{ postalCode }} {{ city }}</p>
+						}
+						@if (country) {
+							<p>{{ country === "DE" ? "Deutschland" : "" }}</p>
+						}
+					} @else {
+						<p class="no-address">Adresse angeben</p>
 					}
 				</div>
 
@@ -41,5 +45,7 @@
 	[postalCode]="postalCode"
 	[postalCodeError]="postalCodeError"
 	(primaryButtonClick)="editAddressDialogPrimaryButtonClick($event)"
-	(clearErrors)="cityError = ''; line1Error = ''; line2Error = ''; postalCodeError = ''"
+	(clearErrors)="
+		cityError = ''; line1Error = ''; line2Error = ''; postalCodeError = ''
+	"
 ></app-edit-address-dialog>

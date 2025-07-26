@@ -1,7 +1,7 @@
-import { Item } from './item.model';
+import { Item } from "./item.model"
 
-describe('Item', () => {
-  it('should create an instance', () => {
-    expect(new Item()).toBeTruthy();
-  });
-});
+describe("Item", () => {
+	it("should create an instance", () => {
+		expect(new Item()).toBeTruthy()
+	})
+})

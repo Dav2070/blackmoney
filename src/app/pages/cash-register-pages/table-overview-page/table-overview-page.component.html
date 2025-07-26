@@ -6,18 +6,22 @@
 		<mat-form-field>
 			<mat-select [(value)]="selected">
 				@for (room of rooms; track room.uuid) {
-				<mat-option [value]="room">{{ room.name }}</mat-option>
+					<mat-option [value]="room">{{ room.name }}</mat-option>
 				}
 			</mat-select>
 		</mat-form-field>
 		<div class="tables">
-			@if (selected != null) { @for (table of selected.tables; track
-			table.uuid) {
-			<mat-card class="table">
-				<mat-card-content>{{ table.name }}</mat-card-content>
-				<a [routerLink]="['tables', table.uuid]" class="card-link"></a>
-			</mat-card>
-			} }
+			@if (selected != null) {
+				@for (table of selected.tables; track table.uuid) {
+					<mat-card class="table">
+						<mat-card-content>{{ table.name }}</mat-card-content>
+						<a
+							[routerLink]="['tables', table.uuid]"
+							class="card-link"
+						></a>
+					</mat-card>
+				}
+			}
 		</div>
 	</div>
 	<footer class="bottom">

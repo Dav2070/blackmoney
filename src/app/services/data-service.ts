@@ -21,7 +21,10 @@ export class DataService {
 	company: Company = null
 	restaurant: Restaurant = null
 
-	constructor(private apollo: Apollo, private httpLink: HttpLink) {}
+	constructor(
+		private apollo: Apollo,
+		private httpLink: HttpLink
+	) {}
 
 	loadApollo(accessToken: string) {
 		this.apollo.removeClient(blackmoneyAuthClientName)

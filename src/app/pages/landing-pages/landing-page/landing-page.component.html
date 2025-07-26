@@ -35,14 +35,14 @@
 			(click)="navigateToUserPage()"
 		>
 			@if (!userButtonSelected && !dataService.dav.isLoggedIn) {
-			<fa-icon [icon]="faCircleUserRegular"></fa-icon>
+				<fa-icon [icon]="faCircleUserRegular"></fa-icon>
 			} @else if (dataService.dav.isLoggedIn) {
-			<img
-				[src]="dataService.dav.user.ProfileImage"
-				class="profile-image"
-				width="28"
-				height="28"
-			/>
+				<img
+					[src]="dataService.dav.user.ProfileImage"
+					class="profile-image"
+					width="28"
+					height="28"
+				/>
 			}
 		</dav-icon-button>
 	</div>
@@ -59,9 +59,9 @@
 			(click)="navigateToOverviewPage()"
 		>
 			@if (overviewTabActive) {
-			<fa-icon slot="icon" [icon]="faHouseSolid"></fa-icon>
+				<fa-icon slot="icon" [icon]="faHouseSolid"></fa-icon>
 			} @else {
-			<fa-icon slot="icon" [icon]="faHouseRegular"></fa-icon>
+				<fa-icon slot="icon" [icon]="faHouseRegular"></fa-icon>
 			}
 
 			<p slot="label">Übersicht</p>
@@ -72,9 +72,9 @@
 			(click)="navigateToPricingPage()"
 		>
 			@if (pricingTabActive) {
-			<fa-icon slot="icon" [icon]="faCircleDollarSolid"></fa-icon>
+				<fa-icon slot="icon" [icon]="faCircleDollarSolid"></fa-icon>
 			} @else {
-			<fa-icon slot="icon" [icon]="faCircleDollarRegular"></fa-icon>
+				<fa-icon slot="icon" [icon]="faCircleDollarRegular"></fa-icon>
 			}
 
 			<p slot="label">Preise</p>

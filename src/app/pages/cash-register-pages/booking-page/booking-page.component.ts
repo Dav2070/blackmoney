@@ -19,7 +19,12 @@ import {
 } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { count } from "node:console"
-import { List, OrderItemVariationResource, PaymentMethod, VariationResource } from "src/app/types"
+import {
+	List,
+	OrderItemVariationResource,
+	PaymentMethod,
+	VariationResource
+} from "src/app/types"
 import { threadId } from "node:worker_threads"
 import { VariationItem } from "src/app/models/VariationItem"
 import { OrderResource } from "dav-js"

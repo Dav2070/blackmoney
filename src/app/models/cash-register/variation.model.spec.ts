@@ -1,7 +1,7 @@
-import { Variation } from "./variation.model";
+import { Variation } from "./variation.model"
 
-describe('Variation', () => {
-  it('should create an instance', () => {
-    expect(new Variation()).toBeTruthy();
-  });
-});
+describe("Variation", () => {
+	it("should create an instance", () => {
+		expect(new Variation()).toBeTruthy()
+	})
+})

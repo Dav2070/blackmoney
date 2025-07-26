@@ -3,13 +3,13 @@
 		<h1 class="headline">Anmelden</h1>
 
 		@if (dataService.company && dataService.company.restaurants.length > 1) {
-		<dav-dropdown
-			label="Restaurant"
-			width="173"
-			[options]="restaurantDropdownOptions"
-			[selectedKey]="restaurantDropdownSelectedKey"
-			(change)="restaurantDropdownChange($event)"
-		></dav-dropdown>
+			<dav-dropdown
+				label="Restaurant"
+				width="173"
+				[options]="restaurantDropdownOptions"
+				[selectedKey]="restaurantDropdownSelectedKey"
+				(change)="restaurantDropdownChange($event)"
+			></dav-dropdown>
 		}
 
 		<dav-dropdown

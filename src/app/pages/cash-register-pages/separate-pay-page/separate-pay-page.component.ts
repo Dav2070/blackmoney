@@ -46,7 +46,7 @@ export class SeparatePayPageComponent {
 		private activatedRoute: ActivatedRoute,
 		private apiService: ApiService,
 		private dataService: DataService
-	) { }
+	) {}
 
 	async ngOnInit() {
 		await this.dataService.restaurantPromiseHolder.AwaitResult()
@@ -338,8 +338,13 @@ export class SeparatePayPageComponent {
 		/*await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
 		window.location.reload()*/
 		console.log(this.activeBill, payment)
-		await this.apiService.updateOrder("uuid", { uuid: this.orderUuid, orderItems: this.bookedItems.getItemsCountandId() })
-		let newOrder = await this.apiService.createOrder("uuid", { tableUuid: this.table.uuid })
+		await this.apiService.updateOrder("uuid", {
+			uuid: this.orderUuid,
+			orderItems: this.bookedItems.getItemsCountandId()
+		})
+		let newOrder = await this.apiService.createOrder("uuid", {
+			tableUuid: this.table.uuid
+		})
 		await this.apiService.addProductsToOrder("uuid", {
 			uuid: newOrder.data.createOrder.uuid,
 			products: this.activeBill.getAllPickedItems().map(item => {
@@ -357,7 +362,11 @@ export class SeparatePayPageComponent {
 				} as AddProductsInput
 			})
 		})
-		await this.apiService.completeOrder("uuid", { uuid: newOrder.data.createOrder.uuid, billUuid: this.billUuid, paymentMethod: payment })
+		await this.apiService.completeOrder("uuid", {
+			uuid: newOrder.data.createOrder.uuid,
+			billUuid: this.billUuid,
+			paymentMethod: payment
+		})
 		this.deleteBill()
 	}
 }

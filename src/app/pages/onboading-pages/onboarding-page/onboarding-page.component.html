@@ -1,112 +1,113 @@
 @if (context == "createCompany") {
-<div class="container slide-up-in">
-	<div class="content">
-		<h1 class="headline">Wie heißt dein Restaurant?</h1>
-		<p class="description">Bitte gib den Namen deines Restaurants ein.</p>
+	<div class="container slide-up-in">
+		<div class="content">
+			<h1 class="headline">Wie heißt dein Restaurant?</h1>
+			<p class="description">Bitte gib den Namen deines Restaurants ein.</p>
 
-		<div class="input-container">
-			<dav-textfield
-				placeholder="Café Salmonella"
-				(change)="restaurantNameChange($event)"
-			></dav-textfield>
+			<div class="input-container">
+				<dav-textfield
+					placeholder="Café Salmonella"
+					(change)="restaurantNameChange($event)"
+				></dav-textfield>
 
-			<dav-button
-				[disabled]="restaurantName.length < 3"
-				size="sm"
-				outline
-				(click)="continueButtonClick()"
-			>
-				Weiter
-			</dav-button>
+				<dav-button
+					[disabled]="restaurantName.length < 3"
+					size="sm"
+					outline
+					(click)="continueButtonClick()"
+				>
+					Weiter
+				</dav-button>
+			</div>
 		</div>
 	</div>
-</div>
 } @else if (context == "createOwner") {
-<div class="container slide-up-in">
-	<div class="content">
-		<h1 class="headline">Erstelle deinen Admin-Zugang</h1>
-		<p class="description">
-			Gib deinen Namen und ein Passwort an, mit dem du dich anmelden
-			kannst.<br />
-			Damit kannst du später das Kassensystem verwalten und Einstellungen
-			vornehmen.
-		</p>
+	<div class="container slide-up-in">
+		<div class="content">
+			<h1 class="headline">Erstelle deinen Admin-Zugang</h1>
+			<p class="description">
+				Gib deinen Namen und ein Passwort an, mit dem du dich anmelden
+				kannst.<br />
+				Damit kannst du später das Kassensystem verwalten und Einstellungen
+				vornehmen.
+			</p>
 
-		<div class="input-container">
-			<dav-textfield
-				[value]="ownerName"
-				placeholder="Dein Name"
-				(change)="ownerNameChange($event)"
-			></dav-textfield>
-		</div>
+			<div class="input-container">
+				<dav-textfield
+					[value]="ownerName"
+					placeholder="Dein Name"
+					(change)="ownerNameChange($event)"
+				></dav-textfield>
+			</div>
 
-		<div class="input-container">
-			<dav-textfield
-				[value]="ownerPassword"
-				placeholder="Dein Passwort"
-				type="password"
-				(change)="ownerPasswordChange($event)"
-			></dav-textfield>
-		</div>
+			<div class="input-container">
+				<dav-textfield
+					[value]="ownerPassword"
+					placeholder="Dein Passwort"
+					type="password"
+					(change)="ownerPasswordChange($event)"
+				></dav-textfield>
+			</div>
 
-		<div class="continue-button-container">
-			<dav-button
-				size="sm"
-				[disabled]="ownerName.length < 2 || ownerPassword.length < 6"
-				outline
-				(click)="continueButtonClick()"
-			>
-				Weiter
-			</dav-button>
+			<div class="continue-button-container">
+				<dav-button
+					size="sm"
+					[disabled]="ownerName.length < 2 || ownerPassword.length < 6"
+					outline
+					(click)="continueButtonClick()"
+				>
+					Weiter
+				</dav-button>
+			</div>
 		</div>
 	</div>
-</div>
 } @else if (context == "createUsers") {
-<div class="container slide-up-in">
-	<div class="content">
-		<h1 class="headline">Füge deine Mitarbeiter hinzu</h1>
-		<p class="description">
-			Gib die Namen deiner Mitarbeiter an, damit sich jeder am Kassensystem
-			anmelden kann.
-		</p>
+	<div class="container slide-up-in">
+		<div class="content">
+			<h1 class="headline">Füge deine Mitarbeiter hinzu</h1>
+			<p class="description">
+				Gib die Namen deiner Mitarbeiter an, damit sich jeder am
+				Kassensystem anmelden kann.
+			</p>
 
-		<div class="input-container">
-			<dav-textfield
-				[value]="employeeName"
-				placeholder="Name des Mitarbeiters"
-				(change)="employeeNameChange($event)"
-			></dav-textfield>
+			<div class="input-container">
+				<dav-textfield
+					[value]="employeeName"
+					placeholder="Name des Mitarbeiters"
+					(change)="employeeNameChange($event)"
+				></dav-textfield>
 
-			<dav-button
-				[disabled]="employeeName.length < 2"
-				size="sm"
-				outline
-				(click)="addEmployeeButtonClick()"
-			>
-				Hinzufügen
-			</dav-button>
-		</div>
+				<dav-button
+					[disabled]="employeeName.length < 2"
+					size="sm"
+					outline
+					(click)="addEmployeeButtonClick()"
+				>
+					Hinzufügen
+				</dav-button>
+			</div>
 
-		@if (employees.length > 0) {
-		<div class="employee-list-container">
-			<dav-list>
-				@for (employee of employees; track employee) {
-				<dav-list-item [headline]="employee" size="sm"> </dav-list-item>
-				}
-			</dav-list>
-		</div>
-		}
+			@if (employees.length > 0) {
+				<div class="employee-list-container">
+					<dav-list>
+						@for (employee of employees; track employee) {
+							<dav-list-item [headline]="employee" size="sm">
+							</dav-list-item>
+						}
+					</dav-list>
+				</div>
+			}
 
-		<div class="continue-button-container">
-			<dav-button
-				size="sm"
-				[disabled]="employees.length == 0"
-				outline
-				(click)="continueButtonClick()"
-			>
-				Weiter
-			</dav-button>
+			<div class="continue-button-container">
+				<dav-button
+					size="sm"
+					[disabled]="employees.length == 0"
+					outline
+					(click)="continueButtonClick()"
+				>
+					Weiter
+				</dav-button>
+			</div>
 		</div>
 	</div>
-</div>
 }

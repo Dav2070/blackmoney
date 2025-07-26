@@ -1,7 +1,7 @@
-import { TmpVariations } from './tmp-variations.model';
+import { TmpVariations } from "./tmp-variations.model"
 
-describe('TmpVariations', () => {
-  it('should create an instance', () => {
-    expect(new TmpVariations()).toBeTruthy();
-  });
-});
+describe("TmpVariations", () => {
+	it("should create an instance", () => {
+		expect(new TmpVariations()).toBeTruthy()
+	})
+})

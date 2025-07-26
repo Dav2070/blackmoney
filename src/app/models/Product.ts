@@ -1,4 +1,4 @@
-import { Variation } from './Variation'
+import { Variation } from "./Variation"
 
 export class Product {
 	id: number

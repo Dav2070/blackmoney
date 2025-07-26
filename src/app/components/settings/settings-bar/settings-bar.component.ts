@@ -12,7 +12,10 @@ import { Router, ActivatedRoute } from "@angular/router"
 	standalone: false
 })
 export class SettingsBarComponent {
-	constructor(private router: Router, private route: ActivatedRoute) { }
+	constructor(
+		private router: Router,
+		private route: ActivatedRoute
+	) {}
 	private breakpointObserver = inject(BreakpointObserver)
 	private location = inject(Location)
 
@@ -23,6 +26,6 @@ export class SettingsBarComponent {
 			shareReplay()
 		)
 	goBack(): void {
-		this.router.navigate(['..'], { relativeTo: this.route });
+		this.router.navigate([".."], { relativeTo: this.route })
 	}
 }

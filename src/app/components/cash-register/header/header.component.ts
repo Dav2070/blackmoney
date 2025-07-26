@@ -14,7 +14,10 @@ export class HeaderComponent {
 	currentDate: string = ""
 	bediener: string = ""
 
-	constructor(public dataService: DataService, private ngZone: NgZone) {}
+	constructor(
+		public dataService: DataService,
+		private ngZone: NgZone
+	) {}
 
 	ngOnInit() {
 		this.ngZone.runOutsideAngular(() => {

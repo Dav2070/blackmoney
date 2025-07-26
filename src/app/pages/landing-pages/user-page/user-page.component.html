@@ -9,17 +9,19 @@
 				(click)="navigateToDashboardPage($event)"
 			></dav-list-item>
 
-			@if (dataService.user != null && ["OWNER",
-			"ADMIN"].includes(dataService.user.role)) {
-			<dav-list-item
-				headline="Unternehmensdetails bearbeiten"
-			></dav-list-item>
+			@if (
+				dataService.user != null &&
+				["OWNER", "ADMIN"].includes(dataService.user.role)
+			) {
+				<dav-list-item
+					headline="Unternehmensdetails bearbeiten"
+				></dav-list-item>
 
-			<dav-list-item
-				headline="Restaurants verwalten"
-				href="user/restaurants"
-				(click)="navigateToRestaurantsPage($event)"
-			></dav-list-item>
+				<dav-list-item
+					headline="Restaurants verwalten"
+					href="user/restaurants"
+					(click)="navigateToRestaurantsPage($event)"
+				></dav-list-item>
 			}
 		</dav-list>
 	</div>

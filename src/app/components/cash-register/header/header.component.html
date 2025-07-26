@@ -1,20 +1,20 @@
 <div id="headerContainer">
 	@if (dataService.user?.name && dataService.restaurant?.name) {
-	<p>
-		{{ dataService.user?.name ?? "" }} –
-		{{ dataService.restaurant?.name ?? "" }}
-	</p>
+		<p>
+			{{ dataService.user?.name ?? "" }} –
+			{{ dataService.restaurant?.name ?? "" }}
+		</p>
 	}
 	<h2>BMKS</h2>
 	<p>{{ currentDate }}</p>
 </div>
 
-@if (showButton){
-<button
-	mat-mini-fab
-	style="float: right; margin-bottom: 10px; margin-right: 5px"
-	[routerLink]="['settings']"
->
-	<mat-icon>settings</mat-icon>
-</button>
+@if (showButton) {
+	<button
+		mat-mini-fab
+		style="float: right; margin-bottom: 10px; margin-right: 5px"
+		[routerLink]="['settings']"
+	>
+		<mat-icon>settings</mat-icon>
+	</button>
 }

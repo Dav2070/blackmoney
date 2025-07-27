@@ -39,6 +39,7 @@ import { SettingsBarComponent } from "./components/settings/settings-bar/setting
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 
 // Dialogs
+import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 
 // Pages
@@ -84,6 +85,7 @@ import { SpecialsTableComponent } from "./components/settings/specials-table/spe
 		HeaderComponent,
 		SettingsBarComponent,
 		// Dialog
+		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		// Pages
 		LandingPageComponent,

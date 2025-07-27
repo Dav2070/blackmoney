@@ -1,7 +1,11 @@
 export const de = {
 	dialogs: {
-		editRestaurantDialog: {
-			headline: "Restaurant bearbeiten",
+		editRestaurantNameDialog: {
+			headline: "Name bearbeiten",
+			name: "Name des Restaurants"
+		},
+		editAddressDialog: {
+			headline: "Adresse bearbeiten",
 			city: "Stadt",
 			line1: "Adresszeile 1",
 			line2: "Adresszeile 2",

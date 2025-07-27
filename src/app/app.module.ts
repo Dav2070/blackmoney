@@ -28,7 +28,6 @@ import { MatRadioModule } from "@angular/material/radio"
 
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
-import { ApolloModule } from "apollo-angular"
 
 // Local modules
 import { GraphQLModule } from "./graphql.module"
@@ -118,7 +117,6 @@ import { SpecialsTableComponent } from "./components/settings/specials-table/spe
 		FormsModule,
 		ReactiveFormsModule,
 		FontAwesomeModule,
-		ApolloModule,
 		GraphQLModule,
 		AppRoutingModule,
 		// Material Design modules

@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { faLocationDot, faPen } from "@fortawesome/pro-regular-svg-icons"
+import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
 import * as ErrorCodes from "src/app/errorCodes"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -18,6 +19,7 @@ export class RestaurantPageComponent {
 	faPen = faPen
 	uuid: string = null
 	name: string = ""
+	nameError: string = ""
 	city: string = ""
 	cityError: string = ""
 	country: string = ""
@@ -27,6 +29,12 @@ export class RestaurantPageComponent {
 	line2Error: string = ""
 	postalCode: string = ""
 	postalCodeError: string = ""
+
+	//#region EditRestaurantNameDialog
+	@ViewChild("editRestaurantNameDialog")
+	editRestaurantNameDialog: EditRestaurantNameDialogComponent
+	editRestaurantNameDialogLoading: boolean = false
+	//#endregion
 
 	//#region EditAddressDialog
 	@ViewChild("editAddressDialog")
@@ -70,9 +78,53 @@ export class RestaurantPageComponent {
 			retrieveRestaurantResponse.data.retrieveRestaurant.postalCode
 	}
 
+	showEditRestaurantNameDialog() {
+		this.editRestaurantNameDialogLoading = false
+		this.editRestaurantNameDialog.show()
+	}
+
 	showEditAddressDialog() {
 		this.editAddressDialogLoading = false
 		this.editAddressDialog.show()
+	}
+
+	async editRestaurantNameDialogPrimaryButtonClick(event: { name: string }) {
+		this.editRestaurantNameDialogLoading = true
+
+		const updateRestaurantResponse = await this.apiService.updateRestaurant(
+			`name`,
+			{ uuid: this.uuid, name: event.name }
+		)
+
+		this.editRestaurantNameDialogLoading = false
+
+		if (updateRestaurantResponse.data?.updateRestaurant != null) {
+			const responseData = updateRestaurantResponse.data.updateRestaurant
+
+			this.name = responseData.name
+
+			this.editRestaurantNameDialog.hide()
+		} else if (updateRestaurantResponse.errors.length > 0) {
+			// Error handling
+			let errors = updateRestaurantResponse.errors[0].extensions?.[
+				"errors"
+			] as string[] | undefined
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.nameError = this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.nameError = this.errorsLocale.nameTooLong
+						break
+					default:
+						this.nameError = this.errorsLocale.unexpectedError
+						break
+				}
+			}
+		}
 	}
 
 	async editAddressDialogPrimaryButtonClick(event: {
@@ -85,7 +137,6 @@ export class RestaurantPageComponent {
 
 		const updateRestaurantResponse = await this.apiService.updateRestaurant(
 			`
-				uuid
 				city
 				line1
 				line2

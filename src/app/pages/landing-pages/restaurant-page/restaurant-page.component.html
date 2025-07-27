@@ -1,6 +1,11 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<h1>{{ name }}</h1>
+		<dav-header
+			editButtonVisible
+			(editButtonClick)="showEditRestaurantNameDialog()"
+		>
+			{{ name }}
+		</dav-header>
 
 		<dav-card>
 			<div class="address-card-container">
@@ -32,6 +37,15 @@
 		</dav-card>
 	</div>
 </div>
+
+<app-edit-restaurant-name-dialog
+	#editRestaurantNameDialog
+	[loading]="editRestaurantNameDialogLoading"
+	[name]="name"
+	[nameError]="nameError"
+	(primaryButtonClick)="editRestaurantNameDialogPrimaryButtonClick($event)"
+	(clearErrors)="nameError = ''"
+></app-edit-restaurant-name-dialog>
 
 <app-edit-address-dialog
 	#editAddressDialog

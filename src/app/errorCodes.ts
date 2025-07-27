@@ -1,3 +1,5 @@
+export const nameTooShort = "NAME_TOO_SHORT"
+export const nameTooLong = "NAME_TOO_LONG"
 export const cityTooLong = "CITY_TOO_LONG"
 export const line1TooLong = "LINE1_TOO_LONG"
 export const line2TooLong = "LINE2_TOO_LONG"

@@ -17,6 +17,8 @@ export const de = {
 		cancel: "Abbrechen"
 	},
 	errors: {
+		nameTooShort: "Der Name ist zu kurz.",
+		nameTooLong: "Der Name ist zu lang.",
 		cityTooLong: "Der Stadtname ist zu lang.",
 		line1TooLong: "Die erste Zeile der Adresse ist zu lang.",
 		line2TooLong: "Die zweite Zeile der Adresse ist zu lang.",

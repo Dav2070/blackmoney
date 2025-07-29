@@ -12,7 +12,7 @@ import { convertUserResourceToUser } from "src/app/utils"
 })
 export class OnboardingPageComponent {
 	context: "createCompany" | "createOwner" | "createUsers" = null
-	restaurantUuid: string = ""
+	companyUuid: string = ""
 	restaurantName: string = ""
 	ownerName: string = ""
 	ownerPassword: string = ""
@@ -32,10 +32,8 @@ export class OnboardingPageComponent {
 		if (this.dataService.company == null) {
 			this.context = "createCompany"
 		} else if (this.dataService.restaurant.users.length === 0) {
-			this.restaurantUuid = this.dataService.restaurant.uuid
 			this.context = "createOwner"
 		} else if (this.dataService.restaurant.users.length === 1) {
-			this.restaurantUuid = this.dataService.restaurant.uuid
 			this.context = "createUsers"
 		}
 	}
@@ -58,7 +56,7 @@ export class OnboardingPageComponent {
 
 	async addEmployeeButtonClick() {
 		await this.apiService.createUser(`uuid`, {
-			restaurantUuid: this.restaurantUuid,
+			companyUuid: this.companyUuid,
 			name: this.employeeName
 		})
 		this.employees.push(this.employeeName)
@@ -69,27 +67,19 @@ export class OnboardingPageComponent {
 		if (this.context === "createCompany") {
 			// TODO: Implement error handling
 			const createCompanyResponse = await this.apiService.createCompany(
-				`
-					uuid
-					restaurants {
-						items {
-							uuid
-						}
-					}
-				`,
+				`uuid`,
 				{
 					name: this.restaurantName
 				}
 			)
 
-			this.restaurantUuid =
-				createCompanyResponse.data.createCompany.restaurants.items[0].uuid
+			this.companyUuid = createCompanyResponse.data.createCompany.uuid
 
 			this.context = "createOwner"
 		} else if (this.context === "createOwner") {
 			// TODO: Implement error handling
 			const createOwnerResponse = await this.apiService.createOwner(`uuid`, {
-				restaurantUuid: this.restaurantUuid,
+				companyUuid: this.companyUuid,
 				name: this.ownerName,
 				password: this.ownerPassword
 			})
@@ -106,7 +96,7 @@ export class OnboardingPageComponent {
 						}
 					`,
 					{
-						restaurantUuid: this.restaurantUuid,
+						companyUuid: this.companyUuid,
 						userName: this.ownerName,
 						password: this.ownerPassword
 					}

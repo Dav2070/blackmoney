@@ -37,7 +37,7 @@ export class ApiService {
 	async login(
 		queryData: string,
 		variables: {
-			restaurantUuid: string
+			companyUuid: string
 			userName: string
 			password: string
 		}
@@ -46,12 +46,12 @@ export class ApiService {
 			.mutate<{ login: SessionResource }>({
 				mutation: gql`
 					mutation Login(
-						$restaurantUuid: String!
+						$companyUuid: String!
 						$userName: String!
 						$password: String!
 					) {
 						login(
-							restaurantUuid: $restaurantUuid
+							companyUuid: $companyUuid
 							userName: $userName
 							password: $password
 						) {
@@ -85,7 +85,7 @@ export class ApiService {
 	async createOwner(
 		queryData: string,
 		variables: {
-			restaurantUuid: string
+			companyUuid: string
 			name: string
 			password: string
 		}
@@ -94,12 +94,12 @@ export class ApiService {
 			.mutate<{ createOwner: UserResource }>({
 				mutation: gql`
 					mutation CreateOwner(
-						$restaurantUuid: String!
+						$companyUuid: String!
 						$name: String!
 						$password: String!
 					) {
 						createOwner(
-							restaurantUuid: $restaurantUuid
+							companyUuid: $companyUuid
 							name: $name
 							password: $password
 						) {
@@ -115,17 +115,17 @@ export class ApiService {
 
 	async createUser(
 		queryData: string,
-		variables: { restaurantUuid: string; name: string }
+		variables: { companyUuid: string; name: string }
 	): Promise<MutationResult<{ createUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createUser: UserResource }>({
 				mutation: gql`
 					mutation CreateUser(
-						$restaurantUuid: String!
+						$companyUuid: String!
 						$name: String!
 					) {
 						createUser(
-							restaurantUuid: $restaurantUuid
+							companyUuid: $companyUuid
 							name: $name
 						) {
 							${queryData}
@@ -239,18 +239,21 @@ export class ApiService {
 	}
 
 	async listRooms(
-		queryData: string
+		queryData: string,
+		variables: {
+			restaurantUuid?: string
+		}
 	): Promise<ApolloQueryResult<{ listRooms: List<RoomResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ listRooms: List<RoomResource> }>({
 				query: gql`
-					query ListRooms {
-						listRooms {
+					query ListRooms(restaurantUuid: String!) {
+						listRooms(restaurantUuid: $restaurantUuid) {
 							${queryData}
 						}
 					}
 				`,
-				variables: {},
+				variables,
 				errorPolicy
 			})
 			.toPromise()

@@ -154,7 +154,7 @@ export class LoginPageComponent {
 				}
 			`,
 			{
-				restaurantUuid: this.restaurantDropdownSelectedKey,
+				companyUuid: this.company.uuid,
 				userName: this.username,
 				password: this.password
 			}

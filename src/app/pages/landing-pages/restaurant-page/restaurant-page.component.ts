@@ -15,8 +15,6 @@ import { LocalizationService } from "src/app/services/localization-service"
 })
 export class RestaurantPageComponent {
 	errorsLocale = this.localizationService.locale.errors
-	faLocationDot = faLocationDot
-	faPen = faPen
 	uuid: string = null
 	name: string = ""
 	nameError: string = ""

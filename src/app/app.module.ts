@@ -77,6 +77,8 @@ import { RoomManagementComponent } from "./pages/settings-pages/room-management/
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
 import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
+import { RestaurantAddressComponent } from "./pages/landing-pages/restaurant-page/restaurant-address/restaurant-address.component"
+import { PrinterManagementComponent } from "./pages/landing-pages/restaurant-page/printer-management/printer-management.component"
 
 @NgModule({
 	declarations: [
@@ -84,6 +86,8 @@ import { SpecialsTableComponent } from "./components/settings/specials-table/spe
 		AppComponent,
 		HeaderComponent,
 		SettingsBarComponent,
+		RestaurantAddressComponent,
+		PrinterManagementComponent,
 		// Dialog
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,

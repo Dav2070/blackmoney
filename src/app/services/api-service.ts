@@ -12,7 +12,8 @@ import {
 	SessionResource,
 	PaymentMethod,
 	BillResource,
-	RestaurantResource
+	RestaurantResource,
+	UserRole
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -115,7 +116,7 @@ export class ApiService {
 
 	async createUser(
 		queryData: string,
-		variables: { companyUuid: string; name: string }
+		variables: { companyUuid: string; name: string; role?: UserRole }
 	): Promise<MutationResult<{ createUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createUser: UserResource }>({
@@ -123,10 +124,12 @@ export class ApiService {
 					mutation CreateUser(
 						$companyUuid: String!
 						$name: String!
+						$role: UserRole
 					) {
 						createUser(
 							companyUuid: $companyUuid
 							name: $name
+							role: $role
 						) {
 							${queryData}
 						}

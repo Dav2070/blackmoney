@@ -1,4 +1,5 @@
-import { Component } from "@angular/core"
+import { Component, ViewChild } from "@angular/core"
+import { AddEmployeeDialogComponent } from "src/app/dialogs/add-employee-dialog/add-employee-dialog.component"
 import { User } from "src/app/models/User"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
@@ -13,6 +14,13 @@ import { convertUserResourceToUser } from "src/app/utils"
 export class EmployeesPageComponent {
 	locale = this.localizationService.locale.employeesPage
 	users: User[] = []
+	nameError: string = ""
+
+	//#region AddEmployeeDialog
+	@ViewChild("addEmployeeDialog")
+	addEmployeeDialog: AddEmployeeDialogComponent
+	addEmployeeDialogLoading: boolean = false
+	//#endregion
 
 	constructor(
 		private apiService: ApiService,
@@ -42,5 +50,13 @@ export class EmployeesPageComponent {
 		for (let user of users) {
 			this.users.push(convertUserResourceToUser(user))
 		}
+	}
+
+	showAddEmployeeDialog() {
+		this.addEmployeeDialog.show()
+	}
+
+	addEmployeeDialogPrimaryButtonClick(event: { name: string }) {
+		console.log(event)
 	}
 }

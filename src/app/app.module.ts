@@ -41,6 +41,7 @@ import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page
 // Dialogs
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
+import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -88,6 +89,7 @@ import { SpecialsTableComponent } from "./components/settings/specials-table/spe
 		// Dialog
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
+		AddEmployeeDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

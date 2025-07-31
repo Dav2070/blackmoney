@@ -40,6 +40,10 @@ export const de = {
 			line1: "Adresszeile 1",
 			line2: "Adresszeile 2",
 			postalCode: "Postleitzahl"
+		},
+		addEmployeeDialog: {
+			headline: "Mitarbeiter hinzufügen",
+			name: "Name des Mitarbeiters"
 		}
 	},
 	actions: {

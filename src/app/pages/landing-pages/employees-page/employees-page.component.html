@@ -1,6 +1,8 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header>{{ locale.headline }}</dav-header>
+		<dav-header addButtonVisible (addButtonClick)="showAddEmployeeDialog()">
+			{{ locale.headline }}
+		</dav-header>
 
 		<dav-list>
 			@for (user of users; track user.uuid) {
@@ -9,3 +11,11 @@
 		</dav-list>
 	</div>
 </div>
+
+<app-add-employee-dialog
+	#addEmployeeDialog
+	[loading]="addEmployeeDialogLoading"
+	[nameError]="nameError"
+	(primaryButtonClick)="addEmployeeDialogPrimaryButtonClick($event)"
+	(clearErrors)="nameError = ''"
+></app-add-employee-dialog>

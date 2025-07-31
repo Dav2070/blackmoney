@@ -5,6 +5,7 @@ import { Company } from "src/app/models/Company"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
+import { LocalizationService } from "src/app/services/localization-service"
 import { SettingsService } from "src/app/services/settings-service"
 import {
 	convertCompanyResourceToCompany,
@@ -17,6 +18,7 @@ import {
 	standalone: false
 })
 export class LoginPageComponent {
+	locale = this.localizationService.locale.loginPage
 	company: Company = null
 	userDropdownOptions: DropdownOption[] = []
 	userDropdownSelectedKey: string = ""
@@ -31,7 +33,8 @@ export class LoginPageComponent {
 		public dataService: DataService,
 		private apiService: ApiService,
 		private authService: AuthService,
-		private settingsService: SettingsService
+		private settingsService: SettingsService,
+		private localizationService: LocalizationService
 	) {}
 
 	async ngOnInit() {
@@ -180,7 +183,7 @@ export class LoginPageComponent {
 			// Redirect to user page
 			this.router.navigate(["user"])
 		} else {
-			this.errorMessage = "Login failed"
+			this.errorMessage = this.locale.loginFailed
 		}
 	}
 }

@@ -4,7 +4,7 @@
 
 		<dav-list>
 			<dav-list-item
-				headline="Zum Kassensystem"
+				[headline]="locale.goToDashboard"
 				href="dashboard"
 				(click)="navigateToDashboardPage($event)"
 			></dav-list-item>
@@ -14,13 +14,13 @@
 				["OWNER", "ADMIN"].includes(dataService.user.role)
 			) {
 				<dav-list-item
-					headline="Mitarbeiter verwalten"
+					[headline]="locale.manageEmployees"
 					href="user/employees"
 					(click)="navigateToEmployeesPage($event)"
 				></dav-list-item>
 
 				<dav-list-item
-					headline="Restaurants verwalten"
+					[headline]="locale.manageRestaurants"
 					href="user/restaurants"
 					(click)="navigateToRestaurantsPage($event)"
 				></dav-list-item>

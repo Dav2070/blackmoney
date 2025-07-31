@@ -3,6 +3,7 @@ import { Router } from "@angular/router"
 import { Restaurant } from "src/app/models/Restaurant"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
+import { LocalizationService } from "src/app/services/localization-service"
 import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 
 @Component({
@@ -11,11 +12,13 @@ import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 	standalone: false
 })
 export class RestaurantsPageComponent {
+	locale = this.localizationService.locale.restaurantsPage
 	restaurants: Restaurant[] = []
 
 	constructor(
 		private apiService: ApiService,
 		private dataService: DataService,
+		private localizationService: LocalizationService,
 		private router: Router
 	) {}
 

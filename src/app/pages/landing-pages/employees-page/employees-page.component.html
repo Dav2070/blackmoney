@@ -1,12 +1,10 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header>Deine Mitarbeiter</dav-header>
+		<dav-header>{{ locale.headline }}</dav-header>
 
 		<dav-list>
 			@for (user of users; track user.uuid) {
-				<dav-list-item
-					[headline]="user.name"
-				></dav-list-item>
+				<dav-list-item [headline]="user.name"></dav-list-item>
 			}
 		</dav-list>
 	</div>

@@ -14,6 +14,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 	standalone: false
 })
 export class RestaurantPageComponent {
+	locale = this.localizationService.locale.restaurantPage
 	errorsLocale = this.localizationService.locale.errors
 	faLocationDot = faLocationDot
 	faPen = faPen

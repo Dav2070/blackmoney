@@ -46,6 +46,7 @@ export class LoginPageComponent {
 		// Load the company with all restaurants and users
 		const retrieveCompanyResponse = await this.apiService.retrieveCompany(
 			`
+				uuid
 				restaurants {
 					items {
 						uuid

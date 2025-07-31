@@ -12,6 +12,7 @@ export interface CompanyResource {
 	uuid: string
 	name: string
 	restaurants: List<RestaurantResource>
+	users: List<UserResource>
 }
 
 export interface RestaurantResource {

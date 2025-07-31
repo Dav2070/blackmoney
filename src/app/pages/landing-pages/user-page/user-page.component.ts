@@ -42,6 +42,12 @@ export class UserPageComponent {
 		this.router.navigate(["dashboard"])
 	}
 
+	navigateToEmployeesPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "employees"])
+	}
+
 	navigateToRestaurantsPage(event: MouseEvent) {
 		event.preventDefault()
 

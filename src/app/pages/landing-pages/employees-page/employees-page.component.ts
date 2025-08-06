@@ -4,7 +4,8 @@ import { User } from "src/app/models/User"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
-import { convertUserResourceToUser } from "src/app/utils"
+import { convertUserResourceToUser, getGraphQLErrorCodes } from "src/app/utils"
+import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
 	templateUrl: "./employees-page.component.html",
@@ -13,6 +14,7 @@ import { convertUserResourceToUser } from "src/app/utils"
 })
 export class EmployeesPageComponent {
 	locale = this.localizationService.locale.employeesPage
+	errorsLocale = this.localizationService.locale.errors
 	users: User[] = []
 	nameError: string = ""
 
@@ -56,7 +58,46 @@ export class EmployeesPageComponent {
 		this.addEmployeeDialog.show()
 	}
 
-	addEmployeeDialogPrimaryButtonClick(event: { name: string }) {
-		console.log(event)
+	async addEmployeeDialogPrimaryButtonClick(event: { name: string }) {
+		this.addEmployeeDialogLoading = true
+
+		const createUserResponse = await this.apiService.createUser(
+			`
+				uuid
+				name
+			`,
+			{
+				companyUuid: this.dataService.company.uuid,
+				name: event.name
+			}
+		)
+
+		this.addEmployeeDialogLoading = false
+
+		if (createUserResponse.data?.createUser != null) {
+			const responseData = createUserResponse.data.createUser
+
+			this.users.push(convertUserResourceToUser(responseData))
+
+			this.addEmployeeDialog.hide()
+		} else {
+			const errors = getGraphQLErrorCodes(createUserResponse)
+
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.nameError = this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.nameError = this.errorsLocale.nameTooLong
+						break
+					default:
+						this.nameError = this.errorsLocale.unexpectedError
+						break
+				}
+			}
+		}
 	}
 }

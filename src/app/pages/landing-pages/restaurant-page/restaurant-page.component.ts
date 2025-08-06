@@ -5,8 +5,8 @@ import { DataService } from "src/app/services/data-service"
 import { faLocationDot, faPen } from "@fortawesome/pro-regular-svg-icons"
 import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
-import * as ErrorCodes from "src/app/errorCodes"
 import { LocalizationService } from "src/app/services/localization-service"
+import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
 	templateUrl: "./restaurant-page.component.html",

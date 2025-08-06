@@ -1,4 +1,5 @@
 import { ApolloQueryResult } from "@apollo/client"
+import { MutationResult } from "apollo-angular"
 import { Company } from "./models/Company"
 import { User } from "./models/User"
 import { Room } from "./models/Room"
@@ -42,7 +43,7 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 }
 
 export function getGraphQLErrorCodes(
-	response: ApolloQueryResult<any>
+	response: ApolloQueryResult<any> | MutationResult<any>
 ): ErrorCode[] {
 	if (response.errors == null) {
 		return []
@@ -51,7 +52,19 @@ export function getGraphQLErrorCodes(
 	const errorCodes: ErrorCode[] = []
 
 	for (let error of response.errors) {
-		if (error.extensions != null && error.extensions["code"] != null) {
+		if (error.extensions == null) continue
+
+		if (error.extensions["code"] === "VALIDATION_FAILED") {
+			const validationErrors = error.extensions["errors"] as
+				| string[]
+				| undefined
+
+			if (validationErrors != null) {
+				for (let validationError of validationErrors) {
+					errorCodes.push(validationError as ErrorCode)
+				}
+			}
+		} else {
 			errorCodes.push(error.extensions["code"] as ErrorCode)
 		}
 	}

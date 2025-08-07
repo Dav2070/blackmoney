@@ -1,4 +1,5 @@
 import { Component, ViewChild } from "@angular/core"
+import { Router } from "@angular/router"
 import { AddEmployeeDialogComponent } from "src/app/dialogs/add-employee-dialog/add-employee-dialog.component"
 import { User } from "src/app/models/User"
 import { ApiService } from "src/app/services/api-service"
@@ -27,7 +28,8 @@ export class EmployeesPageComponent {
 	constructor(
 		private apiService: ApiService,
 		private dataService: DataService,
-		private localizationService: LocalizationService
+		private localizationService: LocalizationService,
+		private router: Router
 	) {}
 
 	async ngOnInit() {
@@ -56,6 +58,12 @@ export class EmployeesPageComponent {
 
 	showAddEmployeeDialog() {
 		this.addEmployeeDialog.show()
+	}
+
+	navigateToEmployee(event: MouseEvent, user: User) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "employees", user.uuid])
 	}
 
 	async addEmployeeDialogPrimaryButtonClick(event: { name: string }) {

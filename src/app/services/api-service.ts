@@ -66,14 +66,14 @@ export class ApiService {
 			.toPromise()
 	}
 
-	async retrieveUser(
+	async retrieveOwnUser(
 		queryData: string
-	): Promise<ApolloQueryResult<{ retrieveUser: UserResource }>> {
+	): Promise<ApolloQueryResult<{ retrieveOwnUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
-			.query<{ retrieveUser: UserResource }>({
+			.query<{ retrieveOwnUser: UserResource }>({
 				query: gql`
-					query RetrieveUser {
-						retrieveUser {
+					query RetrieveOwnUser {
+						retrieveOwnUser {
 							${queryData}
 						}
 					}

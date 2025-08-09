@@ -83,6 +83,25 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async retrieveUser(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloQueryResult<{ retrieveUser: UserResource }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveUser: UserResource }>({
+				query: gql`
+					query RetrieveUser($uuid: String!) {
+						retrieveUser(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async createOwner(
 		queryData: string,
 		variables: {

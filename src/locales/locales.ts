@@ -29,6 +29,9 @@ export const de = {
 	employeesPage: {
 		headline: "Deine Mitarbeiter"
 	},
+	employeePage: {
+		role: "Rolle:"
+	},
 	dialogs: {
 		editRestaurantNameDialog: {
 			headline: "Name bearbeiten",

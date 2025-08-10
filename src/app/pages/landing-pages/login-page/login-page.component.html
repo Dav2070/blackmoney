@@ -5,7 +5,7 @@
 		@if (dataService.company && dataService.company.restaurants.length > 1) {
 			<dav-dropdown
 				[label]="locale.restaurant"
-				width="173"
+				width="230"
 				[options]="restaurantDropdownOptions"
 				[selectedKey]="restaurantDropdownSelectedKey"
 				(change)="restaurantDropdownChange($event)"
@@ -14,7 +14,7 @@
 
 		<dav-dropdown
 			[label]="locale.user"
-			width="173"
+			width="230"
 			[options]="userDropdownOptions"
 			[selectedKey]="userDropdownSelectedKey"
 			(change)="userDropdownChange($event)"

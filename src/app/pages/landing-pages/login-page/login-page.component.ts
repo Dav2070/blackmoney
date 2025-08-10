@@ -45,6 +45,7 @@ export class LoginPageComponent {
 		}
 
 		await this.dataService.davUserPromiseHolder.AwaitResult()
+		await this.dataService.companyPromiseHolder.AwaitResult()
 
 		// Load the company with all restaurants and users
 		const retrieveCompanyResponse = await this.apiService.retrieveCompany(

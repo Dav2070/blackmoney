@@ -49,7 +49,7 @@ export class RestaurantPageComponent {
 		private activatedRoute: ActivatedRoute,
 		private localizationService: LocalizationService,
 		private router: Router
-	) {}
+	) { }
 
 	async ngOnInit() {
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")

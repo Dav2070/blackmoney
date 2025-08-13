@@ -1,1 +1,34 @@
-<p>printers-page works!</p>
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header addButtonVisible (addButtonClick)="showAddPrintersDialog()">
+			{{ locale.headline }}
+		</dav-header>
+		@for (printer of printers; track printer.uuid) {
+			<dav-card>
+				<div class="printer-card-container">
+					<div class="printer-card-content">
+						<p>
+							<strong>{{ printer.name }}</strong>
+						</p>
+						<p>{{ printer.ipAdress }}</p>
+						<p>{{ printer.macAdress }}</p>
+						<div class="printer-actions-row">
+							<fa-icon [icon]="faPrint" class="printer-icon"></fa-icon>
+							<dav-button
+								outline
+								class="test-printer-btn"
+								(click)="testPrinter(printer)"
+								size="sm"
+							>
+								{{ locale.test }}
+							</dav-button>
+						</div>
+					</div>
+					<dav-icon-button size="xs" (click)="showEditPrinterDialog()">
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
+				</div>
+			</dav-card>
+		}
+	</div>
+</div>

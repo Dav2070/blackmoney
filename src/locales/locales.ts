@@ -64,5 +64,7 @@ export const de = {
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
 	},
 	printersPage:{
+		headline: "Deine Drucker",
+		test:"Test"
 	}
 }

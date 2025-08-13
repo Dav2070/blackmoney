@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core"
-import { ActivatedRoute } from "@angular/router"
+import { ActivatedRoute, Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { faLocationDot, faPen } from "@fortawesome/pro-regular-svg-icons"
@@ -47,7 +47,8 @@ export class RestaurantPageComponent {
 		private apiService: ApiService,
 		private dataService: DataService,
 		private activatedRoute: ActivatedRoute,
-		private localizationService: LocalizationService
+		private localizationService: LocalizationService,
+		private router: Router
 	) {}
 
 	async ngOnInit() {
@@ -191,5 +192,9 @@ export class RestaurantPageComponent {
 				}
 			}
 		}
+	}
+	navigateToPrintersPage() {
+		const currentUrl = this.router.url;
+		this.router.navigateByUrl(`${currentUrl}/printers`);
 	}
 }

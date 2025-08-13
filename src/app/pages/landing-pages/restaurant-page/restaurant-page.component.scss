@@ -22,3 +22,18 @@
 .no-address {
 	font-style: italic;
 }
+
+dav-card {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 32px;
+}
+
+dav-list {
+    width: 100%;
+    max-width: 500px;
+}
+
+dav-list-item {
+    margin-bottom: 8px;
+}

@@ -80,6 +80,7 @@ import { RoomManagementComponent } from "./pages/settings-pages/room-management/
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
 import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
+import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 
 @NgModule({
 	declarations: [
@@ -106,6 +107,8 @@ import { SpecialsTableComponent } from "./components/settings/specials-table/spe
 		BookingPageComponent,
 		TransferPageComponent,
 		SeparatePayPageComponent,
+		//Landing-Pages
+		PrintersPageComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,

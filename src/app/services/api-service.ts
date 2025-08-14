@@ -12,7 +12,8 @@ import {
 	SessionResource,
 	PaymentMethod,
 	BillResource,
-	RestaurantResource
+	RestaurantResource,
+	UserRole
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -65,18 +66,37 @@ export class ApiService {
 			.toPromise()
 	}
 
-	async retrieveUser(
+	async retrieveOwnUser(
 		queryData: string
-	): Promise<ApolloQueryResult<{ retrieveUser: UserResource }>> {
+	): Promise<ApolloQueryResult<{ retrieveOwnUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
-			.query<{ retrieveUser: UserResource }>({
+			.query<{ retrieveOwnUser: UserResource }>({
 				query: gql`
-					query RetrieveUser {
-						retrieveUser {
+					query RetrieveOwnUser {
+						retrieveOwnUser {
 							${queryData}
 						}
 					}
 				`,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveUser(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloQueryResult<{ retrieveUser: UserResource }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveUser: UserResource }>({
+				query: gql`
+					query RetrieveUser($uuid: String!) {
+						retrieveUser(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
 				errorPolicy
 			})
 			.toPromise()
@@ -115,7 +135,7 @@ export class ApiService {
 
 	async createUser(
 		queryData: string,
-		variables: { companyUuid: string; name: string }
+		variables: { companyUuid: string; name: string; role?: UserRole }
 	): Promise<MutationResult<{ createUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createUser: UserResource }>({
@@ -123,10 +143,12 @@ export class ApiService {
 					mutation CreateUser(
 						$companyUuid: String!
 						$name: String!
+						$role: UserRole
 					) {
 						createUser(
 							companyUuid: $companyUuid
 							name: $name
+							role: $role
 						) {
 							${queryData}
 						}

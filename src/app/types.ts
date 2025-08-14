@@ -1,3 +1,5 @@
+import * as ErrorCodes from "./errorCodes"
+
 export interface List<T> {
 	total: number
 	items: T[]
@@ -12,6 +14,7 @@ export interface CompanyResource {
 	uuid: string
 	name: string
 	restaurants: List<RestaurantResource>
+	users: List<UserResource>
 }
 
 export interface RestaurantResource {
@@ -106,4 +109,11 @@ export type PaymentMethod = "CASH" | "CARD"
 export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type Country = "DE"
 
-export type ErrorCode = "NOT_AUTHENTICATED"
+export type ErrorCode =
+	| typeof ErrorCodes.notAuthenticated
+	| typeof ErrorCodes.nameTooShort
+	| typeof ErrorCodes.nameTooLong
+	| typeof ErrorCodes.cityTooLong
+	| typeof ErrorCodes.line1TooLong
+	| typeof ErrorCodes.line2TooLong
+	| typeof ErrorCodes.postalCodeInvalid

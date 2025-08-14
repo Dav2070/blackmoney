@@ -3,6 +3,7 @@ import { Router } from "@angular/router"
 import { isPlatformServer } from "@angular/common"
 import { DataService } from "src/app/services/data-service"
 import { randomNumber } from "src/app/utils"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	templateUrl: "./user-page.component.html",
@@ -10,19 +11,13 @@ import { randomNumber } from "src/app/utils"
 	standalone: false
 })
 export class UserPageComponent {
+	locale = this.localizationService.locale.userPage
 	title = ""
-	titles = [
-		"Willkommen zurück, {0}!",
-		"Schön dich wiederzusehen, {0}!",
-		"Hey {0}!",
-		"Hallo {0}!",
-		"Moin {0}!",
-		"Grüezi {0}!"
-	]
 
 	constructor(
-		private router: Router,
 		public dataService: DataService,
+		private localizationService: LocalizationService,
+		private router: Router,
 		@Inject(PLATFORM_ID) private platformId: object
 	) {}
 
@@ -31,15 +26,24 @@ export class UserPageComponent {
 
 		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
 
-		const n = randomNumber(0, this.titles.length - 1)
+		const n = randomNumber(0, this.locale.headlines.length - 1)
 
-		this.title = this.titles[n].replace("{0}", this.dataService.user.name)
+		this.title = this.locale.headlines[n].replace(
+			"{name}",
+			this.dataService.user.name
+		)
 	}
 
 	navigateToDashboardPage(event: MouseEvent) {
 		event.preventDefault()
 
 		this.router.navigate(["dashboard"])
+	}
+
+	navigateToEmployeesPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "employees"])
 	}
 
 	navigateToRestaurantsPage(event: MouseEvent) {

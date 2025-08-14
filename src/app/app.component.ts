@@ -161,7 +161,7 @@ export class AppComponent {
 
 			if (restaurant.users.length > 0 && accessToken != null) {
 				// Load the current user
-				let retrieveUserResponse = await this.apiService.retrieveUser(
+				let retrieveOwnUserResponse = await this.apiService.retrieveOwnUser(
 					`
 						uuid
 						name
@@ -170,15 +170,15 @@ export class AppComponent {
 				)
 
 				if (
-					getGraphQLErrorCodes(retrieveUserResponse).includes(
+					getGraphQLErrorCodes(retrieveOwnUserResponse).includes(
 						"NOT_AUTHENTICATED"
 					)
 				) {
 					// Remove the access token
 					this.authService.removeAccessToken()
-				} else if (retrieveUserResponse.data.retrieveUser != null) {
+				} else if (retrieveOwnUserResponse.data.retrieveOwnUser != null) {
 					this.dataService.user = convertUserResourceToUser(
-						retrieveUserResponse.data.retrieveUser
+						retrieveOwnUserResponse.data.retrieveOwnUser
 					)
 				}
 			}

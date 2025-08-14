@@ -1,11 +1,11 @@
 <div class="container slide-up-in">
 	<div class="content">
-		<h1 class="headline">Anmelden</h1>
+		<h1 class="headline">{{ locale.headline }}</h1>
 
 		@if (dataService.company && dataService.company.restaurants.length > 1) {
 			<dav-dropdown
-				label="Restaurant"
-				width="173"
+				[label]="locale.restaurant"
+				width="230"
 				[options]="restaurantDropdownOptions"
 				[selectedKey]="restaurantDropdownSelectedKey"
 				(change)="restaurantDropdownChange($event)"
@@ -13,22 +13,24 @@
 		}
 
 		<dav-dropdown
-			label="User"
-			width="173"
+			[label]="locale.user"
+			width="230"
 			[options]="userDropdownOptions"
 			[selectedKey]="userDropdownSelectedKey"
 			(change)="userDropdownChange($event)"
 		></dav-dropdown>
 
 		<dav-textfield
-			placeholder="Passwort"
+			[placeholder]="locale.password"
 			type="password"
 			[errorMessage]="errorMessage"
 			(change)="passwordChange($event)"
 		></dav-textfield>
 
 		<div class="button-container">
-			<dav-button size="sm" outline (click)="login()">Anmelden</dav-button>
+			<dav-button size="sm" outline (click)="login()">
+				{{ locale.login }}
+			</dav-button>
 		</div>
 	</div>
 </div>

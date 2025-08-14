@@ -399,7 +399,7 @@ export class BookingPageComponent {
 					// Setze für Variations-Popup (verwende erstes OrderItem als "Haupt-Item")
 					this.selectedItem = this.selectedMenuItem.orderItems[0];
 					this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedMenuItem.orderItems[0]));
-					this.minusUsed = true; // Minus-Modus - nur entfernen möglich
+					this.minusUsed = true; 
 					this.lastClickedItem = this.selectedMenuItem.orderItems[0].product;
 					
 					// Initialisiere tmpPickedVariationResource für alle Produkte
@@ -620,6 +620,7 @@ export class BookingPageComponent {
 		} else {
 			this.removeEmptyItem(this.tmpAllItemHandler)
 		}
+
 	}
 
 	removeEmptyItem(itemHandler: AllItemHandler) {
@@ -790,7 +791,8 @@ export class BookingPageComponent {
 			this.tmpCountVariations = 0
 			this.isSpecialVariationMode = false
 			this.tmpLastPickedVariation = []
-			this.lastClickedMenuItem = null // Reset nach der Verarbeitung
+			this.lastClickedMenuItem = null 
+			console.log("showtotal aufgerufen")
 			this.showTotal()
 		}
 	}
@@ -905,7 +907,7 @@ export class BookingPageComponent {
 					this.stagedItems.calculateTotal()) /
 				100
 			).toFixed(2) + " €"
-
+			console.log("showtotal aufgerufen", this.console)
 		this.consoleActive = false
 		this.commaUsed = false
 		this.tmpAnzahl = 0

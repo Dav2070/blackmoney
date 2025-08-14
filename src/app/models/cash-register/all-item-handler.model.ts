@@ -170,7 +170,7 @@ export class AllItemHandler {
 		// MenuOrderItems
 		for (let menuItem of this.allPickedMenuItems) {
 			for (let item of menuItem.orderItems) {
-				total += item.product.price * menuItem.count
+				total += item.product.price * item.count
 
 				if (item.orderItemVariations) {
 					for (const variation of item.orderItemVariations) {

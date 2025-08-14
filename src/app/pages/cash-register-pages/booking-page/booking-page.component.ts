@@ -220,7 +220,7 @@ export class BookingPageComponent {
 		this.tmpSelectedItem = undefined
 		this.selectedItem = null
 		this.lastClickedItem = null
-		this.lastClickedMenuItem = null // Reset auch hier
+		this.lastClickedMenuItem = null 
 		this.tmpAllItemHandler = null
 		if (this.minusUsed === true) {
 			this.minusUsed = false
@@ -314,7 +314,6 @@ export class BookingPageComponent {
 				existingItem.orderItems[0].count += 1
 				existingItem.orderItems[0].orderItemVariations[0].count += 1
 			}
-			console.log("Ein Produkt im Menü")
 			this.showTotal()
 		} else {
 			// Öffnet Popup für Variationen
@@ -341,7 +340,6 @@ export class BookingPageComponent {
 
 			this.isSpecialVariationPopupVisible = true // Separate Variable für Special-Popup
 			this.isSpecialVariationMode = true // Flag für Special-Modus
-			console.log("Mehrere Produkte im Menü")
 		}
 		// Zeige das Gesamt
 		this.showTotal()
@@ -1511,7 +1509,6 @@ export class BookingPageComponent {
 	}
 
 	confirmSpecials() {
-		// Berechne den Rabatt
 		let rabattFaktor = 0;
 		if (this.currentSpecial.discountType === 'PERCENTAGE') {
 			rabattFaktor = this.currentSpecial.offerValue / 100;
@@ -1520,62 +1517,32 @@ export class BookingPageComponent {
 		// Durch alle ausgewählten Produkte gehen und für jedes ein separates MenuOrderItem erstellen
 		for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
 			
-			// Erstelle eine Kopie des Items für die Verarbeitung
 			let processedItem: OrderItem = JSON.parse(JSON.stringify(item));
-			
 			let existingVariations = [...processedItem.orderItemVariations];
-			// Sammle bereits vorhandene Rabatt-Keys dieser OrderItemVariationen
-			const existingDiscountKeys = new Set<string>(
-				existingVariations
-					.filter(v => v.variationItems.length === 1 && v.variationItems[0]?.name === 'Rabatt' && typeof v.variationItems[0]?.uuid === 'string')
-					.map(v => v.variationItems[0].uuid)
-			);
-			
-			// Erstelle ein neues Array für die korrekte Reihenfolge
 			let newOrderItemVariations: OrderItemVariation[] = [];
 			
 			// Füge für jede bestehende OrderItemVariation die Variation und direkt danach den Rabatt hinzu
 			for (let orderItemVariation of existingVariations) {
+				
 				// Füge die ursprüngliche Variation hinzu
 				newOrderItemVariations.push(orderItemVariation);
 
-				// Erzeuge genau EINEN Rabatt-Eintrag pro OrderItemVariation (statt pro VariationItem)
-				// Berücksichtige nur echte VariationItems (Rabatt-Items ignorieren)
-				const nonDiscountItems = orderItemVariation.variationItems.filter(vi => vi.name !== "Rabatt");
-				if (nonDiscountItems.length === 0) {
-					continue; // Nichts zu rabattieren in dieser Variation
-				}
+				// Berechne Rabatt für diese Variation
+				let sumAdditional = orderItemVariation.variationItems.reduce((acc, vi) => acc + vi.additionalCost, 0);
+				let originalCostPerUnit = processedItem.product.price + sumAdditional;
+				let rabattBetrag = -(originalCostPerUnit * rabattFaktor);
 
-				// Basis-Kosten pro Einheit: Produktpreis + Summe der AdditionalCosts dieser Variation
-				const sumAdditional = nonDiscountItems.reduce((acc, vi) => acc + vi.additionalCost, 0);
-				const originalCostPerUnit = processedItem.product.price + sumAdditional;
-				const rabattBetrag = -(originalCostPerUnit * rabattFaktor);
-
-				// Stabile Rabatt-UUID je Variation-Kombination (sortierte Liste der VariationItem UUIDs)
-				const groupKey = nonDiscountItems.map(vi => vi.uuid).sort().join("+");
-				const rabattUuid = `rabatt:group:${groupKey}`;
-
-				// Duplikate vermeiden (falls bereits vorhanden)
-				const alreadyHasDiscount = newOrderItemVariations.some(v =>
-					v.variationItems.length === 1 &&
-					v.variationItems[0].name === 'Rabatt' &&
-					v.variationItems[0].uuid === rabattUuid
-				) || existingDiscountKeys.has(rabattUuid);
-
-				if (!alreadyHasDiscount) {
-					const rabattVariation: OrderItemVariation = {
+				let rabattVariation: OrderItemVariation = {
+					uuid: crypto.randomUUID(),
+					count: orderItemVariation.count,
+					variationItems: [{
+						id: 0,
 						uuid: crypto.randomUUID(),
-						count: orderItemVariation.count,
-						variationItems: [{
-							id: 0,
-							uuid: rabattUuid,
-							name: "Rabatt",
-							additionalCost: rabattBetrag,
-						}]
-					};
-					// Direkt nach der ursprünglichen Variation einfügen
-					newOrderItemVariations.push(rabattVariation);
-				}
+						name: "Rabatt",
+						additionalCost: rabattBetrag,
+					}]
+				};
+				newOrderItemVariations.push(rabattVariation);
 			}
 			
 			// Ersetze die ursprünglichen Variationen mit der neuen sortierten Liste
@@ -1585,14 +1552,13 @@ export class BookingPageComponent {
 			if (existingVariations.length === 0) {
 				let originalCost = processedItem.product.price;
 				let rabattBetrag = -(originalCost * rabattFaktor);
-				
-				// Erstelle eine neue OrderItemVariation nur für den Rabatt
+
 				let rabattVariation: OrderItemVariation = {
 					uuid: crypto.randomUUID(),
 					count: processedItem.count,
 					variationItems: [{
 						id: 0,
-						uuid: `rabatt:base:${processedItem.product.uuid}`,
+						uuid: crypto.randomUUID(),
 						name: "Rabatt",
 						additionalCost: rabattBetrag
 					}]
@@ -1601,7 +1567,6 @@ export class BookingPageComponent {
 				processedItem.orderItemVariations.push(rabattVariation);
 			}
 
-			// Berechne den individuellen Preis für dieses Item
 			let itemPrice = this.calculateSpecialPrice(processedItem);
 			console.log("Item Price:", itemPrice);
 
@@ -1618,7 +1583,7 @@ export class BookingPageComponent {
 					price: itemPrice,
 					variations: []
 				},
-				orderItems: [processedItem]  // Nur das aktuelle Item, nicht alle Items
+				orderItems: [processedItem]
 			};
 			
 			if(this.stagedItems.includesMenuItem(menuOrderItem)) {
@@ -1629,14 +1594,14 @@ export class BookingPageComponent {
 							orderItem.count += processedItem.count;
 
 							// Füge auch die neuen Variationen (inklusive Rabatt) hinzu
-							// Neue Logik: paarweise Mergen (Basisvariation gefolgt von Rabatt), ohne UUID-Vergleich
-							const isDiscountVar = (v: OrderItemVariation) => v.variationItems.length === 1 && v.variationItems[0].name === 'Rabatt';
-							const basesEqual = (a: OrderItemVariation, b: OrderItemVariation) => {
+							// Neue Logik: paarweise Mergen (Basisvariation gefolgt von Rabatt)
+							let isDiscountVar = (v: OrderItemVariation) => v.variationItems.length === 1 && v.variationItems[0].name === 'Rabatt';
+							let basesEqual = (a: OrderItemVariation, b: OrderItemVariation) => {
 								if (isDiscountVar(a) || isDiscountVar(b)) return false;
 								if (a.variationItems.length !== b.variationItems.length) return false;
 								for (let i = 0; i < a.variationItems.length; i++) {
-									const ai = a.variationItems[i];
-									const bi = b.variationItems[i];
+									let ai = a.variationItems[i];
+									let bi = b.variationItems[i];
 									if (ai.name !== bi.name) return false;
 									if (ai.additionalCost !== bi.additionalCost) return false;
 								}
@@ -1645,7 +1610,7 @@ export class BookingPageComponent {
 
 							let idx = 0;
 							while (idx < processedItem.orderItemVariations.length) {
-								const newVar = processedItem.orderItemVariations[idx];
+								let newVar = processedItem.orderItemVariations[idx];
 								if (!isDiscountVar(newVar)) {
 									// Basisvariation finden/erstellen
 									let baseIdx = orderItem.orderItemVariations.findIndex(ex => basesEqual(ex, newVar));
@@ -1657,10 +1622,10 @@ export class BookingPageComponent {
 									}
 
 									// Falls die nächste neue Variation ein Rabatt ist, direkt dahinter mergen/einfügen
-									const hasNextDiscount = idx + 1 < processedItem.orderItemVariations.length && isDiscountVar(processedItem.orderItemVariations[idx + 1]);
+									let hasNextDiscount = idx + 1 < processedItem.orderItemVariations.length && isDiscountVar(processedItem.orderItemVariations[idx + 1]);
 									if (hasNextDiscount) {
-										const newDisc = processedItem.orderItemVariations[idx + 1];
-										const expectedDiscCost = newDisc.variationItems[0].additionalCost;
+										let newDisc = processedItem.orderItemVariations[idx + 1];
+										let expectedDiscCost = newDisc.variationItems[0].additionalCost;
 
 										if (
 											baseIdx + 1 < orderItem.orderItemVariations.length &&
@@ -1677,8 +1642,8 @@ export class BookingPageComponent {
 									}
 								} else {
 									// Standalone-Rabatt (z. B. Produkt ohne Variationen)
-									const expectedDiscCost = newVar.variationItems[0].additionalCost;
-									const existingDiscIdx = orderItem.orderItemVariations.findIndex(ex => isDiscountVar(ex) && ex.variationItems[0].additionalCost === expectedDiscCost);
+									let expectedDiscCost = newVar.variationItems[0].additionalCost;
+									let existingDiscIdx = orderItem.orderItemVariations.findIndex(ex => isDiscountVar(ex) && ex.variationItems[0].additionalCost === expectedDiscCost);
 									if (existingDiscIdx >= 0) {
 										orderItem.orderItemVariations[existingDiscIdx].count += newVar.count;
 									} else {
@@ -1715,7 +1680,6 @@ export class BookingPageComponent {
 	calculateSpecialPrice(item: OrderItem): number {
 		let originalPrice = item.product.price * item.count;
 		
-		// Berechne den ursprünglichen Preis mit Variationen (ohne Rabatt-Items)
 		for (let variation of item.orderItemVariations) {
 			for (let variationItem of variation.variationItems) {
 				if (variationItem.name !== "Rabatt") {
@@ -1726,17 +1690,14 @@ export class BookingPageComponent {
 
 		let itemPrice = originalPrice;
 
-		// Wende das Special-Angebot an
 		switch (this.currentSpecial.offerType) {
 			case 'FIXED_PRICE':
-				// Bei Fixed Price wird der Preis gleichmäßig auf alle Items aufgeteilt
 				itemPrice = this.currentSpecial.offerValue;
 				break;
 			case 'DISCOUNT':
 				if (this.currentSpecial.discountType === 'PERCENTAGE') {
 					itemPrice = originalPrice * (1 - (this.currentSpecial.offerValue / 100));
 				} else if (this.currentSpecial.discountType === 'AMOUNT') {
-					// Bei einem festen Betrag wird dieser vom Originalpreis abgezogen
 					itemPrice = originalPrice - this.currentSpecial.offerValue;
 				}
 				break;

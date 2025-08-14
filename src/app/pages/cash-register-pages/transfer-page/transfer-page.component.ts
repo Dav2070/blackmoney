@@ -5,6 +5,7 @@ import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { Table } from "src/app/models/Table"
 import { OrderItem } from "src/app/models/OrderItem"
+import { MenuOrderItem } from "src/app/models/MenuOrderItem"
 import { Room } from "src/app/models/Room"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { Order } from "src/app/models/Order"
@@ -353,5 +354,13 @@ export class TransferPageComponent {
 			}
 		}
 		return picked
+	}
+
+	calculateTotalPriceOfMenuOrderItem(menuItem: MenuOrderItem) {
+		// Bei MenuOrderItems ist der Special-Preis bereits berechnet und im Product gespeichert
+		return (
+			(menuItem.product.price * menuItem.count) /
+			100
+		).toFixed(2);
 	}
 }

@@ -1,4 +1,5 @@
 import { OrderItem } from "src/app/models/OrderItem"
+import { MenuOrderItem } from "src/app/models/MenuOrderItem"
 import { Variation } from "src/app/models/Variation"
 import { ApiService } from "src/app/services/api-service"
 import {
@@ -8,11 +9,15 @@ import {
 import { Order } from "../Order"
 
 export class AllItemHandler {
-	//private allPickedItems = new Map<string, OrderItem>()
 	private allPickedItems: OrderItem[] = []
+	private allPickedMenuItems: MenuOrderItem[] = []
 
 	getAllPickedItems() {
 		return this.allPickedItems
+	}
+
+	getAllPickedMenuItems() {
+		return this.allPickedMenuItems
 	}
 
 	// Lade alle Items einer Order
@@ -129,10 +134,18 @@ export class AllItemHandler {
 		}
 	}
 
+	//Füge MenuOrderItem hinzu
+	pushNewMenuItem(pickedItem: MenuOrderItem) {
+			this.allPickedMenuItems.push({ ...pickedItem })
+	}
+
 	//Übertrage alle Items aus einer anderen Map in diese
 	transferAllItems(itemHandler: AllItemHandler) {
-		for (let item of itemHandler.getItems()) {
+		for (let item of itemHandler.getOrderItems()) {
 			this.pushNewItem(item)
+		}
+		for (let menuItem of itemHandler.getMenuOrderItems()) {
+			this.pushNewMenuItem(menuItem)
 		}
 
 		itemHandler.clearItems()
@@ -154,12 +167,36 @@ export class AllItemHandler {
 			}
 		}
 
+		// MenuOrderItems
+		for (let menuItem of this.allPickedMenuItems) {
+			for (let item of menuItem.orderItems) {
+				total += item.product.price * menuItem.count
+
+				if (item.orderItemVariations) {
+					for (const variation of item.orderItemVariations) {
+						for (const variationItem of variation.variationItems) {
+								total += variationItem.additionalCost * variation.count
+						}
+					}
+				}
+			}
+		}
 		return total
 	}
 
-	//Gib Liste mit jedem Item zurück
-	getItems() {
+	//Gib Liste mit jedem Item zurück (normale + Menu Items)
+	getItems(): (OrderItem | MenuOrderItem)[] {
+		return [...this.allPickedItems, ...this.allPickedMenuItems]
+	}
+
+	// Nur normale OrderItems
+	getOrderItems() {
 		return this.allPickedItems
+	}
+
+	// Nur MenuOrderItems
+	getMenuOrderItems() {
+		return this.allPickedMenuItems
 	}
 
 	getItemsCountandId() {
@@ -196,14 +233,41 @@ export class AllItemHandler {
 		return total
 	}
 
+	//Gibt den Preis eines MenuOrderItems aus dem jeweiligen Handler zurück
+	getTotalMenuPrice(pickedItem: MenuOrderItem): number {
+		let total = 0
+
+		for (let item of pickedItem.orderItems) {
+			total += item.product.price * item.count
+
+			if (item.orderItemVariations) {
+				for (const variation of item.orderItemVariations) {
+					for (const variationItem of variation.variationItems) {
+							total += variationItem.additionalCost * variation.count
+					}
+				}
+			}
+		}
+		return total
+	}
+
 	//Entferne Item aus der Map
 	deleteItem(pickedItem: OrderItem): void {
-		//this.allPickedItems.delete(pickedItem.uuid)
 		const index = this.allPickedItems.findIndex(
 			item => item.product.id === pickedItem.product.id
 		)
 		if (index !== -1) {
 			this.allPickedItems.splice(index, 1)
+		}
+	}
+
+	//Entferne MenuOrderItem aus der Map
+	deleteMenuItem(pickedItem: MenuOrderItem): void {
+		const index = this.allPickedMenuItems.findIndex(
+			item => item.product.id === pickedItem.product.id && item.menu.uuid === pickedItem.menu.uuid
+		)
+		if (index !== -1) {
+			this.allPickedMenuItems.splice(index, 1)
 		}
 	}
 
@@ -219,10 +283,24 @@ export class AllItemHandler {
 		return this.allPickedItems.find(item => item.product.id === id)
 	}
 
+	// Gibt ein MenuOrderItem zurück, das dem angegebenen ID entspricht
+	getMenuItem(productId: number, menuUuid: string): MenuOrderItem {
+		return this.allPickedMenuItems.find(
+			item => item.product.id === productId && item.menu?.uuid === menuUuid
+		)
+	}
+
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
 	includes(pickedItem: OrderItem): boolean {
 		return this.allPickedItems.some(
 			item => item.product.id === pickedItem.product.id
+		)
+	}
+
+	// Prüfen, ob ein bestimmtes MenuOrderItem in der Map enthalten ist, prüft auf die id des Produkts UND des Menus
+	includesMenuItem(pickedItem: MenuOrderItem): boolean {
+		return this.allPickedMenuItems.some(
+			item => item.product.id === pickedItem.product.id && item.menu.uuid === pickedItem.menu.uuid
 		)
 	}
 
@@ -268,20 +346,24 @@ export class AllItemHandler {
 	getNumberOfItems() {
 		let number = 0
 
-		for (let item of this.allPickedItems.values()) {
+		for (let item of this.allPickedItems) {
 			number += item.count
+		}
+
+		for (let menuItem of this.allPickedMenuItems) {
+			number += menuItem.count
 		}
 
 		return number
 	}
 
-	//Entfertn alle Items aus Map
+	//Entfernt alle Items aus Map
 	clearItems() {
 		this.allPickedItems = []
-		//this.allPickedItems.clear()
+		this.allPickedMenuItems = []
 	}
 
 	isEmpty() {
-		return this.allPickedItems.length === 0
+		return this.allPickedItems.length === 0 && this.allPickedMenuItems.length === 0
 	}
 }

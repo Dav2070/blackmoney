@@ -16,7 +16,7 @@ export const de = {
 			"Moin {name}!",
 			"Grüezi {name}!"
 		],
-		goToDashboard: "Zum Kassensystem",
+		goToDashboard: "Zur Kasse",
 		manageEmployees: "Mitarbeiter verwalten",
 		manageRestaurants: "Restaurants verwalten"
 	},

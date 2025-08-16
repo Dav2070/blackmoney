@@ -32,7 +32,6 @@ export class AppComponent {
 		private apiService: ApiService,
 		private authService: AuthService,
 		private settingsService: SettingsService,
-		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private apollo: Apollo,
 		private httpLink: HttpLink,
@@ -59,6 +58,8 @@ export class AppComponent {
 			await this.userLoaded()
 			return
 		}
+
+		this.dataService.loadTheme()
 
 		new Dav({
 			environment: environment.environment,

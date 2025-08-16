@@ -8,6 +8,7 @@
 				width="230"
 				[options]="restaurantDropdownOptions"
 				[selectedKey]="restaurantDropdownSelectedKey"
+				[disabled]="loading"
 				(change)="restaurantDropdownChange($event)"
 			></dav-dropdown>
 		}
@@ -17,6 +18,7 @@
 			width="230"
 			[options]="userDropdownOptions"
 			[selectedKey]="userDropdownSelectedKey"
+			[disabled]="loading"
 			(change)="userDropdownChange($event)"
 		></dav-dropdown>
 
@@ -24,13 +26,18 @@
 			[placeholder]="locale.password"
 			type="password"
 			[errorMessage]="errorMessage"
+			[disabled]="loading"
 			(change)="passwordChange($event)"
 		></dav-textfield>
 
-		<div class="button-container">
-			<dav-button size="sm" outline (click)="login()">
+		<div class="button-container" [class.loading]="loading">
+			<dav-button size="sm" outline [disabled]="loading" (click)="login()">
 				{{ locale.login }}
 			</dav-button>
+
+			@if (loading) {
+				<dav-progress-ring size="16"></dav-progress-ring>
+			}
 		</div>
 	</div>
 </div>

@@ -27,6 +27,7 @@ export class LoginPageComponent {
 	username: string = ""
 	password: string = ""
 	errorMessage: string = ""
+	loading: boolean = false
 
 	constructor(
 		private router: Router,
@@ -148,6 +149,7 @@ export class LoginPageComponent {
 
 	async login() {
 		this.errorMessage = ""
+		this.loading = true
 
 		const loginResponse = await this.apiService.login(
 			`
@@ -165,6 +167,7 @@ export class LoginPageComponent {
 			}
 		)
 
+		this.loading = false
 		const accessToken = loginResponse?.data?.login.uuid
 
 		if (accessToken != null) {

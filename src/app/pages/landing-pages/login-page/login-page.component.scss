@@ -24,6 +24,12 @@ h1 {
 .button-container {
 	display: flex;
 	justify-content: center;
+	align-items: center;
+	gap: 16px;
+}
+
+.button-container.loading {
+	margin-left: 32px;
 }
 
 dav-textfield {

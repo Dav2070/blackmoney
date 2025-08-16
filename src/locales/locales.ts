@@ -20,6 +20,13 @@ export const de = {
 		manageEmployees: "Mitarbeiter verwalten",
 		manageRestaurants: "Restaurants verwalten"
 	},
+	settingsPage: {
+		headline: "Allgemeine Einstellungen",
+		theme: "App-Design",
+		lightTheme: "Hell",
+		darkTheme: "Dunkel",
+		systemTheme: "System-Standard"
+	},
 	restaurantsPage: {
 		headline: "Deine Restaurants"
 	},

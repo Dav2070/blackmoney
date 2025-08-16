@@ -24,7 +24,8 @@ export const de = {
 		headline: "Deine Restaurants"
 	},
 	restaurantPage: {
-		addAddress: "Adresse angeben"
+		addAddress: "Adresse angeben",
+		managePrinters: "Drucker verwalten"
 	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"
@@ -62,5 +63,9 @@ export const de = {
 		line2TooLong: "Die zweite Zeile der Adresse ist zu lang.",
 		postalCodeInvalid: "Die Postleitzahl ist ungültig.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
+	},
+	printersPage:{
+		headline: "Deine Drucker",
+		test:"Test"
 	}
 }

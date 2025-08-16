@@ -1,6 +1,7 @@
 import { Component, Inject, PLATFORM_ID } from "@angular/core"
 import { Router } from "@angular/router"
 import { isPlatformServer } from "@angular/common"
+import { faArrowRightFromBracket } from "@fortawesome/pro-regular-svg-icons"
 import { DataService } from "src/app/services/data-service"
 import { randomNumber } from "src/app/utils"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -12,6 +13,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 })
 export class UserPageComponent {
 	locale = this.localizationService.locale.userPage
+	faArrowRightFromBracket = faArrowRightFromBracket
 	title = ""
 
 	constructor(

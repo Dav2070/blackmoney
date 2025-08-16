@@ -1,6 +1,14 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<h1>{{ title }}</h1>
+		<dav-header>
+			{{ title }}
+
+			<div slot="icons">
+				<dav-icon-button size="sm">
+					<fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
+				</dav-icon-button>
+			</div>
+		</dav-header>
 
 		<dav-list>
 			<dav-list-item

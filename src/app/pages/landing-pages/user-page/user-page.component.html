@@ -3,7 +3,15 @@
 		<dav-header>
 			{{ title }}
 
-			<div slot="icons">
+			<div class="header-icons-container" slot="icons">
+				<dav-icon-button
+					size="sm"
+					href="/user/settings"
+					(click)="navigateToGeneralSettingsPage($event)"
+				>
+					<fa-icon [icon]="faGear"></fa-icon>
+				</dav-icon-button>
+
 				<dav-icon-button size="sm" (click)="showLogoutDialog()">
 					<fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
 				</dav-icon-button>

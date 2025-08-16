@@ -2,6 +2,7 @@ import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
 import { Router } from "@angular/router"
 import { isPlatformServer } from "@angular/common"
 import {
+	faGear,
 	faArrowRightFromBracket,
 	faCashRegister,
 	faUsers,
@@ -20,6 +21,7 @@ import { randomNumber } from "src/app/utils"
 })
 export class UserPageComponent {
 	locale = this.localizationService.locale.userPage
+	faGear = faGear
 	faArrowRightFromBracket = faArrowRightFromBracket
 	faCashRegister = faCashRegister
 	faUsers = faUsers
@@ -57,6 +59,12 @@ export class UserPageComponent {
 		await this.authService.removeAccessToken()
 		this.logoutDialog.hide()
 		this.router.navigate(["/"])
+	}
+
+	navigateToGeneralSettingsPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "settings"])
 	}
 
 	navigateToDashboardPage(event: MouseEvent) {

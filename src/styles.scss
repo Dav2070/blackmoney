@@ -450,6 +450,11 @@ dav-header {
 	margin: 0 0 24px 0;
 }
 
+.header-icons-container {
+	display: flex;
+	gap: 4px;
+}
+
 ::-webkit-scrollbar {
 	background-color: var(--dav-color-surface);
 	height: 4px;

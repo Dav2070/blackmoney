@@ -6,9 +6,9 @@ export interface List<T> {
 }
 
 export enum Theme {
-	System,
-	Light,
-	Dark
+	System = "system",
+	Light = "light",
+	Dark = "dark"
 }
 
 export interface SessionResource {

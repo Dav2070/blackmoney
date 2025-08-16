@@ -4,7 +4,7 @@
 			{{ title }}
 
 			<div slot="icons">
-				<dav-icon-button size="sm">
+				<dav-icon-button size="sm" (click)="showLogoutDialog()">
 					<fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
 				</dav-icon-button>
 			</div>
@@ -36,3 +36,8 @@
 		</dav-list>
 	</div>
 </div>
+
+<app-logout-dialog
+	#logoutDialog
+	(primaryButtonClick)="logout()"
+></app-logout-dialog>

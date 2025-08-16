@@ -39,6 +39,7 @@ import { SettingsBarComponent } from "./components/settings/settings-bar/setting
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 
 // Dialogs
+import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
@@ -88,6 +89,7 @@ import { SpecialsTableComponent } from "./components/settings/specials-table/spe
 		HeaderComponent,
 		SettingsBarComponent,
 		// Dialog
+		LogoutDialogComponent,
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,

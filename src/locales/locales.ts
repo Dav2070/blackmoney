@@ -33,6 +33,10 @@ export const de = {
 		role: "Rolle:"
 	},
 	dialogs: {
+		logoutDialog: {
+			headline: "Abmelden",
+			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
+		},
 		editRestaurantNameDialog: {
 			headline: "Name bearbeiten",
 			name: "Name des Restaurants"
@@ -52,7 +56,8 @@ export const de = {
 	},
 	actions: {
 		save: "Speichern",
-		cancel: "Abbrechen"
+		cancel: "Abbrechen",
+		logout: "Abmelden"
 	},
 	errors: {
 		nameTooShort: "Der Name ist zu kurz.",

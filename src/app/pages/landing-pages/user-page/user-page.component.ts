@@ -1,10 +1,12 @@
-import { Component, Inject, PLATFORM_ID } from "@angular/core"
+import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
 import { Router } from "@angular/router"
 import { isPlatformServer } from "@angular/common"
 import { faArrowRightFromBracket } from "@fortawesome/pro-regular-svg-icons"
+import { LogoutDialogComponent } from "src/app/dialogs/logout-dialog/logout-dialog.component"
 import { DataService } from "src/app/services/data-service"
-import { randomNumber } from "src/app/utils"
 import { LocalizationService } from "src/app/services/localization-service"
+import { AuthService } from "src/app/services/auth-service"
+import { randomNumber } from "src/app/utils"
 
 @Component({
 	templateUrl: "./user-page.component.html",
@@ -14,11 +16,14 @@ import { LocalizationService } from "src/app/services/localization-service"
 export class UserPageComponent {
 	locale = this.localizationService.locale.userPage
 	faArrowRightFromBracket = faArrowRightFromBracket
+	@ViewChild("logoutDialog")
+	logoutDialog: LogoutDialogComponent
 	title = ""
 
 	constructor(
 		public dataService: DataService,
 		private localizationService: LocalizationService,
+		private authService: AuthService,
 		private router: Router,
 		@Inject(PLATFORM_ID) private platformId: object
 	) {}
@@ -34,6 +39,16 @@ export class UserPageComponent {
 			"{name}",
 			this.dataService.user.name
 		)
+	}
+
+	showLogoutDialog() {
+		this.logoutDialog.show()
+	}
+
+	async logout() {
+		await this.authService.removeAccessToken()
+		this.logoutDialog.hide()
+		this.router.navigate(["/"])
 	}
 
 	navigateToDashboardPage(event: MouseEvent) {

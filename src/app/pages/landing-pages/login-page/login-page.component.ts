@@ -27,6 +27,7 @@ export class LoginPageComponent {
 	username: string = ""
 	password: string = ""
 	errorMessage: string = ""
+	initialLoad: boolean = true
 	loading: boolean = false
 
 	constructor(
@@ -104,6 +105,7 @@ export class LoginPageComponent {
 		}
 
 		this.loadUserDropdownOptions()
+		this.initialLoad = false
 	}
 
 	loadUserDropdownOptions() {

@@ -2,10 +2,15 @@ import { Component, ViewChild } from "@angular/core"
 import { Router } from "@angular/router"
 import { AddEmployeeDialogComponent } from "src/app/dialogs/add-employee-dialog/add-employee-dialog.component"
 import { User } from "src/app/models/User"
+import { Restaurant } from "src/app/models/Restaurant"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
-import { convertUserResourceToUser, getGraphQLErrorCodes } from "src/app/utils"
+import {
+	convertRestaurantResourceToRestaurant,
+	convertUserResourceToUser,
+	getGraphQLErrorCodes
+} from "src/app/utils"
 import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
@@ -17,6 +22,7 @@ export class EmployeesPageComponent {
 	locale = this.localizationService.locale.employeesPage
 	errorsLocale = this.localizationService.locale.errors
 	users: User[] = []
+	restaurants: Restaurant[] = []
 	nameError: string = ""
 
 	//#region AddEmployeeDialog
@@ -44,6 +50,12 @@ export class EmployeesPageComponent {
 						name
 					}
 				}
+				restaurants {
+					items {
+						uuid
+						name
+					}
+				}
 			`
 		)
 
@@ -52,7 +64,18 @@ export class EmployeesPageComponent {
 		const users = retrieveCompanyResponse.data.retrieveCompany.users.items
 
 		for (let user of users) {
-			this.users.push(convertUserResourceToUser(user))
+			if (user.uuid !== this.dataService.user.uuid) {
+				this.users.push(convertUserResourceToUser(user))
+			}
+		}
+
+		const restaurants =
+			retrieveCompanyResponse.data.retrieveCompany.restaurants.items
+
+		for (let restaurant of restaurants) {
+			this.restaurants.push(
+				convertRestaurantResourceToRestaurant(restaurant)
+			)
 		}
 	}
 
@@ -66,7 +89,10 @@ export class EmployeesPageComponent {
 		this.router.navigate(["user", "employees", user.uuid])
 	}
 
-	async addEmployeeDialogPrimaryButtonClick(event: { name: string }) {
+	async addEmployeeDialogPrimaryButtonClick(event: {
+		name: string
+		restaurants: string[]
+	}) {
 		this.addEmployeeDialogLoading = true
 
 		const createUserResponse = await this.apiService.createUser(
@@ -76,7 +102,8 @@ export class EmployeesPageComponent {
 			`,
 			{
 				companyUuid: this.dataService.company.uuid,
-				name: event.name
+				name: event.name,
+				restaurants: event.restaurants
 			}
 		)
 

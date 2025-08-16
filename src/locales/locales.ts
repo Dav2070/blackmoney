@@ -46,7 +46,8 @@ export const de = {
 		},
 		addEmployeeDialog: {
 			headline: "Mitarbeiter hinzufügen",
-			name: "Name des Mitarbeiters"
+			name: "Name des Mitarbeiters",
+			assignedRestaurants: "Zugeordnete Restaurants"
 		}
 	},
 	actions: {

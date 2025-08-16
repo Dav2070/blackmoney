@@ -18,8 +18,9 @@
 
 <app-add-employee-dialog
 	#addEmployeeDialog
-	[loading]="addEmployeeDialogLoading"
 	[nameError]="nameError"
+	[loading]="addEmployeeDialogLoading"
+	[restaurants]="restaurants"
 	(primaryButtonClick)="addEmployeeDialogPrimaryButtonClick($event)"
 	(clearErrors)="nameError = ''"
 ></app-add-employee-dialog>

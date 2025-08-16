@@ -15,3 +15,13 @@ h1 {
 	margin: 0 0 24px 0;
 	color: var(--dav-color-on-surface);
 }
+
+.actions-container {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+
+	dav-icon-card {
+		width: 100%;
+	}
+}

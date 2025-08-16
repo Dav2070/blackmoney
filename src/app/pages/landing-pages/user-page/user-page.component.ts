@@ -1,7 +1,12 @@
 import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
 import { Router } from "@angular/router"
 import { isPlatformServer } from "@angular/common"
-import { faArrowRightFromBracket } from "@fortawesome/pro-regular-svg-icons"
+import {
+	faArrowRightFromBracket,
+	faCashRegister,
+	faUsers,
+	faShop
+} from "@fortawesome/pro-regular-svg-icons"
 import { LogoutDialogComponent } from "src/app/dialogs/logout-dialog/logout-dialog.component"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -16,6 +21,9 @@ import { randomNumber } from "src/app/utils"
 export class UserPageComponent {
 	locale = this.localizationService.locale.userPage
 	faArrowRightFromBracket = faArrowRightFromBracket
+	faCashRegister = faCashRegister
+	faUsers = faUsers
+	faShop = faShop
 	@ViewChild("logoutDialog")
 	logoutDialog: LogoutDialogComponent
 	title = ""

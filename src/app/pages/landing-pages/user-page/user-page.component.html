@@ -10,30 +10,36 @@
 			</div>
 		</dav-header>
 
-		<dav-list>
-			<dav-list-item
-				[headline]="locale.goToDashboard"
+		<div class="actions-container">
+			<dav-icon-card
+				[text]="locale.goToDashboard"
 				href="dashboard"
 				(click)="navigateToDashboardPage($event)"
-			></dav-list-item>
+			>
+				<fa-icon [icon]="faCashRegister"></fa-icon>
+			</dav-icon-card>
 
 			@if (
 				dataService.user != null &&
 				["OWNER", "ADMIN"].includes(dataService.user.role)
 			) {
-				<dav-list-item
-					[headline]="locale.manageEmployees"
+				<dav-icon-card
+					[text]="locale.manageEmployees"
 					href="user/employees"
 					(click)="navigateToEmployeesPage($event)"
-				></dav-list-item>
+				>
+					<fa-icon [icon]="faUsers"></fa-icon>
+				</dav-icon-card>
 
-				<dav-list-item
-					[headline]="locale.manageRestaurants"
+				<dav-icon-card
+					[text]="locale.manageRestaurants"
 					href="user/restaurants"
 					(click)="navigateToRestaurantsPage($event)"
-				></dav-list-item>
+				>
+					<fa-icon [icon]="faShop"></fa-icon>
+				</dav-icon-card>
 			}
-		</dav-list>
+		</div>
 	</div>
 </div>
 

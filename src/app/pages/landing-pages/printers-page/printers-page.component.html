@@ -31,4 +31,13 @@
 			</dav-card>
 		}
 	</div>
+	<app-add-printer-dialog
+		#addPrinterDialog
+		[loading]="addPrinterDialogLoading"
+		[nameError]="addPrinterDialogNameError"
+		[ipAdressError]="addPrinterDialogIpAdressError"
+		[macAdressError]="addPrinterDialogMacAdressError"
+		(primaryButtonClick)="addPrinterDialogPrimaryButtonClick($event)"
+		(clearErrors)="clearAddPrinterDialogErrors()"
+	></app-add-printer-dialog>
 </div>

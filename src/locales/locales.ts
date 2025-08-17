@@ -60,6 +60,12 @@ export const de = {
 			headline: "Mitarbeiter hinzufügen",
 			name: "Name des Mitarbeiters",
 			assignedRestaurants: "Zugeordnete Restaurants"
+		},
+		addPrinterDialog: {
+			headline: "Drucker hinzufügen",
+			name: "Name des Druckers",
+			ipAdress: "IP-Adresse",
+			macAdress: "MAC-Adresse"
 		}
 	},
 	actions: {
@@ -74,10 +80,12 @@ export const de = {
 		line1TooLong: "Die erste Zeile der Adresse ist zu lang.",
 		line2TooLong: "Die zweite Zeile der Adresse ist zu lang.",
 		postalCodeInvalid: "Die Postleitzahl ist ungültig.",
-		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
+		unexpectedError: "Ein unbekannter Fehler ist aufgetreten.",
+		ipAdressInvalid: "Die IP-Adresse ist ungültig.",
+		macAdressInvalid: "Die MAC-Adresse ist ungültig."
 	},
-	printersPage:{
+	printersPage: {
 		headline: "Deine Drucker",
-		test:"Test"
+		test: "Test"
 	}
 }

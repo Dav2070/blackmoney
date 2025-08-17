@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Printer } from 'src/app/models/Printer';
 import { LocalizationService } from 'src/app/services/localization-service';
-import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons"
+import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons";
+import { AddPrinterDialogComponent } from 'src/app/dialogs/add-printer-dialog/add-printer-dialog.component';
 
 @Component({
   selector: 'app-printers-page',
@@ -11,7 +12,10 @@ import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons"
   standalone: false
 })
 export class PrintersPageComponent {
-  locale = this.localizationService.locale.printersPage
+  locale = this.localizationService.locale.printersPage;
+  faPen = faPen;
+  faPrint = faPrint;
+
   printers: Printer[] = [
     {
       uuid: '1',
@@ -32,22 +36,66 @@ export class PrintersPageComponent {
       macAdress: 'AA:BB:CC:DD:EE:03'
     }
   ];
-  faPen = faPen
-  faPrint = faPrint;
+
+  addPrinterDialogLoading = false;
+  addPrinterDialogNameError = "";
+  addPrinterDialogIpAdressError = "";
+  addPrinterDialogMacAdressError = "";
+
+  @ViewChild('addPrinterDialog') addPrinterDialog!: AddPrinterDialogComponent;
+
   constructor(
-    private localizationService: LocalizationService,
+    public localizationService: LocalizationService,
     private router: Router
   ) { }
 
   showAddPrintersDialog() {
+    this.clearAddPrinterDialogErrors();
+    this.addPrinterDialog.show();
   }
 
-  showEditPrinterDialog() {
+  addPrinterDialogPrimaryButtonClick(event: { name: string; ipAdress: string; macAdress: string }) {
+    this.addPrinterDialogLoading = true;
+    // Hier kannst du Validierung und ggf. Backend-Call einbauen
+    // Beispiel: einfache Validierung
+    if (event.name.length === 0) {
+      this.addPrinterDialogNameError = "Name darf nicht leer sein.";
+      this.addPrinterDialogLoading = false;
+      return;
+    }
+    if (event.ipAdress.length === 0) {
+      this.addPrinterDialogIpAdressError = "IP-Adresse darf nicht leer sein.";
+      this.addPrinterDialogLoading = false;
+      return;
+    }
+    if (event.macAdress.length === 0) {
+      this.addPrinterDialogMacAdressError = "MAC-Adresse darf nicht leer sein.";
+      this.addPrinterDialogLoading = false;
+      return;
+    }
+    // Drucker hinzufügen
+    this.printers.push({
+      uuid: (Math.random() * 1000000).toFixed(0),
+      name: event.name,
+      ipAdress: event.ipAdress,
+      macAdress: event.macAdress
+    });
+    this.addPrinterDialogLoading = false;
+    this.addPrinterDialog.hide();
+  }
 
+  clearAddPrinterDialogErrors() {
+    this.addPrinterDialogNameError = "";
+    this.addPrinterDialogIpAdressError = "";
+    this.addPrinterDialogMacAdressError = "";
   }
 
   testPrinter(printer: Printer) {
-    // Hier kommt deine Test-Logik
-    console.log('Test für Drucker:', printer);
+    // Test-Logik
+    alert(`Test für Drucker: ${printer.name}`);
+  }
+
+  showEditPrinterDialog() {
+    // Öffne Edit-Dialog (optional)
   }
 }

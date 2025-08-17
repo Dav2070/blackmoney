@@ -35,14 +35,15 @@ import { AppRoutingModule } from "./app-routing.module"
 
 // Components
 import { AppComponent } from "./app.component"
-import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
+import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
+import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -84,6 +85,8 @@ import { MenuTableComponent } from "./components/settings/menu-table/menu-table.
 import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 
+
+
 @NgModule({
 	declarations: [
 		// Components
@@ -95,6 +98,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,
+		AddPrinterDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -174,4 +178,4 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		provideHttpClient(withInterceptorsFromDi())
 	]
 })
-export class AppModule {}
+export class AppModule { }

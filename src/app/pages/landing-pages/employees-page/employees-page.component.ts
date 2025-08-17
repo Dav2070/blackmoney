@@ -83,6 +83,10 @@ export class EmployeesPageComponent {
 		this.addEmployeeDialog.show()
 	}
 
+	navigateBack() {
+		this.router.navigate(["user"])
+	}
+
 	navigateToEmployee(event: MouseEvent, user: User) {
 		event.preventDefault()
 

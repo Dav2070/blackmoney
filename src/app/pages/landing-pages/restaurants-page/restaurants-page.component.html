@@ -1,6 +1,8 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header>{{ locale.headline }}</dav-header>
+		<dav-header backButtonVisible (backButtonClick)="navigateBack()">
+			{{ locale.headline }}
+		</dav-header>
 
 		<dav-list>
 			@for (restaurant of restaurants; track restaurant.uuid) {

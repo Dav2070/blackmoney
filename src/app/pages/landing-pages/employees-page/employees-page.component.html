@@ -1,6 +1,11 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header addButtonVisible (addButtonClick)="showAddEmployeeDialog()">
+		<dav-header
+			addButtonVisible
+			backButtonVisible
+			(addButtonClick)="showAddEmployeeDialog()"
+			(backButtonClick)="navigateBack()"
+		>
 			{{ locale.headline }}
 		</dav-header>
 

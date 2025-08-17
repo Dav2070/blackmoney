@@ -1,4 +1,5 @@
 import { Component } from "@angular/core"
+import { Router } from "@angular/router"
 import { DropdownOption, DropdownOptionType } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { SettingsService } from "src/app/services/settings-service"
@@ -34,12 +35,17 @@ export class GeneralSettingsPageComponent {
 	constructor(
 		private localizationService: LocalizationService,
 		private settingsService: SettingsService,
-		private dataService: DataService
+		private dataService: DataService,
+		private router: Router
 	) {}
 
 	async ngOnInit() {
 		// Select the correct theme
 		this.selectedTheme = await this.settingsService.getTheme()
+	}
+
+	navigateBack() {
+		this.router.navigate(["user"])
 	}
 
 	themeDropdownChange(event: Event) {

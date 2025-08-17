@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core"
-import { ActivatedRoute } from "@angular/router"
+import { Router, ActivatedRoute } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { faLocationDot, faPen } from "@fortawesome/pro-regular-svg-icons"
@@ -46,8 +46,9 @@ export class RestaurantPageComponent {
 	constructor(
 		private apiService: ApiService,
 		private dataService: DataService,
-		private activatedRoute: ActivatedRoute,
-		private localizationService: LocalizationService
+		private localizationService: LocalizationService,
+		private router: Router,
+		private activatedRoute: ActivatedRoute
 	) {}
 
 	async ngOnInit() {
@@ -77,6 +78,10 @@ export class RestaurantPageComponent {
 		this.line2 = retrieveRestaurantResponse.data.retrieveRestaurant.line2
 		this.postalCode =
 			retrieveRestaurantResponse.data.retrieveRestaurant.postalCode
+	}
+
+	navigateBack() {
+		this.router.navigate(["user", "restaurants"])
 	}
 
 	showEditRestaurantNameDialog() {

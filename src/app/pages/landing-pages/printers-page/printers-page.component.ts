@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { Printer } from 'src/app/models/Printer';
 import { LocalizationService } from 'src/app/services/localization-service';
 import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons";
 import { AddPrinterDialogComponent } from 'src/app/dialogs/add-printer-dialog/add-printer-dialog.component';
+import { EditPrinterDialogComponent } from 'src/app/dialogs/edit-printer-dialog/edit-printer-dialog.component';
 
 @Component({
   selector: 'app-printers-page',
@@ -37,17 +37,26 @@ export class PrintersPageComponent {
     }
   ];
 
+  // Add-Dialog Properties
   addPrinterDialogLoading = false;
   addPrinterDialogNameError = "";
   addPrinterDialogIpAdressError = "";
   addPrinterDialogMacAdressError = "";
 
-  @ViewChild('addPrinterDialog') addPrinterDialog!: AddPrinterDialogComponent;
+  // Edit-Dialog Properties
+  editPrinterDialogLoading = false;
+  editPrinterDialogNameError = "";
+  editPrinterDialogIpAdressError = "";
+  editPrinterDialogMacAdressError = "";
+  editPrinterDialogName = "";
+  editPrinterDialogIpAdress = "";
+  editPrinterDialogMacAdress = "";
+  editPrinterDialogPrinterUuid: string | null = null;
 
-  constructor(
-    public localizationService: LocalizationService,
-    private router: Router
-  ) { }
+  @ViewChild('addPrinterDialog') addPrinterDialog!: AddPrinterDialogComponent;
+  @ViewChild('editPrinterDialog') editPrinterDialog!: EditPrinterDialogComponent;
+
+  constructor(public localizationService: LocalizationService) { }
 
   showAddPrintersDialog() {
     this.clearAddPrinterDialogErrors();
@@ -56,8 +65,7 @@ export class PrintersPageComponent {
 
   addPrinterDialogPrimaryButtonClick(event: { name: string; ipAdress: string; macAdress: string }) {
     this.addPrinterDialogLoading = true;
-    // Hier kannst du Validierung und ggf. Backend-Call einbauen
-    // Beispiel: einfache Validierung
+    // Validierung
     if (event.name.length === 0) {
       this.addPrinterDialogNameError = "Name darf nicht leer sein.";
       this.addPrinterDialogLoading = false;
@@ -90,12 +98,58 @@ export class PrintersPageComponent {
     this.addPrinterDialogMacAdressError = "";
   }
 
-  testPrinter(printer: Printer) {
-    // Test-Logik
-    alert(`Test für Drucker: ${printer.name}`);
+  // --- Edit Dialog ---
+  showEditPrinterDialog(printer: Printer) {
+    this.clearEditPrinterDialogErrors();
+    this.editPrinterDialogPrinterUuid = printer.uuid ?? null;
+    this.editPrinterDialogName = printer.name;
+    this.editPrinterDialogIpAdress = printer.ipAdress;
+    this.editPrinterDialogMacAdress = printer.macAdress;
+    this.editPrinterDialog.show({
+      name: printer.name,
+      ipAdress: printer.ipAdress,
+      macAdress: printer.macAdress
+    });
   }
 
-  showEditPrinterDialog() {
-    // Öffne Edit-Dialog (optional)
+  editPrinterDialogPrimaryButtonClick(event: { name: string; ipAdress: string; macAdress: string }) {
+    this.editPrinterDialogLoading = true;
+    // Validierung
+    if (event.name.length === 0) {
+      this.editPrinterDialogNameError = "Name darf nicht leer sein.";
+      this.editPrinterDialogLoading = false;
+      return;
+    }
+    if (event.ipAdress.length === 0) {
+      this.editPrinterDialogIpAdressError = "IP-Adresse darf nicht leer sein.";
+      this.editPrinterDialogLoading = false;
+      return;
+    }
+    if (event.macAdress.length === 0) {
+      this.editPrinterDialogMacAdressError = "MAC-Adresse darf nicht leer sein.";
+      this.editPrinterDialogLoading = false;
+      return;
+    }
+    // Drucker aktualisieren
+    if (this.editPrinterDialogPrinterUuid) {
+      const idx = this.printers.findIndex(p => p.uuid === this.editPrinterDialogPrinterUuid);
+      if (idx !== -1) {
+        this.printers[idx].name = event.name;
+        this.printers[idx].ipAdress = event.ipAdress;
+        this.printers[idx].macAdress = event.macAdress;
+      }
+    }
+    this.editPrinterDialogLoading = false;
+    this.editPrinterDialog.hide();
+  }
+
+  clearEditPrinterDialogErrors() {
+    this.editPrinterDialogNameError = "";
+    this.editPrinterDialogIpAdressError = "";
+    this.editPrinterDialogMacAdressError = "";
+  }
+
+  testPrinter(printer: Printer) {
+    alert(`Test für Drucker: ${printer.name}`);
   }
 }

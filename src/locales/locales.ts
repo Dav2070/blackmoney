@@ -66,6 +66,12 @@ export const de = {
 			name: "Name des Druckers",
 			ipAdress: "IP-Adresse",
 			macAdress: "MAC-Adresse"
+		},
+		editPrinterDialog: {
+			editHeadline: "Drucker bearbeiten",
+			name: "Name des Druckers",
+			ipAdress: "IP-Adresse",
+			macAdress: "MAC-Adresse"
 		}
 	},
 	actions: {

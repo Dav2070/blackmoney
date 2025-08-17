@@ -1,31 +1,31 @@
-import { isPlatformBrowser } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Inject, Input, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Dialog } from 'dav-ui-components';
 import { LocalizationService } from 'src/app/services/localization-service';
 
 @Component({
-  selector: 'app-add-printer-dialog',
-  templateUrl: './add-printer-dialog.component.html',
-  styleUrl: './add-printer-dialog.component.scss',
+  selector: 'app-edit-printer-dialog',
+  templateUrl: './edit-printer-dialog.component.html',
+  styleUrl: './edit-printer-dialog.component.scss',
   standalone: false
 })
-export class AddPrinterDialogComponent {
-  locale = this.localizationService.locale.dialogs.addPrinterDialog;
+export class EditPrinterDialogComponent {
+  locale = this.localizationService.locale.dialogs.editPrinterDialog;
   actionsLocale = this.localizationService.locale.actions;
 
-  name: string = "";
-  ipAdress: string = "";
-  macAdress: string = "";
+  @Input() name: string = "";
+  @Input() ipAdress: string = "";
+  @Input() macAdress: string = "";
 
   @Input() nameError: string = "";
   @Input() ipAdressError: string = "";
   @Input() macAdressError: string = "";
   @Input() loading: boolean = false;
 
-  @Output() primaryButtonClick = new EventEmitter();
+  @Output() primaryButtonClick = new EventEmitter<{ name: string; ipAdress: string; macAdress: string }>();
   @Output() clearErrors = new EventEmitter();
 
-  @ViewChild("dialog") dialog: ElementRef<Dialog>;
+  @ViewChild("dialog") dialog!: ElementRef<Dialog>;
   visible: boolean = false;
 
   constructor(
@@ -45,7 +45,10 @@ export class AddPrinterDialogComponent {
     }
   }
 
-  show() {
+  show(printer: { name: string; ipAdress: string; macAdress: string }) {
+    this.name = printer.name;
+    this.ipAdress = printer.ipAdress;
+    this.macAdress = printer.macAdress;
     this.visible = true;
   }
 
@@ -76,3 +79,4 @@ export class AddPrinterDialogComponent {
     });
   }
 }
+

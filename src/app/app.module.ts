@@ -44,6 +44,7 @@ import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-nam
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
 import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
+import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -87,6 +88,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 
 
 
+
 @NgModule({
 	declarations: [
 		// Components
@@ -99,6 +101,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,
 		AddPrinterDialogComponent,
+		EditPrinterDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

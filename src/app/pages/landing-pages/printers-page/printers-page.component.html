@@ -24,7 +24,10 @@
 							</dav-button>
 						</div>
 					</div>
-					<dav-icon-button size="xs" (click)="showEditPrinterDialog()">
+					<dav-icon-button
+						size="xs"
+						(click)="showEditPrinterDialog(printer)"
+					>
 						<fa-icon [icon]="faPen"></fa-icon>
 					</dav-icon-button>
 				</div>
@@ -40,4 +43,16 @@
 		(primaryButtonClick)="addPrinterDialogPrimaryButtonClick($event)"
 		(clearErrors)="clearAddPrinterDialogErrors()"
 	></app-add-printer-dialog>
+	<app-edit-printer-dialog
+		#editPrinterDialog
+		[name]="editPrinterDialogName"
+		[ipAdress]="editPrinterDialogIpAdress"
+		[macAdress]="editPrinterDialogMacAdress"
+		[loading]="editPrinterDialogLoading"
+		[nameError]="editPrinterDialogNameError"
+		[ipAdressError]="editPrinterDialogIpAdressError"
+		[macAdressError]="editPrinterDialogMacAdressError"
+		(primaryButtonClick)="editPrinterDialogPrimaryButtonClick($event)"
+		(clearErrors)="clearEditPrinterDialogErrors()"
+	></app-edit-printer-dialog>
 </div>

@@ -1,7 +1,15 @@
 <div class="navbar acrylic">
 	<!-- Logo + name -->
 	<a class="navbar-header" routerLink="/">
-		<img src="/assets/icons/icon-72.png" width="68" height="68" />
+		<img
+			[src]="
+				dataService.darkTheme
+					? '/assets/icons/icon-unplated-light-128.png'
+					: '/assets/icons/icon-unplated-dark-128.png'
+			"
+			width="68"
+			height="68"
+		/>
 
 		<div class="navbar-header-text-container">
 			<span class="navbar-header-text-1">butler</span>

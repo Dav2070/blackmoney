@@ -1,6 +1,11 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header addButtonVisible (addButtonClick)="showAddEmployeeDialog()">
+		<dav-header
+			addButtonVisible
+			backButtonVisible
+			(addButtonClick)="showAddEmployeeDialog()"
+			(backButtonClick)="navigateBack()"
+		>
 			{{ locale.headline }}
 		</dav-header>
 
@@ -18,8 +23,9 @@
 
 <app-add-employee-dialog
 	#addEmployeeDialog
-	[loading]="addEmployeeDialogLoading"
 	[nameError]="nameError"
+	[loading]="addEmployeeDialogLoading"
+	[restaurants]="restaurants"
 	(primaryButtonClick)="addEmployeeDialogPrimaryButtonClick($event)"
 	(clearErrors)="nameError = ''"
 ></app-add-employee-dialog>

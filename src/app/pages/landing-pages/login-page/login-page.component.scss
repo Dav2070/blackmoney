@@ -2,7 +2,6 @@
 	display: flex;
 	justify-content: center;
 	height: 100vh;
-	background-color: black;
 }
 
 .content {
@@ -21,9 +20,19 @@ h1 {
 	font-size: 36px;
 }
 
+.initial-load-progress-ring-container {
+	margin-top: 24px;
+}
+
 .button-container {
 	display: flex;
 	justify-content: center;
+	align-items: center;
+	gap: 16px;
+}
+
+.button-container.loading {
+	margin-left: 32px;
 }
 
 dav-textfield {

@@ -1,30 +1,57 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<h1>{{ title }}</h1>
+		<dav-header>
+			{{ title }}
 
-		<dav-list>
-			<dav-list-item
-				[headline]="locale.goToDashboard"
+			<div class="header-icons-container" slot="icons">
+				<dav-icon-button
+					size="sm"
+					href="/user/settings"
+					(click)="navigateToGeneralSettingsPage($event)"
+				>
+					<fa-icon [icon]="faGear"></fa-icon>
+				</dav-icon-button>
+
+				<dav-icon-button size="sm" (click)="showLogoutDialog()">
+					<fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
+				</dav-icon-button>
+			</div>
+		</dav-header>
+
+		<div class="actions-container">
+			<dav-icon-card
+				[text]="locale.goToDashboard"
 				href="dashboard"
 				(click)="navigateToDashboardPage($event)"
-			></dav-list-item>
+			>
+				<fa-icon [icon]="faCashRegister"></fa-icon>
+			</dav-icon-card>
 
 			@if (
 				dataService.user != null &&
 				["OWNER", "ADMIN"].includes(dataService.user.role)
 			) {
-				<dav-list-item
-					[headline]="locale.manageEmployees"
+				<dav-icon-card
+					[text]="locale.manageEmployees"
 					href="user/employees"
 					(click)="navigateToEmployeesPage($event)"
-				></dav-list-item>
+				>
+					<fa-icon [icon]="faUsers"></fa-icon>
+				</dav-icon-card>
 
-				<dav-list-item
-					[headline]="locale.manageRestaurants"
+				<dav-icon-card
+					[text]="locale.manageRestaurants"
 					href="user/restaurants"
 					(click)="navigateToRestaurantsPage($event)"
-				></dav-list-item>
+				>
+					<fa-icon [icon]="faShop"></fa-icon>
+				</dav-icon-card>
 			}
-		</dav-list>
+		</div>
 	</div>
 </div>
+
+<app-logout-dialog
+	#logoutDialog
+	(primaryButtonClick)="logout()"
+></app-logout-dialog>

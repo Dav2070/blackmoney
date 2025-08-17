@@ -32,7 +32,7 @@
 		"@fortawesome/pro-solid-svg-icons": "^7.0.0",
 		"apollo-angular": "^11.0.0",
 		"dav-js": "git+https://github.com/dav-apps/dav-js.git#v3.2.2",
-		"dav-ui-components": "git+https://github.com/dav-apps/dav-ui-components.git#v1.7",
+		"dav-ui-components": "git+https://github.com/dav-apps/dav-ui-components.git#v1.8",
 		"express": "^4.21.2",
 		"graphql": "^16.11.0",
 		"localforage": "^1.10.0",

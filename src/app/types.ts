@@ -5,6 +5,12 @@ export interface List<T> {
 	items: T[]
 }
 
+export enum Theme {
+	System = "system",
+	Light = "light",
+	Dark = "dark"
+}
+
 export interface SessionResource {
 	uuid: string
 	user: UserResource

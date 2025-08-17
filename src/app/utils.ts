@@ -17,8 +17,10 @@ import {
 	OrderItemVariationResource,
 	BillResource,
 	RestaurantResource,
-	ErrorCode
+	ErrorCode,
+	Theme
 } from "./types"
+import { darkThemeKey, lightThemeKey } from "./constants"
 import { Table } from "./models/Table"
 import { Category } from "./models/Category"
 import { Product } from "./models/Product"
@@ -350,6 +352,17 @@ export function convertOrderItemVariationResourceToOrderItemVariation(
 		uuid: orderItemVariationResource.uuid,
 		count: orderItemVariationResource.count,
 		variationItems
+	}
+}
+
+export function convertStringToTheme(value: string): Theme {
+	switch (value) {
+		case lightThemeKey:
+			return Theme.Light
+		case darkThemeKey:
+			return Theme.Dark
+		default:
+			return Theme.System
 	}
 }
 //#endregion

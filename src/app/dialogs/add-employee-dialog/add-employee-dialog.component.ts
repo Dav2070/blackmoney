@@ -10,11 +10,13 @@ import {
 } from "@angular/core"
 import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
+import { Restaurant } from "src/app/models/Restaurant"
 import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	selector: "app-add-employee-dialog",
 	templateUrl: "./add-employee-dialog.component.html",
+	styleUrl: "./add-employee-dialog.component.scss",
 	standalone: false
 })
 export class AddEmployeeDialogComponent {
@@ -22,11 +24,13 @@ export class AddEmployeeDialogComponent {
 	actionsLocale = this.localizationService.locale.actions
 	name: string = ""
 	@Input() nameError: string = ""
+	@Input() restaurants: Restaurant[] = []
 	@Input() loading: boolean = false
 	@Output() primaryButtonClick = new EventEmitter()
 	@Output() clearErrors = new EventEmitter()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
+	assignedRestaurants: string[] = []
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -47,6 +51,7 @@ export class AddEmployeeDialogComponent {
 
 	show() {
 		this.visible = true
+		this.assignedRestaurants = []
 	}
 
 	hide() {
@@ -58,9 +63,23 @@ export class AddEmployeeDialogComponent {
 		this.clearErrors.emit()
 	}
 
+	restaurantCheckboxChange(event: Event, restaurantUuid: string) {
+		const checked = (event as CustomEvent).detail.checked
+
+		if (checked) {
+			this.assignedRestaurants.push(restaurantUuid)
+		} else {
+			const i = this.assignedRestaurants.indexOf(restaurantUuid)
+			if (i != -1) this.assignedRestaurants.splice(i, 1)
+		}
+	}
+
 	submit() {
+		if (this.assignedRestaurants.length === 0) return
+
 		this.primaryButtonClick.emit({
-			name: this.name
+			name: this.name,
+			restaurants: this.assignedRestaurants
 		})
 	}
 }

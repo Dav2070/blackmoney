@@ -321,6 +321,26 @@ footer {
 	}
 }
 
+.menue-left {
+	flex: 1;
+	background-color: purple;
+	height: 100%;
+	
+	h3 {
+		margin: 0;
+		padding: 10px;
+		background-color: purple;
+		font-size: 16px;
+		text-align: center;
+		color: white;
+	}
+	
+	.category-list {
+		padding: 10px;
+		height: calc(100% - 45px);
+	}
+}
+
 .specials-center {
 	flex: 2;
 	background-color: orange;

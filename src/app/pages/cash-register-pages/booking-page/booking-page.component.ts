@@ -31,7 +31,7 @@ import { VariationItem } from "src/app/models/VariationItem"
 import { OrderResource } from "dav-js"
 import { Order } from "src/app/models/Order"
 import { MenuePageComponent } from '../../settings-pages/menue-page/menue-page.component';
-import { Menu } from "src/app/models/Menu"
+import { Menu, MenuItem } from "src/app/models/Menu"
 
 
 interface AddProductsInput {
@@ -61,6 +61,9 @@ export class BookingPageComponent {
 	specialCategories: Category[] = [];
 	specialProducts: Product[] = [];
 	currentSpecial: Menu | null = null;
+	currentMenu: Menu | null = null;
+	currentMaxSelections: number = 0;
+	currentIndex: number = 0;
 	tmpSpecialSelectedItems: OrderItem[] = [];
 	tmpSpecialAllItemsHandler = new AllItemHandler()
 	selectedMenuItem: MenuOrderItem = null
@@ -1382,6 +1385,7 @@ export class BookingPageComponent {
 
 	clickSpecial(special: Menu) {
 		this.currentSpecial = special;
+		this.currentMenu = null;
 		this.isMenuePopupVisible = true;
 		
 		for (let item of special.items) {
@@ -1392,8 +1396,54 @@ export class BookingPageComponent {
 
 	}
 
+	clickMenu(menu: Menu) {
+		this.currentMenu = menu;
+		this.currentSpecial = null;
+		this.isMenuePopupVisible = true;
+		// Index auf erstes menu item setzen
+		this.changeSelectedMenuInventory(menu.items[0], menu.items[0].maxSelections, 0);
+
+		for (let item of menu.items) {
+			for (let category of item.categories) {
+				this.specialCategories.push(category);
+			}
+		}
+	}
+
 	changeSelectedSpecialInventory(items: Product[]) {
 		this.specialProducts = items;
+	}
+
+	changeSelectedMenuInventory(menuItem: MenuItem, maxSelections: number, index?: number) {
+		let allProducts: Product[] = [];
+		for (let category of menuItem.categories) {
+			allProducts = allProducts.concat(category.products);
+		}
+
+		this.specialProducts = allProducts;
+		this.currentMaxSelections = maxSelections;
+		this.currentIndex = index;
+	}
+
+	findNextAvailableCategory(): number {
+		if (!this.currentMenu) return -1;
+		
+		// Starte bei der nächsten Kategorie nach der aktuellen
+		for (let i = this.currentIndex + 1; i < this.currentMenu.items.length; i++) {
+			if (this.currentMenu.items[i].maxSelections > 0) {
+				return i;
+			}
+		}
+		
+		// Falls keine gefunden, suche von Anfang bis zur aktuellen Position
+		for (let i = 0; i < this.currentIndex; i++) {
+			if (this.currentMenu.items[i].maxSelections > 0) {
+				return i;
+			}
+		}
+		
+		// Keine verfügbare Kategorie gefunden
+		return -1;
 	}
 
 	closeSpecials() {
@@ -1409,8 +1459,24 @@ export class BookingPageComponent {
 	clickSpecialProduct(product: Product) {
 		if (product == null) return
 
-		// Reset lastClickedMenuItem da wir jetzt ein Special-Produkt bearbeiten
-		this.lastClickedMenuItem = null;
+		if(this.currentMenu) {
+			this.currentMenu.items[this.currentIndex].maxSelections -= 1;
+			this.currentMaxSelections = this.currentMenu.items[this.currentIndex].maxSelections;
+			
+			// Wenn maxSelections = 0, dann nächsten Index suchen
+			if (this.currentMaxSelections === 0) {
+				let nextIndex = this.findNextAvailableCategory();
+				// Wenn gültiger Index gefunden wurde
+				if (nextIndex !== -1) {
+					this.currentIndex = nextIndex;
+					this.changeSelectedMenuInventory(
+						this.currentMenu.items[this.currentIndex], 
+						this.currentMenu.items[this.currentIndex].maxSelections, 
+						this.currentIndex
+					);
+				}
+			}
+		}
 
 		let newItem: OrderItem = {
 			uuid: product.uuid,
@@ -1512,8 +1578,12 @@ export class BookingPageComponent {
 
 	confirmSpecials() {
 		let rabattFaktor = 0;
-		if (this.currentSpecial.discountType === 'PERCENTAGE') {
+		
+		// Prüfe ob wir im Special-Modus oder Menü-Modus sind
+		if (this.currentSpecial && this.currentSpecial.discountType === 'PERCENTAGE') {
 			rabattFaktor = this.currentSpecial.offerValue / 100;
+		} else if (this.currentMenu && this.currentMenu.discountType === 'PERCENTAGE') {
+			rabattFaktor = this.currentMenu.offerValue / 100;
 		}
 
 		// Durch alle ausgewählten Produkte gehen und für jedes ein separates MenuOrderItem erstellen
@@ -1572,16 +1642,20 @@ export class BookingPageComponent {
 			let itemPrice = this.calculateSpecialPrice(processedItem);
 			console.log("Item Price:", itemPrice);
 
+			// Bestimme das aktuelle Menü/Special für MenuOrderItem
+			let currentMenuOrSpecial = this.currentMenu || this.currentSpecial;
+			let menuName = currentMenuOrSpecial ? currentMenuOrSpecial.name : 'Unknown Menu';
+
 			let menuOrderItem: MenuOrderItem = {
 				uuid: crypto.randomUUID(),
 				count: processedItem.count,
 				order: null,
-				menu: this.currentSpecial,
-				name: this.currentSpecial.name,
+				menu: currentMenuOrSpecial,
+				name: menuName,
 				product: {
 					id: processedItem.product.id,
 					uuid: processedItem.product.uuid,
-					name: this.currentSpecial.name,
+					name: menuName,
 					price: itemPrice,
 					variations: []
 				},
@@ -1692,20 +1766,25 @@ export class BookingPageComponent {
 
 		let itemPrice = originalPrice;
 
-		switch (this.currentSpecial.offerType) {
-			case 'FIXED_PRICE':
-				itemPrice = this.currentSpecial.offerValue;
-				break;
-			case 'DISCOUNT':
-				if (this.currentSpecial.discountType === 'PERCENTAGE') {
-					itemPrice = originalPrice * (1 - (this.currentSpecial.offerValue / 100));
-				} else if (this.currentSpecial.discountType === 'AMOUNT') {
-					itemPrice = originalPrice - this.currentSpecial.offerValue;
-				}
-				break;
-			default:
-				itemPrice = originalPrice;
-				break;
+		// Bestimme das aktuelle Menü oder Special für Preisberechnung
+		let currentMenuOrSpecial = this.currentSpecial || this.currentMenu;
+		
+		if (currentMenuOrSpecial && currentMenuOrSpecial.offerType) {
+			switch (currentMenuOrSpecial.offerType) {
+				case 'FIXED_PRICE':
+					itemPrice = currentMenuOrSpecial.offerValue;
+					break;
+				case 'DISCOUNT':
+					if (currentMenuOrSpecial.discountType === 'PERCENTAGE') {
+						itemPrice = originalPrice * (1 - (currentMenuOrSpecial.offerValue / 100));
+					} else if (currentMenuOrSpecial.discountType === 'AMOUNT') {
+						itemPrice = originalPrice - currentMenuOrSpecial.offerValue;
+					}
+					break;
+				default:
+					itemPrice = originalPrice;
+					break;
+			}
 		}
 		
 		return itemPrice;

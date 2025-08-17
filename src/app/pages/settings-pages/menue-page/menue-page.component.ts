@@ -121,15 +121,7 @@ export class MenuePageComponent {
                 endTime: undefined,
                 weekdays: []
             },
-            items: [
-                {
-                    uuid: "item_1",
-                    name: "Vorspeise",
-                    categories: [this.foodCategories[0]],
-                    products: [this.foodCategories[0].products[0]],
-                    maxSelections: 1
-                }
-            ]
+            items: []
         },
         {
             uuid: "menu_2",

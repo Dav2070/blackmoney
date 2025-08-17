@@ -48,8 +48,7 @@ export class RestaurantPageComponent {
 		private dataService: DataService,
 		private localizationService: LocalizationService,
 		private router: Router,
-		private activatedRoute: ActivatedRoute,
-		private router: Router
+		private activatedRoute: ActivatedRoute
 	) { }
 
 	async ngOnInit() {

@@ -10,6 +10,7 @@ import { RestaurantPageComponent } from "./pages/landing-pages/restaurant-page/r
 import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/employees-page.component"
 import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
+import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-page/set-password-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
@@ -33,6 +34,14 @@ const routes: Routes = [
 			{
 				path: "pricing",
 				component: LandingPricingPageComponent
+			},
+			{
+				path: "login",
+				component: LoginPageComponent
+			},
+			{
+				path: "login/set-password",
+				component: SetPasswordPageComponent
 			},
 			{
 				path: "user",
@@ -59,10 +68,6 @@ const routes: Routes = [
 				component: EmployeePageComponent
 			}
 		]
-	},
-	{
-		path: "login",
-		component: LoginPageComponent
 	},
 	{
 		path: "onboarding",

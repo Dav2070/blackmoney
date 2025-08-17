@@ -9,7 +9,8 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { SettingsService } from "src/app/services/settings-service"
 import {
 	convertCompanyResourceToCompany,
-	convertUserResourceToUser
+	convertUserResourceToUser,
+	getGraphQLErrorCodes
 } from "src/app/utils"
 
 @Component({
@@ -189,7 +190,18 @@ export class LoginPageComponent {
 			// Redirect to user page
 			this.router.navigate(["user"])
 		} else {
-			this.errorMessage = this.locale.loginFailed
+			const errors = getGraphQLErrorCodes(loginResponse)
+
+			if (errors == null) {
+				this.errorMessage = this.locale.loginFailed
+				return
+			}
+
+			if (errors.includes("USER_HAS_NO_PASSWORD")) {
+				this.router.navigate(["login", "set-password"])
+			} else {
+				this.errorMessage = this.locale.loginFailed
+			}
 		}
 	}
 }

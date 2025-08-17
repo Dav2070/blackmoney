@@ -1,5 +1,6 @@
 //#region Session & authentication
 export const notAuthenticated = "NOT_AUTHENTICATED"
+export const userHasNoPassword = "USER_HAS_NO_PASSWORD"
 //#endregion
 
 //#region Too short fields

@@ -117,6 +117,7 @@ export type Country = "DE"
 
 export type ErrorCode =
 	| typeof ErrorCodes.notAuthenticated
+	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.nameTooShort
 	| typeof ErrorCodes.nameTooLong
 	| typeof ErrorCodes.cityTooLong

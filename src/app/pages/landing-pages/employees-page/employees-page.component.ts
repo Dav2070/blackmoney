@@ -124,7 +124,6 @@ export class EmployeesPageComponent {
 			this.addEmployeeDialog.hide()
 		} else {
 			const errors = getGraphQLErrorCodes(createUserResponse)
-
 			if (errors == null) return
 
 			for (const errorCode of errors) {

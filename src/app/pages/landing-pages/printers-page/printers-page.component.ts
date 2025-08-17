@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Printer } from 'src/app/models/Printer';
 import { LocalizationService } from 'src/app/services/localization-service';
+import { PrinterService } from 'src/app/services/printer-service'; // <--- Importieren!
 import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons";
 import { AddPrinterDialogComponent } from 'src/app/dialogs/add-printer-dialog/add-printer-dialog.component';
 import { EditPrinterDialogComponent } from 'src/app/dialogs/edit-printer-dialog/edit-printer-dialog.component';
@@ -20,8 +21,8 @@ export class PrintersPageComponent {
     {
       uuid: '1',
       name: 'Küche',
-      ipAdress: '192.168.1.10',
-      macAdress: 'AA:BB:CC:DD:EE:01'
+      ipAdress: '192.168.188.121',
+      macAdress: 'A4:D7:3C:AD:07:60'
     },
     {
       uuid: '2',
@@ -56,7 +57,10 @@ export class PrintersPageComponent {
   @ViewChild('addPrinterDialog') addPrinterDialog!: AddPrinterDialogComponent;
   @ViewChild('editPrinterDialog') editPrinterDialog!: EditPrinterDialogComponent;
 
-  constructor(public localizationService: LocalizationService) { }
+  constructor(
+    public localizationService: LocalizationService,
+    private printerService: PrinterService
+  ) { }
 
   showAddPrintersDialog() {
     this.clearAddPrinterDialogErrors();
@@ -149,7 +153,12 @@ export class PrintersPageComponent {
     this.editPrinterDialogMacAdressError = "";
   }
 
-  testPrinter(printer: Printer) {
-    alert(`Test für Drucker: ${printer.name}`);
+  async testPrinter(printer: Printer) {
+    try {
+      await this.printerService.testPrinter(printer);
+      alert('Test-Bon erfolgreich gesendet!');
+    } catch (err) {
+      alert('Fehler beim Drucken: ' + err);
+    }
   }
 }

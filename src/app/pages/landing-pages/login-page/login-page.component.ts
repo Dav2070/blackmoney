@@ -27,6 +27,8 @@ export class LoginPageComponent {
 	username: string = ""
 	password: string = ""
 	errorMessage: string = ""
+	initialLoad: boolean = true
+	loading: boolean = false
 
 	constructor(
 		private router: Router,
@@ -103,6 +105,7 @@ export class LoginPageComponent {
 		}
 
 		this.loadUserDropdownOptions()
+		this.initialLoad = false
 	}
 
 	loadUserDropdownOptions() {
@@ -148,6 +151,7 @@ export class LoginPageComponent {
 
 	async login() {
 		this.errorMessage = ""
+		this.loading = true
 
 		const loginResponse = await this.apiService.login(
 			`
@@ -165,6 +169,7 @@ export class LoginPageComponent {
 			}
 		)
 
+		this.loading = false
 		const accessToken = loginResponse?.data?.login.uuid
 
 		if (accessToken != null) {

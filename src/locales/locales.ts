@@ -16,9 +16,16 @@ export const de = {
 			"Moin {name}!",
 			"Grüezi {name}!"
 		],
-		goToDashboard: "Zum Kassensystem",
+		goToDashboard: "Zur Kasse",
 		manageEmployees: "Mitarbeiter verwalten",
 		manageRestaurants: "Restaurants verwalten"
+	},
+	settingsPage: {
+		headline: "Allgemeine Einstellungen",
+		theme: "App-Design",
+		lightTheme: "Hell",
+		darkTheme: "Dunkel",
+		systemTheme: "System-Standard"
 	},
 	restaurantsPage: {
 		headline: "Deine Restaurants"
@@ -33,6 +40,10 @@ export const de = {
 		role: "Rolle:"
 	},
 	dialogs: {
+		logoutDialog: {
+			headline: "Abmelden",
+			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
+		},
 		editRestaurantNameDialog: {
 			headline: "Name bearbeiten",
 			name: "Name des Restaurants"
@@ -46,12 +57,14 @@ export const de = {
 		},
 		addEmployeeDialog: {
 			headline: "Mitarbeiter hinzufügen",
-			name: "Name des Mitarbeiters"
+			name: "Name des Mitarbeiters",
+			assignedRestaurants: "Zugeordnete Restaurants"
 		}
 	},
 	actions: {
 		save: "Speichern",
-		cancel: "Abbrechen"
+		cancel: "Abbrechen",
+		logout: "Abmelden"
 	},
 	errors: {
 		nameTooShort: "Der Name ist zu kurz.",

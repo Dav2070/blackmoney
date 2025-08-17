@@ -1,0 +1,12 @@
+.settings-container {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 24px;
+}
+
+.setting {
+	width: 80%;
+	max-width: 600px;
+	margin: 0 auto;
+}

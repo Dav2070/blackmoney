@@ -135,7 +135,12 @@ export class ApiService {
 
 	async createUser(
 		queryData: string,
-		variables: { companyUuid: string; name: string; role?: UserRole }
+		variables: {
+			companyUuid: string
+			name: string
+			role?: UserRole
+			restaurants: string[]
+		}
 	): Promise<MutationResult<{ createUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createUser: UserResource }>({
@@ -144,11 +149,13 @@ export class ApiService {
 						$companyUuid: String!
 						$name: String!
 						$role: UserRole
+						$restaurants: [String!]!
 					) {
 						createUser(
 							companyUuid: $companyUuid
 							name: $name
 							role: $role
+							restaurants: $restaurants
 						) {
 							${queryData}
 						}

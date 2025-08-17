@@ -1,5 +1,5 @@
 import { Component } from "@angular/core"
-import { ActivatedRoute } from "@angular/router"
+import { Router, ActivatedRoute } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -20,6 +20,7 @@ export class EmployeePageComponent {
 		private dataService: DataService,
 		private apiService: ApiService,
 		private localizationService: LocalizationService,
+		private router: Router,
 		private activatedRoute: ActivatedRoute
 	) {}
 
@@ -42,5 +43,9 @@ export class EmployeePageComponent {
 
 		this.name = retrieveUserResponse.data.retrieveUser.name
 		this.role = retrieveUserResponse.data.retrieveUser.role
+	}
+
+	navigateBack() {
+		this.router.navigate(["user", "employees"])
 	}
 }

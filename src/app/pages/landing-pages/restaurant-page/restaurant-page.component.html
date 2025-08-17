@@ -1,7 +1,9 @@
 <div class="container slide-up-in">
 	<div class="content-container">
 		<dav-header
+			backButtonVisible
 			editButtonVisible
+			(backButtonClick)="navigateBack()"
 			(editButtonClick)="showEditRestaurantNameDialog()"
 		>
 			{{ name }}

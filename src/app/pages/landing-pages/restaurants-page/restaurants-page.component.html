@@ -4,14 +4,18 @@
 			{{ locale.headline }}
 		</dav-header>
 
-		<dav-list>
-			@for (restaurant of restaurants; track restaurant.uuid) {
-				<dav-list-item
-					[headline]="restaurant.name"
-					[href]="'/user/restaurants/' + restaurant.uuid"
-					(click)="navigateToRestaurant($event, restaurant)"
-				></dav-list-item>
-			}
-		</dav-list>
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			<dav-list>
+				@for (restaurant of restaurants; track restaurant.uuid) {
+					<dav-list-item
+						[headline]="restaurant.name"
+						[href]="'/user/restaurants/' + restaurant.uuid"
+						(click)="navigateToRestaurant($event, restaurant)"
+					></dav-list-item>
+				}
+			</dav-list>
+		}
 	</div>
 </div>

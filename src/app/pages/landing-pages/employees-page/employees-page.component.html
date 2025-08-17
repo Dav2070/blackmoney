@@ -9,15 +9,19 @@
 			{{ locale.headline }}
 		</dav-header>
 
-		<dav-list>
-			@for (user of users; track user.uuid) {
-				<dav-list-item
-					[headline]="user.name"
-					[href]="'/user/employees/' + user.uuid"
-					(click)="navigateToEmployee($event, user)"
-				></dav-list-item>
-			}
-		</dav-list>
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			<dav-list>
+				@for (user of users; track user.uuid) {
+					<dav-list-item
+						[headline]="user.name"
+						[href]="'/user/employees/' + user.uuid"
+						(click)="navigateToEmployee($event, user)"
+					></dav-list-item>
+				}
+			</dav-list>
+		}
 	</div>
 </div>
 

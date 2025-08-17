@@ -24,6 +24,7 @@ export class EmployeesPageComponent {
 	users: User[] = []
 	restaurants: Restaurant[] = []
 	nameError: string = ""
+	loading: boolean = true
 
 	//#region AddEmployeeDialog
 	@ViewChild("addEmployeeDialog")
@@ -77,6 +78,8 @@ export class EmployeesPageComponent {
 				convertRestaurantResourceToRestaurant(restaurant)
 			)
 		}
+
+		this.loading = false
 	}
 
 	showAddEmployeeDialog() {

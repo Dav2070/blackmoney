@@ -81,7 +81,11 @@ export const de = {
 		cityTooLong: "Der Stadtname ist zu lang.",
 		line1TooLong: "Die erste Zeile der Adresse ist zu lang.",
 		line2TooLong: "Die zweite Zeile der Adresse ist zu lang.",
+		passwordTooShort: "Dein Passwort ist zu kurz",
+		passwordTooLong: "Dein Passwort ist zu lang",
 		postalCodeInvalid: "Die Postleitzahl ist ungültig.",
+		passwordDoesNotMatchPasswordConfirmation:
+			"Die Passwörter stimmen nicht überein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
 	}
 }

@@ -121,7 +121,40 @@ export class MenuePageComponent {
                 endTime: undefined,
                 weekdays: []
             },
-            items: []
+				items: [
+					{
+						uuid: "item_beilagen",
+						name: "Beilagen",
+						categories: [],
+						products: [
+							{ id: 101, uuid: "maiskolben", price: 0, name: "Maiskolben", variations: [] },
+							{ id: 102, uuid: "pommes_gross", price: 0, name: "Pommes Groß", variations: [] }
+						],
+						maxSelections: 1
+					},
+					{
+						uuid: "item_saucen",
+						name: "Saucen",
+						categories: [],
+						products: [
+							{ id: 201, uuid: "mayo", price: 0, name: "Mayo", variations: [] },
+							{ id: 202, uuid: "ketchup", price: 0, name: "Ketchup", variations: [] },
+							{ id: 203, uuid: "senf", price: 0, name: "Senf", variations: [] }
+						],
+						maxSelections: 1
+					},
+					{
+						uuid: "item_burger",
+						name: "Burger",
+						categories: [],
+						products: [
+							{ id: 301, uuid: "zinger", price: 0, name: "Zinger", variations: [] },
+							{ id: 302, uuid: "veggie", price: 0, name: "Veggie", variations: [] },
+							{ id: 303, uuid: "classic", price: 0, name: "Classic", variations: [] }
+						],
+						maxSelections: 2
+					}
+				]
         },
         {
             uuid: "menu_2",

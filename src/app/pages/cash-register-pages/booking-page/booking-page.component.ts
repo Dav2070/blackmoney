@@ -1416,10 +1416,7 @@ export class BookingPageComponent {
 
 	changeSelectedMenuInventory(menuItem: MenuItem, maxSelections: number, index?: number) {
 		let allProducts: Product[] = [];
-		for (let category of menuItem.categories) {
-			allProducts = allProducts.concat(category.products);
-		}
-
+		allProducts = allProducts.concat(menuItem.products);
 		this.specialProducts = allProducts;
 		this.currentMaxSelections = maxSelections;
 		this.currentIndex = index;
@@ -1533,6 +1530,47 @@ export class BookingPageComponent {
 			if (item.count === 0) {
 				this.tmpSpecialAllItemsHandler.deleteItem(item);
 			}
+	}
+
+	removeMenuItem(item: OrderItem) {
+		// Entferne das Item aus der temporären Liste
+		item.count -= 1;
+		if (item.count === 0) {
+			this.tmpSpecialAllItemsHandler.deleteItem(item);
+		}
+
+		// Finde die entsprechende Kategorie basierend auf dem Produkt
+		let targetCategoryIndex = -1;
+		for (let i = 0; i < this.currentMenu.items.length; i++) {
+			const menuItem = this.currentMenu.items[i];
+			
+			let fountCategory = false;
+			
+				for (let product of menuItem.products) {
+					if (product.uuid === item.product.uuid) {
+						fountCategory = true;
+						break;
+					}
+				}
+			
+			if (fountCategory) {
+				targetCategoryIndex = i;
+				break;
+			}
+		}
+		
+		// Erhöhe die maxSelections der entsprechenden Kategorie
+		if (targetCategoryIndex >= 0) {
+			this.currentMenu.items[targetCategoryIndex].maxSelections += 1;
+			
+			// Springe zur entsprechenden Kategorie
+			this.currentIndex = targetCategoryIndex;
+			this.changeSelectedMenuInventory(
+				this.currentMenu.items[targetCategoryIndex], 
+				this.currentMenu.items[targetCategoryIndex].maxSelections, 
+				targetCategoryIndex
+			);
+		}
 	}
 
 	editSpecial(item: OrderItem) {

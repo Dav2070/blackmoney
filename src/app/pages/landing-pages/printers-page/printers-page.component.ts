@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Printer } from 'src/app/models/Printer';
 import { LocalizationService } from 'src/app/services/localization-service';
-import { PrinterService } from 'src/app/services/printer-service'; // <--- Importieren!
+import { PrinterService } from 'src/app/services/printer-service';
 import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons";
 import { AddPrinterDialogComponent } from 'src/app/dialogs/add-printer-dialog/add-printer-dialog.component';
 import { EditPrinterDialogComponent } from 'src/app/dialogs/edit-printer-dialog/edit-printer-dialog.component';
@@ -21,37 +21,33 @@ export class PrintersPageComponent {
     {
       uuid: '1',
       name: 'Küche',
-      ipAdress: '192.168.188.121',
-      macAdress: 'A4:D7:3C:AD:07:60'
+      ipAdress: '192.168.188.121'
     },
     {
       uuid: '2',
       name: 'Theke',
-      ipAdress: '192.168.1.11',
-      macAdress: 'AA:BB:CC:DD:EE:02'
+      ipAdress: '192.168.1.11'
     },
     {
       uuid: '3',
       name: 'Büro',
-      ipAdress: '192.168.1.12',
-      macAdress: 'AA:BB:CC:DD:EE:03'
+      ipAdress: '192.168.1.12'
     }
   ];
+
+  printerStatus: { [uuid: string]: 'online' | 'offline' | 'loading' } = {};
 
   // Add-Dialog Properties
   addPrinterDialogLoading = false;
   addPrinterDialogNameError = "";
   addPrinterDialogIpAdressError = "";
-  addPrinterDialogMacAdressError = "";
 
   // Edit-Dialog Properties
   editPrinterDialogLoading = false;
   editPrinterDialogNameError = "";
   editPrinterDialogIpAdressError = "";
-  editPrinterDialogMacAdressError = "";
   editPrinterDialogName = "";
   editPrinterDialogIpAdress = "";
-  editPrinterDialogMacAdress = "";
   editPrinterDialogPrinterUuid: string | null = null;
 
   @ViewChild('addPrinterDialog') addPrinterDialog!: AddPrinterDialogComponent;
@@ -62,12 +58,23 @@ export class PrintersPageComponent {
     private printerService: PrinterService
   ) { }
 
+  ngOnInit() {
+    this.loadPrinterStatus();
+  }
+
+  async loadPrinterStatus() {
+    for (const printer of this.printers) {
+      this.printerStatus[printer.uuid] = 'loading'; // Status auf "loading" setzen
+      this.printerStatus[printer.uuid] = await this.printerService.getStatus(printer);
+    }
+  }
+
   showAddPrintersDialog() {
     this.clearAddPrinterDialogErrors();
     this.addPrinterDialog.show();
   }
 
-  addPrinterDialogPrimaryButtonClick(event: { name: string; ipAdress: string; macAdress: string }) {
+  addPrinterDialogPrimaryButtonClick(event: { name: string; ipAdress: string; }) {
     this.addPrinterDialogLoading = true;
     // Validierung
     if (event.name.length === 0) {
@@ -80,17 +87,11 @@ export class PrintersPageComponent {
       this.addPrinterDialogLoading = false;
       return;
     }
-    if (event.macAdress.length === 0) {
-      this.addPrinterDialogMacAdressError = "MAC-Adresse darf nicht leer sein.";
-      this.addPrinterDialogLoading = false;
-      return;
-    }
     // Drucker hinzufügen
     this.printers.push({
       uuid: (Math.random() * 1000000).toFixed(0),
       name: event.name,
       ipAdress: event.ipAdress,
-      macAdress: event.macAdress
     });
     this.addPrinterDialogLoading = false;
     this.addPrinterDialog.hide();
@@ -99,7 +100,6 @@ export class PrintersPageComponent {
   clearAddPrinterDialogErrors() {
     this.addPrinterDialogNameError = "";
     this.addPrinterDialogIpAdressError = "";
-    this.addPrinterDialogMacAdressError = "";
   }
 
   // --- Edit Dialog ---
@@ -108,15 +108,13 @@ export class PrintersPageComponent {
     this.editPrinterDialogPrinterUuid = printer.uuid ?? null;
     this.editPrinterDialogName = printer.name;
     this.editPrinterDialogIpAdress = printer.ipAdress;
-    this.editPrinterDialogMacAdress = printer.macAdress;
     this.editPrinterDialog.show({
       name: printer.name,
-      ipAdress: printer.ipAdress,
-      macAdress: printer.macAdress
+      ipAdress: printer.ipAdress
     });
   }
 
-  editPrinterDialogPrimaryButtonClick(event: { name: string; ipAdress: string; macAdress: string }) {
+  editPrinterDialogPrimaryButtonClick(event: { name: string; ipAdress: string }) {
     this.editPrinterDialogLoading = true;
     // Validierung
     if (event.name.length === 0) {
@@ -129,18 +127,12 @@ export class PrintersPageComponent {
       this.editPrinterDialogLoading = false;
       return;
     }
-    if (event.macAdress.length === 0) {
-      this.editPrinterDialogMacAdressError = "MAC-Adresse darf nicht leer sein.";
-      this.editPrinterDialogLoading = false;
-      return;
-    }
     // Drucker aktualisieren
     if (this.editPrinterDialogPrinterUuid) {
       const idx = this.printers.findIndex(p => p.uuid === this.editPrinterDialogPrinterUuid);
       if (idx !== -1) {
         this.printers[idx].name = event.name;
         this.printers[idx].ipAdress = event.ipAdress;
-        this.printers[idx].macAdress = event.macAdress;
       }
     }
     this.editPrinterDialogLoading = false;
@@ -150,7 +142,6 @@ export class PrintersPageComponent {
   clearEditPrinterDialogErrors() {
     this.editPrinterDialogNameError = "";
     this.editPrinterDialogIpAdressError = "";
-    this.editPrinterDialogMacAdressError = "";
   }
 
   async testPrinter(printer: Printer) {

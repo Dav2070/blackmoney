@@ -15,11 +15,9 @@ export class AddPrinterDialogComponent {
 
   name: string = "";
   ipAdress: string = "";
-  macAdress: string = "";
 
   @Input() nameError: string = "";
   @Input() ipAdressError: string = "";
-  @Input() macAdressError: string = "";
   @Input() loading: boolean = false;
 
   @Output() primaryButtonClick = new EventEmitter();
@@ -63,16 +61,12 @@ export class AddPrinterDialogComponent {
     this.clearErrors.emit();
   }
 
-  macAdressTextfieldChange(event: Event) {
-    this.macAdress = (event as CustomEvent).detail.value;
-    this.clearErrors.emit();
-  }
+
 
   submit() {
     this.primaryButtonClick.emit({
       name: this.name,
-      ipAdress: this.ipAdress,
-      macAdress: this.macAdress
+      ipAdress: this.ipAdress
     });
   }
 }

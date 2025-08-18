@@ -11,7 +11,18 @@
 							<strong>{{ printer.name }}</strong>
 						</p>
 						<p>{{ printer.ipAdress }}</p>
-						<p>{{ printer.macAdress }}</p>
+						<p>
+							{{ locale.status }}:
+							<span [ngClass]="printerStatus[printer.uuid]">
+								{{
+									printerStatus[printer.uuid] === "online"
+										? locale.statusOnline
+										: printerStatus[printer.uuid] === "loading"
+											? locale.statusLoading
+											: locale.statusOffline
+								}}
+							</span>
+						</p>
 						<div class="printer-actions-row">
 							<fa-icon [icon]="faPrint" class="printer-icon"></fa-icon>
 							<dav-button
@@ -39,7 +50,6 @@
 		[loading]="addPrinterDialogLoading"
 		[nameError]="addPrinterDialogNameError"
 		[ipAdressError]="addPrinterDialogIpAdressError"
-		[macAdressError]="addPrinterDialogMacAdressError"
 		(primaryButtonClick)="addPrinterDialogPrimaryButtonClick($event)"
 		(clearErrors)="clearAddPrinterDialogErrors()"
 	></app-add-printer-dialog>
@@ -47,11 +57,9 @@
 		#editPrinterDialog
 		[name]="editPrinterDialogName"
 		[ipAdress]="editPrinterDialogIpAdress"
-		[macAdress]="editPrinterDialogMacAdress"
 		[loading]="editPrinterDialogLoading"
 		[nameError]="editPrinterDialogNameError"
 		[ipAdressError]="editPrinterDialogIpAdressError"
-		[macAdressError]="editPrinterDialogMacAdressError"
 		(primaryButtonClick)="editPrinterDialogPrimaryButtonClick($event)"
 		(clearErrors)="clearEditPrinterDialogErrors()"
 	></app-edit-printer-dialog>

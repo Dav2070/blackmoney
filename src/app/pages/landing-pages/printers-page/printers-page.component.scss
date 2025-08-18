@@ -40,3 +40,17 @@
 	align-self: center; // Button mittig
 	margin: 0;
 }
+
+.online {
+	color: #4caf50;
+	font-weight: bold;
+}
+.offline {
+	color: #f44336;
+	font-weight: bold;
+}
+
+.loading {
+	color: #999;
+	font-weight: normal;
+}

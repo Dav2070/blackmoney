@@ -64,14 +64,12 @@ export const de = {
 		addPrinterDialog: {
 			headline: "Drucker hinzufügen",
 			name: "Name des Druckers",
-			ipAdress: "IP-Adresse",
-			macAdress: "MAC-Adresse"
+			ipAdress: "IP-Adresse"
 		},
 		editPrinterDialog: {
 			editHeadline: "Drucker bearbeiten",
 			name: "Name des Druckers",
-			ipAdress: "IP-Adresse",
-			macAdress: "MAC-Adresse"
+			ipAdress: "IP-Adresse"
 		}
 	},
 	actions: {
@@ -88,10 +86,13 @@ export const de = {
 		postalCodeInvalid: "Die Postleitzahl ist ungültig.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten.",
 		ipAdressInvalid: "Die IP-Adresse ist ungültig.",
-		macAdressInvalid: "Die MAC-Adresse ist ungültig."
 	},
 	printersPage: {
 		headline: "Deine Drucker",
-		test: "Test"
+		test: "Test",
+		status:"Status",
+		statusOnline: "Online",
+		statusOffline: "Offline",
+		statusLoading: "Wird geprüft..."
 	}
 }

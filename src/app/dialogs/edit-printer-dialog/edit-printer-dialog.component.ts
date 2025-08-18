@@ -15,14 +15,13 @@ export class EditPrinterDialogComponent {
 
   @Input() name: string = "";
   @Input() ipAdress: string = "";
-  @Input() macAdress: string = "";
+
 
   @Input() nameError: string = "";
   @Input() ipAdressError: string = "";
-  @Input() macAdressError: string = "";
   @Input() loading: boolean = false;
 
-  @Output() primaryButtonClick = new EventEmitter<{ name: string; ipAdress: string; macAdress: string }>();
+  @Output() primaryButtonClick = new EventEmitter<{ name: string; ipAdress: string }>();
   @Output() clearErrors = new EventEmitter();
 
   @ViewChild("dialog") dialog!: ElementRef<Dialog>;
@@ -45,10 +44,9 @@ export class EditPrinterDialogComponent {
     }
   }
 
-  show(printer: { name: string; ipAdress: string; macAdress: string }) {
+  show(printer: { name: string; ipAdress: string }) {
     this.name = printer.name;
     this.ipAdress = printer.ipAdress;
-    this.macAdress = printer.macAdress;
     this.visible = true;
   }
 
@@ -66,16 +64,11 @@ export class EditPrinterDialogComponent {
     this.clearErrors.emit();
   }
 
-  macAdressTextfieldChange(event: Event) {
-    this.macAdress = (event as CustomEvent).detail.value;
-    this.clearErrors.emit();
-  }
 
   submit() {
     this.primaryButtonClick.emit({
       name: this.name,
-      ipAdress: this.ipAdress,
-      macAdress: this.macAdress
+      ipAdress: this.ipAdress
     });
   }
 }

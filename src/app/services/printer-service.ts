@@ -109,5 +109,13 @@ export class PrinterService {
         }
     }
 
-
+    async getStatus(printer: Printer): Promise<'online' | 'offline'> {
+        try {
+            await this.connect(printer);
+            await this.disconnect();
+            return 'online';
+        } catch {
+            return 'offline';
+        }
+    }
 }

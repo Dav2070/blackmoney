@@ -112,7 +112,7 @@ export class MenuePageComponent {
             id: 1,
             offerType: "FIXED_PRICE",
             discountType: undefined,
-            offerValue: 990,
+            offerValue: 999,
             selectedProducts: [],
             validity: {
                 startDate: undefined,
@@ -127,8 +127,8 @@ export class MenuePageComponent {
 						name: "Beilagen",
 						categories: [],
 						products: [
-							{ id: 101, uuid: "maiskolben", price: 0, name: "Maiskolben", variations: [] },
-							{ id: 102, uuid: "pommes_gross", price: 0, name: "Pommes Groß", variations: [] }
+							{ id: 101, uuid: "maiskolben", price: 300, name: "Maiskolben", variations: [] },
+							{ id: 102, uuid: "pommes_gross", price: 300, name: "Pommes Groß", variations: [] }
 						],
 						maxSelections: 1
 					},
@@ -137,9 +137,21 @@ export class MenuePageComponent {
 						name: "Saucen",
 						categories: [],
 						products: [
-							{ id: 201, uuid: "mayo", price: 0, name: "Mayo", variations: [] },
-							{ id: 202, uuid: "ketchup", price: 0, name: "Ketchup", variations: [] },
-							{ id: 203, uuid: "senf", price: 0, name: "Senf", variations: [] }
+							{ id: 201, uuid: "mayo", price: 100, name: "Mayo", variations: [] },
+							{ id: 202, uuid: "ketchup", price: 100, name: "Ketchup", variations: [] },
+							{ id: 203, uuid: "senf", price: 100, name: "Senf", variations: [] }
+						],
+						maxSelections: 1
+					},
+					{
+						uuid: "item_getraenke",
+						name: "Getränke",
+						categories: [],
+						products: [
+							{ id: 301, uuid: "cola", price: 200, name: "Cola", variations: [] },
+							{ id: 301, uuid: "cola_light", price: 200, name: "Cola Light", variations: [] },
+							{ id: 302, uuid: "7up", price: 200, name: "7Up", variations: [] },
+							{ id: 303, uuid: "fanta", price: 200, name: "Fanta", variations: [] }
 						],
 						maxSelections: 1
 					},
@@ -148,9 +160,9 @@ export class MenuePageComponent {
 						name: "Burger",
 						categories: [],
 						products: [
-							{ id: 301, uuid: "zinger", price: 0, name: "Zinger", variations: [] },
-							{ id: 302, uuid: "veggie", price: 0, name: "Veggie", variations: [] },
-							{ id: 303, uuid: "classic", price: 0, name: "Classic", variations: [] }
+							{ id: 401, uuid: "zinger", price: 600, name: "Zinger", variations: [] },
+							{ id: 402, uuid: "veggie", price: 600, name: "Veggie", variations: [] },
+							{ id: 403, uuid: "classic", price: 600, name: "Classic", variations: [] }
 						],
 						maxSelections: 2
 					}

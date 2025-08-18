@@ -1620,8 +1620,6 @@ export class BookingPageComponent {
 		// Prüfe ob wir im Special-Modus oder Menü-Modus sind
 		if (this.currentSpecial && this.currentSpecial.discountType === 'PERCENTAGE') {
 			rabattFaktor = this.currentSpecial.offerValue / 100;
-		} else if (this.currentMenu && this.currentMenu.discountType === 'PERCENTAGE') {
-			rabattFaktor = this.currentMenu.offerValue / 100;
 		}
 
 		// Durch alle ausgewählten Produkte gehen und für jedes ein separates MenuOrderItem erstellen
@@ -1787,6 +1785,113 @@ export class BookingPageComponent {
 		this.specialProducts = [];
 		this.selectedInventory = [];
 		this.currentSpecial = null;
+		this.tmpSpecialAllItemsHandler = new AllItemHandler();
+		this.showTotal();
+	}
+
+	confirmMenu(){
+		let allOrderItems: OrderItem[] = [];
+		let originalTotalPrice = 0;
+
+		// Durch alle ausgewählten Produkte gehen und in allOrderItems sammeln
+		for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
+			let processedItem: OrderItem = JSON.parse(JSON.stringify(item));
+			allOrderItems.push(processedItem);
+			
+			// Berechne den Originalpreis für dieses Item (ohne Menü-Rabatt)
+			let itemPrice = processedItem.product.price * processedItem.count;
+			for (let variation of processedItem.orderItemVariations) {
+				for (let variationItem of variation.variationItems) {
+					itemPrice += variation.count * variationItem.additionalCost;
+				}
+			}
+			originalTotalPrice += itemPrice;
+		}
+
+		let finalMenuPrice = originalTotalPrice;
+		let totalRabattBetrag = 0;
+
+		if (this.currentMenu && this.currentMenu.offerType) {
+			switch (this.currentMenu.offerType) {
+				case 'FIXED_PRICE':
+					finalMenuPrice = this.currentMenu.offerValue;
+					totalRabattBetrag = finalMenuPrice - originalTotalPrice;
+					break;
+				case 'DISCOUNT':
+					if (this.currentMenu.discountType === 'PERCENTAGE') {
+						finalMenuPrice = originalTotalPrice * (1 - (this.currentMenu.offerValue / 100));
+						totalRabattBetrag = finalMenuPrice - originalTotalPrice;
+					} else if (this.currentMenu.discountType === 'AMOUNT') {
+						finalMenuPrice = originalTotalPrice - this.currentMenu.offerValue;
+						totalRabattBetrag = -this.currentMenu.offerValue;
+					}
+					break;
+				default:
+					finalMenuPrice = originalTotalPrice;
+					break;
+			}
+		}
+
+		let menuOrderItem: MenuOrderItem = {
+			uuid: crypto.randomUUID(),
+			count: 1,
+			order: null,
+			menu: this.currentMenu,
+			name: this.currentMenu.name,
+			product: {
+				id: this.currentMenu.id,
+				uuid: crypto.randomUUID(),
+				name: this.currentMenu.name,
+				price: finalMenuPrice,
+				variations: []
+			},
+			orderItems: allOrderItems
+		};
+
+		// Rabattvariation am ende einfügen
+		if (allOrderItems.length > 0 && totalRabattBetrag !== 0) {
+			let menuRabattVariation: OrderItemVariation = {
+				uuid: crypto.randomUUID(),
+				count: 1,
+				variationItems: [{
+					id: 0,
+					uuid: crypto.randomUUID(),
+					name: "Rabatt",
+					additionalCost: totalRabattBetrag,
+				}]
+			};
+			
+			allOrderItems[allOrderItems.length - 1].orderItemVariations.push(menuRabattVariation);
+		}
+
+		// Prüfe ob ein ähnliches MenuOrderItem bereits existiert und merge, oder füge neu hinzu
+		let existingMenuItem = this.stagedItems.getAllPickedMenuItems().find(item => item.menu.uuid === this.currentMenu.uuid);
+		if (existingMenuItem) {
+			existingMenuItem.count += 1;
+			// Füge alle OrderItems hinzu oder merge sie
+			for (let newOrderItem of allOrderItems) {
+				let existingOrderItem = existingMenuItem.orderItems.find((oi: OrderItem) => oi.product.id === newOrderItem.product.id);
+				if (existingOrderItem) {
+					existingOrderItem.count += newOrderItem.count;
+					// Merge Variationen
+					for (let newVar of newOrderItem.orderItemVariations) {
+						existingOrderItem.orderItemVariations.push(newVar);
+					}
+				} else {
+					existingMenuItem.orderItems.push(newOrderItem);
+				}
+			}
+			existingMenuItem.product.price += finalMenuPrice;
+		} else {
+			this.stagedItems.pushNewMenuItem(menuOrderItem);
+		}
+
+		// Cleanup
+		this.isMenuePopupVisible = false;
+		this.specialCategories = [];
+		this.specialProducts = [];
+		this.selectedInventory = [];
+		this.currentMenu = null;
 		this.tmpSpecialAllItemsHandler = new AllItemHandler();
 		this.showTotal();
 	}

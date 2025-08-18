@@ -10,6 +10,6 @@ export class MenuOrderItem {
 	order: Order
 	menu: Menu
 	name: string
-	product: Product // Das virtuelle Product das das Special repräsentiert
-	orderItems: OrderItem[] // Die ausgewählten Produkte des Specials mit ihren Variationen
+	product: Product
+	orderItems: OrderItem[]
 }

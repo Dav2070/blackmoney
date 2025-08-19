@@ -40,13 +40,22 @@ export const de = {
 		headline: "Deine Restaurants"
 	},
 	restaurantPage: {
-		addAddress: "Adresse angeben"
+		addAddress: "Adresse angeben",
+		managePrinters: "Drucker verwalten"
 	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"
 	},
 	employeePage: {
 		role: "Rolle:"
+	},
+	printersPage: {
+		headline: "Deine Drucker",
+		test: "Test",
+		status: "Status",
+		statusOnline: "Online",
+		statusOffline: "Offline",
+		statusLoading: "Wird geprüft..."
 	},
 	dialogs: {
 		logoutDialog: {
@@ -68,6 +77,16 @@ export const de = {
 			headline: "Mitarbeiter hinzufügen",
 			name: "Name des Mitarbeiters",
 			assignedRestaurants: "Zugeordnete Restaurants"
+		},
+		addPrinterDialog: {
+			headline: "Drucker hinzufügen",
+			name: "Name des Druckers",
+			ipAdress: "IP-Adresse"
+		},
+		editPrinterDialog: {
+			editHeadline: "Drucker bearbeiten",
+			name: "Name des Druckers",
+			ipAdress: "IP-Adresse"
 		}
 	},
 	actions: {
@@ -86,6 +105,7 @@ export const de = {
 		postalCodeInvalid: "Die Postleitzahl ist ungültig.",
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
-		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
+		unexpectedError: "Ein unbekannter Fehler ist aufgetreten.",
+		ipAdressInvalid: "Die IP-Adresse ist ungültig.",
 	}
 }

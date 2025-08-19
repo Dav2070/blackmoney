@@ -49,7 +49,7 @@ export class RestaurantPageComponent {
 		private localizationService: LocalizationService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute
-	) {}
+	) { }
 
 	async ngOnInit() {
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
@@ -196,5 +196,9 @@ export class RestaurantPageComponent {
 				}
 			}
 		}
+	}
+	navigateToPrintersPage() {
+		const currentUrl = this.router.url;
+		this.router.navigateByUrl(`${currentUrl}/printers`);
 	}
 }

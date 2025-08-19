@@ -70,18 +70,18 @@
 			<td mat-cell *matCellDef="let row">
 				@if (editingMenu !== row) {
 					@if (row.offerType === "FIXED_PRICE") {
-						<span>{{ row.offerValue | number: "1.2-2" }}€</span>
+						<span>{{ row.offerValue /100 | number: "1.2-2" }}€</span>
 					}
 					@if (
 						row.offerType === "DISCOUNT" &&
 						row.discountType === "PERCENTAGE"
 					) {
-						<span>{{ row.offerValue }}%</span>
+						<span>{{ row.offerValue / 100}}%</span>
 					}
 					@if (
 						row.offerType === "DISCOUNT" && row.discountType === "AMOUNT"
 					) {
-						<span>{{ row.offerValue | number: "1.2-2" }}€ Rabatt</span>
+						<span>{{ row.offerValue / 100 | number: "1.2-2" }}€ Rabatt</span>
 					}
 				} @else {
 					<div style="display: flex; flex-direction: column; gap: 12px">

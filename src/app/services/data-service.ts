@@ -30,6 +30,7 @@ export class DataService {
 	user: User = null
 	company: Company = null
 	restaurant: Restaurant = null
+	isMobile: boolean = false
 	darkTheme: boolean = false
 
 	constructor(

@@ -1,8 +1,10 @@
 import { Component, ViewChild } from "@angular/core"
-import { Printer } from "src/app/models/Printer"
+import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons"
+import { Toast } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { PrinterService } from "src/app/services/printer-service"
-import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons"
+import { DataService } from "src/app/services/data-service"
+import { Printer } from "src/app/models/Printer"
 import { AddPrinterDialogComponent } from "src/app/dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "src/app/dialogs/edit-printer-dialog/edit-printer-dialog.component"
 
@@ -55,8 +57,9 @@ export class PrintersPageComponent {
 	editPrinterDialog!: EditPrinterDialogComponent
 
 	constructor(
-		public localizationService: LocalizationService,
-		private printerService: PrinterService
+		private localizationService: LocalizationService,
+		private printerService: PrinterService,
+		private dataService: DataService
 	) {}
 
 	ngOnInit() {
@@ -156,11 +159,16 @@ export class PrintersPageComponent {
 	}
 
 	async testPrinter(printer: Printer) {
+		const toast = document.createElement("dav-toast")
+		toast.paddingBottom = this.dataService.isMobile ? 80 : 0
+
 		try {
 			await this.printerService.testPrinter(printer)
-			alert("Test-Bon erfolgreich gesendet!")
+			toast.text = "Test-Bon erfolgreich gesendet!"
 		} catch (err) {
-			alert("Fehler beim Drucken: " + err)
+			toast.text = "Fehler beim Drucken: " + err
 		}
+
+		Toast.show(toast)
 	}
 }

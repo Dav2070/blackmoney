@@ -9,6 +9,7 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { OrderItem } from "src/app/models/OrderItem"
+import { MenuOrderItem } from "src/app/models/MenuOrderItem"
 import { TmpVariations } from "src/app/models/cash-register/tmp-variations.model"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
@@ -29,6 +30,9 @@ import { threadId } from "node:worker_threads"
 import { VariationItem } from "src/app/models/VariationItem"
 import { OrderResource } from "dav-js"
 import { Order } from "src/app/models/Order"
+import { MenuePageComponent } from '../../settings-pages/menue-page/menue-page.component';
+import { Menu, MenuItem } from "src/app/models/Menu"
+
 
 interface AddProductsInput {
 	uuid: string
@@ -50,12 +54,24 @@ export class BookingPageComponent {
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 
-	//bookedItems = new Map<Item, Map<Variation, number>>()
+	menuInventory = new MenuePageComponent();
+	menues: Menu[] = [];
+	specials: Menu[] = [];
+	isMenuePopupVisible: boolean = false;
+	specialCategories: Category[] = [];
+	specialProducts: Product[] = [];
+	currentSpecial: Menu | null = null;
+	currentMenu: Menu | null = null;
+	currentMaxSelections: number = 0;
+	currentIndex: number = 0;
+	tmpSpecialSelectedItems: OrderItem[] = [];
+	tmpSpecialAllItemsHandler = new AllItemHandler()
+	selectedMenuItem: MenuOrderItem = null
+	lastClickedMenuItem: MenuOrderItem = null
+
 	bookedItems = new AllItemHandler()
 	stagedItems = new AllItemHandler()
 	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-	//newItems = new Map<Item, Map<Variation, number>>()
 
 	endpreis: number = 0.0
 
@@ -68,6 +84,8 @@ export class BookingPageComponent {
 	selectedItemNew: Product = null
 
 	isItemPopupVisible: boolean = false
+	isSpecialVariationPopupVisible: boolean = false
+	isSpecialVariationMode: boolean = false
 
 	consoleActive: boolean = false
 
@@ -176,6 +194,8 @@ export class BookingPageComponent {
 	// Lade Items zur ausgewählten Kategorie
 	changeSelectedInventory(items: Product[]) {
 		this.selectedInventory = items
+		this.menues = [];
+    	this.specials = [];
 	}
 
 	// Zeige Variations-Popup an
@@ -187,11 +207,27 @@ export class BookingPageComponent {
 		this.isItemPopupVisible = !this.isItemPopupVisible
 		this.tmpPickedVariationResource = []
 		this.tmpCountVariations = 0
+		this.isSpecialVariationMode = false
 		if (this.minusUsed === true) {
 			this.minusUsed = false
 		}
 		this.tmpSelectedItem = undefined
 		this.showTotal()
+	}
+
+	closeSpecialVariationPopup() {
+		this.isSpecialVariationPopupVisible = false
+		this.tmpPickedVariationResource = []
+		this.tmpCountVariations = 0
+		this.isSpecialVariationMode = false
+		this.tmpSelectedItem = undefined
+		this.selectedItem = null
+		this.lastClickedItem = null
+		this.lastClickedMenuItem = null 
+		this.tmpAllItemHandler = null
+		if (this.minusUsed === true) {
+			this.minusUsed = false
+		}
 	}
 
 	// Füge item zu stagedItems hinzu
@@ -250,59 +286,238 @@ export class BookingPageComponent {
 		}
 	}
 
+	clickMenuItem(menuItem: MenuOrderItem) {
+		let newItem: MenuOrderItem = {
+			uuid: menuItem.uuid,
+			count: 0,
+			order: null,
+			menu: menuItem.menu,
+			name: menuItem.name,
+			product: menuItem.product,
+			orderItems: []
+		}
+
+		//Wenn das Menü nur ein Produkt enthält
+		if (menuItem.orderItems.length === 1 && menuItem.orderItems[0].orderItemVariations.length === 1) {	
+			if (this.tmpAnzahl > 0) {
+				//Menu exisitiert bereits in stagedItems
+				if (this.stagedItems.includesMenuItem(menuItem)) {
+					let existingItem = this.stagedItems.getMenuItem(newItem.product.id, newItem.menu.uuid)
+					existingItem.count += this.tmpAnzahl
+					existingItem.orderItems[0].count += this.tmpAnzahl
+					existingItem.orderItems[0].orderItemVariations[0].count += this.tmpAnzahl
+				} else { //Menu existiert nicht in stagedItems
+					newItem.count = this.tmpAnzahl
+					this.stagedItems.pushNewMenuItem(newItem)
+				}
+				
+			}else if (this.stagedItems.includesMenuItem(menuItem)) {
+				let existingItem = this.stagedItems.getMenuItem(newItem.product.id, newItem.menu.uuid)
+				existingItem.count += 1
+				existingItem.orderItems[0].count += 1
+				existingItem.orderItems[0].orderItemVariations[0].count += 1
+			}
+			this.showTotal()
+		} else {
+			if(this.selectedMenuItem.menu.items.length > 1){
+				this.selectedMenuItem.count +=1;
+				for(let item of this.selectedMenuItem.orderItems) {
+					console.log("OrderItem: ", item);
+					// Finde die entsprechende maxSelections für dieses Produkt
+					let maxSelectionsForThisItem = 0;
+					for(let menuItem of this.selectedMenuItem.menu.items) {
+						for(let product of menuItem.products) {
+							if(product.uuid === item.uuid) {
+								maxSelectionsForThisItem = menuItem.maxSelections;
+								console.log("Product: ", product);
+								console.log("maxSelections: ", menuItem.maxSelections);
+								break;
+							}
+						}
+						if(maxSelectionsForThisItem > 0) break;
+					}
+					
+					item.count += maxSelectionsForThisItem;
+					for(let variation of item.orderItemVariations) {
+						variation.count += 1;
+					}
+				}
+			}
+			// Öffnet Popup für Variationen
+			this.lastClickedItem = menuItem.orderItems[0].product
+			this.lastClickedMenuItem = menuItem
+
+			for (let variationItem of this.lastClickedItem.variations[
+				this.tmpCountVariations
+			].variationItems) {
+				this.tmpPickedVariationResource.push(
+					new Map<number, TmpVariations[]>().set(0, [
+						{
+							uuid: variationItem.uuid,
+							count: 0,
+							max: undefined,
+							lastPickedVariation: undefined,
+							combination: variationItem.name,
+							display: variationItem.name,
+							pickedVariation: [variationItem]
+						}
+					])
+				)
+			}
+
+			this.isSpecialVariationPopupVisible = true // Separate Variable für Special-Popup
+			this.isSpecialVariationMode = true // Flag für Special-Modus
+		}
+		// Zeige das Gesamt
+		this.showTotal()
+	}
+
 	// Verringert Item um 1 oder Anzahl in Konsole
 	async subtractitem() {
-		if (this.tmpAllItemHandler === this.bookedItems) {
-			if (this.selectedItem.orderItemVariations.length <= 0) {
+		// Prüfe ob ein MenuItem ausgewählt ist
+		if (this.selectedMenuItem != null) {
+			if (this.tmpAllItemHandler === this.bookedItems) {
+				// Booked MenuItems
 				if (this.tmpAnzahl > 0) {
-					if (this.selectedItem.count >= this.tmpAnzahl) {
-						this.selectedItem.count -= this.tmpAnzahl
+					if (this.selectedMenuItem.count > this.tmpAnzahl) {
+							this.selectedMenuItem.orderItems[0].count -= this.tmpAnzahl
+							this.selectedMenuItem.orderItems[0].orderItemVariations[0].count -= this.tmpAnzahl
+					} else if (this.selectedMenuItem.count === this.tmpAnzahl) {
+						this.stagedItems.deleteMenuItem(this.selectedMenuItem)
 					} else {
 						window.alert("Anzahl ist zu hoch")
 					}
 				} else {
-					this.selectedItem.count -= 1
+					this.selectedMenuItem.count -= 1
+					if (this.selectedMenuItem.orderItems.length > 0) {
+						this.selectedMenuItem.orderItems[0].count -= 1
+						if (this.selectedMenuItem.orderItems[0].orderItemVariations.length > 0) {
+							this.selectedMenuItem.orderItems[0].orderItemVariations[0].count -= 1
+						}
+					}
 				}
 
-				this.sendOrderItem(this.selectedItem)
-				this.removeEmptyItem(this.bookedItems)
-
+				this.removeEmptyMenuItem(this.bookedItems)
 				this.showTotal()
 			} else {
-				// Wenn Variationen vorhanden sind
+				// Für staged MenuItems mit einem Produkt
+				if (this.selectedMenuItem.orderItems.length === 1 && this.selectedMenuItem.orderItems[0].orderItemVariations.length === 1) {
+					if (this.tmpAnzahl > 0) {
+						if (this.selectedMenuItem.count >= this.tmpAnzahl) {
+							this.selectedMenuItem.count -= this.tmpAnzahl
+							this.selectedMenuItem.orderItems[0].count -= this.tmpAnzahl
+							this.selectedMenuItem.orderItems[0].orderItemVariations[0].count -= this.tmpAnzahl
+						}  else {
+							window.alert("Anzahl ist zu hoch")
+						}
+					} else {	// Normal Minus
+						if(this.selectedMenuItem.count > 0) {
+							this.selectedMenuItem.count -= 1
+							this.selectedMenuItem.orderItems[0].count -= 1
+							this.selectedMenuItem.orderItems[0].orderItemVariations[0].count -= 1
+						}
+						this.removeEmptyMenuItem(this.stagedItems)
+					}
+				} else {
+					// Menüs
+					if(this.selectedMenuItem.menu.items.length > 1){
+						this.selectedMenuItem.count -= 1;
+					} else { 
+					// Mehrere Produkte im Special - lade alle Produkte mit ihren Variationen ins Popup
+					// Setze für Variations-Popup (verwende erstes OrderItem als "Haupt-Item")
+					this.selectedItem = this.selectedMenuItem.orderItems[0];
+					this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedMenuItem.orderItems[0]));
+					this.minusUsed = true; 
+					this.lastClickedItem = this.selectedMenuItem.orderItems[0].product;
+					
+					// Initialisiere tmpPickedVariationResource für alle Produkte
+					this.tmpPickedVariationResource = [];
+					this.tmpCountVariations = 0;
+					
+					// Load all products from MenuOrderItem into variation popup with their counts
+					for (let productIndex = 0; productIndex < this.selectedMenuItem.orderItems.length; productIndex++) {
+						let orderItem = this.selectedMenuItem.orderItems[productIndex];
+						
+						// For each OrderItemVariation of this product
+						for (let orderItemVariation of orderItem.orderItemVariations) {
+							// For each VariationItem in this OrderItemVariation
+							for (let variationItem of orderItemVariation.variationItems) {
+								// Skip Rabatt-items
+								if (variationItem.name === "Rabatt") {
+									continue;
+								}
+								
+								const tmpVariation = {
+									uuid: variationItem.uuid,
+									count: orderItemVariation.count,
+									max: undefined as any,
+									lastPickedVariation: undefined as any,
+									combination: orderItem.product.name + ": " + variationItem.name,
+									display: orderItem.product.name + " - " + variationItem.name,
+									pickedVariation: [variationItem]
+								};
+								
+								this.tmpPickedVariationResource.push(
+									new Map<number, TmpVariations[]>().set(0, [tmpVariation])
+								);
+							}
+						}
+					}
+					
+					// Öffne das SpecialVariationPopup für MenuOrderItem-Minus-Operationen
+					this.isSpecialVariationPopupVisible = true;
+					this.isSpecialVariationMode = true;
+					this.tmpAllItemHandler = this.stagedItems;
+					}
+				}
 
+				this.removeEmptyMenuItem(this.stagedItems)
+				this.showTotal()
+			}
+		} else {
+			// Bestehende OrderItem Logik
+			if (this.tmpAllItemHandler === this.bookedItems) {
+				if (this.selectedItem.orderItemVariations.length <= 0) {
+					if (this.tmpAnzahl > 0) {
+						if (this.selectedItem.count >= this.tmpAnzahl) {
+							this.selectedItem.count -= this.tmpAnzahl
+						} else {
+							window.alert("Anzahl ist zu hoch")
+						}
+					} else {
+						this.selectedItem.count -= 1
+					}
+
+					this.sendOrderItem(this.selectedItem)
+					this.removeEmptyItem(this.bookedItems)
+
+					this.showTotal()
+				} else {
+					// Wenn Variationen vorhanden sind
+					this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedItem))
+					this.minusUsed = true
+					this.isItemPopupVisible = true
+				}
+			} else if (this.selectedItem.orderItemVariations.length > 0) {
+				//Wenn Item Variationen enthält
 				this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedItem))
 				this.minusUsed = true
 				this.isItemPopupVisible = true
-			}
-		} else if (this.selectedItem.orderItemVariations.length > 0) {
-			//Wenn Item Variationen enthält
-			this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedItem))
-			this.minusUsed = true
-			this.isItemPopupVisible = true
-		} else if (this.tmpAnzahl > 0) {
-			//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+			} else if (this.tmpAnzahl > 0) {
+				//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+				if (this.selectedItem.count >= this.tmpAnzahl) {
+					this.selectedItem.count -= this.tmpAnzahl
+				} else {
+					window.alert("Anzahl ist zu hoch")
+				}
 
-			if (this.selectedItem.count >= this.tmpAnzahl) {
-				this.selectedItem.count -= this.tmpAnzahl
+				this.removeEmptyItem(this.stagedItems)
+				this.showTotal()
 			} else {
-				window.alert("Anzahl ist zu hoch")
-			}
-
-			this.removeEmptyItem(this.stagedItems)
-			this.showTotal()
-		} else {
-			this.selectedItem.count -= 1
-			//Wenn keine zu löschende Anzahl eingegeben wurde (nur -)
-			/*
-			if (this.selectedItem.count > 1) {
 				this.selectedItem.count -= 1
-			} else {
-				this.tmpAllItemHandler.deleteItem(this.selectedItem)
+				this.removeEmptyItem(this.stagedItems)
+				this.showTotal()
 			}
-			*/
-			this.removeEmptyItem(this.stagedItems)
-			this.showTotal()
 		}
 	}
 
@@ -318,21 +533,123 @@ export class BookingPageComponent {
 
 	sendDeleteVariation(orderItem: OrderItem) {
 		this.minusUsed = false
-		this.isItemPopupVisible = false
+		
+		// Je nach Modus das richtige Popup schließen
+		if (this.isSpecialVariationMode) {
+			this.isSpecialVariationPopupVisible = false
+			this.isSpecialVariationMode = false
+		} else {
+			this.isItemPopupVisible = false
+		}
+		
 		this.tmpVariations = []
-		this.selectedItem.count = this.tmpSelectedItem.count
-		this.selectedItem.orderItemVariations =
-			this.tmpSelectedItem.orderItemVariations
+		
+		// Prüfe ob wir ein MenuOrderItem bearbeiten
+		if (this.selectedMenuItem != null) {
+			// MenuOrderItem-Behandlung: Aktualisiere nur das spezifische OrderItem
+			
+			// Finde das entsprechende OrderItem im MenuOrderItem
+			let targetOrderItem = this.selectedMenuItem.orderItems.find(item => 
+				item.uuid === this.tmpSelectedItem.uuid
+			);
+			
+			if (targetOrderItem) {
+				// Erstelle Map der neuen Variationen für schnelle Suche
+				let newVariationsMap = new Map<string, any>();
+				for (let variationMap of this.tmpPickedVariationResource) {
+					if (variationMap.get(this.tmpCountVariations)) {
+						for (let variation of variationMap.get(this.tmpCountVariations)) {
+							if (variation.count > 0) {
+								// Verwende UUID des ersten VariationItems als Key
+								newVariationsMap.set(variation.pickedVariation[0].uuid, {
+									uuid: variation.uuid,
+									count: variation.count,
+									variationItems: variation.pickedVariation
+								});
+							}
+						}
+					}
+				}
 
-		if (this.tmpAllItemHandler === this.bookedItems) {
-			this.sendOrderItem(orderItem)
+				// Gehe durch die ursprünglichen Variationen in Paaren und behalte die Reihenfolge bei
+				let updatedOrderItemVariations: OrderItemVariation[] = []
+				
+				for (let i = 0; i < targetOrderItem.orderItemVariations.length; i += 2) {
+					let produktVariation = targetOrderItem.orderItemVariations[i];
+					let rabattVariation = targetOrderItem.orderItemVariations[i + 1]; // Der Rabatt kommt direkt danach
+					
+					// Prüfe ob diese Produkt-Variation noch in den neuen Variationen existiert
+					let newVariation = newVariationsMap.get(produktVariation.variationItems[0].uuid);
+					
+					if (newVariation) {
+						// Füge das Produkt hinzu
+						updatedOrderItemVariations.push(newVariation);
+						
+						// Füge den dazugehörigen Rabatt hinzu (falls vorhanden)
+						if (rabattVariation && rabattVariation.variationItems[0]?.name === "Rabatt") {
+							updatedOrderItemVariations.push({
+								uuid: rabattVariation.uuid,
+								count: newVariation.count, // Verwende die neue Anzahl
+								variationItems: rabattVariation.variationItems
+							});
+						}
+					}
+					// Wenn das Produkt nicht existiert, werden sowohl Produkt als auch Rabatt übersprungen
+				}
+
+				// Aktualisiere das OrderItem mit den neuen Variationen
+				targetOrderItem.orderItemVariations = updatedOrderItemVariations
+				
+				// Berechne die neue Gesamtanzahl (nur Nicht-Rabatt-Items)
+				let totalCount = 0
+				for (let variation of updatedOrderItemVariations) {
+					let hasNonRabatt = variation.variationItems.some(vi => vi.name !== "Rabatt");
+					if (hasNonRabatt) {
+						totalCount += variation.count
+					}
+				}
+				targetOrderItem.count = totalCount
+				
+				// Entferne das OrderItem wenn count = 0
+				if (targetOrderItem.count <= 0) {
+					this.selectedMenuItem.orderItems = this.selectedMenuItem.orderItems.filter(item => 
+						item.uuid !== targetOrderItem.uuid
+					);
+				}
+				
+				// Entferne das gesamte MenuOrderItem wenn keine OrderItems mehr vorhanden
+				if (this.selectedMenuItem.orderItems.length === 0) {
+					this.stagedItems.deleteMenuItem(this.selectedMenuItem);
+				} else {
+					// Aktualisiere MenuOrderItem count basierend auf verbleibenden OrderItems
+					this.selectedMenuItem.count = this.selectedMenuItem.orderItems.reduce((sum, item) => sum + item.count, 0);
+				}
+			}
+			
+		} else if (this.selectedItem != null) {
+			// Normale OrderItem-Behandlung (bleibt wie vorher)
+			this.selectedItem.count = this.tmpSelectedItem.count
+			this.selectedItem.orderItemVariations = this.tmpSelectedItem.orderItemVariations
+
+			if (this.tmpAllItemHandler === this.bookedItems) {
+				this.sendOrderItem(orderItem)
+			}
 		}
 
-		//console.log(this.tmpSelectedItem)
+		// Cleanup (wie in sendVariation)
+		this.tmpPickedVariationResource = []
+		this.tmpCountVariations = 0
 		this.tmpSelectedItem = undefined
-		console.log(this.selectedItem)
+		this.selectedMenuItem = null
+		this.showTotal();
 
-		this.removeEmptyItem(this.tmpAllItemHandler)
+		// Je nach Modus den richtigen ItemHandler verwenden
+		if (this.isSpecialVariationMode) {
+			this.removeEmptyItem(this.tmpSpecialAllItemsHandler)
+		} else {
+			this.removeEmptyItem(this.tmpAllItemHandler)
+		}
+
 	}
 
 	removeEmptyItem(itemHandler: AllItemHandler) {
@@ -344,6 +661,20 @@ export class BookingPageComponent {
 				this.selectedItem.orderItemVariations.filter(
 					variation => variation.count > 0
 				)
+		}
+	}
+
+	removeEmptyMenuItem(itemHandler: AllItemHandler) {
+		if (this.selectedMenuItem.count == 0) {
+			itemHandler.deleteMenuItem(this.selectedMenuItem)
+		} else {
+			// Entferne leere OrderItemVariations von den OrderItems des MenuItems
+			for (let orderItem of this.selectedMenuItem.orderItems) {
+				orderItem.orderItemVariations =
+					orderItem.orderItemVariations.filter(
+						variation => variation.count > 0
+					)
+			}
 		}
 	}
 
@@ -403,165 +734,96 @@ export class BookingPageComponent {
 
 			this.tmpCountVariations += 1
 		} else {
-			let orderItem: OrderItem = {
-				uuid: this.lastClickedItem.uuid,
-				order: null,
-				product: this.lastClickedItem,
-				count: 0,
-				orderItemVariations: []
-			}
+			// Prüfe ob wir im Edit-Modus für Specials sind
+			if (this.isSpecialVariationMode && this.selectedItem && !this.minusUsed) {
+				// Edit-Modus: Aktualisiere das bestehende Item
+				let updatedOrderItemVariations: OrderItemVariation[] = []
 
-			for (let variationMap of this.tmpPickedVariationResource) {
-				if (variationMap.get(this.tmpCountVariations)) {
-					for (let variation of variationMap.get(
-						this.tmpCountVariations
-					)) {
-						if (variation.count > 0) {
-							orderItem.count += variation.count
-							orderItem.orderItemVariations.push({
-								uuid: variation.uuid,
-								count: variation.count,
-								variationItems: variation.pickedVariation
-							})
+				for (let variationMap of this.tmpPickedVariationResource) {
+					if (variationMap.get(this.tmpCountVariations)) {
+						for (let variation of variationMap.get(
+							this.tmpCountVariations
+						)) {
+							if (variation.count > 0) {
+								updatedOrderItemVariations.push({
+									uuid: variation.uuid,
+									count: variation.count,
+									variationItems: variation.pickedVariation
+								})
+							}
 						}
 					}
 				}
+
+				// Aktualisiere das selectedItem mit den neuen Variationen
+				this.selectedItem.orderItemVariations = updatedOrderItemVariations
+				
+				// Berechne die neue Gesamtanzahl
+				let totalCount = 0
+				for (let variation of updatedOrderItemVariations) {
+					totalCount += variation.count
+				}
+				this.selectedItem.count = totalCount
+
+				this.isSpecialVariationPopupVisible = false
+				this.isSpecialVariationMode = false
+			} else {
+				// Normaler Modus: Erstelle neues OrderItem
+				let orderItem: OrderItem = {
+					uuid: this.lastClickedItem.uuid,
+					order: null,
+					product: this.lastClickedItem,
+					count: 0,
+					orderItemVariations: []
+				}
+
+				for (let variationMap of this.tmpPickedVariationResource) {
+					if (variationMap.get(this.tmpCountVariations)) {
+						for (let variation of variationMap.get(
+							this.tmpCountVariations
+						)) {
+							if (variation.count > 0) {
+								orderItem.count += variation.count
+								orderItem.orderItemVariations.push({
+									uuid: variation.uuid,
+									count: variation.count,
+									variationItems: variation.pickedVariation
+								})
+							}
+						}
+					}
+				}
+
+				// Je nach Modus in stagedItems oder tmpSpecialAllItemsHandler hinzufügen
+				if (this.isSpecialVariationMode) {
+					// Prüfe ob wir ein MenuOrderItem erstellen sollen
+					if (this.lastClickedMenuItem) {
+						// Verwende confirmSpecials Logik - füge zu tmpSpecialAllItemsHandler hinzu und rufe confirmSpecials auf
+						this.tmpSpecialAllItemsHandler.pushNewItem(orderItem);
+						// Temporär currentSpecial und andere Werte für confirmSpecials setzen
+						const originalSpecial = this.currentSpecial;
+						this.currentSpecial = this.lastClickedMenuItem.menu;
+						this.confirmSpecials();
+						this.currentSpecial = originalSpecial;
+					} else {
+						// Normal für tmpSpecialAllItemsHandler
+						this.tmpSpecialAllItemsHandler.pushNewItem(orderItem)
+					}
+					this.isSpecialVariationPopupVisible = false
+				} else {
+					this.stagedItems.pushNewItem(orderItem)
+					this.isItemPopupVisible = false
+				}
 			}
 
-			this.stagedItems.pushNewItem(orderItem)
 			this.tmpPickedVariationResource = []
 			this.tmpCountVariations = 0
-			this.isItemPopupVisible = false
+			this.isSpecialVariationMode = false
 			this.tmpLastPickedVariation = []
+			this.lastClickedMenuItem = null 
+			console.log("showtotal aufgerufen")
 			this.showTotal()
 		}
-
-		//Check ob es noch eine weitere Variation gibt
-		/*if (
-			this.lastClickedItem.variations.items[this.tmpCountVariations + 1] !=
-			undefined
-		) {
-			for (let variationMap of this.tmpPickedVariationResource) {
-				console.log(variationMap)
-				let variationArray = variationMap.get(this.tmpCountVariations)
-				variationArray = variationMap
-					.get(this.tmpCountVariations)
-					.filter(variation => variation.count > 0)
-
-				variationMap.set(this.tmpCountVariations, variationArray)
-
-				let newVariations: TmpVariations[] = []
-
-				for (let pickedVariation of variationArray) {
-					for (let variationItem of this.lastClickedItem.variations.items[
-						this.tmpCountVariations + 1
-					].variationItems.items) {
-						let tmpArray = pickedVariation.pickedVariation
-						tmpArray.push(variationItem)
-						newVariations.push({
-							count: 0,
-							combination:
-								pickedVariation.display + " " + variationItem.name,
-							display: variationItem.name,
-							pickedVariation: tmpArray
-						})
-					}
-				}
-				variationMap.set(this.tmpCountVariations + 1, newVariations)
-			}
-			this.tmpCountVariations += 1
-		} else {
-			let pickedVariations: PickedVariationResource[] = []
-
-			for (let variationMap of this.tmpPickedVariationResource) {
-				let variationArray = variationMap.get(this.tmpCountVariations)
-				variationArray = variationMap
-					.get(this.tmpCountVariations)
-					.filter(variation => variation.count > 0)
-
-				variationMap.set(this.tmpCountVariations, variationArray)
-
-				for (let pickedVariation of variationArray) {
-					pickedVariations.push({
-						total: pickedVariation.count,
-						variations: pickedVariation.pickedVariation
-					})
-				}
-			}
-
-			//TODO create item to add in stageItems
-
-			//console.log(pickedVariations)
-		}
-
-		// console.log("sendVariation called")
-		// let totalVariationAmount = 0
-		// for (let variation of this.tmpVariations.values()) {
-		// 	totalVariationAmount += variation.anzahl
-		// }
-		// if (this.minusUsed) {
-		// 	// Setze die Anzahl der Variation von dem ausgewählten items in die stagedItems
-		// 	for (let variation of this.selectedItem.pickedVariation.values()) {
-		// 		if (this.tmpVariations.get(variation.id) === undefined) {
-		// 			this.selectedItem.pickedVariation.delete(variation.id)
-		// 		} else {
-		// 			this.selectedItem.pickedVariation.get(variation.id).anzahl =
-		// 				this.tmpVariations.get(variation.id).anzahl
-		// 		}
-		// 	}
-		// 	// Wenn alle Variationen gelöscht wurden, lösche das Item
-		// 	if (this.selectedItem.pickedVariation.size === 0) {
-		// 		this.tmpAllItemHandler.deleteItem(this.selectedItem)
-		// 	} else {
-		// 		// Die Summe des Items ist die Summe der Variationen
-		// 		this.selectedItem.anzahl = totalVariationAmount
-		// 	}
-		// 	this.minusUsed = false
-		// } else {
-		// 	const newItem = new PickedItem(
-		// 		this.lastClickedItem,
-		// 		totalVariationAmount,
-		// 		new Map(this.tmpVariations)
-		// 	)
-		// 	this.stagedItems.pushNewItem(newItem)
-		// }
-		// this.lastClickedItem = undefined
-		// this.tmpVariations.clear()
-		// this.isItemPopupVisible = false
-		// this.showTotal()
-
-		*/
-	}
-
-	checkForMinus(variable: string) {
-		/*if (this.minusUsed) {
-			if (variable === "reduce") {
-				if (this.tmpAnzahl > 0) {
-					let tmpVariationsAnzahl = 0
-					for (let variation of this.tmpVariations.values()) {
-						tmpVariationsAnzahl += variation.count
-					}
-					if (
-						this.tmpAnzahl ===
-						this.selectedItem.count - tmpVariationsAnzahl
-					) {
-						return true
-					}
-				}
-			}
-			if (variable === "increase") {
-				let tmpVariationsAnzahl = 0
-				for (let variation of this.tmpVariations.values()) {
-					tmpVariationsAnzahl += variation.count
-				}
-				if (tmpVariationsAnzahl >= this.selectedItem.count - 1) {
-					return true
-				}
-			}
-		}
-
-		return false*/
-		return true
 	}
 
 	async loadTable(uuid: string) {
@@ -674,7 +936,7 @@ export class BookingPageComponent {
 					this.stagedItems.calculateTotal()) /
 				100
 			).toFixed(2) + " €"
-
+			console.log("showtotal aufgerufen", this.console)
 		this.consoleActive = false
 		this.commaUsed = false
 		this.tmpAnzahl = 0
@@ -796,30 +1058,15 @@ export class BookingPageComponent {
 
 	//Erhöht eine Variation um eins
 	addVariation(variationItem: TmpVariations) {
-		//this.tmpPickedVariationResource.push({total:1,variations:[variationItem]})
 		variationItem.count += 1
 	}
 
-	returnTmpVariationCount() {
-		/*let total = 0
-		for (let variation of this.tmpVariations.values()) {
-			total += variation.count
-		}
-		return total*/
-	}
 
 	//Verringert eine Variation um eins oder entfernt diese
 	removeVariation(variation: TmpVariations) {
 		if (variation.count > 0) {
 			variation.count -= 1
 		}
-		/*if (this.tmpVariations.has(variation.uuid)) {
-			if (this.tmpVariations.get(variation.uuid).count > 1) {
-				this.tmpVariations.get(variation.uuid).count -= 1
-			} else {
-				this.tmpVariations.delete(variation.uuid)
-			}
-		}*/
 	}
 
 	async sendOrderItem(orderItem: OrderItem) {
@@ -854,66 +1101,6 @@ export class BookingPageComponent {
 		this.xUsed = true
 	}
 
-	//Checkt ob Limit der Anzahl erreicht ist
-	checkLimitAnzahl() {
-		/*if (!this.minusUsed) {
-			if (this.tmpAnzahl > 0) {
-				let anzahl = 0
-				for (let variation of this.tmpVariations.values()) {
-					anzahl += variation.count
-				}
-				if (anzahl === this.tmpAnzahl) {
-					return true
-				}
-			}
-		}
-
-		return false*/
-		return true
-	}
-
-	//Checkt ob mindestens eine Variation ausgewählt wurde oder die Anzahl an Variationen ausgewählt wurde die man buchen möchte
-	checkPickedVariation() {
-		/*if (this.minusUsed) {
-			if (this.tmpAnzahl > 0) {
-				let anzahl = 0
-				for (let variation of this.tmpVariations.values()) {
-					anzahl += variation.count
-				}
-				if (anzahl === this.selectedItem.count - this.tmpAnzahl) {
-					return false
-				}
-			} else {
-				let anzahl = 0
-				for (let variation of this.tmpVariations.values()) {
-					anzahl += variation.count
-				}
-				if (anzahl < this.selectedItem.count) {
-					return false
-				}
-			}
-		}
-		if (!this.minusUsed) {
-			if (this.tmpAnzahl > 0) {
-				let anzahl = 0
-				for (let variation of this.tmpVariations.values()) {
-					anzahl += variation.count
-				}
-				if (anzahl === this.tmpAnzahl) {
-					return false
-				}
-			} else {
-				for (let variation of this.tmpVariations.values()) {
-					if (variation.count > 0) {
-						return false
-					}
-				}
-			}
-		}
-		*/
-		return true
-	}
-
 	//Bucht Artikel mit Artikelnummer
 	bookById() {
 		let pickedItem: Product = undefined
@@ -944,11 +1131,25 @@ export class BookingPageComponent {
 	selectItem(pickedItem: OrderItem, AllItemHandler: AllItemHandler) {
 		this.selectedItem = pickedItem
 		this.tmpAllItemHandler = AllItemHandler
+		this.selectedMenuItem = null
+	}
+
+	selectMenuItem(pickedItem: MenuOrderItem, AllItemHandler: AllItemHandler) {
+		this.selectedMenuItem = pickedItem
+		for (let item of this.selectedMenuItem.menu.items) {
+			console.log("Selected Menu Item maxSelections", item.maxSelections)
+		}
+		this.tmpAllItemHandler = AllItemHandler
+		this.selectedItem = null
 	}
 
 	//Füge selektiertes Item hinzu
-	addSelectedItem(orderItem: OrderItem) {
+	addSelectedItem(orderItem: OrderItem | MenuOrderItem) {
 		this.clickItem(orderItem.product)
+	}
+
+	addSelectedMenuItem(menuItem: MenuOrderItem) {
+		this.clickMenuItem(menuItem)
 	}
 
 	async createBill(payment: PaymentMethod) {
@@ -1197,5 +1398,584 @@ export class BookingPageComponent {
 		}
 
 		return (total / 100).toFixed(2)
+	}
+
+    showMenus() {
+    this.menues = this.menuInventory.menus;
+    this.specials = [];
+	this.selectedInventory = [];
+	}
+
+	showSpecials() {
+		this.specials = this.menuInventory.specials;
+		this.menues = [];
+		this.selectedInventory = [];
+	}
+
+	clickSpecial(special: Menu) {
+		this.currentSpecial = special;
+		this.currentMenu = null;
+		this.isMenuePopupVisible = true;
+		
+		for (let item of special.items) {
+			for (let category of item.categories) {
+				this.specialCategories.push(category);
+			}
+		}
+
+	}
+
+	clickMenu(menu: Menu) {
+		this.currentMenu = JSON.parse(JSON.stringify(menu));
+		this.currentSpecial = null;
+		this.isMenuePopupVisible = true;
+		this.changeSelectedMenuInventory(this.currentMenu.items[0], this.currentMenu.items[0].maxSelections, 0);
+
+		for (let item of this.currentMenu.items) {
+			for (let category of item.categories) {
+				this.specialCategories.push(category);
+			}
+		}
+	}
+
+	changeSelectedSpecialInventory(items: Product[]) {
+		this.specialProducts = items;
+	}
+
+	changeSelectedMenuInventory(menuItem: MenuItem, maxSelections: number, index?: number) {
+		let allProducts: Product[] = [];
+		allProducts = allProducts.concat(menuItem.products);
+		this.specialProducts = allProducts;
+		this.currentMaxSelections = maxSelections;
+		this.currentIndex = index;
+	}
+
+	findNextAvailableCategory(): number {
+		if (!this.currentMenu) return -1;
+		
+		// Starte bei der nächsten Kategorie nach der aktuellen
+		for (let i = this.currentIndex + 1; i < this.currentMenu.items.length; i++) {
+			if (this.currentMenu.items[i].maxSelections > 0) {
+				return i;
+			}
+		}
+		
+		// Falls keine gefunden, suche von Anfang bis zur aktuellen Position
+		for (let i = 0; i < this.currentIndex; i++) {
+			if (this.currentMenu.items[i].maxSelections > 0) {
+				return i;
+			}
+		}
+		
+		// Keine verfügbare Kategorie gefunden
+		return -1;
+	}
+
+	closeSpecials() {
+		// Stelle die ursprünglichen maxSelections wieder her, falls ein Menü aktiv war
+		if (this.currentMenu) {
+			// Gehe durch alle Items im temporären Handler und stelle maxSelections wieder her
+			for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
+				// Finde die entsprechende Kategorie für dieses Produkt
+				for (let menuItem of this.currentMenu.items) {
+					for (let product of menuItem.products) {
+						if (product.uuid === item.product.uuid) {
+							menuItem.maxSelections += item.count;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		this.isMenuePopupVisible = false;
+		this.specialCategories = [];
+		this.specialProducts = [];
+		this.selectedInventory = [];
+		this.currentSpecial = null;
+		this.currentMenu = null; // Menü-Variable zurücksetzen
+		this.currentIndex = 0; // Index zurücksetzen
+		this.currentMaxSelections = 0; // MaxSelections zurücksetzen
+		this.tmpSpecialAllItemsHandler = new AllItemHandler();
+		this.lastClickedMenuItem = null;
+	}
+
+	clickSpecialProduct(product: Product) {
+		if (product == null) return
+
+		if(this.currentMenu) {
+			this.currentMenu.items[this.currentIndex].maxSelections -= 1;
+			this.currentMaxSelections = this.currentMenu.items[this.currentIndex].maxSelections;
+			
+			// Wenn maxSelections = 0, dann nächsten Index suchen
+			if (this.currentMaxSelections === 0) {
+				let nextIndex = this.findNextAvailableCategory();
+				// Wenn gültiger Index gefunden wurde
+				if (nextIndex !== -1) {
+					this.currentIndex = nextIndex;
+					this.changeSelectedMenuInventory(
+						this.currentMenu.items[this.currentIndex], 
+						this.currentMenu.items[this.currentIndex].maxSelections, 
+						this.currentIndex
+					);
+				}
+			}
+		}
+
+		let newItem: OrderItem = {
+			uuid: product.uuid,
+			count: 0,
+			order: null,
+			product,
+			orderItemVariations: []
+		}
+
+		if (product.variations.length === 0) {
+			// Produkt ohne Variationen, direkt hinzufügen
+			if (this.tmpSpecialAllItemsHandler.includes(newItem)) {
+				let existingItem = this.tmpSpecialAllItemsHandler.getItem(newItem.product.id)
+				existingItem.count += 1
+			} else {
+				newItem.count = 1
+				this.tmpSpecialAllItemsHandler.pushNewItem(newItem)
+			}
+		} else {
+			// Special-Variation-Popup öffnen
+			this.lastClickedItem = product
+			this.tmpPickedVariationResource = []
+
+			for (let variationItem of this.lastClickedItem.variations[
+				this.tmpCountVariations
+			].variationItems) {
+				this.tmpPickedVariationResource.push(
+					new Map<number, TmpVariations[]>().set(0, [
+						{
+							uuid: variationItem.uuid,
+							count: 0,
+							max: undefined,
+							lastPickedVariation: undefined,
+							combination: variationItem.name,
+							display: variationItem.name,
+							pickedVariation: [variationItem]
+						}
+					])
+				)
+			}
+
+			this.isSpecialVariationPopupVisible = true;
+			this.isSpecialVariationMode = true;
+		}
+	}
+
+	addSpecial(item: OrderItem) {
+			item.count += 1;
+	}
+
+	removeSpecial(item: OrderItem) {
+			// Einfaches Item ohne Variationen
+			item.count -= 1;
+			if (item.count === 0) {
+				this.tmpSpecialAllItemsHandler.deleteItem(item);
+			}
+	}
+
+	removeMenuItem(item: OrderItem) {
+		// Entferne das Item aus der temporären Liste
+		item.count -= 1;
+		if (item.count === 0) {
+			this.tmpSpecialAllItemsHandler.deleteItem(item);
+		}
+
+		// Finde die entsprechende Kategorie basierend auf dem Produkt
+		let targetCategoryIndex = -1;
+		for (let i = 0; i < this.currentMenu.items.length; i++) {
+			const menuItem = this.currentMenu.items[i];
+			
+			let fountCategory = false;
+			
+				for (let product of menuItem.products) {
+					if (product.uuid === item.product.uuid) {
+						fountCategory = true;
+						break;
+					}
+				}
+			
+			if (fountCategory) {
+				targetCategoryIndex = i;
+				break;
+			}
+		}
+		
+		// Erhöhe die maxSelections der entsprechenden Kategorie
+		if (targetCategoryIndex >= 0) {
+			this.currentMenu.items[targetCategoryIndex].maxSelections += 1;
+			
+			// Springe zur entsprechenden Kategorie
+			this.currentIndex = targetCategoryIndex;
+			this.changeSelectedMenuInventory(
+				this.currentMenu.items[targetCategoryIndex], 
+				this.currentMenu.items[targetCategoryIndex].maxSelections, 
+				targetCategoryIndex
+			);
+		}
+	}
+
+	editSpecial(item: OrderItem) {
+		// Item hat Variationen - öffne Variations-Popup für Bearbeitung
+		this.selectedItem = item;
+		this.tmpSelectedItem = JSON.parse(JSON.stringify(item)); // Deep copy für Bearbeitung
+		this.minusUsed = false; // Edit-Modus, nicht Minus-Modus
+		this.lastClickedItem = item.product; // Setze das Produkt für sendVariation
+		
+		// Initialisiere tmpPickedVariationResource mit den bestehenden Variationen
+		this.tmpPickedVariationResource = [];
+		this.tmpCountVariations = 0;
+		
+		// Lade die bestehenden Variationen des Items
+		// Verwende die bestehenden Variationen für das Popup
+		for (let orderItemVariation of item.orderItemVariations) {
+			for (let variationItem of orderItemVariation.variationItems) {
+				// Überspringe Rabatt-Items
+				if (variationItem.name === "Rabatt") {
+					continue;
+				}
+				
+				this.tmpPickedVariationResource.push(
+					new Map<number, TmpVariations[]>().set(0, [
+						{
+							uuid: variationItem.uuid,
+							count: orderItemVariation.count,
+							max: undefined,
+							lastPickedVariation: undefined,
+							combination: variationItem.name,
+							display: variationItem.name,
+							pickedVariation: [variationItem]
+						}
+					])
+				);
+			}
+		}
+		
+		this.isSpecialVariationPopupVisible = true;
+		this.isSpecialVariationMode = true;
+		this.tmpAllItemHandler = this.tmpSpecialAllItemsHandler;
+	}
+
+	confirmSpecials() {
+		let rabattFaktor = 0;
+		
+		// Prüfe ob wir im Special-Modus oder Menü-Modus sind
+		if (this.currentSpecial && this.currentSpecial.discountType === 'PERCENTAGE') {
+			rabattFaktor = this.currentSpecial.offerValue / 100;
+		}
+
+		// Durch alle ausgewählten Produkte gehen und für jedes ein separates MenuOrderItem erstellen
+		for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
+			
+			let processedItem: OrderItem = JSON.parse(JSON.stringify(item));
+			let existingVariations = [...processedItem.orderItemVariations];
+			let newOrderItemVariations: OrderItemVariation[] = [];
+			
+			// Füge für jede bestehende OrderItemVariation die Variation und direkt danach den Rabatt hinzu
+			for (let orderItemVariation of existingVariations) {
+				
+				// Füge die ursprüngliche Variation hinzu
+				newOrderItemVariations.push(orderItemVariation);
+
+				// Berechne Rabatt für diese Variation
+				let sumAdditional = orderItemVariation.variationItems.reduce((acc, vi) => acc + vi.additionalCost, 0);
+				let originalCostPerUnit = processedItem.product.price + sumAdditional;
+				let rabattBetrag = -(originalCostPerUnit * rabattFaktor);
+
+				let rabattVariation: OrderItemVariation = {
+					uuid: crypto.randomUUID(),
+					count: orderItemVariation.count,
+					variationItems: [{
+						id: 0,
+						uuid: crypto.randomUUID(),
+						name: "Rabatt",
+						additionalCost: rabattBetrag,
+					}]
+				};
+				newOrderItemVariations.push(rabattVariation);
+			}
+			
+			// Ersetze die ursprünglichen Variationen mit der neuen sortierten Liste
+			processedItem.orderItemVariations = newOrderItemVariations;
+
+			// Für Produkte ohne Variationen: Rabatt direkt auf das Basis-Produkt anwenden
+			if (existingVariations.length === 0) {
+				let originalCost = processedItem.product.price;
+				let rabattBetrag = -(originalCost * rabattFaktor);
+
+				let rabattVariation: OrderItemVariation = {
+					uuid: crypto.randomUUID(),
+					count: processedItem.count,
+					variationItems: [{
+						id: 0,
+						uuid: crypto.randomUUID(),
+						name: "Rabatt",
+						additionalCost: rabattBetrag
+					}]
+				};
+
+				processedItem.orderItemVariations.push(rabattVariation);
+			}
+
+			let itemPrice = this.calculateSpecialPrice(processedItem);
+			console.log("Item Price:", itemPrice);
+
+			// Bestimme das aktuelle Menü/Special für MenuOrderItem
+			let currentMenuOrSpecial = this.currentMenu || this.currentSpecial;
+			let menuName = currentMenuOrSpecial ? currentMenuOrSpecial.name : 'Unknown Menu';
+
+			let menuOrderItem: MenuOrderItem = {
+				uuid: crypto.randomUUID(),
+				count: processedItem.count,
+				order: null,
+				menu: currentMenuOrSpecial,
+				name: menuName,
+				product: {
+					id: processedItem.product.id,
+					uuid: processedItem.product.uuid,
+					name: menuName,
+					price: itemPrice,
+					variations: []
+				},
+				orderItems: [processedItem]
+			};
+			
+			if(this.stagedItems.includesMenuItem(menuOrderItem)) {
+				for (let item of this.stagedItems.getAllPickedMenuItems()) {
+					for (let orderItem of item.orderItems) {
+						if (orderItem.product.id === processedItem.product.id) {
+							// Wenn das Produkt übereinstimmt, füge die OrderItemVariationen hinzu
+							orderItem.count += processedItem.count;
+
+							// Füge auch die neuen Variationen (inklusive Rabatt) hinzu
+							// Neue Logik: paarweise Mergen (Basisvariation gefolgt von Rabatt)
+							let isDiscountVar = (v: OrderItemVariation) => v.variationItems.length === 1 && v.variationItems[0].name === 'Rabatt';
+							let basesEqual = (a: OrderItemVariation, b: OrderItemVariation) => {
+								if (isDiscountVar(a) || isDiscountVar(b)) return false;
+								if (a.variationItems.length !== b.variationItems.length) return false;
+								for (let i = 0; i < a.variationItems.length; i++) {
+									let ai = a.variationItems[i];
+									let bi = b.variationItems[i];
+									if (ai.name !== bi.name) return false;
+									if (ai.additionalCost !== bi.additionalCost) return false;
+								}
+								return true;
+							};
+
+							let idx = 0;
+							while (idx < processedItem.orderItemVariations.length) {
+								let newVar = processedItem.orderItemVariations[idx];
+								if (!isDiscountVar(newVar)) {
+									// Basisvariation finden/erstellen
+									let baseIdx = orderItem.orderItemVariations.findIndex(ex => basesEqual(ex, newVar));
+									if (baseIdx >= 0) {
+										orderItem.orderItemVariations[baseIdx].count += newVar.count;
+									} else {
+										orderItem.orderItemVariations.push({ ...newVar });
+										baseIdx = orderItem.orderItemVariations.length - 1;
+									}
+
+									// Falls die nächste neue Variation ein Rabatt ist, direkt dahinter mergen/einfügen
+									let hasNextDiscount = idx + 1 < processedItem.orderItemVariations.length && isDiscountVar(processedItem.orderItemVariations[idx + 1]);
+									if (hasNextDiscount) {
+										let newDisc = processedItem.orderItemVariations[idx + 1];
+										let expectedDiscCost = newDisc.variationItems[0].additionalCost;
+
+										if (
+											baseIdx + 1 < orderItem.orderItemVariations.length &&
+											isDiscountVar(orderItem.orderItemVariations[baseIdx + 1]) &&
+											orderItem.orderItemVariations[baseIdx + 1].variationItems[0].additionalCost === expectedDiscCost
+										) {
+											orderItem.orderItemVariations[baseIdx + 1].count += newDisc.count;
+										} else {
+											orderItem.orderItemVariations.splice(baseIdx + 1, 0, { ...newDisc });
+										}
+										idx += 2;
+									} else {
+										idx += 1;
+									}
+								} else {
+									// Standalone-Rabatt (z. B. Produkt ohne Variationen)
+									let expectedDiscCost = newVar.variationItems[0].additionalCost;
+									let existingDiscIdx = orderItem.orderItemVariations.findIndex(ex => isDiscountVar(ex) && ex.variationItems[0].additionalCost === expectedDiscCost);
+									if (existingDiscIdx >= 0) {
+										orderItem.orderItemVariations[existingDiscIdx].count += newVar.count;
+									} else {
+										orderItem.orderItemVariations.push({ ...newVar });
+									}
+									idx += 1;
+								}
+							}
+						}
+					}
+					
+					// Aktualisiere den Gesamtpreis des MenuItems
+					let totalPrice = 0;
+					for (let orderItem of item.orderItems) {
+						totalPrice += this.calculateSpecialPrice(orderItem);
+					}
+					item.product.price = totalPrice;
+				}
+			} else {
+				this.stagedItems.pushNewMenuItem(menuOrderItem);
+			}
+		}
+
+		// Cleanup
+		this.isMenuePopupVisible = false;
+		this.specialCategories = [];
+		this.specialProducts = [];
+		this.selectedInventory = [];
+		this.currentSpecial = null;
+		this.tmpSpecialAllItemsHandler = new AllItemHandler();
+		this.showTotal();
+	}
+
+	confirmMenu(){
+		let allOrderItems: OrderItem[] = [];
+		let originalTotalPrice = 0;
+
+		// Durch alle ausgewählten Produkte gehen
+		for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
+			let processedItem: OrderItem = JSON.parse(JSON.stringify(item));
+			allOrderItems.push(processedItem);
+			
+			let itemPrice = processedItem.product.price * processedItem.count;
+			for (let variation of processedItem.orderItemVariations) {
+				for (let variationItem of variation.variationItems) {
+					itemPrice += variation.count * variationItem.additionalCost;
+				}
+			}
+			originalTotalPrice += itemPrice;
+		}
+
+		let finalMenuPrice = originalTotalPrice;
+		let totalRabattBetrag = 0;
+
+		if (this.currentMenu && this.currentMenu.offerType) {
+			switch (this.currentMenu.offerType) {
+				case 'FIXED_PRICE':
+					finalMenuPrice = this.currentMenu.offerValue;
+					totalRabattBetrag = finalMenuPrice - originalTotalPrice;
+					break;
+				case 'DISCOUNT':
+					if (this.currentMenu.discountType === 'PERCENTAGE') {
+						finalMenuPrice = originalTotalPrice * (1 - (this.currentMenu.offerValue / 100));
+						totalRabattBetrag = finalMenuPrice - originalTotalPrice;
+					} else if (this.currentMenu.discountType === 'AMOUNT') {
+						finalMenuPrice = originalTotalPrice - this.currentMenu.offerValue;
+						totalRabattBetrag = -this.currentMenu.offerValue;
+					}
+					break;
+				default:
+					finalMenuPrice = originalTotalPrice;
+					break;
+			}
+		}
+
+		let menuOrderItem: MenuOrderItem = {
+			uuid: crypto.randomUUID(),
+			count: 1,
+			order: null,
+			menu: this.currentMenu,
+			name: this.currentMenu.name,
+			product: {
+				id: this.currentMenu.id,
+				uuid: crypto.randomUUID(),
+				name: this.currentMenu.name,
+				price: finalMenuPrice,
+				variations: []
+			},
+			orderItems: allOrderItems
+		};
+
+		// Rabattvariation am ende einfügen
+		if (allOrderItems.length > 0 && totalRabattBetrag !== 0) {
+			let menuRabattVariation: OrderItemVariation = {
+				uuid: crypto.randomUUID(),
+				count: 1,
+				variationItems: [{
+					id: 0,
+					uuid: crypto.randomUUID(),
+					name: "Rabatt",
+					additionalCost: totalRabattBetrag,
+				}]
+			};
+			
+			allOrderItems[allOrderItems.length - 1].orderItemVariations.push(menuRabattVariation);
+		}
+
+		// Prüfe ob ein ähnliches MenuOrderItem bereits existiert und merge, oder füge neu hinzu
+		let existingMenuItem = this.stagedItems.getAllPickedMenuItems().find(item => item.menu.uuid === this.currentMenu.uuid);
+		if (existingMenuItem) {
+			existingMenuItem.count += 1;
+			// Füge alle OrderItems hinzu oder merge sie
+			for (let newOrderItem of allOrderItems) {
+				let existingOrderItem = existingMenuItem.orderItems.find((oi: OrderItem) => oi.product.id === newOrderItem.product.id);
+				if (existingOrderItem) {
+					existingOrderItem.count += newOrderItem.count;
+					// Merge Variationen
+					for (let newVar of newOrderItem.orderItemVariations) {
+						existingOrderItem.orderItemVariations.push(newVar);
+					}
+				} else {
+					existingMenuItem.orderItems.push(newOrderItem);
+				}
+			}
+			existingMenuItem.product.price += finalMenuPrice;
+		} else {
+			this.stagedItems.pushNewMenuItem(menuOrderItem);
+		}
+
+		// Cleanup
+		this.isMenuePopupVisible = false;
+		this.specialCategories = [];
+		this.specialProducts = [];
+		this.selectedInventory = [];
+		this.currentMenu = null;
+		this.tmpSpecialAllItemsHandler = new AllItemHandler();
+		this.showTotal();
+	}
+
+	calculateSpecialPrice(item: OrderItem): number {
+		let originalPrice = item.product.price * item.count;
+		
+		for (let variation of item.orderItemVariations) {
+			for (let variationItem of variation.variationItems) {
+				if (variationItem.name !== "Rabatt") {
+					originalPrice += variation.count * variationItem.additionalCost;
+				}
+			}
+		}
+
+		let itemPrice = originalPrice;
+
+		// Bestimme das aktuelle Menü oder Special für Preisberechnung
+		let currentMenuOrSpecial = this.currentSpecial || this.currentMenu;
+		
+		if (currentMenuOrSpecial && currentMenuOrSpecial.offerType) {
+			switch (currentMenuOrSpecial.offerType) {
+				case 'FIXED_PRICE':
+					itemPrice = currentMenuOrSpecial.offerValue;
+					break;
+				case 'DISCOUNT':
+					if (currentMenuOrSpecial.discountType === 'PERCENTAGE') {
+						itemPrice = originalPrice * (1 - (currentMenuOrSpecial.offerValue / 100));
+					} else if (currentMenuOrSpecial.discountType === 'AMOUNT') {
+						itemPrice = originalPrice - currentMenuOrSpecial.offerValue;
+					}
+					break;
+				default:
+					itemPrice = originalPrice;
+					break;
+			}
+		}
+		
+		return itemPrice;
 	}
 }

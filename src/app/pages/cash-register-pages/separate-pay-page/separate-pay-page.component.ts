@@ -6,6 +6,7 @@ import { PickedItem } from "src/app/models/cash-register/picked-item.model"
 import { Variation } from "src/app/models/cash-register/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
 import { OrderItem } from "src/app/models/OrderItem"
+import { MenuOrderItem } from "src/app/models/MenuOrderItem"
 import { ApiService } from "src/app/services/api-service"
 import { Table } from "src/app/models/Table"
 import { DataService } from "src/app/services/data-service"
@@ -368,5 +369,13 @@ export class SeparatePayPageComponent {
 			paymentMethod: payment
 		})
 		this.deleteBill()
+	}
+
+	calculateTotalPriceOfMenuOrderItem(menuItem: MenuOrderItem) {
+		// Bei MenuOrderItems ist der Special-Preis bereits berechnet und im Product gespeichert
+		return (
+			(menuItem.product.price * menuItem.count) /
+			100
+		).toFixed(2);
 	}
 }

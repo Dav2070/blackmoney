@@ -28,7 +28,6 @@ export class Menu {
 	offerType: OfferType
 	discountType?: DiscountType
 	offerValue: number
-	selectedProducts: Product[]
 	validity: ValidityPeriod
 	items: MenuItem[]
 }

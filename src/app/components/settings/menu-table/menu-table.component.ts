@@ -78,7 +78,6 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
             offerType: 'FIXED_PRICE',
             discountType: undefined,
             offerValue: 0,
-            selectedProducts: [],
             validity: {
                 startDate: undefined,
                 endDate: undefined,

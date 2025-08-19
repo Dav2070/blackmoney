@@ -113,7 +113,6 @@ export class MenuePageComponent {
             offerType: "FIXED_PRICE",
             discountType: undefined,
             offerValue: 999,
-            selectedProducts: [],
             validity: {
                 startDate: undefined,
                 endDate: undefined,
@@ -148,7 +147,17 @@ export class MenuePageComponent {
 						name: "Getränke",
 						categories: [],
 						products: [
-							{ id: 301, uuid: "cola", price: 200, name: "Cola", variations: [] },
+							{ id: 301, uuid: "cola", price: 200, name: "Cola", variations: [
+                                    {
+                                        uuid: "cola_0_5_variation_1",
+                                        name: "Größe",
+                                        variationItems: [
+                                            { id: 1, uuid: "cola_0_5_klein", name: "Klein", additionalCost: 0 },
+                                            { id: 2, uuid: "cola_0_5_gross", name: "Groß", additionalCost: 150 },
+                                        ]
+                                    }
+                                ]
+							},
 							{ id: 301, uuid: "cola_light", price: 200, name: "Cola Light", variations: [] },
 							{ id: 302, uuid: "7up", price: 200, name: "7Up", variations: [] },
 							{ id: 303, uuid: "fanta", price: 200, name: "Fanta", variations: [] }
@@ -172,10 +181,9 @@ export class MenuePageComponent {
             uuid: "menu_2",
             name: "Abendkarte",
             id: 2,
-            offerType: undefined,
+            offerType: "FIXED_PRICE",
             discountType: undefined,
-            offerValue: 0,
-            selectedProducts: [],
+            offerValue: 800,
             validity: {
                 startDate: undefined,
                 endDate: undefined,
@@ -183,7 +191,19 @@ export class MenuePageComponent {
                 endTime: undefined,
                 weekdays: []
             },
-            items: []
+            items: [
+				{
+						uuid: "item_burger",
+						name: "Burger",
+						categories: [],
+						products: [
+							{ id: 401, uuid: "zinger", price: 600, name: "Zinger", variations: [] },
+							{ id: 402, uuid: "veggie", price: 600, name: "Veggie", variations: [] },
+							{ id: 403, uuid: "classic", price: 600, name: "Classic", variations: [] }
+						],
+						maxSelections: 2
+				}
+			]
         }
     ];
 
@@ -195,7 +215,6 @@ export class MenuePageComponent {
             offerType: 'DISCOUNT',
             discountType: 'PERCENTAGE',
             offerValue: 20,
-            selectedProducts: [],
             validity: {
                 startDate: undefined,
                 endDate: undefined,
@@ -295,7 +314,6 @@ export class MenuePageComponent {
             offerType: 'FIXED_PRICE',
             discountType: undefined,
             offerValue: 1590,
-            selectedProducts: [],
             validity: {
                 startDate: undefined,
                 endDate: undefined,

@@ -319,6 +319,30 @@ export class BookingPageComponent {
 			}
 			this.showTotal()
 		} else {
+			if(this.selectedMenuItem.menu.items.length > 1){
+				this.selectedMenuItem.count +=1;
+				for(let item of this.selectedMenuItem.orderItems) {
+					console.log("OrderItem: ", item);
+					// Finde die entsprechende maxSelections für dieses Produkt
+					let maxSelectionsForThisItem = 0;
+					for(let menuItem of this.selectedMenuItem.menu.items) {
+						for(let product of menuItem.products) {
+							if(product.uuid === item.uuid) {
+								maxSelectionsForThisItem = menuItem.maxSelections;
+								console.log("Product: ", product);
+								console.log("maxSelections: ", menuItem.maxSelections);
+								break;
+							}
+						}
+						if(maxSelectionsForThisItem > 0) break;
+					}
+					
+					item.count += maxSelectionsForThisItem;
+					for(let variation of item.orderItemVariations) {
+						variation.count += 1;
+					}
+				}
+			}
 			// Öffnet Popup für Variationen
 			this.lastClickedItem = menuItem.orderItems[0].product
 			this.lastClickedMenuItem = menuItem
@@ -350,11 +374,10 @@ export class BookingPageComponent {
 
 	// Verringert Item um 1 oder Anzahl in Konsole
 	async subtractitem() {
-		// Prüfe ob ein MenuItem selektiert ist
+		// Prüfe ob ein MenuItem ausgewählt ist
 		if (this.selectedMenuItem != null) {
-			// MenuOrderItem Logik
 			if (this.tmpAllItemHandler === this.bookedItems) {
-				// Für gebuchte MenuItems - einfache Reduzierung ohne Variationen-Popup
+				// Booked MenuItems
 				if (this.tmpAnzahl > 0) {
 					if (this.selectedMenuItem.count > this.tmpAnzahl) {
 							this.selectedMenuItem.orderItems[0].count -= this.tmpAnzahl
@@ -366,7 +389,6 @@ export class BookingPageComponent {
 					}
 				} else {
 					this.selectedMenuItem.count -= 1
-					// Reduziere auch das erste OrderItem entsprechend
 					if (this.selectedMenuItem.orderItems.length > 0) {
 						this.selectedMenuItem.orderItems[0].count -= 1
 						if (this.selectedMenuItem.orderItems[0].orderItemVariations.length > 0) {
@@ -378,7 +400,7 @@ export class BookingPageComponent {
 				this.removeEmptyMenuItem(this.bookedItems)
 				this.showTotal()
 			} else {
-				// Für staged MenuItems 
+				// Für staged MenuItems mit einem Produkt
 				if (this.selectedMenuItem.orderItems.length === 1 && this.selectedMenuItem.orderItems[0].orderItemVariations.length === 1) {
 					if (this.tmpAnzahl > 0) {
 						if (this.selectedMenuItem.count >= this.tmpAnzahl) {
@@ -397,8 +419,11 @@ export class BookingPageComponent {
 						this.removeEmptyMenuItem(this.stagedItems)
 					}
 				} else {
-					// Mehrere Produkte im Menü - lade alle Produkte mit ihren Variationen ins Popup
-					
+					// Menüs
+					if(this.selectedMenuItem.menu.items.length > 1){
+						this.selectedMenuItem.count -= 1;
+					} else { 
+					// Mehrere Produkte im Special - lade alle Produkte mit ihren Variationen ins Popup
 					// Setze für Variations-Popup (verwende erstes OrderItem als "Haupt-Item")
 					this.selectedItem = this.selectedMenuItem.orderItems[0];
 					this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedMenuItem.orderItems[0]));
@@ -443,6 +468,7 @@ export class BookingPageComponent {
 					this.isSpecialVariationPopupVisible = true;
 					this.isSpecialVariationMode = true;
 					this.tmpAllItemHandler = this.stagedItems;
+					}
 				}
 
 				this.removeEmptyMenuItem(this.stagedItems)
@@ -1110,6 +1136,9 @@ export class BookingPageComponent {
 
 	selectMenuItem(pickedItem: MenuOrderItem, AllItemHandler: AllItemHandler) {
 		this.selectedMenuItem = pickedItem
+		for (let item of this.selectedMenuItem.menu.items) {
+			console.log("Selected Menu Item maxSelections", item.maxSelections)
+		}
 		this.tmpAllItemHandler = AllItemHandler
 		this.selectedItem = null
 	}
@@ -1397,13 +1426,12 @@ export class BookingPageComponent {
 	}
 
 	clickMenu(menu: Menu) {
-		this.currentMenu = menu;
+		this.currentMenu = JSON.parse(JSON.stringify(menu));
 		this.currentSpecial = null;
 		this.isMenuePopupVisible = true;
-		// Index auf erstes menu item setzen
-		this.changeSelectedMenuInventory(menu.items[0], menu.items[0].maxSelections, 0);
+		this.changeSelectedMenuInventory(this.currentMenu.items[0], this.currentMenu.items[0].maxSelections, 0);
 
-		for (let item of menu.items) {
+		for (let item of this.currentMenu.items) {
 			for (let category of item.categories) {
 				this.specialCategories.push(category);
 			}
@@ -1444,13 +1472,32 @@ export class BookingPageComponent {
 	}
 
 	closeSpecials() {
+		// Stelle die ursprünglichen maxSelections wieder her, falls ein Menü aktiv war
+		if (this.currentMenu) {
+			// Gehe durch alle Items im temporären Handler und stelle maxSelections wieder her
+			for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
+				// Finde die entsprechende Kategorie für dieses Produkt
+				for (let menuItem of this.currentMenu.items) {
+					for (let product of menuItem.products) {
+						if (product.uuid === item.product.uuid) {
+							menuItem.maxSelections += item.count;
+							break;
+						}
+					}
+				}
+			}
+		}
+
 		this.isMenuePopupVisible = false;
 		this.specialCategories = [];
 		this.specialProducts = [];
 		this.selectedInventory = [];
 		this.currentSpecial = null;
+		this.currentMenu = null; // Menü-Variable zurücksetzen
+		this.currentIndex = 0; // Index zurücksetzen
+		this.currentMaxSelections = 0; // MaxSelections zurücksetzen
 		this.tmpSpecialAllItemsHandler = new AllItemHandler();
-		this.lastClickedMenuItem = null; // Reset beim Schließen des Special-Popups
+		this.lastClickedMenuItem = null;
 	}
 
 	clickSpecialProduct(product: Product) {
@@ -1484,7 +1531,7 @@ export class BookingPageComponent {
 		}
 
 		if (product.variations.length === 0) {
-			// Produkt ohne Variationen - direkt hinzufügen
+			// Produkt ohne Variationen, direkt hinzufügen
 			if (this.tmpSpecialAllItemsHandler.includes(newItem)) {
 				let existingItem = this.tmpSpecialAllItemsHandler.getItem(newItem.product.id)
 				existingItem.count += 1
@@ -1493,7 +1540,7 @@ export class BookingPageComponent {
 				this.tmpSpecialAllItemsHandler.pushNewItem(newItem)
 			}
 		} else {
-			// Produkt mit Variationen - Special-Variation-Popup öffnen
+			// Special-Variation-Popup öffnen
 			this.lastClickedItem = product
 			this.tmpPickedVariationResource = []
 
@@ -1515,8 +1562,8 @@ export class BookingPageComponent {
 				)
 			}
 
-			this.isSpecialVariationPopupVisible = true // Separate Variable für Special-Popup
-			this.isSpecialVariationMode = true // Flag für Special-Modus
+			this.isSpecialVariationPopupVisible = true;
+			this.isSpecialVariationMode = true;
 		}
 	}
 
@@ -1793,12 +1840,11 @@ export class BookingPageComponent {
 		let allOrderItems: OrderItem[] = [];
 		let originalTotalPrice = 0;
 
-		// Durch alle ausgewählten Produkte gehen und in allOrderItems sammeln
+		// Durch alle ausgewählten Produkte gehen
 		for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
 			let processedItem: OrderItem = JSON.parse(JSON.stringify(item));
 			allOrderItems.push(processedItem);
 			
-			// Berechne den Originalpreis für dieses Item (ohne Menü-Rabatt)
 			let itemPrice = processedItem.product.price * processedItem.count;
 			for (let variation of processedItem.orderItemVariations) {
 				for (let variationItem of variation.variationItems) {

@@ -81,7 +81,6 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 			offerType: undefined,
 			discountType: undefined,
 			offerValue: 0,
-			selectedProducts: [],
 			validity: {
 				startDate: undefined,
 				endDate: undefined,

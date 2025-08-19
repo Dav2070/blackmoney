@@ -117,8 +117,12 @@ export type Country = "DE"
 
 export type ErrorCode =
 	| typeof ErrorCodes.notAuthenticated
+	| typeof ErrorCodes.userHasNoPassword
+	| typeof ErrorCodes.userAlreadyHasPassword
 	| typeof ErrorCodes.nameTooShort
+	| typeof ErrorCodes.passwordTooShort
 	| typeof ErrorCodes.nameTooLong
+	| typeof ErrorCodes.passwordTooLong
 	| typeof ErrorCodes.cityTooLong
 	| typeof ErrorCodes.line1TooLong
 	| typeof ErrorCodes.line2TooLong

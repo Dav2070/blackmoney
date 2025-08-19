@@ -1,8 +1,23 @@
+import { Router } from "@angular/router"
 import { ApolloQueryResult } from "@apollo/client"
 import { MutationResult } from "apollo-angular"
+import { ApiService } from "./services/api-service"
+import { DataService } from "./services/data-service"
+import { SettingsService } from "./services/settings-service"
+import { AuthService } from "./services/auth-service"
 import { Company } from "./models/Company"
 import { User } from "./models/User"
 import { Room } from "./models/Room"
+import { Table } from "./models/Table"
+import { Category } from "./models/Category"
+import { Product } from "./models/Product"
+import { Variation } from "./models/Variation"
+import { VariationItem } from "./models/VariationItem"
+import { Order } from "./models/Order"
+import { OrderItem } from "./models/OrderItem"
+import { OrderItemVariation } from "./models/OrderItemVariation"
+import { Bill } from "./models/Bill"
+import { Restaurant } from "./models/Restaurant"
 import {
 	CategoryResource,
 	CompanyResource,
@@ -21,16 +36,6 @@ import {
 	Theme
 } from "./types"
 import { darkThemeKey, lightThemeKey } from "./constants"
-import { Table } from "./models/Table"
-import { Category } from "./models/Category"
-import { Product } from "./models/Product"
-import { Variation } from "./models/Variation"
-import { VariationItem } from "./models/VariationItem"
-import { Order } from "./models/Order"
-import { OrderItem } from "./models/OrderItem"
-import { OrderItemVariation } from "./models/OrderItemVariation"
-import { Bill } from "./models/Bill"
-import { Restaurant } from "./models/Restaurant"
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 	let total = 0
@@ -76,6 +81,29 @@ export function getGraphQLErrorCodes(
 
 export function randomNumber(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export async function initUserAfterLogin(
+	accessToken: string,
+	restaurantUuid: string,
+	user: UserResource,
+	apiService: ApiService,
+	authService: AuthService,
+	dataService: DataService,
+	settingsService: SettingsService,
+	router: Router
+): Promise<void> {
+	await authService.setAccessToken(accessToken)
+	dataService.loadApollo(accessToken)
+	apiService.loadApolloClients()
+
+	dataService.user = convertUserResourceToUser(user)
+	dataService.blackmoneyUserPromiseHolder.Resolve()
+
+	await settingsService.setRestaurant(restaurantUuid)
+
+	// Redirect to user page
+	router.navigate(["user"])
 }
 
 //#region Converter functions

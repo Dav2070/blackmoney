@@ -69,30 +69,29 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 		}
 	}
 
-	// Menu CRUD
-	addNewMenu(): void {
-		this.newMenu = {
-			uuid: "menu_" + Date.now(),
-			id: this.menus.length + 1,
-			name: "Neues Menü",
-			offerType: "NONE",
-			discountType: undefined,
-			offerValue: 0,
-			selectedProducts: [],
-			validity: {
-				startDate: undefined,
-				endDate: undefined,
-				startTime: undefined,
-				endTime: undefined,
-				weekdays: []
-			},
-			items: []
-		}
+    // Menu CRUD
+    addNewMenu(): void {
+        this.newMenu = {
+            uuid: 'menu_' + Date.now(),
+            id: this.menus.length + 1,
+            name: "Neues Menü",
+            offerType: 'FIXED_PRICE',
+            discountType: undefined,
+            offerValue: 0,
+            validity: {
+                startDate: undefined,
+                endDate: undefined,
+                startTime: undefined,
+                endTime: undefined,
+                weekdays: []
+            },
+            items: []
+        };
 
-		this.menus.push(this.newMenu)
-		this.initializeDataSource()
-		this.editingMenu = this.newMenu
-	}
+        this.menus.push(this.newMenu);
+        this.initializeDataSource();
+        this.editingMenu = this.newMenu;
+    }
 
 	deleteMenu(menu: Menu): void {
 		const index = this.menus.findIndex(m => m.uuid === menu.uuid)

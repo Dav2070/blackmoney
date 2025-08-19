@@ -167,6 +167,36 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async setPasswordForUser(
+		queryData: string,
+		variables: {
+			uuid: string
+			password: string
+		}
+	): Promise<MutationResult<{ setPasswordForUser: UserResource }>> {
+		return await this.davAuthApollo
+			.mutate<{
+				setPasswordForUser: UserResource
+			}>({
+				mutation: gql`
+					mutation SetPasswordForUser(
+						$uuid: String!
+						$password: String!
+					) {
+						setPasswordForUser(
+							uuid: $uuid
+							password: $password
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveCompany(
 		queryData: string
 	): Promise<ApolloQueryResult<{ retrieveCompany: CompanyResource }>> {

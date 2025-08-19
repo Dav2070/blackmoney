@@ -1,16 +1,9 @@
 import { Category } from "./Category"
 import { Product } from "./Product"
 
-export type OfferType = "NONE" | "FIXED_PRICE" | "DISCOUNT"
-export type DiscountType = "PERCENTAGE" | "AMOUNT"
-export type Weekday =
-	| "MONDAY"
-	| "TUESDAY"
-	| "WEDNESDAY"
-	| "THURSDAY"
-	| "FRIDAY"
-	| "SATURDAY"
-	| "SUNDAY"
+export type OfferType = 'FIXED_PRICE' | 'DISCOUNT';
+export type DiscountType = 'PERCENTAGE' | 'AMOUNT';
+export type Weekday = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
 
 export interface ValidityPeriod {
 	startDate?: Date
@@ -35,7 +28,6 @@ export class Menu {
 	offerType: OfferType
 	discountType?: DiscountType
 	offerValue: number
-	selectedProducts: Product[]
 	validity: ValidityPeriod
 	items: MenuItem[]
 }

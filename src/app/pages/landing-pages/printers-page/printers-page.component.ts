@@ -38,6 +38,7 @@ export class PrintersPageComponent {
 	]
 
 	printerStatus: { [uuid: string]: "online" | "offline" | "loading" } = {}
+	printerTestLoading: string = null
 
 	// Add-Dialog Properties
 	addPrinterDialogLoading = false
@@ -74,7 +75,7 @@ export class PrintersPageComponent {
 		}
 	}
 
-	showAddPrintersDialog() {
+	showAddPrinterDialog() {
 		this.clearAddPrinterDialogErrors()
 		this.addPrinterDialog.show()
 	}
@@ -159,6 +160,8 @@ export class PrintersPageComponent {
 	}
 
 	async testPrinter(printer: Printer) {
+		this.printerTestLoading = printer.uuid
+
 		const toast = document.createElement("dav-toast")
 		toast.paddingBottom = this.dataService.isMobile ? 80 : 0
 
@@ -169,6 +172,7 @@ export class PrintersPageComponent {
 			toast.text = "Fehler beim Drucken: " + err
 		}
 
+		this.printerTestLoading = null
 		Toast.show(toast)
 	}
 }

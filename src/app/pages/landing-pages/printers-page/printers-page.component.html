@@ -1,8 +1,9 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header addButtonVisible (addButtonClick)="showAddPrintersDialog()">
+		<dav-header addButtonVisible (addButtonClick)="showAddPrinterDialog()">
 			{{ locale.headline }}
 		</dav-header>
+
 		@for (printer of printers; track printer.uuid) {
 			<dav-card>
 				<div class="printer-card-container">
@@ -28,11 +29,16 @@
 							<dav-button
 								outline
 								class="test-printer-btn"
+								[disabled]="printerTestLoading === printer.uuid || printerStatus[printer.uuid] !== 'online'"
 								(click)="testPrinter(printer)"
 								size="sm"
 							>
 								{{ locale.test }}
 							</dav-button>
+
+							@if (printerTestLoading === printer.uuid) {
+								<dav-progress-ring size="16"></dav-progress-ring>
+							}
 						</div>
 					</div>
 					<dav-icon-button
@@ -45,6 +51,7 @@
 			</dav-card>
 		}
 	</div>
+
 	<app-add-printer-dialog
 		#addPrinterDialog
 		[loading]="addPrinterDialogLoading"
@@ -53,6 +60,7 @@
 		(primaryButtonClick)="addPrinterDialogPrimaryButtonClick($event)"
 		(clearErrors)="clearAddPrinterDialogErrors()"
 	></app-add-printer-dialog>
+
 	<app-edit-printer-dialog
 		#editPrinterDialog
 		[name]="editPrinterDialogName"

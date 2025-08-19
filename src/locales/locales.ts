@@ -51,7 +51,7 @@ export const de = {
 	},
 	printersPage: {
 		headline: "Deine Drucker",
-		test: "Test",
+		test: "Test-Druck",
 		status: "Status",
 		statusOnline: "Online",
 		statusOffline: "Offline",
@@ -106,6 +106,6 @@ export const de = {
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten.",
-		ipAdressInvalid: "Die IP-Adresse ist ungültig.",
+		ipAdressInvalid: "Die IP-Adresse ist ungültig."
 	}
 }

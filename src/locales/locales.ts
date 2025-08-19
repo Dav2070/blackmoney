@@ -49,6 +49,14 @@ export const de = {
 	employeePage: {
 		role: "Rolle:"
 	},
+	printersPage: {
+		headline: "Deine Drucker",
+		test: "Test",
+		status: "Status",
+		statusOnline: "Online",
+		statusOffline: "Offline",
+		statusLoading: "Wird geprüft..."
+	},
 	dialogs: {
 		logoutDialog: {
 			headline: "Abmelden",
@@ -99,13 +107,5 @@ export const de = {
 			"Die Passwörter stimmen nicht überein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten.",
 		ipAdressInvalid: "Die IP-Adresse ist ungültig.",
-	},
-	printersPage: {
-		headline: "Deine Drucker",
-		test: "Test",
-		status:"Status",
-		statusOnline: "Online",
-		statusOffline: "Offline",
-		statusLoading: "Wird geprüft..."
 	}
 }

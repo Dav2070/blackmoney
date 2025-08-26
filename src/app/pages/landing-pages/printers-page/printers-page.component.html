@@ -1,57 +1,69 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header addButtonVisible (addButtonClick)="showAddPrinterDialog()">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddPrinterDialog()"
+		>
 			{{ locale.headline }}
 		</dav-header>
 
-		@for (printer of printers; track printer.uuid) {
-			<dav-card>
-				<div class="printer-card-container">
-					<div class="printer-card-content">
-						<p>
-							<strong>{{ printer.name }}</strong>
-						</p>
-						<p>{{ printer.ipAddress }}</p>
-						<p>
-							{{ locale.status }}:
-							<span [ngClass]="printerStatus[printer.uuid]">
-								{{
-									printerStatus[printer.uuid] === "online"
-										? locale.statusOnline
-										: printerStatus[printer.uuid] === "loading"
-											? locale.statusLoading
-											: locale.statusOffline
-								}}
-							</span>
-						</p>
-						<div class="printer-actions-row">
-							<fa-icon [icon]="faPrint" class="printer-icon"></fa-icon>
-							<dav-button
-								outline
-								class="test-printer-btn"
-								[disabled]="
-									printerTestLoading === printer.uuid ||
-									printerStatus[printer.uuid] !== 'online'
-								"
-								(click)="testPrinter(printer)"
-								size="sm"
-							>
-								{{ locale.test }}
-							</dav-button>
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			@for (printer of printers; track printer.uuid) {
+				<dav-card>
+					<div class="printer-card-container">
+						<div class="printer-card-content">
+							<p>
+								<strong>{{ printer.name }}</strong>
+							</p>
+							<p>{{ printer.ipAddress }}</p>
+							<p>
+								{{ locale.status }}:
+								<span [ngClass]="printerStatus[printer.uuid]">
+									{{
+										printerStatus[printer.uuid] === "online"
+											? locale.statusOnline
+											: printerStatus[printer.uuid] === "loading"
+												? locale.statusLoading
+												: locale.statusOffline
+									}}
+								</span>
+							</p>
+							<div class="printer-actions-row">
+								<fa-icon
+									[icon]="faPrint"
+									class="printer-icon"
+								></fa-icon>
+								<dav-button
+									outline
+									class="test-printer-btn"
+									[disabled]="
+										printerTestLoading === printer.uuid ||
+										printerStatus[printer.uuid] !== 'online'
+									"
+									(click)="testPrinter(printer)"
+									size="sm"
+								>
+									{{ locale.test }}
+								</dav-button>
 
-							@if (printerTestLoading === printer.uuid) {
-								<dav-progress-ring size="16"></dav-progress-ring>
-							}
+								@if (printerTestLoading === printer.uuid) {
+									<dav-progress-ring size="16"></dav-progress-ring>
+								}
+							</div>
 						</div>
+						<dav-icon-button
+							size="xs"
+							(click)="showEditPrinterDialog(printer)"
+						>
+							<fa-icon [icon]="faPen"></fa-icon>
+						</dav-icon-button>
 					</div>
-					<dav-icon-button
-						size="xs"
-						(click)="showEditPrinterDialog(printer)"
-					>
-						<fa-icon [icon]="faPen"></fa-icon>
-					</dav-icon-button>
-				</div>
-			</dav-card>
+				</dav-card>
+			}
 		}
 	</div>
 </div>

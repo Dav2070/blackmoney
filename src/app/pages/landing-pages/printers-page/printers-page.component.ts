@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core"
-import { ActivatedRoute } from "@angular/router"
+import { Router, ActivatedRoute } from "@angular/router"
 import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons"
 import { Toast } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -23,6 +23,7 @@ export class PrintersPageComponent {
 	faPen = faPen
 	faPrint = faPrint
 	uuid: string = null
+	loading: boolean = true
 
 	printers: Printer[] = []
 
@@ -38,9 +39,9 @@ export class PrintersPageComponent {
 	editPrinterDialogLoading = false
 	editPrinterDialogNameError = ""
 	editPrinterDialogIpAddressError = ""
+	editPrinterDialogUuid: string = null
 	editPrinterDialogName = ""
 	editPrinterDialogIpAddress = ""
-	editPrinterDialogPrinterUuid: string | null = null
 
 	@ViewChild("addPrinterDialog") addPrinterDialog!: AddPrinterDialogComponent
 	@ViewChild("editPrinterDialog")
@@ -51,6 +52,7 @@ export class PrintersPageComponent {
 		private printerService: PrinterService,
 		private dataService: DataService,
 		private apiService: ApiService,
+		private router: Router,
 		private activatedRoute: ActivatedRoute
 	) {}
 
@@ -72,6 +74,8 @@ export class PrintersPageComponent {
 				`,
 				{ uuid: this.uuid }
 			)
+
+		this.loading = false
 
 		const retrieveRestaurantResponseData =
 			convertRestaurantResourceToRestaurant(
@@ -140,7 +144,7 @@ export class PrintersPageComponent {
 	showEditPrinterDialog(printer: Printer) {
 		this.clearEditPrinterDialogErrors()
 
-		this.editPrinterDialogPrinterUuid = printer.uuid
+		this.editPrinterDialogUuid = printer.uuid
 		this.editPrinterDialogName = printer.name
 		this.editPrinterDialogIpAddress = printer.ipAddress
 
@@ -154,6 +158,8 @@ export class PrintersPageComponent {
 		name: string
 		ipAddress: string
 	}) {
+		if (this.editPrinterDialogUuid == null) return
+
 		// Validierung
 		if (event.name.length === 0) {
 			this.editPrinterDialogNameError = this.errorsLocale.nameMissing
@@ -168,16 +174,7 @@ export class PrintersPageComponent {
 
 		this.editPrinterDialogLoading = true
 
-		// Drucker aktualisieren
-		if (this.editPrinterDialogPrinterUuid) {
-			const idx = this.printers.findIndex(
-				p => p.uuid === this.editPrinterDialogPrinterUuid
-			)
-			if (idx !== -1) {
-				this.printers[idx].name = event.name
-				this.printers[idx].ipAddress = event.ipAddress
-			}
-		}
+		// TODO
 
 		this.editPrinterDialogLoading = false
 		this.editPrinterDialog.hide()
@@ -206,5 +203,9 @@ export class PrintersPageComponent {
 
 		this.printerTestLoading = null
 		Toast.show(toast)
+	}
+
+	navigateBack() {
+		this.router.navigate(["user", "restaurants", this.uuid])
 	}
 }

@@ -60,6 +60,8 @@ export class EmployeesPageComponent {
 			`
 		)
 
+		this.loading = false
+
 		if (retrieveCompanyResponse.data == null) return
 
 		const users = retrieveCompanyResponse.data.retrieveCompany.users.items
@@ -78,8 +80,6 @@ export class EmployeesPageComponent {
 				convertRestaurantResourceToRestaurant(restaurant)
 			)
 		}
-
-		this.loading = false
 	}
 
 	showAddEmployeeDialog() {
@@ -100,6 +100,11 @@ export class EmployeesPageComponent {
 		name: string
 		restaurants: string[]
 	}) {
+		if (event.name.length === 0) {
+			this.nameError = this.errorsLocale.nameMissing
+			return
+		}		
+
 		this.addEmployeeDialogLoading = true
 
 		const createUserResponse = await this.apiService.createUser(

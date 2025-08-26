@@ -38,6 +38,8 @@ export class RestaurantsPageComponent {
 			`
 		)
 
+		this.loading = false
+
 		if (retrieveCompanyResponse.data == null) return
 
 		const restaurants =
@@ -48,8 +50,6 @@ export class RestaurantsPageComponent {
 				convertRestaurantResourceToRestaurant(restaurant)
 			)
 		}
-
-		this.loading = false
 	}
 
 	navigateBack() {

@@ -1,12 +1,15 @@
 import { Component, ViewChild } from "@angular/core"
+import { ActivatedRoute } from "@angular/router"
 import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons"
 import { Toast } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { PrinterService } from "src/app/services/printer-service"
 import { DataService } from "src/app/services/data-service"
+import { ApiService } from "src/app/services/api-service"
 import { Printer } from "src/app/models/Printer"
 import { AddPrinterDialogComponent } from "src/app/dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "src/app/dialogs/edit-printer-dialog/edit-printer-dialog.component"
+import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 
 @Component({
 	selector: "app-printers-page",
@@ -18,24 +21,9 @@ export class PrintersPageComponent {
 	locale = this.localizationService.locale.printersPage
 	faPen = faPen
 	faPrint = faPrint
+	uuid: string = null
 
-	printers: Printer[] = [
-		{
-			uuid: "1",
-			name: "Küche",
-			ipAdress: "192.168.188.121"
-		},
-		{
-			uuid: "2",
-			name: "Theke",
-			ipAdress: "192.168.1.11"
-		},
-		{
-			uuid: "3",
-			name: "Büro",
-			ipAdress: "192.168.1.12"
-		}
-	]
+	printers: Printer[] = []
 
 	printerStatus: { [uuid: string]: "online" | "offline" | "loading" } = {}
 	printerTestLoading: string = null
@@ -43,14 +31,14 @@ export class PrintersPageComponent {
 	// Add-Dialog Properties
 	addPrinterDialogLoading = false
 	addPrinterDialogNameError = ""
-	addPrinterDialogIpAdressError = ""
+	addPrinterDialogIpAddressError = ""
 
 	// Edit-Dialog Properties
 	editPrinterDialogLoading = false
 	editPrinterDialogNameError = ""
-	editPrinterDialogIpAdressError = ""
+	editPrinterDialogIpAddressError = ""
 	editPrinterDialogName = ""
-	editPrinterDialogIpAdress = ""
+	editPrinterDialogIpAddress = ""
 	editPrinterDialogPrinterUuid: string | null = null
 
 	@ViewChild("addPrinterDialog") addPrinterDialog!: AddPrinterDialogComponent
@@ -60,10 +48,44 @@ export class PrintersPageComponent {
 	constructor(
 		private localizationService: LocalizationService,
 		private printerService: PrinterService,
-		private dataService: DataService
+		private dataService: DataService,
+		private apiService: ApiService,
+		private activatedRoute: ActivatedRoute
 	) {}
 
-	ngOnInit() {
+	async ngOnInit() {
+		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+
+		await this.dataService.davUserPromiseHolder.AwaitResult()
+
+		const retrieveRestaurantResponse =
+			await this.apiService.retrieveRestaurant(
+				`
+					printers {
+						items {
+							uuid
+							name
+							ipAddress
+						}
+					}
+				`,
+				{ uuid: this.uuid }
+			)
+
+		const retrieveRestaurantResponseData =
+			convertRestaurantResourceToRestaurant(
+				retrieveRestaurantResponse.data.retrieveRestaurant
+			)
+		if (retrieveRestaurantResponseData == null) return
+
+		for (let printer of retrieveRestaurantResponseData.printers) {
+			this.printers.push({
+				uuid: printer.uuid,
+				name: printer.name,
+				ipAddress: printer.ipAddress
+			})
+		}
+
 		this.loadPrinterStatus()
 	}
 
@@ -82,33 +104,38 @@ export class PrintersPageComponent {
 
 	addPrinterDialogPrimaryButtonClick(event: {
 		name: string
-		ipAdress: string
+		ipAddress: string
 	}) {
 		this.addPrinterDialogLoading = true
+
 		// Validierung
 		if (event.name.length === 0) {
 			this.addPrinterDialogNameError = "Name darf nicht leer sein."
 			this.addPrinterDialogLoading = false
 			return
 		}
-		if (event.ipAdress.length === 0) {
-			this.addPrinterDialogIpAdressError = "IP-Adresse darf nicht leer sein."
+
+		if (event.ipAddress.length === 0) {
+			this.addPrinterDialogIpAddressError =
+				"IP-Adresse darf nicht leer sein."
 			this.addPrinterDialogLoading = false
 			return
 		}
+
 		// Drucker hinzufügen
 		this.printers.push({
 			uuid: (Math.random() * 1000000).toFixed(0),
 			name: event.name,
-			ipAdress: event.ipAdress
+			ipAddress: event.ipAddress
 		})
+
 		this.addPrinterDialogLoading = false
 		this.addPrinterDialog.hide()
 	}
 
 	clearAddPrinterDialogErrors() {
 		this.addPrinterDialogNameError = ""
-		this.addPrinterDialogIpAdressError = ""
+		this.addPrinterDialogIpAddressError = ""
 	}
 
 	// --- Edit Dialog ---
@@ -116,30 +143,33 @@ export class PrintersPageComponent {
 		this.clearEditPrinterDialogErrors()
 		this.editPrinterDialogPrinterUuid = printer.uuid ?? null
 		this.editPrinterDialogName = printer.name
-		this.editPrinterDialogIpAdress = printer.ipAdress
+		this.editPrinterDialogIpAddress = printer.ipAddress
 		this.editPrinterDialog.show({
 			name: printer.name,
-			ipAdress: printer.ipAdress
+			ipAddress: printer.ipAddress
 		})
 	}
 
 	editPrinterDialogPrimaryButtonClick(event: {
 		name: string
-		ipAdress: string
+		ipAddress: string
 	}) {
 		this.editPrinterDialogLoading = true
+
 		// Validierung
 		if (event.name.length === 0) {
 			this.editPrinterDialogNameError = "Name darf nicht leer sein."
 			this.editPrinterDialogLoading = false
 			return
 		}
-		if (event.ipAdress.length === 0) {
-			this.editPrinterDialogIpAdressError =
+
+		if (event.ipAddress.length === 0) {
+			this.editPrinterDialogIpAddressError =
 				"IP-Adresse darf nicht leer sein."
 			this.editPrinterDialogLoading = false
 			return
 		}
+
 		// Drucker aktualisieren
 		if (this.editPrinterDialogPrinterUuid) {
 			const idx = this.printers.findIndex(
@@ -147,16 +177,17 @@ export class PrintersPageComponent {
 			)
 			if (idx !== -1) {
 				this.printers[idx].name = event.name
-				this.printers[idx].ipAdress = event.ipAdress
+				this.printers[idx].ipAddress = event.ipAddress
 			}
 		}
+
 		this.editPrinterDialogLoading = false
 		this.editPrinterDialog.hide()
 	}
 
 	clearEditPrinterDialogErrors() {
 		this.editPrinterDialogNameError = ""
-		this.editPrinterDialogIpAdressError = ""
+		this.editPrinterDialogIpAddressError = ""
 	}
 
 	async testPrinter(printer: Printer) {

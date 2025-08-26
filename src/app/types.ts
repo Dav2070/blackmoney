@@ -33,6 +33,7 @@ export interface RestaurantResource {
 	postalCode: string
 	users: List<UserResource>
 	rooms: List<RoomResource>
+	printers: List<PrinterResource>
 }
 
 export interface UserResource {
@@ -51,6 +52,12 @@ export interface TableResource {
 	uuid: string
 	name: number
 	orders: List<OrderResource>
+}
+
+export interface PrinterResource {
+	uuid: string
+	name: string
+	ipAddress: string
 }
 
 export interface ProductResource {

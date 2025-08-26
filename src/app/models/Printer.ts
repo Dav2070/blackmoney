@@ -1,5 +1,5 @@
 export class Printer {
-    uuid?: string;
-    name:string;
-    ipAdress: string;
+	uuid: string
+	name: string
+	ipAddress: string
 }

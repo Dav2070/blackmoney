@@ -18,12 +18,14 @@ import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
 import { Bill } from "./models/Bill"
 import { Restaurant } from "./models/Restaurant"
+import { Printer } from "./models/Printer"
 import {
 	CategoryResource,
 	CompanyResource,
 	ProductResource,
 	RoomResource,
 	TableResource,
+	PrinterResource,
 	UserResource,
 	VariationResource,
 	VariationItemResource,
@@ -152,6 +154,14 @@ export function convertRestaurantResourceToRestaurant(
 		}
 	}
 
+	const printers: Printer[] = []
+
+	if (restaurantResource.printers != null) {
+		for (let printer of restaurantResource.printers.items) {
+			printers.push(convertPrinterResourceToPrinter(printer))
+		}
+	}
+
 	return {
 		uuid: restaurantResource.uuid,
 		name: restaurantResource.name,
@@ -161,7 +171,8 @@ export function convertRestaurantResourceToRestaurant(
 		line2: restaurantResource.line2,
 		postalCode: restaurantResource.postalCode,
 		users,
-		rooms
+		rooms,
+		printers
 	}
 }
 
@@ -205,6 +216,20 @@ export function convertTableResourceToTable(
 	return {
 		uuid: tableResource.uuid,
 		name: tableResource.name
+	}
+}
+
+export function convertPrinterResourceToPrinter(
+	printerResource: PrinterResource
+): Printer {
+	if (printerResource == null) {
+		return null
+	}
+
+	return {
+		uuid: printerResource.uuid,
+		name: printerResource.name,
+		ipAddress: printerResource.ipAddress
 	}
 }
 

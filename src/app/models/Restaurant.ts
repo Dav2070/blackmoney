@@ -1,5 +1,6 @@
 import { User } from "./User"
 import { Room } from "./Room"
+import { Printer } from "./Printer"
 import { Country } from "../types"
 
 export class Restaurant {
@@ -12,4 +13,5 @@ export class Restaurant {
 	postalCode: string
 	users: User[]
 	rooms: Room[]
+	printers: Printer[]
 }

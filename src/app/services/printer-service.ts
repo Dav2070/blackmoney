@@ -12,7 +12,7 @@ export class PrinterService {
 		return new Promise((resolve, reject) => {
 			this.ePosDev = new epson.ePOSDevice()
 			console.log(this.ePosDev)
-			this.ePosDev.connect(printer.ipAdress, 8043, (result: string) => {
+			this.ePosDev.connect(printer.ipAddress, 8043, (result: string) => {
 				if (result === "OK" || result === "SSL_CONNECT_OK") {
 					this.ePosDev.createDevice(
 						"local_printer",

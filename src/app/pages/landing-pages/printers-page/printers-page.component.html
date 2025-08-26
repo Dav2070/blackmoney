@@ -11,7 +11,7 @@
 						<p>
 							<strong>{{ printer.name }}</strong>
 						</p>
-						<p>{{ printer.ipAdress }}</p>
+						<p>{{ printer.ipAddress }}</p>
 						<p>
 							{{ locale.status }}:
 							<span [ngClass]="printerStatus[printer.uuid]">
@@ -29,7 +29,10 @@
 							<dav-button
 								outline
 								class="test-printer-btn"
-								[disabled]="printerTestLoading === printer.uuid || printerStatus[printer.uuid] !== 'online'"
+								[disabled]="
+									printerTestLoading === printer.uuid ||
+									printerStatus[printer.uuid] !== 'online'
+								"
 								(click)="testPrinter(printer)"
 								size="sm"
 							>
@@ -56,7 +59,7 @@
 		#addPrinterDialog
 		[loading]="addPrinterDialogLoading"
 		[nameError]="addPrinterDialogNameError"
-		[ipAdressError]="addPrinterDialogIpAdressError"
+		[ipAddressError]="addPrinterDialogIpAddressError"
 		(primaryButtonClick)="addPrinterDialogPrimaryButtonClick($event)"
 		(clearErrors)="clearAddPrinterDialogErrors()"
 	></app-add-printer-dialog>
@@ -64,10 +67,10 @@
 	<app-edit-printer-dialog
 		#editPrinterDialog
 		[name]="editPrinterDialogName"
-		[ipAdress]="editPrinterDialogIpAdress"
+		[ipAddress]="editPrinterDialogIpAddress"
 		[loading]="editPrinterDialogLoading"
 		[nameError]="editPrinterDialogNameError"
-		[ipAdressError]="editPrinterDialogIpAdressError"
+		[ipAddressError]="editPrinterDialogIpAddressError"
 		(primaryButtonClick)="editPrinterDialogPrimaryButtonClick($event)"
 		(clearErrors)="clearEditPrinterDialogErrors()"
 	></app-edit-printer-dialog>

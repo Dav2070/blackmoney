@@ -81,12 +81,12 @@ export const de = {
 		addPrinterDialog: {
 			headline: "Drucker hinzufügen",
 			name: "Name des Druckers",
-			ipAdress: "IP-Adresse"
+			ipAddress: "IP-Adresse"
 		},
 		editPrinterDialog: {
 			editHeadline: "Drucker bearbeiten",
 			name: "Name des Druckers",
-			ipAdress: "IP-Adresse"
+			ipAddress: "IP-Adresse"
 		}
 	},
 	actions: {
@@ -106,6 +106,6 @@ export const de = {
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten.",
-		ipAdressInvalid: "Die IP-Adresse ist ungültig."
+		ipAddressInvalid: "Die IP-Adresse ist ungültig."
 	}
 }

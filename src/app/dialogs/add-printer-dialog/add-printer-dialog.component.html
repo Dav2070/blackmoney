@@ -7,7 +7,7 @@
 	maxWidth="450"
 	[loading]="loading"
 	[primaryButtonDisabled]="
-		name.length === 0 || ipAdress.length === 0
+		name.length === 0 || ipAddress.length === 0
 	"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
@@ -27,11 +27,11 @@
 		<!-- IP-Adresse -->
 		<div class="dialog-formfield-container">
 			<dav-textfield
-				[value]="ipAdress"
-				[label]="locale.ipAdress"
+				[value]="ipAddress"
+				[label]="locale.ipAddress"
 				[disabled]="loading"
-				[errorMessage]="ipAdressError"
-				(change)="ipAdressTextfieldChange($event)"
+				[errorMessage]="ipAddressError"
+				(change)="ipAddressTextfieldChange($event)"
 			></dav-textfield>
 		</div>
 	</form>

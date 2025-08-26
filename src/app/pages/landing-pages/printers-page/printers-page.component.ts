@@ -19,6 +19,7 @@ import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 })
 export class PrintersPageComponent {
 	locale = this.localizationService.locale.printersPage
+	errorsLocale = this.localizationService.locale.errors
 	faPen = faPen
 	faPrint = faPrint
 	uuid: string = null
@@ -106,28 +107,26 @@ export class PrintersPageComponent {
 		name: string
 		ipAddress: string
 	}) {
-		this.addPrinterDialogLoading = true
-
 		// Validierung
 		if (event.name.length === 0) {
-			this.addPrinterDialogNameError = "Name darf nicht leer sein."
-			this.addPrinterDialogLoading = false
+			this.addPrinterDialogNameError = this.errorsLocale.nameMissing
 			return
 		}
 
 		if (event.ipAddress.length === 0) {
 			this.addPrinterDialogIpAddressError =
-				"IP-Adresse darf nicht leer sein."
-			this.addPrinterDialogLoading = false
+				this.errorsLocale.ipAddressMissing
 			return
 		}
 
+		this.addPrinterDialogLoading = true
+
 		// Drucker hinzufügen
-		this.printers.push({
-			uuid: (Math.random() * 1000000).toFixed(0),
-			name: event.name,
-			ipAddress: event.ipAddress
-		})
+		// this.printers.push({
+		// 	uuid: (Math.random() * 1000000).toFixed(0),
+		// 	name: event.name,
+		// 	ipAddress: event.ipAddress
+		// })
 
 		this.addPrinterDialogLoading = false
 		this.addPrinterDialog.hide()
@@ -138,12 +137,13 @@ export class PrintersPageComponent {
 		this.addPrinterDialogIpAddressError = ""
 	}
 
-	// --- Edit Dialog ---
 	showEditPrinterDialog(printer: Printer) {
 		this.clearEditPrinterDialogErrors()
-		this.editPrinterDialogPrinterUuid = printer.uuid ?? null
+
+		this.editPrinterDialogPrinterUuid = printer.uuid
 		this.editPrinterDialogName = printer.name
 		this.editPrinterDialogIpAddress = printer.ipAddress
+
 		this.editPrinterDialog.show({
 			name: printer.name,
 			ipAddress: printer.ipAddress
@@ -154,21 +154,19 @@ export class PrintersPageComponent {
 		name: string
 		ipAddress: string
 	}) {
-		this.editPrinterDialogLoading = true
-
 		// Validierung
 		if (event.name.length === 0) {
-			this.editPrinterDialogNameError = "Name darf nicht leer sein."
-			this.editPrinterDialogLoading = false
+			this.editPrinterDialogNameError = this.errorsLocale.nameMissing
 			return
 		}
 
 		if (event.ipAddress.length === 0) {
 			this.editPrinterDialogIpAddressError =
-				"IP-Adresse darf nicht leer sein."
-			this.editPrinterDialogLoading = false
+				this.errorsLocale.ipAddressMissing
 			return
 		}
+
+		this.editPrinterDialogLoading = true
 
 		// Drucker aktualisieren
 		if (this.editPrinterDialogPrinterUuid) {
@@ -198,9 +196,12 @@ export class PrintersPageComponent {
 
 		try {
 			await this.printerService.testPrinter(printer)
-			toast.text = "Test-Bon erfolgreich gesendet!"
+			toast.text = this.locale.testPrintSuccess
 		} catch (err) {
-			toast.text = "Fehler beim Drucken: " + err
+			toast.text = this.locale.testPrintError.replace(
+				"{errorMessage}",
+				err as string
+			)
 		}
 
 		this.printerTestLoading = null

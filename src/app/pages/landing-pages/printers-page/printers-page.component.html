@@ -54,24 +54,24 @@
 			</dav-card>
 		}
 	</div>
-
-	<app-add-printer-dialog
-		#addPrinterDialog
-		[loading]="addPrinterDialogLoading"
-		[nameError]="addPrinterDialogNameError"
-		[ipAddressError]="addPrinterDialogIpAddressError"
-		(primaryButtonClick)="addPrinterDialogPrimaryButtonClick($event)"
-		(clearErrors)="clearAddPrinterDialogErrors()"
-	></app-add-printer-dialog>
-
-	<app-edit-printer-dialog
-		#editPrinterDialog
-		[name]="editPrinterDialogName"
-		[ipAddress]="editPrinterDialogIpAddress"
-		[loading]="editPrinterDialogLoading"
-		[nameError]="editPrinterDialogNameError"
-		[ipAddressError]="editPrinterDialogIpAddressError"
-		(primaryButtonClick)="editPrinterDialogPrimaryButtonClick($event)"
-		(clearErrors)="clearEditPrinterDialogErrors()"
-	></app-edit-printer-dialog>
 </div>
+
+<app-add-printer-dialog
+	#addPrinterDialog
+	[loading]="addPrinterDialogLoading"
+	[nameError]="addPrinterDialogNameError"
+	[ipAddressError]="addPrinterDialogIpAddressError"
+	(primaryButtonClick)="addPrinterDialogPrimaryButtonClick($event)"
+	(clearErrors)="clearAddPrinterDialogErrors()"
+></app-add-printer-dialog>
+
+<app-edit-printer-dialog
+	#editPrinterDialog
+	[name]="editPrinterDialogName"
+	[ipAddress]="editPrinterDialogIpAddress"
+	[loading]="editPrinterDialogLoading"
+	[nameError]="editPrinterDialogNameError"
+	[ipAddressError]="editPrinterDialogIpAddressError"
+	(primaryButtonClick)="editPrinterDialogPrimaryButtonClick($event)"
+	(clearErrors)="clearEditPrinterDialogErrors()"
+></app-edit-printer-dialog>

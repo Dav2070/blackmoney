@@ -55,7 +55,9 @@ export const de = {
 		status: "Status",
 		statusOnline: "Online",
 		statusOffline: "Offline",
-		statusLoading: "Wird geprüft..."
+		statusLoading: "Wird geprüft...",
+		testPrintSuccess: "Test-Druck erfolgreich gesendet",
+		testPrintError: "Test-Druck fehlgeschlagen: {errorMessage}"
 	},
 	dialogs: {
 		logoutDialog: {
@@ -95,6 +97,7 @@ export const de = {
 		logout: "Abmelden"
 	},
 	errors: {
+		nameMissing: "Bitte gib einen Namen an.",
 		nameTooShort: "Der Name ist zu kurz.",
 		nameTooLong: "Der Name ist zu lang.",
 		cityTooLong: "Der Stadtname ist zu lang.",
@@ -103,9 +106,10 @@ export const de = {
 		passwordTooShort: "Dein Passwort ist zu kurz",
 		passwordTooLong: "Dein Passwort ist zu lang",
 		postalCodeInvalid: "Die Postleitzahl ist ungültig.",
+		ipAddressMissing: "Bitte gib eine IP-Adresse an.",
+		ipAddressInvalid: "Die IP-Adresse ist ungültig.",
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
-		unexpectedError: "Ein unbekannter Fehler ist aufgetreten.",
-		ipAddressInvalid: "Die IP-Adresse ist ungültig."
+		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
 	}
 }

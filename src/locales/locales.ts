@@ -97,6 +97,8 @@ export const de = {
 		logout: "Abmelden"
 	},
 	errors: {
+		printerAlreadyExists:
+			"Ein Drucker mit dieser IP-Adresse existiert bereits.",
 		nameMissing: "Bitte gib einen Namen an.",
 		nameTooShort: "Der Name ist zu kurz.",
 		nameTooLong: "Der Name ist zu lang.",

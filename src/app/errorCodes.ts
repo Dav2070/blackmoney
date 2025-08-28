@@ -1,3 +1,7 @@
+//#region Api errors
+export const printerAlreadyExists = "PRINTER_ALREADY_EXISTS"
+//#endregion
+
 //#region Session & authentication
 export const notAuthenticated = "NOT_AUTHENTICATED"
 export const userHasNoPassword = "USER_HAS_NO_PASSWORD"
@@ -19,4 +23,5 @@ export const line2TooLong = "LINE2_TOO_LONG"
 
 //#region Invalid fields
 export const postalCodeInvalid = "POSTAL_CODE_INVALID"
+export const ipAddressInvalid = "IP_ADDRESS_INVALID"
 //#endregion

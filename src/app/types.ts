@@ -123,6 +123,7 @@ export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type Country = "DE"
 
 export type ErrorCode =
+	| typeof ErrorCodes.printerAlreadyExists
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword
@@ -134,3 +135,4 @@ export type ErrorCode =
 	| typeof ErrorCodes.line1TooLong
 	| typeof ErrorCodes.line2TooLong
 	| typeof ErrorCodes.postalCodeInvalid
+	| typeof ErrorCodes.ipAddressInvalid

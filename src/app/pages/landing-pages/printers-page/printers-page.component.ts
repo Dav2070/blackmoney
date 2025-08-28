@@ -9,7 +9,12 @@ import { ApiService } from "src/app/services/api-service"
 import { Printer } from "src/app/models/Printer"
 import { AddPrinterDialogComponent } from "src/app/dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "src/app/dialogs/edit-printer-dialog/edit-printer-dialog.component"
-import { convertRestaurantResourceToRestaurant } from "src/app/utils"
+import {
+	convertPrinterResourceToPrinter,
+	convertRestaurantResourceToRestaurant,
+	getGraphQLErrorCodes
+} from "src/app/utils"
+import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
 	selector: "app-printers-page",
@@ -107,7 +112,7 @@ export class PrintersPageComponent {
 		this.addPrinterDialog.show()
 	}
 
-	addPrinterDialogPrimaryButtonClick(event: {
+	async addPrinterDialogPrimaryButtonClick(event: {
 		name: string
 		ipAddress: string
 	}) {
@@ -125,15 +130,55 @@ export class PrintersPageComponent {
 
 		this.addPrinterDialogLoading = true
 
-		// Drucker hinzufügen
-		// this.printers.push({
-		// 	uuid: (Math.random() * 1000000).toFixed(0),
-		// 	name: event.name,
-		// 	ipAddress: event.ipAddress
-		// })
+		const createPrinterResponse = await this.apiService.createPrinter(
+			`
+				uuid
+				name
+				ipAddress
+			`,
+			{
+				restaurantUuid: this.uuid,
+				name: event.name,
+				ipAddress: event.ipAddress
+			}
+		)
 
 		this.addPrinterDialogLoading = false
-		this.addPrinterDialog.hide()
+
+		if (createPrinterResponse.data?.createPrinter != null) {
+			const responseData = createPrinterResponse.data.createPrinter
+
+			this.printers.push(convertPrinterResourceToPrinter(responseData))
+
+			this.addPrinterDialog.hide()
+		} else {
+			const errors = getGraphQLErrorCodes(createPrinterResponse)
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.addPrinterDialogNameError =
+							this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.addPrinterDialogNameError = this.errorsLocale.nameTooLong
+						break
+					case ErrorCodes.ipAddressInvalid:
+						this.addPrinterDialogIpAddressError =
+							this.errorsLocale.ipAddressInvalid
+						break
+					case ErrorCodes.printerAlreadyExists:
+						this.addPrinterDialogIpAddressError =
+							this.errorsLocale.printerAlreadyExists
+						break
+					default:
+						this.addPrinterDialogNameError =
+							this.errorsLocale.unexpectedError
+						break
+				}
+			}
+		}
 	}
 
 	clearAddPrinterDialogErrors() {

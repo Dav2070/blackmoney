@@ -13,7 +13,8 @@ import {
 	PaymentMethod,
 	BillResource,
 	RestaurantResource,
-	UserRole
+	UserRole,
+	PrinterResource
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -286,6 +287,70 @@ export class ApiService {
 							line1: $line1
 							line2: $line2
 							postalCode: $postalCode
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createPrinter(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			name: string
+			ipAddress: string
+		}
+	): Promise<MutationResult<{ createPrinter: PrinterResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				createPrinter: PrinterResource
+			}>({
+				mutation: gql`
+					mutation CreatePrinter(
+						$restaurantUuid: String!
+						$name: String!
+						$ipAddress: String!
+					) {
+						createPrinter(
+							restaurantUuid: $restaurantUuid
+							name: $name
+							ipAddress: $ipAddress
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updatePrinter(
+		queryData: string,
+		variables: {
+			uuid: string
+			name: string
+			ipAddress: string
+		}
+	): Promise<MutationResult<{ updatePrinter: PrinterResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updatePrinter: PrinterResource }>({
+				mutation: gql`
+					mutation UpdatePrinter(
+						$uuid: String!
+						$name: String!
+						$ipAddress: String!
+					) {
+						updatePrinter(
+							uuid: $uuid
+							name: $name
+							ipAddress: $ipAddress
 						) {
 							${queryData}
 						}

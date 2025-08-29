@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from "@angular/router"
 import { faPen, faPrint } from "@fortawesome/pro-regular-svg-icons"
 import { Toast } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
-import { PrinterService } from "src/app/services/printer-service"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { Printer } from "src/app/models/Printer"
@@ -54,7 +53,6 @@ export class PrintersPageComponent {
 
 	constructor(
 		private localizationService: LocalizationService,
-		private printerService: PrinterService,
 		private dataService: DataService,
 		private apiService: ApiService,
 		private router: Router,
@@ -289,14 +287,14 @@ export class PrintersPageComponent {
 		this.editPrinterDialogIpAddressError = ""
 	}
 
-	async testPrinter(printer: Printer) {
+	async testPrinter(printer: Printer, epsonPrinter: EpsonPrinter) {
 		this.printerTestLoading = printer.uuid
 
 		const toast = document.createElement("dav-toast")
 		toast.paddingBottom = this.dataService.isMobile ? 80 : 0
 
 		try {
-			await this.printerService.testPrinter(printer)
+			epsonPrinter.printTestPage(printer.name)
 			toast.text = this.locale.testPrintSuccess
 		} catch (err) {
 			toast.text = this.locale.testPrintError.replace(

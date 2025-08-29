@@ -44,7 +44,7 @@
 										printerTestLoading === p.printer.uuid ||
 										p.epsonPrinter.status !== 'online'
 									"
-									(click)="testPrinter(p.printer)"
+									(click)="testPrinter(p.printer, p.epsonPrinter)"
 									size="sm"
 								>
 									{{ locale.test }}

@@ -199,7 +199,7 @@ export class PrintersPageComponent {
 		})
 	}
 
-	editPrinterDialogPrimaryButtonClick(event: {
+	async editPrinterDialogPrimaryButtonClick(event: {
 		name: string
 		ipAddress: string
 	}) {
@@ -219,10 +219,62 @@ export class PrintersPageComponent {
 
 		this.editPrinterDialogLoading = true
 
-		// TODO
+		const updatePrinterResponse = await this.apiService.updatePrinter(
+			`
+				uuid
+				name
+				ipAddress
+			`,
+			{
+				uuid: this.editPrinterDialogUuid,
+				name: event.name,
+				ipAddress: event.ipAddress
+			}
+		)
 
 		this.editPrinterDialogLoading = false
-		this.editPrinterDialog.hide()
+
+		if (updatePrinterResponse.data?.updatePrinter != null) {
+			const responseData = updatePrinterResponse.data.updatePrinter
+
+			const i = this.printers.findIndex(
+				p => p.uuid == responseData.uuid
+			)
+
+			if (i !== -1) {
+				this.printers[i] = convertPrinterResourceToPrinter(responseData)
+			}
+
+			this.editPrinterDialog.hide()
+		} else {
+			const errors = getGraphQLErrorCodes(updatePrinterResponse)
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.editPrinterDialogNameError =
+							this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.editPrinterDialogNameError =
+							this.errorsLocale.nameTooLong
+						break
+					case ErrorCodes.ipAddressInvalid:
+						this.editPrinterDialogIpAddressError =
+							this.errorsLocale.ipAddressInvalid
+						break
+					case ErrorCodes.printerAlreadyExists:
+						this.editPrinterDialogIpAddressError =
+							this.errorsLocale.printerAlreadyExists
+						break
+					default:
+						this.editPrinterDialogNameError =
+							this.errorsLocale.unexpectedError
+						break
+				}
+			}
+		}
 	}
 
 	clearEditPrinterDialogErrors() {

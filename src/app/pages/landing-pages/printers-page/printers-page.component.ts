@@ -7,6 +7,7 @@ import { PrinterService } from "src/app/services/printer-service"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { Printer } from "src/app/models/Printer"
+import { EpsonPrinter } from "src/app/models/EpsonPrinter"
 import { AddPrinterDialogComponent } from "src/app/dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "src/app/dialogs/edit-printer-dialog/edit-printer-dialog.component"
 import {
@@ -29,24 +30,23 @@ export class PrintersPageComponent {
 	faPrint = faPrint
 	uuid: string = null
 	loading: boolean = true
-
-	printers: Printer[] = []
-
-	printerStatus: { [uuid: string]: "online" | "offline" | "loading" } = {}
+	printers: { printer: Printer; epsonPrinter: EpsonPrinter }[] = []
 	printerTestLoading: string = null
 
-	// Add-Dialog Properties
+	//#region Add-Dialog Properties
 	addPrinterDialogLoading = false
 	addPrinterDialogNameError = ""
 	addPrinterDialogIpAddressError = ""
+	//#endregion
 
-	// Edit-Dialog Properties
+	//#region Edit-Dialog Properties
 	editPrinterDialogLoading = false
 	editPrinterDialogNameError = ""
 	editPrinterDialogIpAddressError = ""
 	editPrinterDialogUuid: string = null
 	editPrinterDialogName = ""
 	editPrinterDialogIpAddress = ""
+	//#endregion
 
 	@ViewChild("addPrinterDialog") addPrinterDialog!: AddPrinterDialogComponent
 	@ViewChild("editPrinterDialog")
@@ -90,9 +90,12 @@ export class PrintersPageComponent {
 
 		for (let printer of retrieveRestaurantResponseData.printers) {
 			this.printers.push({
-				uuid: printer.uuid,
-				name: printer.name,
-				ipAddress: printer.ipAddress
+				printer: {
+					uuid: printer.uuid,
+					name: printer.name,
+					ipAddress: printer.ipAddress
+				},
+				epsonPrinter: new EpsonPrinter(printer.ipAddress)
 			})
 		}
 
@@ -100,10 +103,8 @@ export class PrintersPageComponent {
 	}
 
 	async loadPrinterStatus() {
-		for (const printer of this.printers) {
-			this.printerStatus[printer.uuid] = "loading" // Status auf "loading" setzen
-			this.printerStatus[printer.uuid] =
-				await this.printerService.getStatus(printer)
+		for (const p of this.printers) {
+			p.epsonPrinter.connect()
 		}
 	}
 
@@ -148,7 +149,10 @@ export class PrintersPageComponent {
 		if (createPrinterResponse.data?.createPrinter != null) {
 			const responseData = createPrinterResponse.data.createPrinter
 
-			this.printers.push(convertPrinterResourceToPrinter(responseData))
+			this.printers.push({
+				printer: convertPrinterResourceToPrinter(responseData),
+				epsonPrinter: new EpsonPrinter(responseData.ipAddress)
+			})
 
 			this.addPrinterDialog.hide()
 		} else {
@@ -238,11 +242,14 @@ export class PrintersPageComponent {
 			const responseData = updatePrinterResponse.data.updatePrinter
 
 			const i = this.printers.findIndex(
-				p => p.uuid == responseData.uuid
+				p => p.printer.uuid == responseData.uuid
 			)
 
 			if (i !== -1) {
-				this.printers[i] = convertPrinterResourceToPrinter(responseData)
+				this.printers[i] = {
+					printer: convertPrinterResourceToPrinter(responseData),
+					epsonPrinter: new EpsonPrinter(responseData.ipAddress)
+				}
 			}
 
 			this.editPrinterDialog.hide()

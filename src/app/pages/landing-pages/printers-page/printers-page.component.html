@@ -12,21 +12,21 @@
 		@if (loading) {
 			<dav-progress-ring size="24"></dav-progress-ring>
 		} @else {
-			@for (printer of printers; track printer.uuid) {
+			@for (p of printers; track p.printer.uuid) {
 				<dav-card>
 					<div class="printer-card-container">
 						<div class="printer-card-content">
 							<p>
-								<strong>{{ printer.name }}</strong>
+								<strong>{{ p.printer.name }}</strong>
 							</p>
-							<p>{{ printer.ipAddress }}</p>
+							<p>{{ p.printer.ipAddress }}</p>
 							<p>
 								{{ locale.status }}:
-								<span [ngClass]="printerStatus[printer.uuid]">
+								<span [ngClass]="p.epsonPrinter.status">
 									{{
-										printerStatus[printer.uuid] === "online"
+										p.epsonPrinter.status === "online"
 											? locale.statusOnline
-											: printerStatus[printer.uuid] === "loading"
+											: p.epsonPrinter.status === "loading"
 												? locale.statusLoading
 												: locale.statusOffline
 									}}
@@ -41,23 +41,23 @@
 									outline
 									class="test-printer-btn"
 									[disabled]="
-										printerTestLoading === printer.uuid ||
-										printerStatus[printer.uuid] !== 'online'
+										printerTestLoading === p.printer.uuid ||
+										p.epsonPrinter.status !== 'online'
 									"
-									(click)="testPrinter(printer)"
+									(click)="testPrinter(p.printer)"
 									size="sm"
 								>
 									{{ locale.test }}
 								</dav-button>
 
-								@if (printerTestLoading === printer.uuid) {
+								@if (printerTestLoading === p.printer.uuid) {
 									<dav-progress-ring size="16"></dav-progress-ring>
 								}
 							</div>
 						</div>
 						<dav-icon-button
 							size="xs"
-							(click)="showEditPrinterDialog(printer)"
+							(click)="showEditPrinterDialog(p.printer)"
 						>
 							<fa-icon [icon]="faPen"></fa-icon>
 						</dav-icon-button>

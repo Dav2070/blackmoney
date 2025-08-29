@@ -11,40 +11,47 @@ export class PrinterService {
 	async connect(printer: Printer): Promise<void> {
 		return new Promise((resolve, reject) => {
 			this.ePosDev = new epson.ePOSDevice()
-			console.log(this.ePosDev)
-			this.ePosDev.connect(printer.ipAddress, 8043, (result: string) => {
-				if (result === "OK" || result === "SSL_CONNECT_OK") {
-					this.ePosDev.createDevice(
-						"local_printer",
-						this.ePosDev.DEVICE_TYPE_PRINTER,
-						{ crypto: false, buffer: false },
-						(deviceObj: any, retcode: string) => {
-							if (retcode === "OK") {
-								this.printerObj = deviceObj
-								this.printerObj.timeout = 60000
 
-								// Monitoring-Events registrieren
-								this.printerObj.onstatuschange = (status: any) => {
-									console.log("Status geändert:", status)
-									// Hier kannst du z.B. im UI anzeigen
-								}
-								this.printerObj.oncoveropen = () => {
-									console.log("Druckerabdeckung offen!")
-								}
-								this.printerObj.oncoverclose = () => {
-									console.log("Druckerabdeckung geschlossen!")
-								}
+			this.ePosDev.connect(
+				printer.ipAddress,
+				8008,
+				(result: string) => {
+					if (result === "OK" || result === "SSL_CONNECT_OK") {
+						this.ePosDev.createDevice(
+							"local_printer",
+							this.ePosDev.DEVICE_TYPE_PRINTER,
+							{ crypto: false, buffer: false },
+							(deviceObj: any, retcode: string) => {
+								if (retcode === "OK") {
+									this.printerObj = deviceObj
+									this.printerObj.timeout = 60000
 
-								resolve()
-							} else {
-								reject("Gerät konnte nicht erstellt werden: " + retcode)
+									// Monitoring-Events registrieren
+									this.printerObj.onstatuschange = (status: any) => {
+										console.log("Status geändert:", status)
+										// Hier kannst du z.B. im UI anzeigen
+									}
+									this.printerObj.oncoveropen = () => {
+										console.log("Druckerabdeckung offen!")
+									}
+									this.printerObj.oncoverclose = () => {
+										console.log("Druckerabdeckung geschlossen!")
+									}
+
+									resolve()
+								} else {
+									reject(
+										"Gerät konnte nicht erstellt werden: " + retcode
+									)
+								}
 							}
-						}
-					)
-				} else {
-					reject("Verbindung fehlgeschlagen: " + result)
-				}
-			})
+						)
+					} else {
+						reject("Verbindung fehlgeschlagen: " + result)
+					}
+				},
+				{ eposprint: true }
+			)
 		})
 	}
 

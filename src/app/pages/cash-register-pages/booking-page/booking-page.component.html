@@ -381,22 +381,19 @@
 	</div>
 
 	<div class="product-selection-container">
-		<div id="items">
+		<div class="product-items">
 			@for (item of selectedInventory; track item.uuid) {
-				<button (click)="clickItem(item)" mat-flat-button>
-					{{ item.name }}
-				</button>
+				<dav-button (click)="clickItem(item)">{{ item.name }}</dav-button>
 			}
+
 			@for (menu of menues; track menu.uuid) {
-				<button (click)="clickMenu(menu)" mat-flat-button>
-					{{ menu.name }}
-				</button>
+				<dav-button (click)="clickMenu(menu)">{{ menu.name }}</dav-button>
 			}
 
 			@for (special of specials; track special.uuid) {
-				<button mat-flat-button (click)="clickSpecial(special)">
+				<dav-button (click)="clickSpecial(special)">
 					{{ special.name }}
-				</button>
+				</dav-button>
 			}
 		</div>
 	</div>

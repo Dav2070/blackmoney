@@ -32,29 +32,30 @@
 
 #drinks {
 	flex: 1;
-	background-color: purple;
 }
 
 #dishes {
 	flex: 1;
-	background-color: purple;
 }
 
 #order {
 	overflow-y: scroll;
 	flex: 1;
-	background-color: purple;
 }
 
 #numpad {
 	flex: 1;
-	background-color: purple;
 }
 
 .product-selection-container {
 	grid-column: 2;
 	grid-row: 2;
-	background-color: orange;
+	padding: 0 12px;
+}
+
+.product-items {
+	display: flex;
+	gap: 6px;
 }
 
 .categories-sidenav-container {
@@ -67,7 +68,6 @@
 .footer {
 	grid-column: 1 / span 3;
 	grid-row: 3;
-	background-color: limegreen;
 }
 
 .selected-card {

@@ -1,25 +1,21 @@
-#wrapper {
-	display: flex;
-	flex-direction: column;
+.container {
+	display: grid;
+	grid-template-columns: 1fr 1fr auto;
+	grid-template-rows: auto 1fr auto;
 	height: 100vh;
-	background-color: white;
+	background-color: var(--dav-color-surface);
+	padding: 0;
 }
 
 .header {
-	flex: 1;
+	grid-column: 1 / span 3;
+	grid-row: 1;
 	background-color: var(--dav-color-surface);
 }
 
-#mehrspaltig {
-	flex: 10;
-	display: flex;
-	flex-direction: row;
-	background-color: silver;
-}
-
-nav {
-	flex: 2;
-	background-color: darkgray;
+.orders-numpad-container {
+	grid-column: 1;
+	grid-row: 2;
 	display: flex;
 	flex-direction: column;
 	height: 100%;
@@ -56,17 +52,21 @@ nav {
 }
 
 .product-selection-container {
-	flex: 5;
+	grid-column: 2;
+	grid-row: 2;
 	background-color: orange;
 }
 
 .categories-sidenav-container {
+	grid-column: 3;
+	grid-row: 2;
 	background-color: var(--dav-color-surface);
 	padding: 0 4px;
 }
 
-footer {
-	flex: 1;
+.footer {
+	grid-column: 1 / span 3;
+	grid-row: 3;
 	background-color: limegreen;
 }
 

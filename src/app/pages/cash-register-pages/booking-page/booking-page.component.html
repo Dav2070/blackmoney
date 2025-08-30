@@ -2,6 +2,7 @@
 	<div class="header">
 		<app-header [showButton]="false" />
 	</div>
+
 	<div id="mehrspaltig">
 		<nav>
 			<div id="order">
@@ -404,524 +405,8 @@
 				</div>
 			</div>
 		</nav>
-		<article>
-			<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
-				@if (minusUsed == false) {
-					<div class="popup-content">
-						@if (lastClickedItem != null) {
-							<h2>
-								{{
-									lastClickedItem.variations[tmpCountVariations].name
-								}}
-							</h2>
-							@for (
-								variationMap of tmpPickedVariationResource;
-								track variationMap
-							) {
-								@if (variationMap.get(tmpCountVariations)) {
-									@for (
-										variation of variationMap
-											.get(tmpCountVariations)
-											.values();
-										track variation
-									) {
-										@if (tmpCountVariations != 0) {
-											{{ displayVariation(variation) }}
-										}
 
-										<div class="popup-content-dish">
-											<button
-												mat-mini-fab
-												[disabled]="variation.count == 0"
-												(click)="removeVariation(variation)"
-											>
-												<mat-icon>remove</mat-icon>
-											</button>
-											<b>
-												{{ variation.count }}x
-												{{ variation.display }}
-											</b>
-											<button
-												mat-mini-fab
-												[disabled]="
-													checkForPlusaddVariation(variation)
-												"
-												(click)="addVariation(variation)"
-											>
-												<mat-icon>add</mat-icon>
-											</button>
-										</div>
-									}
-								}
-							}
-						}
-						<button mat-flat-button (click)="closeItemPopup()">
-							Schließen
-						</button>
-						<button
-							mat-flat-button
-							[disabled]="checkForSendVariation()"
-							(click)="sendVariation()"
-						>
-							Auswählen
-						</button>
-					</div>
-				} @else {
-					<div class="popup-content">
-						@if (selectedItem != null) {
-							<h2>
-								{{ selectedItem.product.name }}
-							</h2>
-							@for (
-								variation of tmpSelectedItem.orderItemVariations;
-								track variation
-							) {
-								<div class="popup-content-dish">
-									<button
-										mat-mini-fab
-										[disabled]="variation.count == 0"
-										(click)="removeVariationSubtraction(variation)"
-									>
-										<mat-icon>remove</mat-icon>
-									</button>
-									<b>
-										{{ variation.count }}x
-										@for (
-											variationItem of variation.variationItems;
-											track variationItem
-										) {
-											{{ variationItem.name }}
-										}
-									</b>
-									<button
-										mat-mini-fab
-										[disabled]="checkForPlus(variation)"
-										(click)="addVariationSubtraction(variation)"
-									>
-										<mat-icon>add</mat-icon>
-									</button>
-								</div>
-							}
-						}
-						<button mat-flat-button (click)="closeItemPopup()">
-							Schließen
-						</button>
-						<button
-							mat-flat-button
-							(click)="sendDeleteVariation(tmpSelectedItem)"
-						>
-							Auswählen
-						</button>
-					</div>
-				}
-			</div>
-			<div
-				class="popup-overlay"
-				[ngClass]="{ visible: isMenuePopupVisible }"
-			>
-				@if (this.currentMenu) {
-					<div class="Special-popup-content">
-						<div class="menue-left">
-							<div class="categories-section">
-								<h3>Kategorien</h3>
-								<div class="category-list">
-									@for (item of currentMenu.items; track $index) {
-										<button
-											[disabled]="item.maxSelections <= 0"
-											[class.selected-category]="
-												currentIndex === $index
-											"
-											(click)="
-												changeSelectedMenuInventory(
-													item,
-													item.maxSelections,
-													$index
-												)
-											"
-											mat-flat-button
-										>
-											{{ item.name }} ({{ item.maxSelections }})
-										</button>
-									}
-								</div>
-							</div>
-						</div>
-						<div class="specials-center">
-							<div class="products-section">
-								<h3>
-									Produkte - Wähle
-									{{
-										this.currentMenu.items[currentIndex].maxSelections
-									}}
-									Produkte aus
-								</h3>
-								<div class="product-list">
-									@for (
-										product of specialProducts;
-										track product.uuid
-									) {
-										<button
-											[disabled]="
-												this.currentMenu.items[currentIndex]
-													.maxSelections <= 0
-											"
-											(click)="clickSpecialProduct(product)"
-											mat-flat-button
-										>
-											{{ product.name }}
-										</button>
-									}
-								</div>
-							</div>
-						</div>
-						<div class="specials-right">
-							<div class="selection-section">
-								<h3>Ebenen</h3>
-								<div class="selected-products">
-									@for (
-										item of tmpSpecialAllItemsHandler.getOrderItems();
-										track item.uuid
-									) {
-										<div class="selected-product">
-											@if (item.orderItemVariations.length > 0) {
-												<span>
-													{{ item.count }}x {{ item.product.name }}
-
-													@for (
-														variation of item.orderItemVariations;
-														track variation
-													) {
-														{{ variation.count }}x
-														@for (
-															variationItem of variation.variationItems;
-															track variationItem
-														) {
-															{{ variationItem.name }}
-														}
-													}
-												</span>
-											} @else {
-												<button
-													mat-mini-fab
-													(click)="removeMenuItem(item)"
-													color="warn"
-												>
-													<mat-icon>remove</mat-icon>
-												</button>
-												<span>
-													{{ item.count }}x {{ item.product.name }}
-												</span>
-											}
-										</div>
-									}
-								</div>
-							</div>
-							<div class="button-section">
-								<button
-									class="special-button confirm-btn"
-									(click)="confirmMenu()"
-								>
-									✓
-								</button>
-								<button
-									class="special-button close-btn"
-									(click)="closeSpecials()"
-								>
-									✕
-								</button>
-							</div>
-						</div>
-					</div>
-				} @else {
-					<div class="Special-popup-content">
-						<div class="specials-left">
-							<div class="categories-section">
-								<h3>Kategorien</h3>
-								<div class="category-list">
-									@for (
-										category of specialCategories;
-										track category.uuid
-									) {
-										<button
-											(click)="
-												changeSelectedSpecialInventory(
-													category.products
-												)
-											"
-											mat-flat-button
-										>
-											{{ category.name }}
-										</button>
-									}
-								</div>
-							</div>
-						</div>
-						<div class="specials-center">
-							<div class="products-section">
-								<h3>Produkte</h3>
-								<div class="product-list">
-									@for (
-										product of specialProducts;
-										track product.uuid
-									) {
-										<button
-											(click)="clickSpecialProduct(product)"
-											mat-flat-button
-										>
-											{{ product.name }}
-										</button>
-									}
-								</div>
-							</div>
-						</div>
-						<div class="specials-right">
-							<div class="selection-section">
-								<h3>Auswahl</h3>
-								<div class="selected-products">
-									@for (
-										item of tmpSpecialAllItemsHandler.getOrderItems();
-										track item.uuid
-									) {
-										<div class="selected-product">
-											@if (item.orderItemVariations.length > 0) {
-												<button
-													mat-mini-fab
-													(click)="editSpecial(item)"
-													color="accent"
-												>
-													<mat-icon>edit</mat-icon>
-												</button>
-												<span>
-													{{ item.count }}x {{ item.product.name }}
-
-													@for (
-														variation of item.orderItemVariations;
-														track variation
-													) {
-														{{ variation.count }}x
-														@for (
-															variationItem of variation.variationItems;
-															track variationItem
-														) {
-															{{ variationItem.name }}
-														}
-													}
-												</span>
-											} @else {
-												<button
-													mat-mini-fab
-													(click)="removeSpecial(item)"
-													color="warn"
-												>
-													<mat-icon>remove</mat-icon>
-												</button>
-												<span>
-													{{ item.count }}x {{ item.product.name }}
-												</span>
-												<button
-													mat-mini-fab
-													(click)="addSpecial(item)"
-													color="primary"
-												>
-													<mat-icon>add</mat-icon>
-												</button>
-											}
-										</div>
-									}
-								</div>
-							</div>
-							<div class="button-section">
-								<button
-									class="special-button confirm-btn"
-									(click)="confirmSpecials()"
-								>
-									✓
-								</button>
-								<button
-									class="special-button close-btn"
-									(click)="closeSpecials()"
-								>
-									✕
-								</button>
-							</div>
-						</div>
-					</div>
-				}
-			</div>
-
-			<!-- SpecialVariationPopup -->
-			<div
-				class="popup-overlay"
-				[ngClass]="{ visible: isSpecialVariationPopupVisible }"
-				style="z-index: 1001"
-			>
-				@if (minusUsed == false) {
-					<div class="popup-content">
-						@if (lastClickedItem != null) {
-							<h2>
-								{{
-									lastClickedItem.variations[tmpCountVariations].name
-								}}
-							</h2>
-							@for (
-								variationMap of tmpPickedVariationResource;
-								track variationMap
-							) {
-								@if (variationMap.get(tmpCountVariations)) {
-									@for (
-										variation of variationMap
-											.get(tmpCountVariations)
-											.values();
-										track variation
-									) {
-										@if (tmpCountVariations != 0) {
-											{{ displayVariation(variation) }}
-										}
-
-										<div class="popup-content-dish">
-											<button
-												mat-mini-fab
-												[disabled]="variation.count == 0"
-												(click)="removeVariation(variation)"
-											>
-												<mat-icon>remove</mat-icon>
-											</button>
-											<b>
-												{{ variation.count }}x
-												{{ variation.display }}
-											</b>
-											<button
-												mat-mini-fab
-												[disabled]="
-													checkForPlusaddVariation(variation)
-												"
-												(click)="addVariation(variation)"
-											>
-												<mat-icon>add</mat-icon>
-											</button>
-										</div>
-									}
-								}
-							}
-						}
-						<button
-							mat-flat-button
-							(click)="closeSpecialVariationPopup()"
-						>
-							Schließen
-						</button>
-						<button
-							mat-flat-button
-							[disabled]="checkForSendVariation()"
-							(click)="sendVariation()"
-						>
-							Auswählen
-						</button>
-					</div>
-				} @else {
-					<div class="popup-content">
-						@if (
-							selectedMenuItem != null &&
-							selectedMenuItem.orderItems.length === 1
-						) {
-							<!-- Minus-Modus für MenuOrderItems -->
-							<h2>
-								{{
-									lastClickedItem.variations[tmpCountVariations].name
-								}}
-							</h2>
-							@for (
-								variationMap of tmpPickedVariationResource;
-								track variationMap
-							) {
-								@if (variationMap.get(tmpCountVariations)) {
-									@for (
-										variation of variationMap
-											.get(tmpCountVariations)
-											.values();
-										track variation
-									) {
-										@if (tmpCountVariations != 0) {
-											{{ displayVariation(variation) }}
-										}
-
-										<div class="popup-content-dish">
-											<button
-												mat-mini-fab
-												[disabled]="variation.count == 0"
-												(click)="removeVariation(variation)"
-											>
-												<mat-icon>remove</mat-icon>
-											</button>
-											<b>
-												{{ variation.count }}x
-												{{ variation.display }}
-											</b>
-											<button
-												mat-mini-fab
-												[disabled]="
-													checkForPlusaddVariation(variation)
-												"
-												(click)="addVariation(variation)"
-											>
-												<mat-icon>add</mat-icon>
-											</button>
-										</div>
-									}
-								}
-							}
-						} @else if (selectedItem != null) {
-							<!-- Minus-Modus für normale OrderItems -->
-							<h2>
-								{{ selectedItem.product.name }}
-							</h2>
-							@for (
-								variation of tmpSelectedItem.orderItemVariations;
-								track variation
-							) {
-								<div class="popup-content-dish">
-									<button
-										mat-mini-fab
-										[disabled]="variation.count == 0"
-										(click)="removeVariationSubtraction(variation)"
-									>
-										<mat-icon>remove</mat-icon>
-									</button>
-									<b>
-										{{ variation.count }}x
-										@for (
-											variationItem of variation.variationItems;
-											track variationItem
-										) {
-											{{ variationItem.name }}
-										}
-									</b>
-									<button
-										mat-mini-fab
-										[disabled]="checkForPlus(variation)"
-										(click)="addVariationSubtraction(variation)"
-									>
-										<mat-icon>add</mat-icon>
-									</button>
-								</div>
-							}
-						}
-						<button
-							mat-flat-button
-							(click)="closeSpecialVariationPopup()"
-						>
-							Schließen
-						</button>
-						<button
-							mat-flat-button
-							(click)="sendDeleteVariation(tmpSelectedItem)"
-						>
-							Auswählen
-						</button>
-					</div>
-				}
-			</div>
-
+		<div class="product-selection-container">
 			<div id="items">
 				@for (item of selectedInventory; track item.uuid) {
 					<button (click)="clickItem(item)" mat-flat-button>
@@ -940,7 +425,7 @@
 					</button>
 				}
 			</div>
-		</article>
+		</div>
 
 		<div class="categories-sidenav-container">
 			<dav-sidenav>
@@ -967,6 +452,7 @@
 			</dav-sidenav>
 		</div>
 	</div>
+
 	<footer>
 		<div id="footerButtonsContainer">
 			<button mat-flat-button class="footerButton" (click)="sendOrder()">
@@ -1032,102 +518,565 @@
 			</button>
 		</div>
 	</footer>
+</div>
 
-	<div class="bill-popup-overlay" [ngClass]="{ visible: isBillPopupVisible }">
-		@if (pickedBill) {
-			<div class="bill-popup-content">
-				<div class="bill-list">
-					@for (bill of bills; track bill) {
-						<div
-							class="bill-item"
-							(click)="pickedBill = bill"
-							[class.bill-selected]="pickedBill === bill"
+<div class="bill-popup-overlay" [ngClass]="{ visible: isBillPopupVisible }">
+	@if (pickedBill) {
+		<div class="bill-popup-content">
+			<div class="bill-list">
+				@for (bill of bills; track bill) {
+					<div
+						class="bill-item"
+						(click)="pickedBill = bill"
+						[class.bill-selected]="pickedBill === bill"
+					>
+						<span>Tisch {{ bill.table.name }}</span>
+						<span class="bill-payment-method">{{
+							bill.paymentMethod
+						}}</span>
+						<span>
+							{{ pickedBill.paidAt.toLocaleDateString("de-DE") }}
+						</span>
+						<span
+							>{{
+								bill.paidAt.toLocaleTimeString([], {
+									hour: "2-digit",
+									minute: "2-digit"
+								})
+							}}
+							Uhr</span
 						>
-							<span>Tisch {{ bill.table.name }}</span>
-							<span class="bill-payment-method">{{
-								bill.paymentMethod
-							}}</span>
-							<span>
-								{{ pickedBill.paidAt.toLocaleDateString("de-DE") }}
-							</span>
-							<span
-								>{{
-									bill.paidAt.toLocaleTimeString([], {
-										hour: "2-digit",
-										minute: "2-digit"
-									})
-								}}
-								Uhr</span
-							>
-							<span>{{ calculateBillTotal(bill) }} €</span>
+						<span>{{ calculateBillTotal(bill) }} €</span>
+					</div>
+				}
+			</div>
+
+			<div class="bill-details">
+				<h2>
+					Tisch {{ pickedBill.table.name }}
+					<span class="bill-time">
+						{{ pickedBill.paidAt.toLocaleTimeString("de-DE") }} -
+						{{ pickedBill.paidAt.toLocaleDateString("de-DE") }}
+					</span>
+				</h2>
+				<div class="bill-items">
+					@for (item of pickedBill.orderItems; track item) {
+						<div class="bill-item-detail">
+							<div class="item-header">
+								<span>{{ item.count }} x {{ item.product.name }}</span>
+								<span class="total-price"
+									>{{ calculateTotalPriceOfOrderItem(item) }}€</span
+								>
+							</div>
+
+							@if (item.orderItemVariations.length > 0) {
+								@for (
+									variation of item.orderItemVariations;
+									track variation
+								) {
+									<span
+										>{{ variation.count }} x
+										@for (
+											variationItem of variation.variationItems;
+											track variationItem.uuid
+										) {
+											{{ variationItem.name }}
+											<span class="variationItem-price">
+												@if (variationItem.additionalCost > 0) {
+													+
+													{{
+														(
+															(variation.count *
+																variationItem.additionalCost) /
+															100
+														).toFixed(2)
+													}}€
+												}
+											</span>
+											<br />
+										}
+									</span>
+								}
+							}
 						</div>
 					}
 				</div>
+				<div class="bill-total">
+					<span>Gesamt</span>
+					<span>{{ calculateBillTotal(pickedBill) }}€</span>
+				</div>
+				<div class="bill-buttons">
+					<button class="bill-back-button">Tisch zurückholen</button>
+					<button class="bill-close-button" (click)="closeBills()">
+						Schließen
+					</button>
+				</div>
+			</div>
+		</div>
+	}
+</div>
 
-				<div class="bill-details">
-					<h2>
-						Tisch {{ pickedBill.table.name }}
-						<span class="bill-time">
-							{{ pickedBill.paidAt.toLocaleTimeString("de-DE") }} -
-							{{ pickedBill.paidAt.toLocaleDateString("de-DE") }}
-						</span>
-					</h2>
-					<div class="bill-items">
-						@for (item of pickedBill.orderItems; track item) {
-							<div class="bill-item-detail">
-								<div class="item-header">
-									<span
-										>{{ item.count }} x {{ item.product.name }}</span
-									>
-									<span class="total-price"
-										>{{ calculateTotalPriceOfOrderItem(item) }}€</span
-									>
-								</div>
+<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
+	@if (minusUsed == false) {
+		<div class="popup-content">
+			@if (lastClickedItem != null) {
+				<h2>
+					{{ lastClickedItem.variations[tmpCountVariations].name }}
+				</h2>
+				@for (
+					variationMap of tmpPickedVariationResource;
+					track variationMap
+				) {
+					@if (variationMap.get(tmpCountVariations)) {
+						@for (
+							variation of variationMap.get(tmpCountVariations).values();
+							track variation
+						) {
+							@if (tmpCountVariations != 0) {
+								{{ displayVariation(variation) }}
+							}
 
+							<div class="popup-content-dish">
+								<button
+									mat-mini-fab
+									[disabled]="variation.count == 0"
+									(click)="removeVariation(variation)"
+								>
+									<mat-icon>remove</mat-icon>
+								</button>
+								<b>
+									{{ variation.count }}x
+									{{ variation.display }}
+								</b>
+								<button
+									mat-mini-fab
+									[disabled]="checkForPlusaddVariation(variation)"
+									(click)="addVariation(variation)"
+								>
+									<mat-icon>add</mat-icon>
+								</button>
+							</div>
+						}
+					}
+				}
+			}
+			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
+			<button
+				mat-flat-button
+				[disabled]="checkForSendVariation()"
+				(click)="sendVariation()"
+			>
+				Auswählen
+			</button>
+		</div>
+	} @else {
+		<div class="popup-content">
+			@if (selectedItem != null) {
+				<h2>
+					{{ selectedItem.product.name }}
+				</h2>
+				@for (
+					variation of tmpSelectedItem.orderItemVariations;
+					track variation
+				) {
+					<div class="popup-content-dish">
+						<button
+							mat-mini-fab
+							[disabled]="variation.count == 0"
+							(click)="removeVariationSubtraction(variation)"
+						>
+							<mat-icon>remove</mat-icon>
+						</button>
+						<b>
+							{{ variation.count }}x
+							@for (
+								variationItem of variation.variationItems;
+								track variationItem
+							) {
+								{{ variationItem.name }}
+							}
+						</b>
+						<button
+							mat-mini-fab
+							[disabled]="checkForPlus(variation)"
+							(click)="addVariationSubtraction(variation)"
+						>
+							<mat-icon>add</mat-icon>
+						</button>
+					</div>
+				}
+			}
+			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
+			<button mat-flat-button (click)="sendDeleteVariation(tmpSelectedItem)">
+				Auswählen
+			</button>
+		</div>
+	}
+</div>
+
+<div class="popup-overlay" [ngClass]="{ visible: isMenuePopupVisible }">
+	@if (this.currentMenu) {
+		<div class="Special-popup-content">
+			<div class="menue-left">
+				<div class="categories-section">
+					<h3>Kategorien</h3>
+					<div class="category-list">
+						@for (item of currentMenu.items; track $index) {
+							<button
+								[disabled]="item.maxSelections <= 0"
+								[class.selected-category]="currentIndex === $index"
+								(click)="
+									changeSelectedMenuInventory(
+										item,
+										item.maxSelections,
+										$index
+									)
+								"
+								mat-flat-button
+							>
+								{{ item.name }} ({{ item.maxSelections }})
+							</button>
+						}
+					</div>
+				</div>
+			</div>
+			<div class="specials-center">
+				<div class="products-section">
+					<h3>
+						Produkte - Wähle
+						{{ this.currentMenu.items[currentIndex].maxSelections }}
+						Produkte aus
+					</h3>
+					<div class="product-list">
+						@for (product of specialProducts; track product.uuid) {
+							<button
+								[disabled]="
+									this.currentMenu.items[currentIndex].maxSelections <=
+									0
+								"
+								(click)="clickSpecialProduct(product)"
+								mat-flat-button
+							>
+								{{ product.name }}
+							</button>
+						}
+					</div>
+				</div>
+			</div>
+			<div class="specials-right">
+				<div class="selection-section">
+					<h3>Ebenen</h3>
+					<div class="selected-products">
+						@for (
+							item of tmpSpecialAllItemsHandler.getOrderItems();
+							track item.uuid
+						) {
+							<div class="selected-product">
 								@if (item.orderItemVariations.length > 0) {
-									@for (
-										variation of item.orderItemVariations;
-										track variation
-									) {
-										<span
-											>{{ variation.count }} x
+									<span>
+										{{ item.count }}x {{ item.product.name }}
+
+										@for (
+											variation of item.orderItemVariations;
+											track variation
+										) {
+											{{ variation.count }}x
 											@for (
 												variationItem of variation.variationItems;
-												track variationItem.uuid
+												track variationItem
 											) {
 												{{ variationItem.name }}
-												<span class="variationItem-price">
-													@if (variationItem.additionalCost > 0) {
-														+
-														{{
-															(
-																(variation.count *
-																	variationItem.additionalCost) /
-																100
-															).toFixed(2)
-														}}€
-													}
-												</span>
-												<br />
 											}
-										</span>
-									}
+										}
+									</span>
+								} @else {
+									<button
+										mat-mini-fab
+										(click)="removeMenuItem(item)"
+										color="warn"
+									>
+										<mat-icon>remove</mat-icon>
+									</button>
+									<span>
+										{{ item.count }}x {{ item.product.name }}
+									</span>
 								}
 							</div>
 						}
 					</div>
-					<div class="bill-total">
-						<span>Gesamt</span>
-						<span>{{ calculateBillTotal(pickedBill) }}€</span>
-					</div>
-					<div class="bill-buttons">
-						<button class="bill-back-button">Tisch zurückholen</button>
-						<button class="bill-close-button" (click)="closeBills()">
-							Schließen
-						</button>
+				</div>
+				<div class="button-section">
+					<button
+						class="special-button confirm-btn"
+						(click)="confirmMenu()"
+					>
+						✓
+					</button>
+					<button
+						class="special-button close-btn"
+						(click)="closeSpecials()"
+					>
+						✕
+					</button>
+				</div>
+			</div>
+		</div>
+	} @else {
+		<div class="Special-popup-content">
+			<div class="specials-left">
+				<div class="categories-section">
+					<h3>Kategorien</h3>
+					<div class="category-list">
+						@for (category of specialCategories; track category.uuid) {
+							<button
+								(click)="
+									changeSelectedSpecialInventory(category.products)
+								"
+								mat-flat-button
+							>
+								{{ category.name }}
+							</button>
+						}
 					</div>
 				</div>
 			</div>
-		}
-	</div>
+			<div class="specials-center">
+				<div class="products-section">
+					<h3>Produkte</h3>
+					<div class="product-list">
+						@for (product of specialProducts; track product.uuid) {
+							<button
+								(click)="clickSpecialProduct(product)"
+								mat-flat-button
+							>
+								{{ product.name }}
+							</button>
+						}
+					</div>
+				</div>
+			</div>
+			<div class="specials-right">
+				<div class="selection-section">
+					<h3>Auswahl</h3>
+					<div class="selected-products">
+						@for (
+							item of tmpSpecialAllItemsHandler.getOrderItems();
+							track item.uuid
+						) {
+							<div class="selected-product">
+								@if (item.orderItemVariations.length > 0) {
+									<button
+										mat-mini-fab
+										(click)="editSpecial(item)"
+										color="accent"
+									>
+										<mat-icon>edit</mat-icon>
+									</button>
+									<span>
+										{{ item.count }}x {{ item.product.name }}
+
+										@for (
+											variation of item.orderItemVariations;
+											track variation
+										) {
+											{{ variation.count }}x
+											@for (
+												variationItem of variation.variationItems;
+												track variationItem
+											) {
+												{{ variationItem.name }}
+											}
+										}
+									</span>
+								} @else {
+									<button
+										mat-mini-fab
+										(click)="removeSpecial(item)"
+										color="warn"
+									>
+										<mat-icon>remove</mat-icon>
+									</button>
+									<span>
+										{{ item.count }}x {{ item.product.name }}
+									</span>
+									<button
+										mat-mini-fab
+										(click)="addSpecial(item)"
+										color="primary"
+									>
+										<mat-icon>add</mat-icon>
+									</button>
+								}
+							</div>
+						}
+					</div>
+				</div>
+				<div class="button-section">
+					<button
+						class="special-button confirm-btn"
+						(click)="confirmSpecials()"
+					>
+						✓
+					</button>
+					<button
+						class="special-button close-btn"
+						(click)="closeSpecials()"
+					>
+						✕
+					</button>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+<!-- SpecialVariationPopup -->
+<div
+	class="popup-overlay"
+	[ngClass]="{ visible: isSpecialVariationPopupVisible }"
+	style="z-index: 1001"
+>
+	@if (minusUsed == false) {
+		<div class="popup-content">
+			@if (lastClickedItem != null) {
+				<h2>
+					{{ lastClickedItem.variations[tmpCountVariations].name }}
+				</h2>
+				@for (
+					variationMap of tmpPickedVariationResource;
+					track variationMap
+				) {
+					@if (variationMap.get(tmpCountVariations)) {
+						@for (
+							variation of variationMap.get(tmpCountVariations).values();
+							track variation
+						) {
+							@if (tmpCountVariations != 0) {
+								{{ displayVariation(variation) }}
+							}
+
+							<div class="popup-content-dish">
+								<button
+									mat-mini-fab
+									[disabled]="variation.count == 0"
+									(click)="removeVariation(variation)"
+								>
+									<mat-icon>remove</mat-icon>
+								</button>
+								<b>
+									{{ variation.count }}x
+									{{ variation.display }}
+								</b>
+								<button
+									mat-mini-fab
+									[disabled]="checkForPlusaddVariation(variation)"
+									(click)="addVariation(variation)"
+								>
+									<mat-icon>add</mat-icon>
+								</button>
+							</div>
+						}
+					}
+				}
+			}
+			<button mat-flat-button (click)="closeSpecialVariationPopup()">
+				Schließen
+			</button>
+			<button
+				mat-flat-button
+				[disabled]="checkForSendVariation()"
+				(click)="sendVariation()"
+			>
+				Auswählen
+			</button>
+		</div>
+	} @else {
+		<div class="popup-content">
+			@if (
+				selectedMenuItem != null && selectedMenuItem.orderItems.length === 1
+			) {
+				<!-- Minus-Modus für MenuOrderItems -->
+				<h2>
+					{{ lastClickedItem.variations[tmpCountVariations].name }}
+				</h2>
+				@for (
+					variationMap of tmpPickedVariationResource;
+					track variationMap
+				) {
+					@if (variationMap.get(tmpCountVariations)) {
+						@for (
+							variation of variationMap.get(tmpCountVariations).values();
+							track variation
+						) {
+							@if (tmpCountVariations != 0) {
+								{{ displayVariation(variation) }}
+							}
+
+							<div class="popup-content-dish">
+								<button
+									mat-mini-fab
+									[disabled]="variation.count == 0"
+									(click)="removeVariation(variation)"
+								>
+									<mat-icon>remove</mat-icon>
+								</button>
+								<b>
+									{{ variation.count }}x
+									{{ variation.display }}
+								</b>
+								<button
+									mat-mini-fab
+									[disabled]="checkForPlusaddVariation(variation)"
+									(click)="addVariation(variation)"
+								>
+									<mat-icon>add</mat-icon>
+								</button>
+							</div>
+						}
+					}
+				}
+			} @else if (selectedItem != null) {
+				<!-- Minus-Modus für normale OrderItems -->
+				<h2>
+					{{ selectedItem.product.name }}
+				</h2>
+				@for (
+					variation of tmpSelectedItem.orderItemVariations;
+					track variation
+				) {
+					<div class="popup-content-dish">
+						<button
+							mat-mini-fab
+							[disabled]="variation.count == 0"
+							(click)="removeVariationSubtraction(variation)"
+						>
+							<mat-icon>remove</mat-icon>
+						</button>
+						<b>
+							{{ variation.count }}x
+							@for (
+								variationItem of variation.variationItems;
+								track variationItem
+							) {
+								{{ variationItem.name }}
+							}
+						</b>
+						<button
+							mat-mini-fab
+							[disabled]="checkForPlus(variation)"
+							(click)="addVariationSubtraction(variation)"
+						>
+							<mat-icon>add</mat-icon>
+						</button>
+					</div>
+				}
+			}
+			<button mat-flat-button (click)="closeSpecialVariationPopup()">
+				Schließen
+			</button>
+			<button mat-flat-button (click)="sendDeleteVariation(tmpSelectedItem)">
+				Auswählen
+			</button>
+		</div>
+	}
 </div>

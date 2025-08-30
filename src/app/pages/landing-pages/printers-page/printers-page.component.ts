@@ -294,7 +294,7 @@ export class PrintersPageComponent {
 		toast.paddingBottom = this.dataService.isMobile ? 80 : 0
 
 		try {
-			epsonPrinter.printTestPage(printer.name)
+			epsonPrinter.printTestPage()
 			toast.text = this.locale.testPrintSuccess
 		} catch (err) {
 			toast.text = this.locale.testPrintError.replace(

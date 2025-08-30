@@ -69,7 +69,7 @@ export class EpsonPrinter {
 		this.status = "online"
 	}
 
-	printTestPage(name: string) {
+	async printTestPage() {
 		if (this.status !== "online") {
 			throw new Error("Printer is not online")
 		}
@@ -78,9 +78,28 @@ export class EpsonPrinter {
 			console.log("onreceive", result)
 		}
 
+		await addImage(this.printer, "/assets/icons/logo-full-dark.png", 63)
 		this.printer.addTextAlign("center")
-		this.printer.addText(`${name}\n`) // Achtung: Am Ende muss immer ein \n sein, sonst wird kein Cut gemacht
-		this.printer.addCut()
+		this.printer.addText(`\nDanke für dein Vertrauen!\n`) // Achtung: Am Ende muss immer ein \n sein, sonst wird kein Cut gemacht
+		this.printer.addFeedLine(3)
+		this.printer.addCut("feed")
 		this.printer.send()
 	}
+}
+
+async function addImage(printer: epson.Printer, imagePath: string, x: number) {
+	const canvas = document.createElement("canvas")
+	canvas.width = 576 // Width of the printer paper in dots
+
+	// Load the image
+	const ctx = canvas.getContext("2d")
+	const img = new Image()
+	img.src = imagePath
+	await new Promise(resolve => (img.onload = resolve))
+
+	const width = img.width
+	const height = img.height
+
+	ctx.drawImage(img, x, 0, width, height)
+	printer.addImage(ctx, 0, 0, width + x, height, "color_1", "mono")
 }

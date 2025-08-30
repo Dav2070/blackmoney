@@ -62,7 +62,17 @@ declare namespace epson {
 	interface Printer {
 		addTextAlign(align: TextAlign): Printer
 		addText(text: string): Printer
-		addCut(): Printer
+		addCut(type: "feed"): Printer
+		addImage(
+			context: CanvasRenderingContext2D,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			color: "none" | "color_1" | "color_2" | "color_3" | "color_4",
+			mode: "mono" | "gray16"
+		): Printer
+		addFeedLine(line: number): Printer
 		send(): void
 		onreceive(callback: (result: any) => void): void
 	}

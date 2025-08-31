@@ -1,11 +1,11 @@
-import { Component, Inject, PLATFORM_ID } from "@angular/core"
+import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute } from "@angular/router"
+import { faArrowRightArrowLeft } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
-import { Bill } from "src/app/models/cash-register/bill.model"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
-import { HardcodeService } from "src/app/services/hardcode-service"
+import { LocalizationService } from "src/app/services/localization-service"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { OrderItem } from "src/app/models/OrderItem"
@@ -13,26 +13,18 @@ import { MenuOrderItem } from "src/app/models/MenuOrderItem"
 import { TmpVariations } from "src/app/models/cash-register/tmp-variations.model"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
+import { VariationItem } from "src/app/models/VariationItem"
+import { Order } from "src/app/models/Order"
+import { Menu, MenuItem } from "src/app/models/Menu"
+import { OrderItemVariation } from "src/app/models/OrderItemVariation"
+import { MenuePageComponent } from "../../settings-pages/menue-page/menue-page.component"
+import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import {
 	convertCategoryResourceToCategory,
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
-import { OrderItemVariation } from "src/app/models/OrderItemVariation"
-import { count } from "node:console"
-import {
-	List,
-	OrderItemVariationResource,
-	PaymentMethod,
-	VariationResource
-} from "src/app/types"
-import { threadId } from "node:worker_threads"
-import { VariationItem } from "src/app/models/VariationItem"
-import { OrderResource } from "dav-js"
-import { Order } from "src/app/models/Order"
-import { MenuePageComponent } from '../../settings-pages/menue-page/menue-page.component';
-import { Menu, MenuItem } from "src/app/models/Menu"
-
+import { PaymentMethod } from "src/app/types"
 
 interface AddProductsInput {
 	uuid: string
@@ -51,6 +43,8 @@ interface AddProductsInputVariation {
 	standalone: false
 })
 export class BookingPageComponent {
+	locale = this.localizationService.locale.bookingPage
+	faArrowRightArrowLeft = faArrowRightArrowLeft
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 	selectedCategory: string = ""
@@ -119,11 +113,16 @@ export class BookingPageComponent {
 
 	tmpLastPickedVariation: VariationItem[] = []
 
+	//#region SelectTableDialog
+	@ViewChild("selectTableDialog")
+	selectTableDialog: SelectTableDialogComponent
+	//#endregion
+
 	constructor(
 		private dataService: DataService,
 		private apiService: ApiService,
 		private activatedRoute: ActivatedRoute,
-		private hardCodedService: HardcodeService,
+		private localizationService: LocalizationService,
 		private router: Router,
 		@Inject(PLATFORM_ID) private platformId: object
 	) {}
@@ -188,6 +187,7 @@ export class BookingPageComponent {
 		}
 
 		if (this.categories.length > 0) {
+			this.selectedCategory = this.categories[0].uuid
 			this.selectedInventory = this.categories[0].products
 		}
 	}
@@ -198,6 +198,10 @@ export class BookingPageComponent {
 		this.selectedInventory = category.products
 		this.menues = []
 		this.specials = []
+	}
+
+	selectTableButtonClick() {
+		this.selectTableDialog.show()
 	}
 
 	// Zeige Variations-Popup an

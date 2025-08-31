@@ -149,9 +149,24 @@
 						</mat-card-content>
 					</mat-card>
 				}
-				<mat-card>
-					<mat-card-content>Tisch {{ table?.name }}</mat-card-content>
-				</mat-card>
+
+				@if (table != null) {
+					<div class="table-info-container">
+						<p>
+							{{
+								locale.tableHeadline.replace(
+									"{name}",
+									table.name.toString()
+								)
+							}}
+						</p>
+
+						<dav-icon-button size="sm" (click)="selectTableButtonClick()">
+							<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon
+						></dav-icon-button>
+					</div>
+				}
+
 				@for (item of stagedItems.getOrderItems(); track item) {
 					<mat-card
 						(click)="selectItem(item, stagedItems)"
@@ -1050,3 +1065,7 @@
 		</div>
 	}
 </div>
+
+<app-select-table-dialog
+	#selectTableDialog
+></app-select-table-dialog>

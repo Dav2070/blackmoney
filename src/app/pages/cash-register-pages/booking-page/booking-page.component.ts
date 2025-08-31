@@ -119,7 +119,7 @@ export class BookingPageComponent {
 	//#endregion
 
 	constructor(
-		private dataService: DataService,
+		public dataService: DataService,
 		private apiService: ApiService,
 		private activatedRoute: ActivatedRoute,
 		private localizationService: LocalizationService,
@@ -204,6 +204,11 @@ export class BookingPageComponent {
 		this.selectTableDialog.show()
 	}
 
+	selectTableDialogPrimaryButtonClick(event: { uuid: string }) {
+		this.selectTableDialog.hide()
+		this.router.navigate(["dashboard", "tables", event.uuid])
+	}
+
 	// Zeige Variations-Popup an
 	toggleItemPopup() {
 		this.isItemPopupVisible = !this.isItemPopupVisible
@@ -231,7 +236,8 @@ export class BookingPageComponent {
 		this.lastClickedItem = null
 		this.lastClickedMenuItem = null
 		this.tmpAllItemHandler = null
-		if (this.minusUsed === true) {
+
+		if (this.minusUsed) {
 			this.minusUsed = false
 		}
 	}

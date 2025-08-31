@@ -31,8 +31,8 @@ export class EditRestaurantNameDialogComponent {
 	constructor(
 		private localizationService: LocalizationService,
 		@Inject(PLATFORM_ID) private platformId: object
-	) { }
-	
+	) {}
+
 	ngAfterViewInit() {
 		if (isPlatformBrowser(this.platformId)) {
 			document.body.appendChild(this.dialog.nativeElement)

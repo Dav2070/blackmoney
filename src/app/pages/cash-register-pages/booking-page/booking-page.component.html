@@ -150,7 +150,7 @@
 					</mat-card>
 				}
 
-				@if (table != null) {
+				@if (room != null && table != null) {
 					<div class="table-info-container">
 						<p>
 							{{
@@ -159,6 +159,7 @@
 									table.name.toString()
 								)
 							}}
+							— {{ room.name }}
 						</p>
 
 						<dav-icon-button size="sm" (click)="selectTableButtonClick()">
@@ -1068,4 +1069,8 @@
 
 <app-select-table-dialog
 	#selectTableDialog
+	[restaurantUuid]="dataService.restaurant?.uuid"
+	[currentRoomUuid]="room?.uuid"
+	[currentTableUuid]="table?.uuid"
+	(primaryButtonClick)="selectTableDialogPrimaryButtonClick($event)"
 ></app-select-table-dialog>

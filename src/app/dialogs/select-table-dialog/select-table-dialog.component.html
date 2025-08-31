@@ -5,7 +5,32 @@
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
 	maxWidth="450"
+	[primaryButtonDisabled]="
+		selectedTableUuid == null || selectedTableUuid == currentTableUuid
+	"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"
-></dav-dialog>
+>
+	<dav-tree>
+		@for (room of rooms; track room.uuid) {
+			<dav-tree-item
+				[headline]="room.name"
+				node
+				[open]="currentRoomUuid === room.uuid"
+			>
+				@for (table of room.tables; track table.uuid) {
+					<dav-tree-item
+						[headline]="table.name"
+						[active]="
+							(selectedTableUuid == null &&
+								currentTableUuid === table.uuid) ||
+							selectedTableUuid === table.uuid
+						"
+						(click)="selectTable(table.uuid)"
+					></dav-tree-item>
+				}
+			</dav-tree-item>
+		}
+	</dav-tree>
+</dav-dialog>

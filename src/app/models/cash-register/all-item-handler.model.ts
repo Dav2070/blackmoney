@@ -1,5 +1,4 @@
 import { OrderItem } from "src/app/models/OrderItem"
-import { MenuOrderItem } from "src/app/models/MenuOrderItem"
 import { Variation } from "src/app/models/Variation"
 import { ApiService } from "src/app/services/api-service"
 import {
@@ -10,14 +9,9 @@ import { Order } from "../Order"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
-	private allPickedMenuItems: MenuOrderItem[] = []
 
 	getAllPickedItems() {
 		return this.allPickedItems
-	}
-
-	getAllPickedMenuItems() {
-		return this.allPickedMenuItems
 	}
 
 	// Lade alle Items einer Order
@@ -134,9 +128,9 @@ export class AllItemHandler {
 		}
 	}
 
-	//Füge MenuOrderItem hinzu
-	pushNewMenuItem(pickedItem: MenuOrderItem) {
-			this.allPickedMenuItems.push({ ...pickedItem })
+	//Füge MenuOrderItem hinzu (für Abwärtskompatibilität - behandelt jetzt alle als OrderItem)
+	pushNewMenuItem(pickedItem: OrderItem) {
+		this.pushNewItem(pickedItem);
 	}
 
 	//Übertrage alle Items aus einer anderen Map in diese
@@ -144,10 +138,7 @@ export class AllItemHandler {
 		for (let item of itemHandler.getOrderItems()) {
 			this.pushNewItem(item)
 		}
-		for (let menuItem of itemHandler.getMenuOrderItems()) {
-			this.pushNewMenuItem(menuItem)
-		}
-
+		// Neue OrderItem-Struktur behandelt alle Items zusammen
 		itemHandler.clearItems()
 	}
 
@@ -155,7 +146,9 @@ export class AllItemHandler {
 	calculateTotal() {
 		let total = 0
 
-		for (let item of this.allPickedItems) {
+		// Normale Produkte (type: "product")
+		const productItems = this.allPickedItems.filter(item => item.type === 'product');
+		for (let item of productItems) {
 			total += item.product.price * item.count
 
 			if (item.orderItemVariations) {
@@ -167,36 +160,28 @@ export class AllItemHandler {
 			}
 		}
 
-		// MenuOrderItems
-		for (let menuItem of this.allPickedMenuItems) {
-			for (let item of menuItem.orderItems) {
-				total += item.product.price * item.count
-
-				if (item.orderItemVariations) {
-					for (const variation of item.orderItemVariations) {
-						for (const variationItem of variation.variationItems) {
-								total += variationItem.additionalCost * variation.count
-						}
-					}
-				}
-			}
+		// Menu/Special OrderItems (neue Struktur: alles in allPickedItems mit type-Filter)
+		const menuItems = this.allPickedItems.filter(item => item.type === 'menu' || item.type === 'special');
+		for (let menuItem of menuItems) {
+			// Für Menu/Special Items: Berücksichtige den Preis aus dem product.price (aggregiert)
+			total += menuItem.product.price;
 		}
 		return total
 	}
 
-	//Gib Liste mit jedem Item zurück (normale + Menu Items)
-	getItems(): (OrderItem | MenuOrderItem)[] {
-		return [...this.allPickedItems, ...this.allPickedMenuItems]
-	}
-
-	// Nur normale OrderItems
-	getOrderItems() {
+	//Gib Liste mit jedem Item zurück (alle OrderItems)
+	getItems(): OrderItem[] {
 		return this.allPickedItems
 	}
 
-	// Nur MenuOrderItems
+	// Nur normale OrderItems (Produkte)
+	getOrderItems() {
+		return this.allPickedItems.filter(item => item.type === 'product');
+	}
+
+	// Nur MenuOrderItems (für Abwärtskompatibilität)
 	getMenuOrderItems() {
-		return this.allPickedMenuItems
+		return this.allPickedItems.filter(item => item.type === 'menu' || item.type === 'special');
 	}
 
 	getItemsCountandId() {
@@ -233,22 +218,10 @@ export class AllItemHandler {
 		return total
 	}
 
-	//Gibt den Preis eines MenuOrderItems aus dem jeweiligen Handler zurück
-	getTotalMenuPrice(pickedItem: MenuOrderItem): number {
-		let total = 0
-
-		for (let item of pickedItem.orderItems) {
-			total += item.product.price * item.count
-
-			if (item.orderItemVariations) {
-				for (const variation of item.orderItemVariations) {
-					for (const variationItem of variation.variationItems) {
-							total += variationItem.additionalCost * variation.count
-					}
-				}
-			}
-		}
-		return total
+	//Gibt den Preis eines Menu/Special OrderItems zurück
+	getTotalMenuPrice(pickedItem: OrderItem): number {
+		// Für neue OrderItem-Struktur: Der Preis ist bereits aggregiert im product.price
+		return pickedItem.product.price * pickedItem.count;
 	}
 
 	//Entferne Item aus der Map
@@ -261,14 +234,10 @@ export class AllItemHandler {
 		}
 	}
 
-	//Entferne MenuOrderItem aus der Map
-	deleteMenuItem(pickedItem: MenuOrderItem): void {
-		const index = this.allPickedMenuItems.findIndex(
-			item => item.product.id === pickedItem.product.id && item.menu.uuid === pickedItem.menu.uuid
-		)
-		if (index !== -1) {
-			this.allPickedMenuItems.splice(index, 1)
-		}
+	//Entferne MenuOrderItem aus der Map (für Abwärtskompatibilität)
+	deleteMenuItem(pickedItem: OrderItem): void {
+		// Neue Struktur: Verwende deleteItem, da alles OrderItems sind
+		this.deleteItem(pickedItem);
 	}
 
 	deleteVariation(pickedItem: OrderItem): void {
@@ -283,10 +252,12 @@ export class AllItemHandler {
 		return this.allPickedItems.find(item => item.product.id === id)
 	}
 
-	// Gibt ein MenuOrderItem zurück, das dem angegebenen ID entspricht
-	getMenuItem(productId: number, menuUuid: string): MenuOrderItem {
-		return this.allPickedMenuItems.find(
-			item => item.product.id === productId && item.menu?.uuid === menuUuid
+	// Gibt ein Menu/Special OrderItem zurück, das dem angegebenen ID entspricht
+	getMenuItem(productId: number, menuUuid: string): OrderItem | undefined {
+		return this.allPickedItems.find(
+			item => (item.type === 'menu' || item.type === 'special') && 
+					 item.product.id === productId && 
+					 item.menu?.uuid === menuUuid
 		)
 	}
 
@@ -297,10 +268,12 @@ export class AllItemHandler {
 		)
 	}
 
-	// Prüfen, ob ein bestimmtes MenuOrderItem in der Map enthalten ist, prüft auf die id des Produkts UND des Menus
-	includesMenuItem(pickedItem: MenuOrderItem): boolean {
-		return this.allPickedMenuItems.some(
-			item => item.product.id === pickedItem.product.id && item.menu.uuid === pickedItem.menu.uuid
+	// Prüfen, ob ein bestimmtes Menu/Special Item in der Map enthalten ist
+	includesMenuItem(pickedItem: OrderItem): boolean {
+		return this.allPickedItems.some(
+			item => (item.type === 'menu' || item.type === 'special') && 
+					 item.product.id === pickedItem.product.id && 
+					 item.menu?.uuid === pickedItem.menu?.uuid
 		)
 	}
 
@@ -350,20 +323,16 @@ export class AllItemHandler {
 			number += item.count
 		}
 
-		for (let menuItem of this.allPickedMenuItems) {
-			number += menuItem.count
-		}
-
+		// Neue Struktur: Alle Items sind bereits in allPickedItems enthalten
 		return number
 	}
 
 	//Entfernt alle Items aus Map
 	clearItems() {
 		this.allPickedItems = []
-		this.allPickedMenuItems = []
 	}
 
 	isEmpty() {
-		return this.allPickedItems.length === 0 && this.allPickedMenuItems.length === 0
+		return this.allPickedItems.length === 0
 	}
 }

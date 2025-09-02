@@ -9,7 +9,6 @@ import { HardcodeService } from "src/app/services/hardcode-service"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { OrderItem } from "src/app/models/OrderItem"
-import { MenuOrderItem } from "src/app/models/MenuOrderItem"
 import { TmpVariations } from "src/app/models/cash-register/tmp-variations.model"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
@@ -66,8 +65,8 @@ export class BookingPageComponent {
 	currentIndex: number = 0;
 	tmpSpecialSelectedItems: OrderItem[] = [];
 	tmpSpecialAllItemsHandler = new AllItemHandler()
-	selectedMenuItem: MenuOrderItem = null
-	lastClickedMenuItem: MenuOrderItem = null
+	selectedMenuItem: OrderItem = null
+	lastClickedMenuItem: OrderItem = null
 
 	bookedItems = new AllItemHandler()
 	stagedItems = new AllItemHandler()
@@ -236,6 +235,7 @@ export class BookingPageComponent {
 
 		let newItem: OrderItem = {
 			uuid: product.uuid,
+			type: "product",
 			count: 0,
 			order: null,
 			product,
@@ -286,36 +286,60 @@ export class BookingPageComponent {
 		}
 	}
 
-	clickMenuItem(menuItem: MenuOrderItem) {
-		let newItem: MenuOrderItem = {
+	clickMenuItem(menuItem: OrderItem) {
+		let newItem: OrderItem = {
 			uuid: menuItem.uuid,
+			type: "menu",
 			count: 0,
 			order: null,
 			menu: menuItem.menu,
 			name: menuItem.name,
 			product: menuItem.product,
-			orderItems: []
+			orderItems: [],
+			orderItemVariations: []
 		}
 
 		//Wenn das Menü nur ein Produkt enthält
-		if (menuItem.orderItems.length === 1 && menuItem.orderItems[0].orderItemVariations.length === 1) {	
+		if (menuItem.orderItems && menuItem.orderItems.length === 1 && menuItem.orderItems[0].orderItemVariations && menuItem.orderItems[0].orderItemVariations.length === 1) {	
 			if (this.tmpAnzahl > 0) {
-				//Menu exisitiert bereits in stagedItems
-				if (this.stagedItems.includesMenuItem(menuItem)) {
-					let existingItem = this.stagedItems.getMenuItem(newItem.product.id, newItem.menu.uuid)
+				//Menu exisitiert bereits in stagedItems  
+				// Suche nach einem existierenden Menu-Item basierend auf type, menu und product
+				let existingItem = this.stagedItems.getOrderItems().find(item => 
+					item.type === "menu" && 
+					item.menu?.uuid === newItem.menu?.uuid && 
+					item.product.id === newItem.product.id
+				)
+				
+				if (existingItem) {
 					existingItem.count += this.tmpAnzahl
-					existingItem.orderItems[0].count += this.tmpAnzahl
-					existingItem.orderItems[0].orderItemVariations[0].count += this.tmpAnzahl
+					if (existingItem.orderItems && existingItem.orderItems[0]) {
+						existingItem.orderItems[0].count += this.tmpAnzahl
+						if (existingItem.orderItems[0].orderItemVariations && existingItem.orderItems[0].orderItemVariations[0]) {
+							existingItem.orderItems[0].orderItemVariations[0].count += this.tmpAnzahl
+						}
+					}
 				} else { //Menu existiert nicht in stagedItems
 					newItem.count = this.tmpAnzahl
-					this.stagedItems.pushNewMenuItem(newItem)
+					this.stagedItems.pushNewItem(newItem)
 				}
 				
-			}else if (this.stagedItems.includesMenuItem(menuItem)) {
-				let existingItem = this.stagedItems.getMenuItem(newItem.product.id, newItem.menu.uuid)
-				existingItem.count += 1
-				existingItem.orderItems[0].count += 1
-				existingItem.orderItems[0].orderItemVariations[0].count += 1
+			} else {
+				// Suche nach einem existierenden Menu-Item basierend auf type, menu und product
+				let existingItem = this.stagedItems.getOrderItems().find(item => 
+					item.type === "menu" && 
+					item.menu?.uuid === newItem.menu?.uuid && 
+					item.product.id === newItem.product.id
+				)
+				
+				if (existingItem) {
+					existingItem.count += 1
+					if (existingItem.orderItems && existingItem.orderItems[0]) {
+						existingItem.orderItems[0].count += 1
+						if (existingItem.orderItems[0].orderItemVariations && existingItem.orderItems[0].orderItemVariations[0]) {
+							existingItem.orderItems[0].orderItemVariations[0].count += 1
+						}
+					}
+				}
 			}
 			this.showTotal()
 		} else {
@@ -383,7 +407,7 @@ export class BookingPageComponent {
 							this.selectedMenuItem.orderItems[0].count -= this.tmpAnzahl
 							this.selectedMenuItem.orderItems[0].orderItemVariations[0].count -= this.tmpAnzahl
 					} else if (this.selectedMenuItem.count === this.tmpAnzahl) {
-						this.stagedItems.deleteMenuItem(this.selectedMenuItem)
+						this.stagedItems.deleteItem(this.selectedMenuItem)
 					} else {
 						window.alert("Anzahl ist zu hoch")
 					}
@@ -618,11 +642,11 @@ export class BookingPageComponent {
 				}
 				
 				// Entferne das gesamte MenuOrderItem wenn keine OrderItems mehr vorhanden
-				if (this.selectedMenuItem.orderItems.length === 0) {
-					this.stagedItems.deleteMenuItem(this.selectedMenuItem);
+				if (this.selectedMenuItem.orderItems && this.selectedMenuItem.orderItems.length === 0) {
+					this.stagedItems.deleteItem(this.selectedMenuItem);
 				} else {
 					// Aktualisiere MenuOrderItem count basierend auf verbleibenden OrderItems
-					this.selectedMenuItem.count = this.selectedMenuItem.orderItems.reduce((sum, item) => sum + item.count, 0);
+					this.selectedMenuItem.count = this.selectedMenuItem.orderItems ? this.selectedMenuItem.orderItems.reduce((sum, item) => sum + item.count, 0) : 0;
 				}
 			}
 			
@@ -666,14 +690,18 @@ export class BookingPageComponent {
 
 	removeEmptyMenuItem(itemHandler: AllItemHandler) {
 		if (this.selectedMenuItem.count == 0) {
-			itemHandler.deleteMenuItem(this.selectedMenuItem)
+			itemHandler.deleteItem(this.selectedMenuItem)
 		} else {
 			// Entferne leere OrderItemVariations von den OrderItems des MenuItems
-			for (let orderItem of this.selectedMenuItem.orderItems) {
-				orderItem.orderItemVariations =
-					orderItem.orderItemVariations.filter(
-						variation => variation.count > 0
-					)
+			if (this.selectedMenuItem.orderItems) {
+				for (let orderItem of this.selectedMenuItem.orderItems) {
+					if (orderItem.orderItemVariations) {
+						orderItem.orderItemVariations =
+							orderItem.orderItemVariations.filter(
+								variation => variation.count > 0
+							)
+					}
+				}
 			}
 		}
 	}
@@ -771,6 +799,7 @@ export class BookingPageComponent {
 				// Normaler Modus: Erstelle neues OrderItem
 				let orderItem: OrderItem = {
 					uuid: this.lastClickedItem.uuid,
+					type: "product",
 					order: null,
 					product: this.lastClickedItem,
 					count: 0,
@@ -936,7 +965,8 @@ export class BookingPageComponent {
 					this.stagedItems.calculateTotal()) /
 				100
 			).toFixed(2) + " €"
-			console.log("showtotal aufgerufen", this.console)
+		
+		console.log("showtotal aufgerufen", this.console)
 		this.consoleActive = false
 		this.commaUsed = false
 		this.tmpAnzahl = 0
@@ -1134,21 +1164,18 @@ export class BookingPageComponent {
 		this.selectedMenuItem = null
 	}
 
-	selectMenuItem(pickedItem: MenuOrderItem, AllItemHandler: AllItemHandler) {
+	selectMenuItem(pickedItem: OrderItem, AllItemHandler: AllItemHandler) {
 		this.selectedMenuItem = pickedItem
-		for (let item of this.selectedMenuItem.menu.items) {
-			console.log("Selected Menu Item maxSelections", item.maxSelections)
-		}
 		this.tmpAllItemHandler = AllItemHandler
 		this.selectedItem = null
 	}
 
 	//Füge selektiertes Item hinzu
-	addSelectedItem(orderItem: OrderItem | MenuOrderItem) {
+	addSelectedItem(orderItem: OrderItem) {
 		this.clickItem(orderItem.product)
 	}
 
-	addSelectedMenuItem(menuItem: MenuOrderItem) {
+	addSelectedMenuItem(menuItem: OrderItem) {
 		this.clickMenuItem(menuItem)
 	}
 
@@ -1524,9 +1551,11 @@ export class BookingPageComponent {
 
 		let newItem: OrderItem = {
 			uuid: product.uuid,
+			type: "product",
 			count: 0,
 			order: null,
 			product,
+			menu: this.currentSpecial,
 			orderItemVariations: []
 		}
 
@@ -1552,7 +1581,8 @@ export class BookingPageComponent {
 						{
 							uuid: variationItem.uuid,
 							count: 0,
-							max: undefined,
+							// Hier stimmt noch nicht ganz
+							max: this.currentMenu.items[this.currentIndex].maxSelections,
 							lastPickedVariation: undefined,
 							combination: variationItem.name,
 							display: variationItem.name,
@@ -1664,7 +1694,6 @@ export class BookingPageComponent {
 	confirmSpecials() {
 		let rabattFaktor = 0;
 		
-		// Prüfe ob wir im Special-Modus oder Menü-Modus sind
 		if (this.currentSpecial && this.currentSpecial.discountType === 'PERCENTAGE') {
 			rabattFaktor = this.currentSpecial.offerValue / 100;
 		}
@@ -1729,8 +1758,9 @@ export class BookingPageComponent {
 			let currentMenuOrSpecial = this.currentMenu || this.currentSpecial;
 			let menuName = currentMenuOrSpecial ? currentMenuOrSpecial.name : 'Unknown Menu';
 
-			let menuOrderItem: MenuOrderItem = {
+			let menuOrderItem: OrderItem = {
 				uuid: crypto.randomUUID(),
+				type: "special",
 				count: processedItem.count,
 				order: null,
 				menu: currentMenuOrSpecial,
@@ -1742,12 +1772,22 @@ export class BookingPageComponent {
 					price: itemPrice,
 					variations: []
 				},
-				orderItems: [processedItem]
+				orderItems: [processedItem],
+				orderItemVariations: []
 			};
 			
-			if(this.stagedItems.includesMenuItem(menuOrderItem)) {
-				for (let item of this.stagedItems.getAllPickedMenuItems()) {
-					for (let orderItem of item.orderItems) {
+			// Prüfe, ob bereits ein Menu/Special-Item mit demselben menu und product existiert
+			let existingMenuItem = this.stagedItems.getMenuOrderItems().find(item => 
+				(item.type === "special") && 
+				item.menu?.uuid === menuOrderItem.menu?.uuid && 
+				item.product.id === menuOrderItem.product.id
+			);
+			
+			if(existingMenuItem) {
+				
+				// Suche nach dem entsprechenden OrderItem und aktualisiere es
+				if (existingMenuItem.orderItems && Array.isArray(existingMenuItem.orderItems)) {
+					for (let orderItem of existingMenuItem.orderItems) {
 						if (orderItem.product.id === processedItem.product.id) {
 							// Wenn das Produkt übereinstimmt, füge die OrderItemVariationen hinzu
 							orderItem.count += processedItem.count;
@@ -1816,13 +1856,15 @@ export class BookingPageComponent {
 					
 					// Aktualisiere den Gesamtpreis des MenuItems
 					let totalPrice = 0;
-					for (let orderItem of item.orderItems) {
-						totalPrice += this.calculateSpecialPrice(orderItem);
+					if (item.orderItems && Array.isArray(item.orderItems)) {
+						for (let orderItem of item.orderItems) {
+							totalPrice += this.calculateSpecialPrice(orderItem);
+						}
 					}
 					item.product.price = totalPrice;
 				}
 			} else {
-				this.stagedItems.pushNewMenuItem(menuOrderItem);
+				this.stagedItems.pushNewItem(menuOrderItem);
 			}
 		}
 
@@ -1878,20 +1920,22 @@ export class BookingPageComponent {
 			}
 		}
 
-		let menuOrderItem: MenuOrderItem = {
+		let menuOrderItem: OrderItem = {
 			uuid: crypto.randomUUID(),
+			type: "menu",
 			count: 1,
 			order: null,
 			menu: this.currentMenu,
-			name: this.currentMenu.name,
+			name: this.currentMenu?.name,
 			product: {
-				id: this.currentMenu.id,
+				id: this.currentMenu?.id || 0,
 				uuid: crypto.randomUUID(),
-				name: this.currentMenu.name,
+				name: this.currentMenu?.name || '',
 				price: finalMenuPrice,
 				variations: []
 			},
-			orderItems: allOrderItems
+			orderItems: allOrderItems,
+			orderItemVariations: []
 		};
 
 		// Rabattvariation am ende einfügen
@@ -1911,9 +1955,9 @@ export class BookingPageComponent {
 		}
 
 		// Prüfe ob ein ähnliches MenuOrderItem bereits existiert und merge, oder füge neu hinzu
-		let existingMenuItem = this.stagedItems.getAllPickedMenuItems().find(item => item.menu.uuid === this.currentMenu.uuid);
+		let existingMenuItem = this.stagedItems.getAllPickedItems().find(item => item.menu.uuid === this.currentMenu.uuid);
 		if (existingMenuItem) {
-			existingMenuItem.count += 1;
+			existingMenuItem.count += 1
 			// Füge alle OrderItems hinzu oder merge sie
 			for (let newOrderItem of allOrderItems) {
 				let existingOrderItem = existingMenuItem.orderItems.find((oi: OrderItem) => oi.product.id === newOrderItem.product.id);
@@ -1929,7 +1973,7 @@ export class BookingPageComponent {
 			}
 			existingMenuItem.product.price += finalMenuPrice;
 		} else {
-			this.stagedItems.pushNewMenuItem(menuOrderItem);
+			this.stagedItems.pushNewItem(menuOrderItem);
 		}
 
 		// Cleanup
@@ -1976,6 +2020,7 @@ export class BookingPageComponent {
 			}
 		}
 		
+		console.log("Item Preis", itemPrice);
 		return itemPrice;
 	}
 }

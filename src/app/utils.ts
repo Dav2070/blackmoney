@@ -379,7 +379,8 @@ export function convertOrderItemResourceToOrderItem(
 		count: orderItemResource.count,
 		order: convertOrderResourceToOrder(orderItemResource.order),
 		product: convertProductResourceToProduct(orderItemResource.product),
-		orderItemVariations
+		orderItemVariations,
+		type: "product" as const
 	}
 }
 

@@ -250,9 +250,9 @@
 							}
 						}
 						<mat-card-content>
-							#{{ menuItem.menu.id }}
+							#{{ menuItem.menu?.id }}
 							<span class="total-price">
-								{{ (stagedItems.getTotalMenuPrice(menuItem) / 100).toFixed(2) }}€
+								{{ (menuItem.product.price / 100).toFixed(2) }}€
 							</span>
 						</mat-card-content>
 					</mat-card>
@@ -668,8 +668,8 @@
 				</div>
 				} @else {
 				<div class="popup-content"> 
-					@if(selectedMenuItem!=null && selectedMenuItem.orderItems.length === 1){
-					<!-- Minus-Modus für MenuOrderItems -->
+					@if(selectedMenuItem!=null && selectedMenuItem.orderItems && selectedMenuItem.orderItems.length === 1){
+					<!-- Minus-Modus für Menu/Special OrderItems -->
 					<h2>
 						{{ lastClickedItem.variations[tmpCountVariations].name }}
 					</h2>

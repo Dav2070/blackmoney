@@ -965,8 +965,7 @@ export class BookingPageComponent {
 					this.stagedItems.calculateTotal()) /
 				100
 			).toFixed(2) + " €"
-		
-		console.log("showtotal aufgerufen", this.console)
+
 		this.consoleActive = false
 		this.commaUsed = false
 		this.tmpAnzahl = 0
@@ -1782,7 +1781,7 @@ export class BookingPageComponent {
 				item.menu?.uuid === menuOrderItem.menu?.uuid && 
 				item.product.id === menuOrderItem.product.id
 			);
-			
+
 			if(existingMenuItem) {
 				
 				// Suche nach dem entsprechenden OrderItem und aktualisiere es
@@ -1856,12 +1855,12 @@ export class BookingPageComponent {
 					
 					// Aktualisiere den Gesamtpreis des MenuItems
 					let totalPrice = 0;
-					if (item.orderItems && Array.isArray(item.orderItems)) {
-						for (let orderItem of item.orderItems) {
+					if (existingMenuItem.orderItems && Array.isArray(existingMenuItem.orderItems)) {
+						for (let orderItem of existingMenuItem.orderItems) {
 							totalPrice += this.calculateSpecialPrice(orderItem);
 						}
 					}
-					item.product.price = totalPrice;
+					existingMenuItem.product.price = totalPrice;
 				}
 			} else {
 				this.stagedItems.pushNewItem(menuOrderItem);
@@ -2020,7 +2019,6 @@ export class BookingPageComponent {
 			}
 		}
 		
-		console.log("Item Preis", itemPrice);
 		return itemPrice;
 	}
 }

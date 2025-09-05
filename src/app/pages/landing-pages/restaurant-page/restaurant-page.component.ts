@@ -8,6 +8,9 @@ import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/
 import { LocalizationService } from "src/app/services/localization-service"
 import * as ErrorCodes from "src/app/errorCodes"
 
+import { Router } from '@angular/router';
+
+
 @Component({
 	templateUrl: "./restaurant-page.component.html",
 	styleUrl: "./restaurant-page.component.scss",
@@ -47,7 +50,9 @@ export class RestaurantPageComponent {
 		private apiService: ApiService,
 		private dataService: DataService,
 		private activatedRoute: ActivatedRoute,
-		private localizationService: LocalizationService
+		private localizationService: LocalizationService,
+		private router: Router
+		
 	) {}
 
 	async ngOnInit() {
@@ -88,6 +93,12 @@ export class RestaurantPageComponent {
 		this.editAddressDialogLoading = false
 		this.editAddressDialog.show()
 	}
+
+	showRoomAdministrationDialog() {
+		const currentUrl = this.router.url;
+		this.router.navigateByUrl(`${currentUrl}/rooms`);
+	}
+
 
 	async editRestaurantNameDialogPrimaryButtonClick(event: { name: string }) {
 		this.editRestaurantNameDialogLoading = true

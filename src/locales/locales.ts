@@ -44,6 +44,25 @@ export const de = {
 		addEmployeeDialog: {
 			headline: "Mitarbeiter hinzufügen",
 			name: "Name des Mitarbeiters"
+		},
+		addRoomDialog:{
+			headline: "Raum erstellen",
+			line1: "Raumname",
+			line2: "Nummer"
+		},
+		addTableDialog:{
+			headline: "Tisch erstellen",
+			line1: "Tischnummer",
+			line2: "Sitzplätze",
+			line3: "Anzahl Tische",
+			line4: "Anfangs Tischnummer"
+		},
+		addTableCombinationDialog:{
+			headline: "Tisch Kombination erstellen",
+			line1: "Tischnummer",
+			line2: "Sitzplätze",
+			line3: "Anzahl Tische",
+			line4: "Anfangs Tischnummer"
 		}
 	},
 	actions: {
@@ -58,5 +77,22 @@ export const de = {
 		line2TooLong: "Die zweite Zeile der Adresse ist zu lang.",
 		postalCodeInvalid: "Die Postleitzahl ist ungültig.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
+	},
+	roomPage:{
+		headline: "Deine Räume",
+		addTable:"Tische",
+		delete:"löschen"
+	},
+	tablesPage:{
+		headline: "Deine Tische",
+		add:"+",
+		delete:"löschen",
+		roomCombination:"kombinieren"
+	},
+	tablesCombinationPage:{
+		headline: "Deine Tischkombinationen",
+		add:"+",
+		delete:"löschen",
+		roomCombination:"kombinieren"
 	}
 }

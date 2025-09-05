@@ -1,0 +1,92 @@
+
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submitTableCombination()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Line 1 -->
+		<div class="dialog-formfield-container">
+		<dav-dropdown 
+			[label]="locale.line1"
+			[value]="line2"
+		>
+		</dav-dropdown>
+		</div>
+		
+		<!-- Line 2 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="line2"
+				[label]="locale.line2"
+				[disabled]="loading"
+				[errorMessage]="line2Error"
+				(change)="tmp()"
+			></dav-textfield>
+		</div>
+
+		<!-- Line 3 
+		<div *ngIf="bulkMode" class="dialog-formfield-container">
+			<dav-textfield
+				[value]="line3"
+				[label]="locale.line3"
+				[disabled]="loading"
+				[errorMessage]="line2Error"
+				(change)="tmp()"
+			></dav-textfield>
+		</div>-->
+	</form>
+</dav-dialog>
+
+
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header addButtonVisible (addButtonClick)="show()">
+			{{ tablesLocale.headline }}
+		</dav-header>
+		
+		@for (tableCombination of tableCombination; track tableCombination.id) {
+			<dav-card>
+				<div class="printer-card-container">
+
+					<div class="printer-card-content">
+						<p>
+							<strong>Nummer: {{ tableCombination.number }}</strong>
+						</p>
+						<p>Sitzplätze: {{ tableCombination.chairs }}</p>
+						<div class="printer-actions-row">
+							<!--<fa-icon [icon]="faFolder" class="printer-icon"></fa-icon>-->
+							<dav-button
+								outline
+								class="test-printer-btn"
+								(click)="removeTableCombination(tableCombination)"
+								size="sm"
+							>
+								{{ tablesLocale.delete }}
+							</dav-button>
+							<!--<dav-button
+								outline
+								class="test-printer-btn" 
+								(click)="tmp()"
+								size="sm"
+							>
+								{{ tablesLocale.add }}
+							</dav-button>-->
+						
+						</div>
+					</div>
+					<dav-icon-button size="xs" (click)="openEditForm(tableCombination)">
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
+				</div>
+			</dav-card>
+		}
+	</div>
+</div>

@@ -13,35 +13,15 @@
 >
 	<form>
 		<!-- Line 1 -->
-		<div class="dialog-formfield-container">
-		<dav-dropdown 
-			[label]="locale.line1"
-			[value]="line2"
-		>
-		</dav-dropdown>
-		</div>
-		
-		<!-- Line 2 -->
-		<div class="dialog-formfield-container">
-			<dav-textfield
-				[value]="line2"
-				[label]="locale.line2"
-				[disabled]="loading"
-				[errorMessage]="line2Error"
-				(change)="tmp()"
-			></dav-textfield>
-		</div>
+		<mat-form-field appearance="fill" class="dialog-formfield-container">
+			<mat-label>Table Numbers</mat-label>
+			<mat-select [formControl]="tableCombinations" multiple>
+				<mat-option *ngFor="let t of table" [value]="t.number">
+				Table {{ t.number }} ({{ t.chairs }} chairs)
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
 
-		<!-- Line 3 
-		<div *ngIf="bulkMode" class="dialog-formfield-container">
-			<dav-textfield
-				[value]="line3"
-				[label]="locale.line3"
-				[disabled]="loading"
-				[errorMessage]="line2Error"
-				(change)="tmp()"
-			></dav-textfield>
-		</div>-->
 	</form>
 </dav-dialog>
 
@@ -52,37 +32,27 @@
 			{{ tablesLocale.headline }}
 		</dav-header>
 		
-		@for (tableCombination of tableCombination; track tableCombination.id) {
+		@for (oneTableCombination of tableCombination; track oneTableCombination.id) {
 			<dav-card>
 				<div class="printer-card-container">
-
 					<div class="printer-card-content">
 						<p>
-							<strong>Nummer: {{ tableCombination.number }}</strong>
+							<strong>Nummern: {{ oneTableCombination.number }}</strong>
 						</p>
-						<p>Sitzplätze: {{ tableCombination.chairs }}</p>
+						<p>Sitzplätze: {{ oneTableCombination.chairs }}</p>
 						<div class="printer-actions-row">
 							<!--<fa-icon [icon]="faFolder" class="printer-icon"></fa-icon>-->
 							<dav-button
 								outline
 								class="test-printer-btn"
-								(click)="removeTableCombination(tableCombination)"
+								(click)="removeTableCombination(oneTableCombination)"
 								size="sm"
 							>
 								{{ tablesLocale.delete }}
 							</dav-button>
-							<!--<dav-button
-								outline
-								class="test-printer-btn" 
-								(click)="tmp()"
-								size="sm"
-							>
-								{{ tablesLocale.add }}
-							</dav-button>-->
-						
 						</div>
 					</div>
-					<dav-icon-button size="xs" (click)="openEditForm(tableCombination)">
+					<dav-icon-button size="xs" (click)="openEditForm(oneTableCombination)">
 						<fa-icon [icon]="faPen"></fa-icon>
 					</dav-icon-button>
 				</div>

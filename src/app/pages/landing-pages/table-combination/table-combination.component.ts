@@ -12,12 +12,19 @@ import {
 } from "@angular/core"
 import { isPlatformBrowser, NumberSymbol } from "@angular/common"
 import { Dialog } from "dav-ui-components"
+import { FormControl } from '@angular/forms';
 
 
 
 interface TableCombination {
   id: number;
-  number: string;
+  number: number[];
+  chairs: number;
+}
+
+interface Table {
+  id: number;
+  number: number;
   chairs: number;
 }
 
@@ -38,15 +45,21 @@ locale = this.localizationService.locale.dialogs.addTableCombinationDialog;
 faPen = faPen
 faFolder = faFolder;
 
+table: Table[] = [
+  {id: 1, number: 1, chairs: 4},
+  {id: 2, number: 2, chairs: 4},
+  {id: 3, number: 3, chairs: 6}
+]
 tableCombination: TableCombination[] = [];
 selectedTable: TableCombination | null = null;
 nextTableId = 1;
 selectedTableIds: number[] = [];
 selectedTables: number[] = [];
 selectedChairs: number[] = [];
+tableCombinations = new FormControl<number[]>([]);
 
 @Input() loading: boolean = false
-@Input() line1: string = ""
+@Input() line1: number[] = [];
 roomName: string = ""
 @Input() line1Error: string = ""
 @Input() line2: number = this.tableCombination.length + 1
@@ -56,6 +69,9 @@ roomName: string = ""
 @Input() bulkMode = false;
 visible: boolean = false;
 showAllForm = false;
+
+combNumber: number[];
+combChairs: number;
 
 
 
@@ -86,27 +102,33 @@ constructor(
 	}
 
   addTableCombination(){
+    this.line1 = this.tableCombinations.value ?? []; // Nummer wird gespeichert (1,2,3)
+    this.combChairs = 0;
+    // addiert die Sitzplätze zusammen
+    this.line1.forEach(number =>{
+        this.table.forEach(t =>{
+          if (number === t.number){
+            this.combChairs = this.combChairs + t.chairs;
+          }
+        })
+      }
+      
+    )
+    // fügt die Tischkombination hinzu
     const tableCombination: TableCombination = {
       id: this.tableCombination.length + 1,
-      number: '',
-      chairs: this.line2,
-      //tableNumber: this.line3,
+      number: this.line1,
+      chairs: this.combChairs
     };
-    this.line1 = '';
-    this.nextTableId = this.tableCombination.length +2;
-    this.line2 = 4;
-    //this.line3 = 1;
     this.tableCombination.push(tableCombination);
-    this.showAllForm = true;
-    this.visible = false;
+    this.cancelEdit();
   }
 
   openEditForm(tableCombination: TableCombination) {
       this.selectedTable = tableCombination;
       // Formular mit bestehenden Werten füllen
-      this.line1 = tableCombination.number;
+      this.tableCombinations.setValue(tableCombination.number);
       this.line2 = tableCombination.chairs;
-      //this.line3 = tableCombination.tableNumber;
       this.showAllForm = false;
       this.visible = true;
     }
@@ -115,11 +137,19 @@ constructor(
       if (!this.selectedTable) {
         return;
       }
-      this.selectedTable.number   = this.line1;
-      this.selectedTable.chairs = this.line2;
-      //this.selectedTable.tableNumber = this.line3;
-  
-      // Rücksetzen des Formular-Zustands
+      this.line1 = this.tableCombinations.value ?? []; // Nummer wird gespeichert (1,2,3)
+      this.combChairs = 0;
+      // addiert die Sitzplätze zusammen
+      this.line1.forEach(number =>{
+          this.table.forEach(t =>{
+            if (number === t.number){
+              this.combChairs = this.combChairs + t.chairs;
+            }
+          })
+        } 
+      )
+      this.selectedTable.number = this.line1;
+      this.selectedTable.chairs = this.combChairs;
       this.cancelEdit();
     }
 
@@ -134,30 +164,24 @@ constructor(
     cancelEdit() {
       this.showAllForm = true;
       this.visible = false;
-      this.line2 = 4;
-      //this.line3 = 1;
+      this.line1 = [];
+      this.combChairs = 0;
+      this.tableCombinations.setValue([]);
     }
 
-  removeTableCombination(tableCombination: TableCombination){
+  removeTableCombination(tableCombinations: TableCombination){
 
-    // 1) Index des zu entfernenden Tisches ermitteln
-    const idx = this.tableCombination.findIndex(t => t.id === tableCombination.id);
-    if (idx === -1) return;  // Tisch nicht gefunden
-  
-    // 2) Nummer des entfernten Tisches sichern
-    const removedNumber = this.tableCombination[idx].number;
-  
-    // 3) löschen
-    this.tableCombination.splice(idx, 1);
+    const idx = this.tableCombination.findIndex(tc => tc.id === tableCombinations.id);
+    if (idx > -1) {
+      this.tableCombination.splice(idx, 1);
+    }
 
-    this.tableCombination.forEach(t =>{
-      if(t.number > removedNumber){
-        
-      }
-    })
     if (this.tableCombination.length === 0){
-      
+      this.tableCombination = [];
+      this.selectedTable = null;
     }
+    
+    this.cancelEdit();
   }
 
   tmp(){

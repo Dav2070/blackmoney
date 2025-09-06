@@ -15,7 +15,8 @@ import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
 import { VariationItem } from "src/app/models/VariationItem"
 import { Order } from "src/app/models/Order"
-import { Menu, MenuItem } from "src/app/models/Menu"
+import { Menu } from "src/app/models/Menu"
+import { MenuItem } from "src/app/models/MenuItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { MenuePageComponent } from "../../settings-pages/menue-page/menue-page.component"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
@@ -304,7 +305,6 @@ export class BookingPageComponent {
 			count: 0,
 			order: null,
 			menu: menuItem.menu,
-			name: menuItem.name,
 			product: menuItem.product,
 			orderItems: []
 		}
@@ -341,13 +341,13 @@ export class BookingPageComponent {
 			}
 			this.showTotal()
 		} else {
-			if (this.selectedMenuItem.menu.items.length > 1) {
+			if (this.selectedMenuItem.menu.menuItems.length > 1) {
 				this.selectedMenuItem.count += 1
 				for (let item of this.selectedMenuItem.orderItems) {
 					console.log("OrderItem: ", item)
 					// Finde die entsprechende maxSelections für dieses Produkt
 					let maxSelectionsForThisItem = 0
-					for (let menuItem of this.selectedMenuItem.menu.items) {
+					for (let menuItem of this.selectedMenuItem.menu.menuItems) {
 						for (let product of menuItem.products) {
 							if (product.uuid === item.uuid) {
 								maxSelectionsForThisItem = menuItem.maxSelections
@@ -452,7 +452,7 @@ export class BookingPageComponent {
 					}
 				} else {
 					// Menüs
-					if (this.selectedMenuItem.menu.items.length > 1) {
+					if (this.selectedMenuItem.menu.menuItems.length > 1) {
 						this.selectedMenuItem.count -= 1
 					} else {
 						// Mehrere Produkte im Special - lade alle Produkte mit ihren Variationen ins Popup
@@ -1209,7 +1209,7 @@ export class BookingPageComponent {
 
 	selectMenuItem(pickedItem: MenuOrderItem, AllItemHandler: AllItemHandler) {
 		this.selectedMenuItem = pickedItem
-		for (let item of this.selectedMenuItem.menu.items) {
+		for (let item of this.selectedMenuItem.menu.menuItems) {
 			console.log("Selected Menu Item maxSelections", item.maxSelections)
 		}
 		this.tmpAllItemHandler = AllItemHandler
@@ -1492,9 +1492,9 @@ export class BookingPageComponent {
 		this.currentMenu = null
 		this.isMenuePopupVisible = true
 
-		for (let item of special.items) {
-			for (let category of item.categories) {
-				this.specialCategories.push(category)
+		for (let item of special.menuItems) {
+			for (let product of item.products) {
+				this.specialCategories.push(product.category)
 			}
 		}
 	}
@@ -1504,14 +1504,14 @@ export class BookingPageComponent {
 		this.currentSpecial = null
 		this.isMenuePopupVisible = true
 		this.changeSelectedMenuInventory(
-			this.currentMenu.items[0],
-			this.currentMenu.items[0].maxSelections,
+			this.currentMenu.menuItems[0],
+			this.currentMenu.menuItems[0].maxSelections,
 			0
 		)
 
-		for (let item of this.currentMenu.items) {
-			for (let category of item.categories) {
-				this.specialCategories.push(category)
+		for (let item of this.currentMenu.menuItems) {
+			for (let product of item.products) {
+				this.specialCategories.push(product.category)
 			}
 		}
 	}
@@ -1538,17 +1538,17 @@ export class BookingPageComponent {
 		// Starte bei der nächsten Kategorie nach der aktuellen
 		for (
 			let i = this.currentIndex + 1;
-			i < this.currentMenu.items.length;
+			i < this.currentMenu.menuItems.length;
 			i++
 		) {
-			if (this.currentMenu.items[i].maxSelections > 0) {
+			if (this.currentMenu.menuItems[i].maxSelections > 0) {
 				return i
 			}
 		}
 
 		// Falls keine gefunden, suche von Anfang bis zur aktuellen Position
 		for (let i = 0; i < this.currentIndex; i++) {
-			if (this.currentMenu.items[i].maxSelections > 0) {
+			if (this.currentMenu.menuItems[i].maxSelections > 0) {
 				return i
 			}
 		}
@@ -1563,7 +1563,7 @@ export class BookingPageComponent {
 			// Gehe durch alle Items im temporären Handler und stelle maxSelections wieder her
 			for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
 				// Finde die entsprechende Kategorie für dieses Produkt
-				for (let menuItem of this.currentMenu.items) {
+				for (let menuItem of this.currentMenu.menuItems) {
 					for (let product of menuItem.products) {
 						if (product.uuid === item.product.uuid) {
 							menuItem.maxSelections += item.count
@@ -1590,9 +1590,9 @@ export class BookingPageComponent {
 		if (product == null) return
 
 		if (this.currentMenu) {
-			this.currentMenu.items[this.currentIndex].maxSelections -= 1
+			this.currentMenu.menuItems[this.currentIndex].maxSelections -= 1
 			this.currentMaxSelections =
-				this.currentMenu.items[this.currentIndex].maxSelections
+				this.currentMenu.menuItems[this.currentIndex].maxSelections
 
 			// Wenn maxSelections = 0, dann nächsten Index suchen
 			if (this.currentMaxSelections === 0) {
@@ -1601,8 +1601,8 @@ export class BookingPageComponent {
 				if (nextIndex !== -1) {
 					this.currentIndex = nextIndex
 					this.changeSelectedMenuInventory(
-						this.currentMenu.items[this.currentIndex],
-						this.currentMenu.items[this.currentIndex].maxSelections,
+						this.currentMenu.menuItems[this.currentIndex],
+						this.currentMenu.menuItems[this.currentIndex].maxSelections,
 						this.currentIndex
 					)
 				}
@@ -1677,8 +1677,8 @@ export class BookingPageComponent {
 
 		// Finde die entsprechende Kategorie basierend auf dem Produkt
 		let targetCategoryIndex = -1
-		for (let i = 0; i < this.currentMenu.items.length; i++) {
-			const menuItem = this.currentMenu.items[i]
+		for (let i = 0; i < this.currentMenu.menuItems.length; i++) {
+			const menuItem = this.currentMenu.menuItems[i]
 
 			let fountCategory = false
 
@@ -1697,13 +1697,13 @@ export class BookingPageComponent {
 
 		// Erhöhe die maxSelections der entsprechenden Kategorie
 		if (targetCategoryIndex >= 0) {
-			this.currentMenu.items[targetCategoryIndex].maxSelections += 1
+			this.currentMenu.menuItems[targetCategoryIndex].maxSelections += 1
 
 			// Springe zur entsprechenden Kategorie
 			this.currentIndex = targetCategoryIndex
 			this.changeSelectedMenuInventory(
-				this.currentMenu.items[targetCategoryIndex],
-				this.currentMenu.items[targetCategoryIndex].maxSelections,
+				this.currentMenu.menuItems[targetCategoryIndex],
+				this.currentMenu.menuItems[targetCategoryIndex].maxSelections,
 				targetCategoryIndex
 			)
 		}
@@ -1834,12 +1834,12 @@ export class BookingPageComponent {
 				count: processedItem.count,
 				order: null,
 				menu: currentMenuOrSpecial,
-				name: menuName,
 				product: {
 					id: processedItem.product.id,
 					uuid: processedItem.product.uuid,
 					name: menuName,
 					price: itemPrice,
+					category: processedItem.product.category,
 					variations: []
 				},
 				orderItems: [processedItem]
@@ -2024,12 +2024,12 @@ export class BookingPageComponent {
 			count: 1,
 			order: null,
 			menu: this.currentMenu,
-			name: this.currentMenu.name,
 			product: {
-				id: this.currentMenu.id,
+				id: 1,
 				uuid: crypto.randomUUID(),
 				name: this.currentMenu.name,
 				price: finalMenuPrice,
+				category: null,
 				variations: []
 			},
 			orderItems: allOrderItems

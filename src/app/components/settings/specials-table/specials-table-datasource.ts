@@ -59,8 +59,8 @@ export class SpecialsTableDataSource extends DataSource<SpecialsTableItem> {
 		return data.sort((a, b) => {
 			const isAsc = this.sort?.direction === "asc"
 			switch (this.sort?.active) {
-				case "id":
-					return compare(a.id, b.id, isAsc)
+				case "uuid":
+					return compare(a.uuid, b.uuid, isAsc)
 				case "name":
 					return compare(a.name, b.name, isAsc)
 				default:

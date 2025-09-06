@@ -118,10 +118,21 @@ export interface OrderItemVariationResource {
 	variationItems: List<VariationItemResource>
 }
 
-export type CategoryType = "FOOD" | "DRINK"
-export type PaymentMethod = "CASH" | "CARD"
 export type UserRole = "OWNER" | "ADMIN" | "USER"
+export type CategoryType = "FOOD" | "DRINK"
+export type OfferType = "FIXED_PRICE" | "DISCOUNT"
+export type DiscountType = "PERCENTAGE" | "AMOUNT"
+export type PaymentMethod = "CASH" | "CARD"
 export type Country = "DE"
+
+export type Weekday =
+	| "MONDAY"
+	| "TUESDAY"
+	| "WEDNESDAY"
+	| "THURSDAY"
+	| "FRIDAY"
+	| "SATURDAY"
+	| "SUNDAY"
 
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists

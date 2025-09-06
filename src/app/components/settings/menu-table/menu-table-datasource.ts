@@ -2,25 +2,23 @@ import { DataSource } from "@angular/cdk/collections"
 import { MatPaginator } from "@angular/material/paginator"
 import { MatSort } from "@angular/material/sort"
 import { map } from "rxjs/operators"
-import { Observable, of as observableOf, merge, BehaviorSubject } from "rxjs"
+import { Observable, merge, BehaviorSubject } from "rxjs"
 import { Menu } from "src/app/models/Menu"
 
-export interface MenuTableItem extends Menu {}
-
-export class MenuTableDataSource extends DataSource<MenuTableItem> {
-	data: MenuTableItem[]
+export class MenuTableDataSource extends DataSource<Menu> {
+	data: Menu[]
 	paginator: MatPaginator | undefined
 	sort: MatSort | undefined
 
-	private dataSubject = new BehaviorSubject<MenuTableItem[]>([])
+	private dataSubject = new BehaviorSubject<Menu[]>([])
 
 	constructor(menus: Menu[] = []) {
 		super()
-		this.data = menus as MenuTableItem[]
+		this.data = menus
 		this.dataSubject.next(this.data)
 	}
 
-	connect(): Observable<MenuTableItem[]> {
+	connect(): Observable<Menu[]> {
 		if (this.paginator && this.sort) {
 			return merge(
 				this.dataSubject,
@@ -42,7 +40,7 @@ export class MenuTableDataSource extends DataSource<MenuTableItem> {
 		this.dataSubject.complete()
 	}
 
-	private getPagedData(data: MenuTableItem[]): MenuTableItem[] {
+	private getPagedData(data: Menu[]): Menu[] {
 		if (this.paginator) {
 			const startIndex = this.paginator.pageIndex * this.paginator.pageSize
 			return data.splice(startIndex, this.paginator.pageSize)
@@ -51,7 +49,7 @@ export class MenuTableDataSource extends DataSource<MenuTableItem> {
 		}
 	}
 
-	private getSortedData(data: MenuTableItem[]): MenuTableItem[] {
+	private getSortedData(data: Menu[]): Menu[] {
 		if (!this.sort || !this.sort.active || this.sort.direction === "") {
 			return data
 		}
@@ -59,8 +57,8 @@ export class MenuTableDataSource extends DataSource<MenuTableItem> {
 		return data.sort((a, b) => {
 			const isAsc = this.sort?.direction === "asc"
 			switch (this.sort?.active) {
-				case "id":
-					return compare(a.id, b.id, isAsc)
+				case "uuid":
+					return compare(a.uuid, b.uuid, isAsc)
 				case "name":
 					return compare(a.name, b.name, isAsc)
 				default:

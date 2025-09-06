@@ -110,225 +110,246 @@ export class MenuePageComponent {
 		}
 	]
 
-    menus: Menu[] = [
-        {
-            uuid: "menu_1",
-            name: "Gutschein 205",
-            id: 1,
-            offerType: "FIXED_PRICE",
-            discountType: undefined,
-            offerValue: 999,
-            validity: {
-                startDate: undefined,
-                endDate: undefined,
-                startTime: undefined,
-                endTime: undefined,
-                weekdays: []
-            },
-				items: [
-					{
-						uuid: "item_beilagen",
-						name: "Beilagen",
-						categories: [],
-						products: [
-							{ id: 101, uuid: "maiskolben", price: 300, name: "Maiskolben", variations: [] },
-							{ id: 102, uuid: "pommes_gross", price: 300, name: "Pommes Groß", variations: [] }
-						],
-						maxSelections: 1
-					},
-					{
-						uuid: "item_saucen",
-						name: "Saucen",
-						categories: [],
-						products: [
-							{ id: 201, uuid: "mayo", price: 100, name: "Mayo", variations: [] },
-							{ id: 202, uuid: "ketchup", price: 100, name: "Ketchup", variations: [] },
-							{ id: 203, uuid: "senf", price: 100, name: "Senf", variations: [] }
-						],
-						maxSelections: 1
-					},
-					{
-						uuid: "item_getraenke",
-						name: "Getränke",
-						categories: [],
-						products: [
-							{ id: 301, uuid: "cola", price: 200, name: "Cola", variations: [
-                                    {
-                                        uuid: "cola_0_5_variation_1",
-                                        name: "Größe",
-                                        variationItems: [
-                                            { id: 1, uuid: "cola_0_5_klein", name: "Klein", additionalCost: 0 },
-                                            { id: 2, uuid: "cola_0_5_gross", name: "Groß", additionalCost: 150 },
-                                        ]
-                                    }
-                                ]
-							},
-							{ id: 301, uuid: "cola_light", price: 200, name: "Cola Light", variations: [] },
-							{ id: 302, uuid: "7up", price: 200, name: "7Up", variations: [] },
-							{ id: 303, uuid: "fanta", price: 200, name: "Fanta", variations: [] }
-						],
-						maxSelections: 1
-					},
-					{
-						uuid: "item_burger",
-						name: "Burger",
-						categories: [],
-						products: [
-							{ id: 401, uuid: "zinger", price: 600, name: "Zinger", variations: [] },
-							{ id: 402, uuid: "veggie", price: 600, name: "Veggie", variations: [] },
-							{ id: 403, uuid: "classic", price: 600, name: "Classic", variations: [] }
-						],
-						maxSelections: 2
-					}
-				]
-        },
-        {
-            uuid: "menu_2",
-            name: "Abendkarte",
-            id: 2,
-            offerType: "FIXED_PRICE",
-            discountType: undefined,
-            offerValue: 800,
-            validity: {
-                startDate: undefined,
-                endDate: undefined,
-                startTime: undefined,
-                endTime: undefined,
-                weekdays: []
-            },
-            items: [
+	menus: Menu[] = [
+		{
+			uuid: "menu_1",
+			name: "Gutschein 205",
+			offerType: "FIXED_PRICE",
+			discountType: undefined,
+			offerValue: 999,
+			startDate: undefined,
+			endDate: undefined,
+			startTime: undefined,
+			endTime: undefined,
+			weekdays: [],
+			menuItems: [
 				{
-						uuid: "item_burger",
-						name: "Burger",
-						categories: [],
-						products: [
-							{ id: 401, uuid: "zinger", price: 600, name: "Zinger", variations: [] },
-							{ id: 402, uuid: "veggie", price: 600, name: "Veggie", variations: [] },
-							{ id: 403, uuid: "classic", price: 600, name: "Classic", variations: [] }
-						],
-						maxSelections: 2
+					uuid: "item_beilagen",
+					name: "Beilagen",
+					products: [
+						{
+							id: 101,
+							uuid: "maiskolben",
+							price: 300,
+							name: "Maiskolben",
+							category: null,
+							variations: []
+						},
+						{
+							id: 102,
+							uuid: "pommes_gross",
+							price: 300,
+							name: "Pommes Groß",
+							category: null,
+							variations: []
+						}
+					],
+					maxSelections: 1
+				},
+				{
+					uuid: "item_saucen",
+					name: "Saucen",
+					products: [
+						{
+							id: 201,
+							uuid: "mayo",
+							price: 100,
+							name: "Mayo",
+							category: null,
+							variations: []
+						},
+						{
+							id: 202,
+							uuid: "ketchup",
+							price: 100,
+							name: "Ketchup",
+							category: null,
+							variations: []
+						},
+						{
+							id: 203,
+							uuid: "senf",
+							price: 100,
+							name: "Senf",
+							category: null,
+							variations: []
+						}
+					],
+					maxSelections: 1
+				},
+				{
+					uuid: "item_getraenke",
+					name: "Getränke",
+					products: [
+						{
+							id: 301,
+							uuid: "cola",
+							price: 200,
+							name: "Cola",
+							category: null,
+							variations: [
+								{
+									uuid: "cola_0_5_variation_1",
+									name: "Größe",
+									variationItems: [
+										{
+											id: 1,
+											uuid: "cola_0_5_klein",
+											name: "Klein",
+											additionalCost: 0
+										},
+										{
+											id: 2,
+											uuid: "cola_0_5_gross",
+											name: "Groß",
+											additionalCost: 150
+										}
+									]
+								}
+							]
+						},
+						{
+							id: 301,
+							uuid: "cola_light",
+							price: 200,
+							name: "Cola Light",
+							category: null,
+							variations: []
+						},
+						{
+							id: 302,
+							uuid: "7up",
+							price: 200,
+							name: "7Up",
+							category: null,
+							variations: []
+						},
+						{
+							id: 303,
+							uuid: "fanta",
+							price: 200,
+							name: "Fanta",
+							category: null,
+							variations: []
+						}
+					],
+					maxSelections: 1
+				},
+				{
+					uuid: "item_burger",
+					name: "Burger",
+					products: [
+						{
+							id: 401,
+							uuid: "zinger",
+							price: 600,
+							name: "Zinger",
+							category: null,
+							variations: []
+						},
+						{
+							id: 402,
+							uuid: "veggie",
+							price: 600,
+							name: "Veggie",
+							category: null,
+							variations: []
+						},
+						{
+							id: 403,
+							uuid: "classic",
+							price: 600,
+							name: "Classic",
+							category: null,
+							variations: []
+						}
+					],
+					maxSelections: 2
 				}
 			]
-        }
-    ];
+		},
+		{
+			uuid: "menu_2",
+			name: "Abendkarte",
+			offerType: "FIXED_PRICE",
+			discountType: undefined,
+			offerValue: 800,
+			startDate: undefined,
+			endDate: undefined,
+			startTime: undefined,
+			endTime: undefined,
+			weekdays: [],
+			menuItems: [
+				{
+					uuid: "item_burger",
+					name: "Burger",
+					products: [
+						{
+							id: 401,
+							uuid: "zinger",
+							price: 600,
+							name: "Zinger",
+							category: null,
+							variations: []
+						},
+						{
+							id: 402,
+							uuid: "veggie",
+							price: 600,
+							name: "Veggie",
+							category: null,
+							variations: []
+						},
+						{
+							id: 403,
+							uuid: "classic",
+							price: 600,
+							name: "Classic",
+							category: null,
+							variations: []
+						}
+					],
+					maxSelections: 2
+				}
+			]
+		}
+	]
 
-    specials: Menu[] = [
-        {
-            uuid: "special_1",
-            name: "Happy Hour Special",
-            id: 30,
-            offerType: 'DISCOUNT',
-            discountType: 'PERCENTAGE',
-            offerValue: 20,
-            validity: {
-                startDate: undefined,
-                endDate: undefined,
-                startTime: "17:00",
-                endTime: "19:00",
-                weekdays: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']
-            },
-            items: [
-                {
-                    uuid: "special_item_1",
-                    name: "Happy Hour Getränke",
-                    categories: [
-                        {
-                            uuid: "alkoholfrei",
-                            name: "Alkoholfrei",
-                            type: "DRINK",
-                            products: [
-                                {
-                                    id: 1,
-                                    uuid: "cola",
-                                    price: 500,
-                                    name: "Cola",
-                                    variations: [
-                                        {
-                                            uuid: "cola_0_5_variation_1",
-                                            name: "Größe",
-                                            variationItems: [
-                                                { id: 1, uuid: "cola_0_5_klein", name: "Klein", additionalCost: 0 },
-                                                { id: 1, uuid: "cola_0_5_mittel", name: "Mittel", additionalCost: 0 },
-                                                { id: 2, uuid: "cola_0_5_gross", name: "Groß", additionalCost: 150 },
-                                                { id: 3, uuid: "cola_0_5_familie", name: "Familie", additionalCost: 200 },
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            uuid: "bier",
-                            name: "Bier",
-                            type: "DRINK",
-                            products: [
-                                {
-                                    id: 2,
-                                    uuid: "pils",
-                                    price: 370,
-                                    name: "Pils 0,4",
-                                    variations: []
-                                },
-                                {
-                                    id: 3,
-                                    uuid: "weizen",
-                                    price: 400,
-                                    name: "Weizen 0,5",
-                                    variations: []
-                                }
-                            ]
-                        },
-                        {
-                            uuid: "wein",
-                            name: "Wein",
-                            type: "DRINK",
-                            products: [
-                                {
-                                    id: 3,
-                                    uuid: "grauburunder",
-                                    price: 670,
-                                    name: "Grauburunder 0,2",
-                                    variations: []
-                                }
-                            ]
-                        },
-                        {
-                            uuid: "schnapps",
-                            name: "Schnapps",
-                            type: "DRINK",
-                            products: [
-                                {
-                                    id: 4,
-                                    uuid: "ouzo",
-                                    price: 300,
-                                    name: "Ouzo",
-                                    variations: []
-                                }
-                            ]
-                        }
-                    ],
-                    products: [],
-                    maxSelections: 1
-                }
-            ]
-        },
-        {
-            uuid: "special_2",
-            name: "Wochenend-Brunch",
-            id: 2,
-            offerType: 'FIXED_PRICE',
-            discountType: undefined,
-            offerValue: 1590,
-            validity: {
-                startDate: undefined,
-                endDate: undefined,
-                startTime: "10:00",
-                endTime: "14:00",
-                weekdays: ['SATURDAY', 'SUNDAY']
-            },
-            items: []
-        }
-    ];
+	specials: Menu[] = [
+		{
+			uuid: "special_1",
+			name: "Happy Hour Special",
+			offerType: "DISCOUNT",
+			discountType: "PERCENTAGE",
+			offerValue: 20,
+			startDate: undefined,
+			endDate: undefined,
+			startTime: "17:00",
+			endTime: "19:00",
+			weekdays: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
+			menuItems: [
+				{
+					uuid: "special_item_1",
+					name: "Happy Hour Getränke",
+					products: [],
+					maxSelections: 1
+				}
+			]
+		},
+		{
+			uuid: "special_2",
+			name: "Wochenend-Brunch",
+			offerType: "FIXED_PRICE",
+			discountType: undefined,
+			offerValue: 1590,
+			startDate: undefined,
+			endDate: undefined,
+			startTime: "10:00",
+			endTime: "14:00",
+			weekdays: ["SATURDAY", "SUNDAY"],
+			menuItems: []
+		}
+	]
 
 	drinkCategories: Category[] = [
 		{

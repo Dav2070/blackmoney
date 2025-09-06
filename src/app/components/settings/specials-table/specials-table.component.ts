@@ -14,8 +14,10 @@ import {
 	SpecialsTableItem
 } from "./specials-table-datasource"
 import { Category } from "src/app/models/Category"
-import { Menu, Weekday, MenuItem } from "src/app/models/Menu"
+import { Menu } from "src/app/models/Menu"
+import { MenuItem } from "src/app/models/MenuItem"
 import { Product } from "src/app/models/Product"
+import { Weekday } from "src/app/types"
 
 @Component({
 	selector: "app-specials-table",
@@ -76,19 +78,16 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 	addNewSpecial(): void {
 		this.newSpecial = {
 			uuid: "special_" + Date.now(),
-			id: this.specials.length + 1,
 			name: "Neues Special",
 			offerType: undefined,
 			discountType: undefined,
 			offerValue: 0,
-			validity: {
-				startDate: undefined,
-				endDate: undefined,
-				startTime: undefined,
-				endTime: undefined,
-				weekdays: []
-			},
-			items: []
+			startDate: undefined,
+			endDate: undefined,
+			startTime: undefined,
+			endTime: undefined,
+			weekdays: [],
+			menuItems: []
 		}
 
 		this.specials.push(this.newSpecial)
@@ -139,19 +138,18 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 	// Item CRUD - Limited to one item per special
 	addNewItem(special: Menu): void {
 		// Check if special already has an item
-		if (special.items.length > 0) {
+		if (special.menuItems.length > 0) {
 			return // Don't allow adding more than one item
 		}
 
 		this.newItem = {
 			uuid: "item_" + Date.now(),
 			name: "Neues Item",
-			categories: [],
 			products: [],
 			maxSelections: 1
 		}
 
-		special.items.push(this.newItem)
+		special.menuItems.push(this.newItem)
 		this.editingItem = this.newItem
 	}
 
@@ -167,9 +165,11 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 
 	cancelItemEdit(special: Menu): void {
 		if (this.newItem) {
-			const index = special.items.findIndex(item => item === this.newItem)
+			const index = special.menuItems.findIndex(
+				item => item === this.newItem
+			)
 			if (index !== -1) {
-				special.items.splice(index, 1)
+				special.menuItems.splice(index, 1)
 			}
 		}
 		this.editingItem = null
@@ -177,15 +177,15 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 	}
 
 	deleteItem(special: Menu, item: MenuItem): void {
-		const index = special.items.findIndex(i => i.uuid === item.uuid)
+		const index = special.menuItems.findIndex(i => i.uuid === item.uuid)
 		if (index !== -1) {
-			special.items.splice(index, 1)
+			special.menuItems.splice(index, 1)
 		}
 	}
 
 	// Check if special can have an item added
 	canAddItem(special: Menu): boolean {
-		return special.items.length === 0
+		return special.menuItems.length === 0
 	}
 
 	// Product/Category Selection
@@ -199,19 +199,23 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 	}
 
 	toggleCategorySelection(item: MenuItem, category: Category): void {
-		const index = item.categories.findIndex(c => c.uuid === category.uuid)
+		const categories = item.products.map(p => p.category)
+		const index = categories.findIndex(c => c.uuid === category.uuid)
+
 		if (index > -1) {
-			item.categories.splice(index, 1)
+			categories.splice(index, 1)
 		} else {
-			item.categories.push(category)
+			categories.push(category)
 		}
+
 		// Produktauswahl aktualisieren
 		const availableProducts: Product[] = []
-		item.categories.forEach(cat => {
+		categories.forEach(cat => {
 			if (cat.products) {
 				availableProducts.push(...cat.products)
 			}
 		})
+
 		// Nur Produkte behalten, die noch verfügbar sind
 		item.products = item.products.filter(product =>
 			availableProducts.some(p => p.uuid === product.uuid)
@@ -219,11 +223,11 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 	}
 
 	toggleWeekday(special: Menu, weekday: Weekday): void {
-		const index = special.validity.weekdays.indexOf(weekday)
+		const index = special.weekdays.indexOf(weekday)
 		if (index > -1) {
-			special.validity.weekdays.splice(index, 1)
+			special.weekdays.splice(index, 1)
 		} else {
-			special.validity.weekdays.push(weekday)
+			special.weekdays.push(weekday)
 		}
 	}
 
@@ -238,7 +242,8 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 	}
 
 	isCategorySelected(item: MenuItem, category: Category): boolean {
-		return item.categories.some(c => c.uuid === category.uuid)
+		const categories = item.products.map(p => p.category)
+		return categories.some(c => c.uuid === category.uuid)
 	}
 
 	isProductSelected(item: MenuItem, product: Product): boolean {
@@ -246,6 +251,6 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 	}
 
 	isWeekdaySelected(special: Menu, weekday: Weekday): boolean {
-		return special.validity.weekdays.includes(weekday)
+		return special.weekdays.includes(weekday)
 	}
 }

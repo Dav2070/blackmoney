@@ -1,19 +1,15 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute } from "@angular/router"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
-import { Bill } from "src/app/models/cash-register/bill.model"
-import { PickedItem } from "src/app/models/cash-register/picked-item.model"
-import { Variation } from "src/app/models/cash-register/variation.model"
 import { HardcodeService } from "src/app/services/hardcode-service"
 import { OrderItem } from "src/app/models/OrderItem"
-import { MenuOrderItem } from "src/app/models/MenuOrderItem"
+import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { ApiService } from "src/app/services/api-service"
 import { Table } from "src/app/models/Table"
 import { DataService } from "src/app/services/data-service"
 import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { PaymentMethod } from "src/app/types"
-import { Order } from "src/app/models/Order"
 
 @Component({
 	templateUrl: "./separate-pay-page.component.html",
@@ -371,11 +367,8 @@ export class SeparatePayPageComponent {
 		this.deleteBill()
 	}
 
-	calculateTotalPriceOfMenuOrderItem(menuItem: MenuOrderItem) {
-		// Bei MenuOrderItems ist der Special-Preis bereits berechnet und im Product gespeichert
-		return (
-			(menuItem.product.price * menuItem.count) /
-			100
-		).toFixed(2);
+	calculateTotalPriceOfOfferOrderItem(offerItem: OfferOrderItem) {
+		// Bei OfferOrderItems ist der Special-Preis bereits berechnet und im Product gespeichert
+		return ((offerItem.product.price * offerItem.count) / 100).toFixed(2)
 	}
 }

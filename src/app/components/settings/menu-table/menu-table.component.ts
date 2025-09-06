@@ -11,8 +11,8 @@ import { MatPaginator } from "@angular/material/paginator"
 import { MatSort } from "@angular/material/sort"
 import { MenuTableDataSource } from "./menu-table-datasource"
 import { Category } from "src/app/models/Category"
-import { Menu } from "src/app/models/Menu"
-import { MenuItem } from "src/app/models/MenuItem"
+import { Offer } from "src/app/models/Offer"
+import { OfferItem } from "src/app/models/OfferItem"
 import { Product } from "src/app/models/Product"
 import { Weekday } from "src/app/types"
 
@@ -25,16 +25,16 @@ import { Weekday } from "src/app/types"
 export class MenuTableComponent implements AfterViewInit, OnChanges {
 	@ViewChild(MatPaginator) paginator!: MatPaginator
 	@ViewChild(MatSort) sort!: MatSort
-	@ViewChild(MatTable) table!: MatTable<Menu>
-	@Input() menus: Menu[] = []
+	@ViewChild(MatTable) table!: MatTable<Offer>
+	@Input() menus: Offer[] = []
 	@Input() availableCategories: Category[] = []
 
 	dataSource: MenuTableDataSource = new MenuTableDataSource([])
-	editingMenu: Menu | null = null
-	newMenu: Menu | null = null
-	expandedMenu: Menu | null = null
-	editingItem: MenuItem | null = null
-	newItem: MenuItem | null = null
+	editingMenu: Offer | null = null
+	newMenu: Offer | null = null
+	expandedMenu: Offer | null = null
+	editingItem: OfferItem | null = null
+	newItem: OfferItem | null = null
 
 	displayedColumns = ["expand", "id", "name", "Angebot", "Gültig", "actions"]
 
@@ -84,7 +84,7 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 			startTime: undefined,
 			endTime: undefined,
 			weekdays: [],
-			menuItems: []
+			offerItems: []
 		}
 
 		this.menus.push(this.newMenu)
@@ -92,7 +92,7 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 		this.editingMenu = this.newMenu
 	}
 
-	deleteMenu(menu: Menu): void {
+	deleteMenu(menu: Offer): void {
 		const index = this.menus.findIndex(m => m.uuid === menu.uuid)
 		if (index !== -1) {
 			this.menus.splice(index, 1)
@@ -100,11 +100,11 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 		}
 	}
 
-	editMenu(menu: Menu): void {
+	editMenu(menu: Offer): void {
 		this.editingMenu = menu
 	}
 
-	saveMenu(menu: Menu): void {
+	saveMenu(menu: Offer): void {
 		this.editingMenu = null
 		this.newMenu = null
 		this.initializeDataSource()
@@ -124,14 +124,14 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 	}
 
 	// Expand/Collapse
-	toggleExpandMenu(menu: Menu): void {
+	toggleExpandMenu(menu: Offer): void {
 		this.expandedMenu = this.expandedMenu === menu ? null : menu
 		this.editingItem = null
 		this.newItem = null
 	}
 
 	// Item CRUD
-	addNewItem(menu: Menu): void {
+	addNewItem(menu: Offer): void {
 		this.newItem = {
 			uuid: "item_" + Date.now(),
 			name: "Neues Item",
@@ -139,11 +139,11 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 			maxSelections: 1
 		}
 
-		menu.menuItems.push(this.newItem)
+		menu.offerItems.push(this.newItem)
 		this.editingItem = this.newItem
 	}
 
-	editItem(item: MenuItem): void {
+	editItem(item: OfferItem): void {
 		this.editingItem = item
 		this.newItem = null
 	}
@@ -153,26 +153,26 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 		this.newItem = null
 	}
 
-	cancelItemEdit(menu: Menu): void {
+	cancelItemEdit(menu: Offer): void {
 		if (this.newItem) {
-			const index = menu.menuItems.findIndex(item => item === this.newItem)
+			const index = menu.offerItems.findIndex(item => item === this.newItem)
 			if (index !== -1) {
-				menu.menuItems.splice(index, 1)
+				menu.offerItems.splice(index, 1)
 			}
 		}
 		this.editingItem = null
 		this.newItem = null
 	}
 
-	deleteItem(menu: Menu, item: MenuItem): void {
-		const index = menu.menuItems.findIndex(i => i.uuid === item.uuid)
+	deleteItem(menu: Offer, item: OfferItem): void {
+		const index = menu.offerItems.findIndex(i => i.uuid === item.uuid)
 		if (index !== -1) {
-			menu.menuItems.splice(index, 1)
+			menu.offerItems.splice(index, 1)
 		}
 	}
 
 	// Product/Category Selection
-	toggleProductSelection(item: MenuItem, product: Product): void {
+	toggleProductSelection(item: OfferItem, product: Product): void {
 		const index = item.products.findIndex(p => p.uuid === product.uuid)
 		if (index > -1) {
 			item.products.splice(index, 1)
@@ -181,7 +181,7 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 		}
 	}
 
-	toggleCategorySelection(item: MenuItem, category: Category): void {
+	toggleCategorySelection(item: OfferItem, category: Category): void {
 		const categories: Category[] = item.products.map(p => p.category)
 		const index = categories.findIndex(c => c.uuid === category.uuid)
 
@@ -205,7 +205,7 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 		)
 	}
 
-	toggleWeekday(menu: Menu, weekday: Weekday): void {
+	toggleWeekday(menu: Offer, weekday: Weekday): void {
 		const index = menu.weekdays.indexOf(weekday)
 		if (index > -1) {
 			menu.weekdays.splice(index, 1)
@@ -224,16 +224,16 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 		return found ? found.label : weekday
 	}
 
-	isCategorySelected(item: MenuItem, category: Category): boolean {
+	isCategorySelected(item: OfferItem, category: Category): boolean {
 		const categories = item.products.map(p => p.category)
 		return categories.some(c => c.uuid === category.uuid)
 	}
 
-	isProductSelected(item: MenuItem, product: Product): boolean {
+	isProductSelected(item: OfferItem, product: Product): boolean {
 		return item.products.some(p => p.uuid === product.uuid)
 	}
 
-	isWeekdaySelected(menu: Menu, weekday: Weekday): boolean {
+	isWeekdaySelected(menu: Offer, weekday: Weekday): boolean {
 		return menu.weekdays.includes(weekday)
 	}
 }

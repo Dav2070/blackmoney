@@ -142,7 +142,7 @@
 							}
 						}
 						<mat-card-content>
-							#{{ menuItem.menu.uuid }}
+							#{{ menuItem.offer.uuid }}
 							<span class="total-price">
 								{{ menuItem.product.price.toFixed(2) }}€
 							</span>
@@ -312,7 +312,7 @@
 							}
 						}
 						<mat-card-content>
-							#{{ menuItem.menu.uuid }}
+							#{{ menuItem.offer.uuid }}
 							<span class="total-price">
 								{{
 									(
@@ -707,7 +707,7 @@
 				<div class="categories-section">
 					<h3>Kategorien</h3>
 					<div class="category-list">
-						@for (item of currentMenu.menuItems; track $index) {
+						@for (item of currentMenu.offerItems; track $index) {
 							<button
 								[disabled]="item.maxSelections <= 0"
 								[class.selected-category]="currentIndex === $index"
@@ -730,14 +730,14 @@
 				<div class="products-section">
 					<h3>
 						Produkte - Wähle
-						{{ this.currentMenu.menuItems[currentIndex].maxSelections }}
+						{{ this.currentMenu.offerItems[currentIndex].maxSelections }}
 						Produkte aus
 					</h3>
 					<div class="product-list">
 						@for (product of specialProducts; track product.uuid) {
 							<button
 								[disabled]="
-									this.currentMenu.menuItems[currentIndex].maxSelections <=
+									this.currentMenu.offerItems[currentIndex].maxSelections <=
 									0
 								"
 								(click)="clickSpecialProduct(product)"

@@ -1,7 +1,7 @@
-import { MenuItem } from "./MenuItem"
+import { OfferItem } from "./OfferItem"
 import { DiscountType, OfferType, Weekday } from "../types"
 
-export class Menu {
+export class Offer {
 	uuid: string
 	name: string
 	offerType: OfferType
@@ -12,5 +12,5 @@ export class Menu {
 	startTime?: string
 	endTime?: string
 	weekdays: Weekday[]
-	menuItems: MenuItem[]
+	offerItems: OfferItem[]
 }

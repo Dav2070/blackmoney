@@ -1,6 +1,6 @@
 import { Product } from "./Product"
 
-export interface MenuItem {
+export interface OfferItem {
 	uuid: string
 	name: string
 	products: Product[]

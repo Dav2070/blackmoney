@@ -1,5 +1,5 @@
 import { OrderItem } from "src/app/models/OrderItem"
-import { MenuOrderItem } from "src/app/models/MenuOrderItem"
+import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { Variation } from "src/app/models/Variation"
 import { ApiService } from "src/app/services/api-service"
 import {
@@ -10,7 +10,7 @@ import { Order } from "../Order"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
-	private allPickedMenuItems: MenuOrderItem[] = []
+	private allPickedMenuItems: OfferOrderItem[] = []
 
 	getAllPickedItems() {
 		return this.allPickedItems
@@ -135,8 +135,8 @@ export class AllItemHandler {
 	}
 
 	//Füge MenuOrderItem hinzu
-	pushNewMenuItem(pickedItem: MenuOrderItem) {
-			this.allPickedMenuItems.push({ ...pickedItem })
+	pushNewMenuItem(pickedItem: OfferOrderItem) {
+		this.allPickedMenuItems.push({ ...pickedItem })
 	}
 
 	//Übertrage alle Items aus einer anderen Map in diese
@@ -175,7 +175,7 @@ export class AllItemHandler {
 				if (item.orderItemVariations) {
 					for (const variation of item.orderItemVariations) {
 						for (const variationItem of variation.variationItems) {
-								total += variationItem.additionalCost * variation.count
+							total += variationItem.additionalCost * variation.count
 						}
 					}
 				}
@@ -185,7 +185,7 @@ export class AllItemHandler {
 	}
 
 	//Gib Liste mit jedem Item zurück (normale + Menu Items)
-	getItems(): (OrderItem | MenuOrderItem)[] {
+	getItems(): (OrderItem | OfferOrderItem)[] {
 		return [...this.allPickedItems, ...this.allPickedMenuItems]
 	}
 
@@ -233,8 +233,8 @@ export class AllItemHandler {
 		return total
 	}
 
-	//Gibt den Preis eines MenuOrderItems aus dem jeweiligen Handler zurück
-	getTotalMenuPrice(pickedItem: MenuOrderItem): number {
+	//Gibt den Preis eines OfferOrderItems aus dem jeweiligen Handler zurück
+	getTotalMenuPrice(pickedItem: OfferOrderItem): number {
 		let total = 0
 
 		for (let item of pickedItem.orderItems) {
@@ -243,7 +243,7 @@ export class AllItemHandler {
 			if (item.orderItemVariations) {
 				for (const variation of item.orderItemVariations) {
 					for (const variationItem of variation.variationItems) {
-							total += variationItem.additionalCost * variation.count
+						total += variationItem.additionalCost * variation.count
 					}
 				}
 			}
@@ -261,10 +261,12 @@ export class AllItemHandler {
 		}
 	}
 
-	//Entferne MenuOrderItem aus der Map
-	deleteMenuItem(pickedItem: MenuOrderItem): void {
+	//Entferne OfferOrderItem aus der Map
+	deleteMenuItem(pickedItem: OfferOrderItem): void {
 		const index = this.allPickedMenuItems.findIndex(
-			item => item.product.id === pickedItem.product.id && item.menu.uuid === pickedItem.menu.uuid
+			item =>
+				item.product.id === pickedItem.product.id &&
+				item.offer.uuid === pickedItem.offer.uuid
 		)
 		if (index !== -1) {
 			this.allPickedMenuItems.splice(index, 1)
@@ -283,10 +285,10 @@ export class AllItemHandler {
 		return this.allPickedItems.find(item => item.product.id === id)
 	}
 
-	// Gibt ein MenuOrderItem zurück, das dem angegebenen ID entspricht
-	getMenuItem(productId: number, menuUuid: string): MenuOrderItem {
+	// Gibt ein OfferOrderItem zurück, das dem angegebenen ID entspricht
+	getOfferItem(productId: number, offerUuid: string): OfferOrderItem {
 		return this.allPickedMenuItems.find(
-			item => item.product.id === productId && item.menu?.uuid === menuUuid
+			item => item.product.id === productId && item.offer.uuid === offerUuid
 		)
 	}
 
@@ -297,10 +299,12 @@ export class AllItemHandler {
 		)
 	}
 
-	// Prüfen, ob ein bestimmtes MenuOrderItem in der Map enthalten ist, prüft auf die id des Produkts UND des Menus
-	includesMenuItem(pickedItem: MenuOrderItem): boolean {
+	// Prüfen, ob ein bestimmtes OfferOrderItem in der Map enthalten ist, prüft auf die id des Produkts UND des Angebots
+	includesOfferItem(pickedItem: OfferOrderItem): boolean {
 		return this.allPickedMenuItems.some(
-			item => item.product.id === pickedItem.product.id && item.menu.uuid === pickedItem.menu.uuid
+			item =>
+				item.product.id === pickedItem.product.id &&
+				item.offer.uuid === pickedItem.offer.uuid
 		)
 	}
 
@@ -364,6 +368,9 @@ export class AllItemHandler {
 	}
 
 	isEmpty() {
-		return this.allPickedItems.length === 0 && this.allPickedMenuItems.length === 0
+		return (
+			this.allPickedItems.length === 0 &&
+			this.allPickedMenuItems.length === 0
+		)
 	}
 }

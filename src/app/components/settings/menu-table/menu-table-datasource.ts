@@ -3,22 +3,22 @@ import { MatPaginator } from "@angular/material/paginator"
 import { MatSort } from "@angular/material/sort"
 import { map } from "rxjs/operators"
 import { Observable, merge, BehaviorSubject } from "rxjs"
-import { Menu } from "src/app/models/Menu"
+import { Offer } from "src/app/models/Offer"
 
-export class MenuTableDataSource extends DataSource<Menu> {
-	data: Menu[]
+export class MenuTableDataSource extends DataSource<Offer> {
+	data: Offer[]
 	paginator: MatPaginator | undefined
 	sort: MatSort | undefined
 
-	private dataSubject = new BehaviorSubject<Menu[]>([])
+	private dataSubject = new BehaviorSubject<Offer[]>([])
 
-	constructor(menus: Menu[] = []) {
+	constructor(menus: Offer[] = []) {
 		super()
 		this.data = menus
 		this.dataSubject.next(this.data)
 	}
 
-	connect(): Observable<Menu[]> {
+	connect(): Observable<Offer[]> {
 		if (this.paginator && this.sort) {
 			return merge(
 				this.dataSubject,
@@ -40,7 +40,7 @@ export class MenuTableDataSource extends DataSource<Menu> {
 		this.dataSubject.complete()
 	}
 
-	private getPagedData(data: Menu[]): Menu[] {
+	private getPagedData(data: Offer[]): Offer[] {
 		if (this.paginator) {
 			const startIndex = this.paginator.pageIndex * this.paginator.pageSize
 			return data.splice(startIndex, this.paginator.pageSize)
@@ -49,7 +49,7 @@ export class MenuTableDataSource extends DataSource<Menu> {
 		}
 	}
 
-	private getSortedData(data: Menu[]): Menu[] {
+	private getSortedData(data: Offer[]): Offer[] {
 		if (!this.sort || !this.sort.active || this.sort.direction === "") {
 			return data
 		}

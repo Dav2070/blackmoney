@@ -386,9 +386,9 @@
 						<h3>Items für "{{ menu.name }}"</h3>
 
 						<!-- Items List -->
-						@if (menu.menuItems.length > 0) {
+						@if (menu.offerItems.length > 0) {
 							<div class="items-list">
-								@for (item of menu.menuItems; track item.uuid) {
+								@for (item of menu.offerItems; track item.uuid) {
 									<div class="item-card">
 										@if (editingItem !== item) {
 											<div class="item-display">

@@ -9,13 +9,10 @@ import {
 import { MatTable } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 import { MatSort } from "@angular/material/sort"
-import {
-	SpecialsTableDataSource,
-	SpecialsTableItem
-} from "./specials-table-datasource"
+import { SpecialsTableDataSource } from "./specials-table-datasource"
 import { Category } from "src/app/models/Category"
-import { Menu } from "src/app/models/Menu"
-import { MenuItem } from "src/app/models/MenuItem"
+import { Offer } from "src/app/models/Offer"
+import { OfferItem } from "src/app/models/OfferItem"
 import { Product } from "src/app/models/Product"
 import { Weekday } from "src/app/types"
 
@@ -28,16 +25,16 @@ import { Weekday } from "src/app/types"
 export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 	@ViewChild(MatPaginator) paginator!: MatPaginator
 	@ViewChild(MatSort) sort!: MatSort
-	@ViewChild(MatTable) table!: MatTable<SpecialsTableItem>
-	@Input() specials: Menu[] = []
+	@ViewChild(MatTable) table!: MatTable<Offer>
+	@Input() specials: Offer[] = []
 	@Input() availableCategories: Category[] = []
 
 	dataSource: SpecialsTableDataSource = new SpecialsTableDataSource([])
-	editingSpecial: Menu | null = null
-	newSpecial: Menu | null = null
-	expandedSpecial: Menu | null = null
-	editingItem: MenuItem | null = null
-	newItem: MenuItem | null = null
+	editingSpecial: Offer | null = null
+	newSpecial: Offer | null = null
+	expandedSpecial: Offer | null = null
+	editingItem: OfferItem | null = null
+	newItem: OfferItem | null = null
 
 	displayedColumns = ["expand", "id", "name", "Angebot", "Gültig", "actions"]
 
@@ -87,7 +84,7 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 			startTime: undefined,
 			endTime: undefined,
 			weekdays: [],
-			menuItems: []
+			offerItems: []
 		}
 
 		this.specials.push(this.newSpecial)
@@ -95,7 +92,7 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 		this.editingSpecial = this.newSpecial
 	}
 
-	deleteSpecial(special: Menu): void {
+	deleteSpecial(special: Offer): void {
 		const index = this.specials.findIndex(s => s.uuid === special.uuid)
 		if (index !== -1) {
 			this.specials.splice(index, 1)
@@ -103,11 +100,11 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 		}
 	}
 
-	editSpecial(special: Menu): void {
+	editSpecial(special: Offer): void {
 		this.editingSpecial = special
 	}
 
-	saveSpecial(special: Menu): void {
+	saveSpecial(special: Offer): void {
 		this.editingSpecial = null
 		this.newSpecial = null
 		this.initializeDataSource()
@@ -129,16 +126,16 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 	}
 
 	// Expand/Collapse
-	toggleExpandSpecial(special: Menu): void {
+	toggleExpandSpecial(special: Offer): void {
 		this.expandedSpecial = this.expandedSpecial === special ? null : special
 		this.editingItem = null
 		this.newItem = null
 	}
 
 	// Item CRUD - Limited to one item per special
-	addNewItem(special: Menu): void {
+	addNewItem(special: Offer): void {
 		// Check if special already has an item
-		if (special.menuItems.length > 0) {
+		if (special.offerItems.length > 0) {
 			return // Don't allow adding more than one item
 		}
 
@@ -149,11 +146,11 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 			maxSelections: 1
 		}
 
-		special.menuItems.push(this.newItem)
+		special.offerItems.push(this.newItem)
 		this.editingItem = this.newItem
 	}
 
-	editItem(item: MenuItem): void {
+	editItem(item: OfferItem): void {
 		this.editingItem = item
 		this.newItem = null
 	}
@@ -163,33 +160,33 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 		this.newItem = null
 	}
 
-	cancelItemEdit(special: Menu): void {
+	cancelItemEdit(special: Offer): void {
 		if (this.newItem) {
-			const index = special.menuItems.findIndex(
+			const index = special.offerItems.findIndex(
 				item => item === this.newItem
 			)
 			if (index !== -1) {
-				special.menuItems.splice(index, 1)
+				special.offerItems.splice(index, 1)
 			}
 		}
 		this.editingItem = null
 		this.newItem = null
 	}
 
-	deleteItem(special: Menu, item: MenuItem): void {
-		const index = special.menuItems.findIndex(i => i.uuid === item.uuid)
+	deleteItem(special: Offer, item: OfferItem): void {
+		const index = special.offerItems.findIndex(i => i.uuid === item.uuid)
 		if (index !== -1) {
-			special.menuItems.splice(index, 1)
+			special.offerItems.splice(index, 1)
 		}
 	}
 
 	// Check if special can have an item added
-	canAddItem(special: Menu): boolean {
-		return special.menuItems.length === 0
+	canAddItem(special: Offer): boolean {
+		return special.offerItems.length === 0
 	}
 
 	// Product/Category Selection
-	toggleProductSelection(item: MenuItem, product: Product): void {
+	toggleProductSelection(item: OfferItem, product: Product): void {
 		const index = item.products.findIndex(p => p.uuid === product.uuid)
 		if (index > -1) {
 			item.products.splice(index, 1)
@@ -198,7 +195,7 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 		}
 	}
 
-	toggleCategorySelection(item: MenuItem, category: Category): void {
+	toggleCategorySelection(item: OfferItem, category: Category): void {
 		const categories = item.products.map(p => p.category)
 		const index = categories.findIndex(c => c.uuid === category.uuid)
 
@@ -222,7 +219,7 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 		)
 	}
 
-	toggleWeekday(special: Menu, weekday: Weekday): void {
+	toggleWeekday(special: Offer, weekday: Weekday): void {
 		const index = special.weekdays.indexOf(weekday)
 		if (index > -1) {
 			special.weekdays.splice(index, 1)
@@ -241,16 +238,16 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 		return found ? found.label : weekday
 	}
 
-	isCategorySelected(item: MenuItem, category: Category): boolean {
+	isCategorySelected(item: OfferItem, category: Category): boolean {
 		const categories = item.products.map(p => p.category)
 		return categories.some(c => c.uuid === category.uuid)
 	}
 
-	isProductSelected(item: MenuItem, product: Product): boolean {
+	isProductSelected(item: OfferItem, product: Product): boolean {
 		return item.products.some(p => p.uuid === product.uuid)
 	}
 
-	isWeekdaySelected(special: Menu, weekday: Weekday): boolean {
+	isWeekdaySelected(special: Offer, weekday: Weekday): boolean {
 		return special.weekdays.includes(weekday)
 	}
 }

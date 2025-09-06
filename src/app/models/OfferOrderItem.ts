@@ -1,13 +1,13 @@
 import { Product } from "./Product"
 import { Order } from "./Order"
 import { OrderItem } from "./OrderItem"
-import { Menu } from "./Menu"
+import { Offer } from "./Offer"
 
-export class MenuOrderItem {
+export class OfferOrderItem {
 	uuid: string
 	count: number
 	order: Order
-	menu: Menu
+	offer: Offer
 	product: Product
 	orderItems: OrderItem[]
 }

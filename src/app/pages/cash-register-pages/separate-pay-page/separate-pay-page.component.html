@@ -71,7 +71,7 @@
 					>
 						<mat-card-content class="card-content">
 							<span class="total-price">
-								{{ calculateTotalPriceOfMenuOrderItem(menuItem) }}€
+								{{ calculateTotalPriceOfOfferOrderItem(menuItem) }}€
 							</span>
 							<strong>
 								{{ menuItem.count }} x
@@ -121,7 +121,7 @@
 							}
 						}
 						<mat-card-content>
-							#{{ menuItem.menu.uuid }}
+							#{{ menuItem.offer.uuid }}
 						</mat-card-content>
 					</mat-card>
 					}
@@ -279,7 +279,7 @@
 					>
 						<mat-card-content class="card-content">
 							<span class="total-price">
-								{{ calculateTotalPriceOfMenuOrderItem(menuItem) }}€
+								{{ calculateTotalPriceOfOfferOrderItem(menuItem) }}€
 							</span>
 							<strong>
 								{{ menuItem.count }} x
@@ -329,7 +329,7 @@
 							}
 						}
 						<mat-card-content>
-							#{{ menuItem.menu.uuid }}
+							#{{ menuItem.offer.uuid }}
 						</mat-card-content>
 					</mat-card>
 					} }

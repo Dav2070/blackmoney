@@ -1,7 +1,7 @@
 import { Component } from "@angular/core"
 import { Category } from "src/app/models/Category"
 import { Variation } from "src/app/models/Variation"
-import { Menu } from "src/app/models/Menu"
+import { Offer } from "src/app/models/Offer"
 
 @Component({
 	selector: "app-menue-page",
@@ -110,7 +110,7 @@ export class MenuePageComponent {
 		}
 	]
 
-	menus: Menu[] = [
+	menus: Offer[] = [
 		{
 			uuid: "menu_1",
 			name: "Gutschein 205",
@@ -122,7 +122,7 @@ export class MenuePageComponent {
 			startTime: undefined,
 			endTime: undefined,
 			weekdays: [],
-			menuItems: [
+			offerItems: [
 				{
 					uuid: "item_beilagen",
 					name: "Beilagen",
@@ -279,7 +279,7 @@ export class MenuePageComponent {
 			startTime: undefined,
 			endTime: undefined,
 			weekdays: [],
-			menuItems: [
+			offerItems: [
 				{
 					uuid: "item_burger",
 					name: "Burger",
@@ -315,7 +315,7 @@ export class MenuePageComponent {
 		}
 	]
 
-	specials: Menu[] = [
+	specials: Offer[] = [
 		{
 			uuid: "special_1",
 			name: "Happy Hour Special",
@@ -327,7 +327,7 @@ export class MenuePageComponent {
 			startTime: "17:00",
 			endTime: "19:00",
 			weekdays: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
-			menuItems: [
+			offerItems: [
 				{
 					uuid: "special_item_1",
 					name: "Happy Hour Getränke",
@@ -347,7 +347,7 @@ export class MenuePageComponent {
 			startTime: "10:00",
 			endTime: "14:00",
 			weekdays: ["SATURDAY", "SUNDAY"],
-			menuItems: []
+			offerItems: []
 		}
 	]
 

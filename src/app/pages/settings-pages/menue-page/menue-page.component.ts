@@ -41,6 +41,7 @@ export class MenuePageComponent {
 				uuid: "vorspeisenteller",
 				price: 14.7,
 				name: "Vorspeisenteller",
+				category: null,
 				variations: []
 			}
 		]
@@ -57,6 +58,7 @@ export class MenuePageComponent {
 					uuid: "vorspeisenteller",
 					price: 14.7,
 					name: "Vorspeisenteller",
+					category: null,
 					variations: []
 				}
 			]
@@ -71,6 +73,7 @@ export class MenuePageComponent {
 					uuid: "rinderfilet",
 					price: 35.7,
 					name: "Rinderfilet",
+					category: null,
 					variations: []
 				}
 			]
@@ -85,6 +88,7 @@ export class MenuePageComponent {
 					uuid: "pommes",
 					price: 4.7,
 					name: "Pommes",
+					category: null,
 					variations: []
 				}
 			]
@@ -99,6 +103,7 @@ export class MenuePageComponent {
 					uuid: "tiramisu",
 					price: 6.4,
 					name: "Tiramisu",
+					category: null,
 					variations: []
 				}
 			]
@@ -336,6 +341,7 @@ export class MenuePageComponent {
 					uuid: "cola",
 					price: 500,
 					name: "Cola 0,5",
+					category: null,
 					variations: []
 				}
 			]
@@ -350,6 +356,7 @@ export class MenuePageComponent {
 					uuid: "pils",
 					price: 370,
 					name: "Pils 0,4",
+					category: null,
 					variations: []
 				}
 			]
@@ -364,6 +371,7 @@ export class MenuePageComponent {
 					uuid: "grauburunder",
 					price: 670,
 					name: "Grauburunder 0,2",
+					category: null,
 					variations: []
 				}
 			]
@@ -378,6 +386,7 @@ export class MenuePageComponent {
 					uuid: "ouzo",
 					price: 300,
 					name: "Ouzo",
+					category: null,
 					variations: []
 				}
 			]

@@ -65,6 +65,7 @@ export interface ProductResource {
 	uuid: string
 	name: string
 	price: number
+	category: CategoryResource
 	variations: List<VariationResource>
 }
 

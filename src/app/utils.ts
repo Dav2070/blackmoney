@@ -253,6 +253,7 @@ export function convertProductResourceToProduct(
 		uuid: productResource.uuid,
 		name: productResource.name,
 		price: productResource.price,
+		category: convertCategoryResourceToCategory(productResource.category),
 		variations
 	}
 }

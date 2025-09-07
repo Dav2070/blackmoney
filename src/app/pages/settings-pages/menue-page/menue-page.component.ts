@@ -331,7 +331,75 @@ export class MenuePageComponent {
 				{
 					uuid: "special_item_1",
 					name: "Happy Hour Getränke",
-					products: [],
+					products: [
+						{
+							id: 301,
+							uuid: "cola_light",
+							price: 200,
+							name: "Cola Light",
+							category: {
+								uuid: "alkoholfrei",
+								name: "Alkoholfrei",
+								type: "DRINK",
+								products: []
+							},
+							variations: []
+						},
+						{
+							id: 302,
+							uuid: "7up",
+							price: 200,
+							name: "7Up",
+							category: {
+								uuid: "alkoholfrei",
+								name: "Alkoholfrei",
+								type: "DRINK",
+								products: [
+									{
+										id: 301,
+										uuid: "cola_light",
+										price: 200,
+										name: "Cola Light",
+										category: {
+											uuid: "alkoholfrei",
+											name: "Alkoholfrei",
+											type: "DRINK",
+											products: []
+										},
+										variations: []
+									}
+								]
+							},
+							variations: []
+						},
+						{
+							id: 303,
+							uuid: "fanta",
+							price: 200,
+							name: "Fanta",
+							category: {
+								uuid: "alkoholfrei",
+								name: "Alkoholfrei",
+								type: "DRINK",
+								products: [
+									{
+										id: 301,
+										uuid: "cola_light",
+										price: 200,
+										name: "Cola Light",
+										category: {
+											uuid: "alkoholfrei",
+											name: "Alkoholfrei",
+											type: "DRINK",
+											products: []
+										},
+										variations: []
+									}
+								]
+							},
+							variations: []
+						}
+					],
 					maxSelections: 1
 				}
 			]

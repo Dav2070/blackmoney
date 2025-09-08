@@ -1,0 +1,89 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddPrinterDialog()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			@for (p of printers; track p.printer.uuid) {
+				<dav-card>
+					<div class="printer-card-container">
+						<div class="printer-card-content">
+							<p>
+								<strong>{{ p.printer.name }}</strong>
+							</p>
+							<p>{{ p.printer.ipAddress }}</p>
+							<p>
+								{{ locale.status }}:
+								<span [ngClass]="p.epsonPrinter.status">
+									{{
+										p.epsonPrinter.status === "online"
+											? locale.statusOnline
+											: p.epsonPrinter.status === "loading"
+												? locale.statusLoading
+												: locale.statusOffline
+									}}
+								</span>
+							</p>
+							<div class="printer-actions-row">
+								<fa-icon
+									[icon]="faPrint"
+									class="printer-icon"
+								></fa-icon>
+								<dav-button
+									outline
+									class="test-printer-btn"
+									[disabled]="
+										printerTestLoading === p.printer.uuid ||
+										p.epsonPrinter.status !== 'online'
+									"
+									(click)="testPrinter(p.printer, p.epsonPrinter)"
+									size="sm"
+								>
+									{{ locale.test }}
+								</dav-button>
+
+								@if (printerTestLoading === p.printer.uuid) {
+									<dav-progress-ring size="16"></dav-progress-ring>
+								}
+							</div>
+						</div>
+						<dav-icon-button
+							size="xs"
+							(click)="showEditPrinterDialog(p.printer)"
+						>
+							<fa-icon [icon]="faPen"></fa-icon>
+						</dav-icon-button>
+					</div>
+				</dav-card>
+			}
+		}
+	</div>
+</div>
+
+<app-add-printer-dialog
+	#addPrinterDialog
+	[loading]="addPrinterDialogLoading"
+	[nameError]="addPrinterDialogNameError"
+	[ipAddressError]="addPrinterDialogIpAddressError"
+	(primaryButtonClick)="addPrinterDialogPrimaryButtonClick($event)"
+	(clearErrors)="clearAddPrinterDialogErrors()"
+></app-add-printer-dialog>
+
+<app-edit-printer-dialog
+	#editPrinterDialog
+	[name]="editPrinterDialogName"
+	[ipAddress]="editPrinterDialogIpAddress"
+	[loading]="editPrinterDialogLoading"
+	[nameError]="editPrinterDialogNameError"
+	[ipAddressError]="editPrinterDialogIpAddressError"
+	(primaryButtonClick)="editPrinterDialogPrimaryButtonClick($event)"
+	(clearErrors)="clearEditPrinterDialogErrors()"
+></app-edit-printer-dialog>

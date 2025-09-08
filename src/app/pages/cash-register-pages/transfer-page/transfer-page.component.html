@@ -12,7 +12,7 @@
 							{{ tableLeftRoom?.name }}</mat-card-content
 						>
 					</mat-card>
-					@for (item of bookedItemsLeft.getItems(); track item.uuid) {
+					@for (item of bookedItemsLeft.getOrderItems(); track item.uuid) {
 						<mat-card
 							(click)="
 								transferItem(item, bookedItemsLeft, bookedItemsRight)
@@ -83,6 +83,66 @@
 							</mat-card-content>
 						</mat-card>
 					}
+					@for (menuItem of bookedItemsLeft.getMenuOrderItems(); track menuItem.uuid) {
+					<mat-card
+						style="border-left: 4px solid #ff9800; opacity: 0.7;"
+					>
+						<mat-card-content class="card-content">
+							<span class="total-price">
+								{{ calculateTotalPriceOfMenuOrderItem(menuItem) }}€
+							</span>
+							<strong>
+								{{ menuItem.count }} x
+								{{ menuItem.name }}
+								{{ (menuItem.product.price / 100).toFixed(2) }} €
+							</strong>
+							<div style="font-size: 0.8em; color: #666; margin-top: 5px;">
+								Menü/Special - Kann nicht einzeln übertragen werden
+							</div>
+						</mat-card-content>
+						@if (menuItem.orderItems) { 
+							@for (orderItem of menuItem.orderItems; track orderItem.uuid) {
+								<mat-card-content style="margin-left: 20px;">
+									{{ orderItem.count }} x {{ orderItem.product.name }}
+									@if (orderItem.orderItemVariations.length > 0) {
+										@for (variation of orderItem.orderItemVariations; track variation) {
+											<div style="margin-left: 20px;">
+												{{ variation.count }}x
+												@for(variationItem of variation.variationItems; track variationItem.uuid) {
+													{{ variationItem.name }}
+													@if (variationItem.additionalCost > 0) {
+														<span class="variationItem-price">
+															+
+															{{
+																(
+																	(variation.count * variationItem.additionalCost) /
+																	100
+																).toFixed(2)
+															}}€</span
+														>
+													}
+													@if (variationItem.additionalCost < 0) {
+														<span class="variationItem-price">
+															{{
+																(
+																	(variation.count * variationItem.additionalCost) /
+																	100
+																).toFixed(2)
+															}}€</span
+														>
+													}
+												}
+											</div>
+										}
+									}
+								</mat-card-content>
+							}
+						}
+						<mat-card-content>
+							#{{ menuItem.menu.id }}
+						</mat-card-content>
+					</mat-card>
+					}
 				</div>
 			</div>
 			<div>
@@ -151,7 +211,7 @@
 						{{ tableRightRoom?.name }}</mat-card-content
 					>
 				</mat-card>
-				@for (item of bookedItemsRight.getItems(); track item.uuid) {
+				@for (item of bookedItemsRight.getOrderItems(); track item.uuid) {
 					<mat-card
 						(click)="
 							transferItem(item, bookedItemsRight, bookedItemsLeft)
@@ -217,6 +277,66 @@
 							}
 						</mat-card-content>
 					</mat-card>
+				}
+				@for (menuItem of bookedItemsRight.getMenuOrderItems(); track menuItem.uuid) {
+				<mat-card
+					style="border-left: 4px solid #ff9800; opacity: 0.7;"
+				>
+					<mat-card-content class="card-content">
+						<span class="total-price">
+							{{ calculateTotalPriceOfMenuOrderItem(menuItem) }}€
+						</span>
+						<strong>
+							{{ menuItem.count }} x
+							{{ menuItem.name }}
+							{{ (menuItem.product.price / 100).toFixed(2) }} €
+						</strong>
+						<div style="font-size: 0.8em; color: #666; margin-top: 5px;">
+							Menü/Special - Kann nicht einzeln übertragen werden
+						</div>
+					</mat-card-content>
+					@if (menuItem.orderItems) { 
+						@for (orderItem of menuItem.orderItems; track orderItem.uuid) {
+							<mat-card-content style="margin-left: 20px;">
+								{{ orderItem.count }} x {{ orderItem.product.name }}
+								@if (orderItem.orderItemVariations.length > 0) {
+									@for (variation of orderItem.orderItemVariations; track variation) {
+										<div style="margin-left: 20px;">
+											{{ variation.count }}x
+											@for(variationItem of variation.variationItems; track variationItem.uuid) {
+												{{ variationItem.name }}
+												@if (variationItem.additionalCost > 0) {
+													<span class="variationItem-price">
+														+
+														{{
+															(
+																(variation.count * variationItem.additionalCost) /
+																100
+															).toFixed(2)
+														}}€</span
+													>
+												}
+												@if (variationItem.additionalCost < 0) {
+													<span class="variationItem-price">
+														{{
+															(
+																(variation.count * variationItem.additionalCost) /
+																100
+															).toFixed(2)
+														}}€</span
+													>
+												}
+											}
+										</div>
+									}
+								}
+							</mat-card-content>
+						}
+					}
+					<mat-card-content>
+						#{{ menuItem.menu.id }}
+					</mat-card-content>
+				</mat-card>
 				}
 			</div>
 			<div>

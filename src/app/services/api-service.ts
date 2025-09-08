@@ -13,7 +13,8 @@ import {
 	PaymentMethod,
 	BillResource,
 	RestaurantResource,
-	UserRole
+	UserRole,
+	PrinterResource
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -66,18 +67,37 @@ export class ApiService {
 			.toPromise()
 	}
 
-	async retrieveUser(
+	async retrieveOwnUser(
 		queryData: string
-	): Promise<ApolloQueryResult<{ retrieveUser: UserResource }>> {
+	): Promise<ApolloQueryResult<{ retrieveOwnUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
-			.query<{ retrieveUser: UserResource }>({
+			.query<{ retrieveOwnUser: UserResource }>({
 				query: gql`
-					query RetrieveUser {
-						retrieveUser {
+					query RetrieveOwnUser {
+						retrieveOwnUser {
 							${queryData}
 						}
 					}
 				`,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveUser(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloQueryResult<{ retrieveUser: UserResource }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveUser: UserResource }>({
+				query: gql`
+					query RetrieveUser($uuid: String!) {
+						retrieveUser(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
 				errorPolicy
 			})
 			.toPromise()
@@ -116,7 +136,12 @@ export class ApiService {
 
 	async createUser(
 		queryData: string,
-		variables: { companyUuid: string; name: string; role?: UserRole }
+		variables: {
+			companyUuid: string
+			name: string
+			role?: UserRole
+			restaurants: string[]
+		}
 	): Promise<MutationResult<{ createUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createUser: UserResource }>({
@@ -125,11 +150,43 @@ export class ApiService {
 						$companyUuid: String!
 						$name: String!
 						$role: UserRole
+						$restaurants: [String!]!
 					) {
 						createUser(
 							companyUuid: $companyUuid
 							name: $name
 							role: $role
+							restaurants: $restaurants
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async setPasswordForUser(
+		queryData: string,
+		variables: {
+			uuid: string
+			password: string
+		}
+	): Promise<MutationResult<{ setPasswordForUser: UserResource }>> {
+		return await this.davAuthApollo
+			.mutate<{
+				setPasswordForUser: UserResource
+			}>({
+				mutation: gql`
+					mutation SetPasswordForUser(
+						$uuid: String!
+						$password: String!
+					) {
+						setPasswordForUser(
+							uuid: $uuid
+							password: $password
 						) {
 							${queryData}
 						}
@@ -230,6 +287,70 @@ export class ApiService {
 							line1: $line1
 							line2: $line2
 							postalCode: $postalCode
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createPrinter(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			name: string
+			ipAddress: string
+		}
+	): Promise<MutationResult<{ createPrinter: PrinterResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				createPrinter: PrinterResource
+			}>({
+				mutation: gql`
+					mutation CreatePrinter(
+						$restaurantUuid: String!
+						$name: String!
+						$ipAddress: String!
+					) {
+						createPrinter(
+							restaurantUuid: $restaurantUuid
+							name: $name
+							ipAddress: $ipAddress
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updatePrinter(
+		queryData: string,
+		variables: {
+			uuid: string
+			name: string
+			ipAddress: string
+		}
+	): Promise<MutationResult<{ updatePrinter: PrinterResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updatePrinter: PrinterResource }>({
+				mutation: gql`
+					mutation UpdatePrinter(
+						$uuid: String!
+						$name: String!
+						$ipAddress: String!
+					) {
+						updatePrinter(
+							uuid: $uuid
+							name: $name
+							ipAddress: $ipAddress
 						) {
 							${queryData}
 						}

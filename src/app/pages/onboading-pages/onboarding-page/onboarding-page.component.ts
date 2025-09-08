@@ -13,6 +13,7 @@ import { convertUserResourceToUser } from "src/app/utils"
 export class OnboardingPageComponent {
 	context: "createCompany" | "createOwner" | "createUsers" = null
 	companyUuid: string = ""
+	restaurantUuid: string = ""
 	restaurantName: string = ""
 	ownerName: string = ""
 	ownerPassword: string = ""
@@ -57,7 +58,8 @@ export class OnboardingPageComponent {
 	async addEmployeeButtonClick() {
 		await this.apiService.createUser(`uuid`, {
 			companyUuid: this.companyUuid,
-			name: this.employeeName
+			name: this.employeeName,
+			restaurants: [this.restaurantUuid]
 		})
 		this.employees.push(this.employeeName)
 		this.employeeName = ""
@@ -67,13 +69,22 @@ export class OnboardingPageComponent {
 		if (this.context === "createCompany") {
 			// TODO: Implement error handling
 			const createCompanyResponse = await this.apiService.createCompany(
-				`uuid`,
+				`
+					uuid
+					restaurants {
+						items {
+							uuid
+						}
+					}
+				`,
 				{
 					name: this.restaurantName
 				}
 			)
 
 			this.companyUuid = createCompanyResponse.data.createCompany.uuid
+			this.restaurantUuid =
+				createCompanyResponse.data.createCompany.restaurants.items[0].uuid
 
 			this.context = "createOwner"
 		} else if (this.context === "createOwner") {

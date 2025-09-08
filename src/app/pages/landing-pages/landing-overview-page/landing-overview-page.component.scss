@@ -1,7 +1,6 @@
 .container {
 	height: 100vh;
 	padding: 0 16px;
-	background-color: black;
 }
 
 .section-1-container {
@@ -16,5 +15,5 @@
 
 h1 {
 	margin: 0;
-	color: white;
+	color: var(--dav-color-on-surface);
 }

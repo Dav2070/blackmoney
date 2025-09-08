@@ -1,5 +1,5 @@
-import { Component, Inject, PLATFORM_ID } from "@angular/core"
-import { isPlatformServer } from "@angular/common"
+import { Component, HostListener, Inject, PLATFORM_ID } from "@angular/core"
+import { isPlatformBrowser, isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute } from "@angular/router"
 import { HttpHeaders } from "@angular/common/http"
 import { Apollo } from "apollo-angular"
@@ -10,6 +10,7 @@ import * as DavUIComponents from "dav-ui-components"
 import { DataService } from "./services/data-service"
 import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
+import { SettingsService } from "./services/settings-service"
 import { environment } from "src/environments/environment"
 import {
 	convertCompanyResourceToCompany,
@@ -17,8 +18,11 @@ import {
 	convertUserResourceToUser,
 	getGraphQLErrorCodes
 } from "src/app/utils"
-import { davAuthClientName, blackmoneyAuthClientName } from "src/app/constants"
-import { SettingsService } from "./services/settings-service"
+import {
+	davAuthClientName,
+	blackmoneyAuthClientName,
+	smallWindowMaxSize
+} from "src/app/constants"
 
 @Component({
 	selector: "app-root",
@@ -32,7 +36,6 @@ export class AppComponent {
 		private apiService: ApiService,
 		private authService: AuthService,
 		private settingsService: SettingsService,
-		private router: Router,
 		private activatedRoute: ActivatedRoute,
 		private apollo: Apollo,
 		private httpLink: HttpLink,
@@ -59,6 +62,8 @@ export class AppComponent {
 			await this.userLoaded()
 			return
 		}
+
+		this.dataService.loadTheme()
 
 		new Dav({
 			environment: environment.environment,
@@ -161,7 +166,7 @@ export class AppComponent {
 
 			if (restaurant.users.length > 0 && accessToken != null) {
 				// Load the current user
-				let retrieveUserResponse = await this.apiService.retrieveUser(
+				let retrieveOwnUserResponse = await this.apiService.retrieveOwnUser(
 					`
 						uuid
 						name
@@ -170,15 +175,15 @@ export class AppComponent {
 				)
 
 				if (
-					getGraphQLErrorCodes(retrieveUserResponse).includes(
+					getGraphQLErrorCodes(retrieveOwnUserResponse).includes(
 						"NOT_AUTHENTICATED"
 					)
 				) {
 					// Remove the access token
 					this.authService.removeAccessToken()
-				} else if (retrieveUserResponse.data.retrieveUser != null) {
+				} else if (retrieveOwnUserResponse.data.retrieveOwnUser != null) {
 					this.dataService.user = convertUserResourceToUser(
-						retrieveUserResponse.data.retrieveUser
+						retrieveOwnUserResponse.data.retrieveOwnUser
 					)
 				}
 			}
@@ -187,6 +192,13 @@ export class AppComponent {
 		this.dataService.companyPromiseHolder.Resolve()
 		this.dataService.restaurantPromiseHolder.Resolve()
 		this.dataService.blackmoneyUserPromiseHolder.Resolve()
+	}
+
+	@HostListener("window:resize")
+	setSize() {
+		this.dataService.isMobile =
+			isPlatformBrowser(this.platformId) &&
+			window.innerWidth <= smallWindowMaxSize
 	}
 
 	setupApollo(davAccessToken: string, accessToken: string) {

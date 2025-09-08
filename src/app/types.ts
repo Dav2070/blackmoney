@@ -5,6 +5,12 @@ export interface List<T> {
 	items: T[]
 }
 
+export enum Theme {
+	System = "system",
+	Light = "light",
+	Dark = "dark"
+}
+
 export interface SessionResource {
 	uuid: string
 	user: UserResource
@@ -27,6 +33,7 @@ export interface RestaurantResource {
 	postalCode: string
 	users: List<UserResource>
 	rooms: List<RoomResource>
+	printers: List<PrinterResource>
 }
 
 export interface UserResource {
@@ -45,6 +52,12 @@ export interface TableResource {
 	uuid: string
 	name: number
 	orders: List<OrderResource>
+}
+
+export interface PrinterResource {
+	uuid: string
+	name: string
+	ipAddress: string
 }
 
 export interface ProductResource {
@@ -110,10 +123,16 @@ export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type Country = "DE"
 
 export type ErrorCode =
+	| typeof ErrorCodes.printerAlreadyExists
 	| typeof ErrorCodes.notAuthenticated
+	| typeof ErrorCodes.userHasNoPassword
+	| typeof ErrorCodes.userAlreadyHasPassword
 	| typeof ErrorCodes.nameTooShort
+	| typeof ErrorCodes.passwordTooShort
 	| typeof ErrorCodes.nameTooLong
+	| typeof ErrorCodes.passwordTooLong
 	| typeof ErrorCodes.cityTooLong
 	| typeof ErrorCodes.line1TooLong
 	| typeof ErrorCodes.line2TooLong
 	| typeof ErrorCodes.postalCodeInvalid
+	| typeof ErrorCodes.ipAddressInvalid

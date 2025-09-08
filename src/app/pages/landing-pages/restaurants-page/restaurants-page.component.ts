@@ -14,6 +14,7 @@ import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 export class RestaurantsPageComponent {
 	locale = this.localizationService.locale.restaurantsPage
 	restaurants: Restaurant[] = []
+	loading: boolean = true
 
 	constructor(
 		private apiService: ApiService,
@@ -37,6 +38,8 @@ export class RestaurantsPageComponent {
 			`
 		)
 
+		this.loading = false
+
 		if (retrieveCompanyResponse.data == null) return
 
 		const restaurants =
@@ -47,6 +50,10 @@ export class RestaurantsPageComponent {
 				convertRestaurantResourceToRestaurant(restaurant)
 			)
 		}
+	}
+
+	navigateBack() {
+		this.router.navigate(["user"])
 	}
 
 	navigateToRestaurant(event: MouseEvent, restaurant: Restaurant) {

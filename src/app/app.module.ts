@@ -35,23 +35,29 @@ import { AppRoutingModule } from "./app-routing.module"
 
 // Components
 import { AppComponent } from "./app.component"
-import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
+import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 
 // Dialogs
+import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
+import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
+import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
+import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-settings-page/general-settings-page.component"
 import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page/restaurants-page.component"
 import { RestaurantPageComponent } from "./pages/landing-pages/restaurant-page/restaurant-page.component"
 import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/employees-page.component"
+import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
+import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-page/set-password-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
@@ -80,6 +86,10 @@ import { RoomManagementComponent } from "./pages/settings-pages/room-management/
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
 import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
+import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
+
+
+
 import { TablesComponent } from "./pages/tables/tables.component"
 import { TableCombinationComponent } from "./pages/landing-pages/table-combination/table-combination.component"
 
@@ -91,23 +101,31 @@ import { TableCombinationComponent } from "./pages/landing-pages/table-combinati
 		HeaderComponent,
 		SettingsBarComponent,
 		// Dialog
+		LogoutDialogComponent,
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,
+		AddPrinterDialogComponent,
+		EditPrinterDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
 		LandingPricingPageComponent,
 		UserPageComponent,
+		GeneralSettingsPageComponent,
 		RestaurantsPageComponent,
 		RestaurantPageComponent,
 		EmployeesPageComponent,
+		EmployeePageComponent,
 		LoginPageComponent,
+		SetPasswordPageComponent,
 		OnboardingPageComponent,
 		TableOverviewPageComponent,
 		BookingPageComponent,
 		TransferPageComponent,
 		SeparatePayPageComponent,
+		//Landing-Pages
+		PrintersPageComponent,
 		RoomsComponent,
 		TablesComponent,
 		TableCombinationComponent,
@@ -172,4 +190,4 @@ import { TableCombinationComponent } from "./pages/landing-pages/table-combinati
 		provideHttpClient(withInterceptorsFromDi())
 	]
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,14 +1,18 @@
 import { Component, ViewChild } from "@angular/core"
-import { ActivatedRoute } from "@angular/router"
+import { Router, ActivatedRoute } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
-import { faLocationDot, faPen } from "@fortawesome/pro-regular-svg-icons"
+import {
+	faLocationDot,
+	faPen,
+	faPrint,
+	faSeat
+} from "@fortawesome/pro-regular-svg-icons"
 import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
 import * as ErrorCodes from "src/app/errorCodes"
 
-import { Router } from '@angular/router';
 
 
 @Component({
@@ -21,6 +25,8 @@ export class RestaurantPageComponent {
 	errorsLocale = this.localizationService.locale.errors
 	faLocationDot = faLocationDot
 	faPen = faPen
+	faPrint = faPrint
+	faSeat = faSeat
 	uuid: string = null
 	name: string = ""
 	nameError: string = ""
@@ -49,9 +55,9 @@ export class RestaurantPageComponent {
 	constructor(
 		private apiService: ApiService,
 		private dataService: DataService,
-		private activatedRoute: ActivatedRoute,
 		private localizationService: LocalizationService,
-		private router: Router
+		private router: Router,
+		private activatedRoute: ActivatedRoute
 		
 	) {}
 
@@ -82,6 +88,22 @@ export class RestaurantPageComponent {
 		this.line2 = retrieveRestaurantResponse.data.retrieveRestaurant.line2
 		this.postalCode =
 			retrieveRestaurantResponse.data.retrieveRestaurant.postalCode
+	}
+
+	navigateBack() {
+		this.router.navigate(["user", "restaurants"])
+	}
+
+	navigateToPrintersPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "restaurants", this.uuid, "printers"])
+	}
+
+	navigateToRoomsPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "restaurants", this.uuid, "rooms"])
 	}
 
 	showEditRestaurantNameDialog() {

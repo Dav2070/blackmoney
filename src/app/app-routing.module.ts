@@ -4,10 +4,13 @@ import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
+import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-settings-page/general-settings-page.component"
 import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page/restaurants-page.component"
 import { RestaurantPageComponent } from "./pages/landing-pages/restaurant-page/restaurant-page.component"
 import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/employees-page.component"
+import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
+import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-page/set-password-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
@@ -21,6 +24,7 @@ import { EmployeeManagementComponent } from "./pages/settings-pages/employee-man
 import { RoomsComponent } from "./pages/landing-pages/rooms/rooms.component"
 import { TableCombinationComponent } from "./pages/landing-pages/table-combination/table-combination.component"
 import { TablesComponent } from "./pages/tables/tables.component"
+import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 
 const routes: Routes = [
 	{
@@ -36,8 +40,20 @@ const routes: Routes = [
 				component: LandingPricingPageComponent
 			},
 			{
+				path: "login",
+				component: LoginPageComponent
+			},
+			{
+				path: "login/set-password",
+				component: SetPasswordPageComponent
+			},
+			{
 				path: "user",
 				component: UserPageComponent
+			},
+			{
+				path: "user/settings",
+				component: GeneralSettingsPageComponent
 			},
 			{
 				path: "user/restaurants",
@@ -48,8 +64,16 @@ const routes: Routes = [
 				component: RestaurantPageComponent
 			},
 			{
+				path: "user/restaurants/:uuid/printers",
+				component: PrintersPageComponent
+			},
+			{
 				path: "user/employees",
 				component: EmployeesPageComponent
+			},
+			{
+				path: "user/employees/:uuid",
+				component: EmployeePageComponent
 			},
 			{
 				path: "user/restaurants/:uuid/rooms",

@@ -6,6 +6,9 @@
 	[visible]="visible"
 	maxWidth="450"
 	[loading]="loading"
+	[primaryButtonDisabled]="
+		name.length === 0 || assignedRestaurants.length === 0
+	"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"
@@ -21,5 +24,19 @@
 				(change)="nameTextfieldChange($event)"
 			></dav-textfield>
 		</div>
+
+		@if (restaurants.length > 0) {
+			<!-- Restaurants -->
+			<div class="dialog-formfield-container">
+				<h5>{{ locale.assignedRestaurants }}</h5>
+
+				@for (restaurant of restaurants; track restaurant.uuid) {
+					<dav-checkbox
+						[label]="restaurant.name"
+						(change)="restaurantCheckboxChange($event, restaurant.uuid)"
+					></dav-checkbox>
+				}
+			</div>
+		}
 	</form>
 </dav-dialog>

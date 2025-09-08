@@ -1,0 +1,38 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.editHeadline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	[primaryButtonDisabled]="
+		name.length === 0 || ipAddress.length === 0
+	"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Printer Name -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="name"
+				[label]="locale.name"
+				[disabled]="loading"
+				[errorMessage]="nameError"
+				(change)="nameTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+		<!-- IP-Adresse -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="ipAddress"
+				[label]="locale.ipAddress"
+				[disabled]="loading"
+				[errorMessage]="ipAddressError"
+				(change)="ipAddressTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+	</form>
+</dav-dialog>

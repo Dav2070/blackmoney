@@ -23,6 +23,26 @@
 	font-style: italic;
 }
 
+dav-card {
+	margin-bottom: 32px;
+}
+
+.actions-container {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 32px;
+
+	dav-icon-card {
+		width: 100%;
+	}
+}
+
+.separator {
+	width: 300px;
+	border-top: 1px solid var(--dav-color-outline-variant);
+}
+
 .room-card-container {
 	display: flex;
 	align-items: start;

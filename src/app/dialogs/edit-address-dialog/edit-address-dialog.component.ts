@@ -15,6 +15,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 @Component({
 	selector: "app-edit-address-dialog",
 	templateUrl: "./edit-address-dialog.component.html",
+	styleUrl: "./edit-address-dialog.component.scss",
 	standalone: false
 })
 export class EditAddressDialogComponent {

@@ -1,0 +1,19 @@
+<div class="container slide-up-in">
+	<dav-header backButtonVisible (backButtonClick)="navigateBack()">
+		{{ locale.headline }}
+	</dav-header>
+
+	<div class="settings-container">
+		<div class="setting">
+			<!-- Theme -->
+			<dav-setting [header]="locale.theme">
+				<dav-dropdown
+					[options]="themeDropdownOptions"
+					[selectedKey]="selectedTheme"
+					width="180"
+					(change)="themeDropdownChange($event)"
+				></dav-dropdown>
+			</dav-setting>
+		</div>
+	</div>
+</div>

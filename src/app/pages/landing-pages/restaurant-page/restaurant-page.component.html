@@ -1,7 +1,9 @@
 <div class="container slide-up-in">
 	<div class="content-container">
 		<dav-header
+			backButtonVisible
 			editButtonVisible
+			(backButtonClick)="navigateBack()"
 			(editButtonClick)="showEditRestaurantNameDialog()"
 		>
 			{{ name }}
@@ -36,21 +38,25 @@
 			</div>
 		</dav-card>
 
-		<dav-card>
-			<div class="room-card-container">
-				<fa-icon [icon]="faLocationDot"></fa-icon>
+		<div class="separator"></div>
 
-				<div class="room-card-content">
-					<p>Räume verwalten</p>
-				</div>
+		<div class="actions-container">
+			<dav-icon-card
+				[text]="locale.managePrinters"
+				[href]="'/user/restaurants/' + uuid + '/printers'"
+				(click)="navigateToPrintersPage($event)"
+			>
+				<fa-icon [icon]="faPrint"></fa-icon>
+			</dav-icon-card>
 
-				<dav-icon-button size="xs" (click)="showRoomAdministrationDialog()">
-					<fa-icon [icon]="faPen"></fa-icon>
-				</dav-icon-button>
-			</div>
-		</dav-card>
-
-
+			<dav-icon-card
+				[text]="locale.manageRooms"
+				[href]="'/user/restaurants/' + uuid + '/rooms'"
+				(click)="navigateToRoomsPage($event)"
+			>
+				<fa-icon [icon]="faSeat"></fa-icon>
+			</dav-icon-card>
+		</div>
 	</div>
 </div>
 

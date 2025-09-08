@@ -9,7 +9,8 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { SettingsService } from "src/app/services/settings-service"
 import {
 	convertCompanyResourceToCompany,
-	convertUserResourceToUser
+	getGraphQLErrorCodes,
+	initUserAfterLogin
 } from "src/app/utils"
 
 @Component({
@@ -24,9 +25,12 @@ export class LoginPageComponent {
 	userDropdownSelectedKey: string = ""
 	restaurantDropdownOptions: DropdownOption[] = []
 	restaurantDropdownSelectedKey: string = ""
+	uuid: string = ""
 	username: string = ""
 	password: string = ""
 	errorMessage: string = ""
+	initialLoad: boolean = true
+	loading: boolean = false
 
 	constructor(
 		private router: Router,
@@ -45,6 +49,7 @@ export class LoginPageComponent {
 		}
 
 		await this.dataService.davUserPromiseHolder.AwaitResult()
+		await this.dataService.companyPromiseHolder.AwaitResult()
 
 		// Load the company with all restaurants and users
 		const retrieveCompanyResponse = await this.apiService.retrieveCompany(
@@ -102,6 +107,7 @@ export class LoginPageComponent {
 		}
 
 		this.loadUserDropdownOptions()
+		this.initialLoad = false
 	}
 
 	loadUserDropdownOptions() {
@@ -138,7 +144,10 @@ export class LoginPageComponent {
 			u => u.uuid === this.userDropdownSelectedKey
 		)
 
-		this.username = selectedUser?.name ?? ""
+		if (selectedUser != null) {
+			this.uuid = selectedUser.uuid
+			this.username = selectedUser.name
+		}
 	}
 
 	passwordChange(event: Event) {
@@ -147,6 +156,7 @@ export class LoginPageComponent {
 
 	async login() {
 		this.errorMessage = ""
+		this.loading = true
 
 		const loginResponse = await this.apiService.login(
 			`
@@ -164,26 +174,39 @@ export class LoginPageComponent {
 			}
 		)
 
+		this.loading = false
 		const accessToken = loginResponse?.data?.login.uuid
 
 		if (accessToken != null) {
-			await this.authService.setAccessToken(accessToken)
-			this.dataService.loadApollo(accessToken)
-			this.apiService.loadApolloClients()
-
-			this.dataService.user = convertUserResourceToUser(
-				loginResponse.data.login.user
+			await initUserAfterLogin(
+				accessToken,
+				this.restaurantDropdownSelectedKey,
+				loginResponse.data.login.user,
+				this.apiService,
+				this.authService,
+				this.dataService,
+				this.settingsService,
+				this.router
 			)
-			this.dataService.blackmoneyUserPromiseHolder.Resolve()
-
-			await this.settingsService.setRestaurant(
-				this.restaurantDropdownSelectedKey
-			)
-
-			// Redirect to user page
-			this.router.navigate(["user"])
 		} else {
-			this.errorMessage = this.locale.loginFailed
+			const errors = getGraphQLErrorCodes(loginResponse)
+
+			if (errors == null) {
+				this.errorMessage = this.locale.loginFailed
+				return
+			}
+
+			if (errors.includes("USER_HAS_NO_PASSWORD")) {
+				this.router.navigate(["login", "set-password"], {
+					queryParams: {
+						uuid: this.uuid,
+						restaurantUuid: this.restaurantDropdownSelectedKey,
+						name: this.username
+					}
+				})
+			} else {
+				this.errorMessage = this.locale.loginFailed
+			}
 		}
 	}
 }

@@ -1,24 +1,13 @@
+import { Router } from "@angular/router"
 import { ApolloQueryResult } from "@apollo/client"
 import { MutationResult } from "apollo-angular"
+import { ApiService } from "./services/api-service"
+import { DataService } from "./services/data-service"
+import { SettingsService } from "./services/settings-service"
+import { AuthService } from "./services/auth-service"
 import { Company } from "./models/Company"
 import { User } from "./models/User"
 import { Room } from "./models/Room"
-import {
-	CategoryResource,
-	CompanyResource,
-	ProductResource,
-	RoomResource,
-	TableResource,
-	UserResource,
-	VariationResource,
-	VariationItemResource,
-	OrderResource,
-	OrderItemResource,
-	OrderItemVariationResource,
-	BillResource,
-	RestaurantResource,
-	ErrorCode
-} from "./types"
 import { Table } from "./models/Table"
 import { Category } from "./models/Category"
 import { Product } from "./models/Product"
@@ -29,6 +18,26 @@ import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
 import { Bill } from "./models/Bill"
 import { Restaurant } from "./models/Restaurant"
+import { Printer } from "./models/Printer"
+import {
+	CategoryResource,
+	CompanyResource,
+	ProductResource,
+	RoomResource,
+	TableResource,
+	PrinterResource,
+	UserResource,
+	VariationResource,
+	VariationItemResource,
+	OrderResource,
+	OrderItemResource,
+	OrderItemVariationResource,
+	BillResource,
+	RestaurantResource,
+	ErrorCode,
+	Theme
+} from "./types"
+import { darkThemeKey, lightThemeKey } from "./constants"
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 	let total = 0
@@ -74,6 +83,29 @@ export function getGraphQLErrorCodes(
 
 export function randomNumber(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export async function initUserAfterLogin(
+	accessToken: string,
+	restaurantUuid: string,
+	user: UserResource,
+	apiService: ApiService,
+	authService: AuthService,
+	dataService: DataService,
+	settingsService: SettingsService,
+	router: Router
+): Promise<void> {
+	await authService.setAccessToken(accessToken)
+	dataService.loadApollo(accessToken)
+	apiService.loadApolloClients()
+
+	dataService.user = convertUserResourceToUser(user)
+	dataService.blackmoneyUserPromiseHolder.Resolve()
+
+	await settingsService.setRestaurant(restaurantUuid)
+
+	// Redirect to user page
+	router.navigate(["user"])
 }
 
 //#region Converter functions
@@ -122,6 +154,14 @@ export function convertRestaurantResourceToRestaurant(
 		}
 	}
 
+	const printers: Printer[] = []
+
+	if (restaurantResource.printers != null) {
+		for (let printer of restaurantResource.printers.items) {
+			printers.push(convertPrinterResourceToPrinter(printer))
+		}
+	}
+
 	return {
 		uuid: restaurantResource.uuid,
 		name: restaurantResource.name,
@@ -131,7 +171,8 @@ export function convertRestaurantResourceToRestaurant(
 		line2: restaurantResource.line2,
 		postalCode: restaurantResource.postalCode,
 		users,
-		rooms
+		rooms,
+		printers
 	}
 }
 
@@ -175,6 +216,20 @@ export function convertTableResourceToTable(
 	return {
 		uuid: tableResource.uuid,
 		name: tableResource.name
+	}
+}
+
+export function convertPrinterResourceToPrinter(
+	printerResource: PrinterResource
+): Printer {
+	if (printerResource == null) {
+		return null
+	}
+
+	return {
+		uuid: printerResource.uuid,
+		name: printerResource.name,
+		ipAddress: printerResource.ipAddress
 	}
 }
 
@@ -350,6 +405,17 @@ export function convertOrderItemVariationResourceToOrderItemVariation(
 		uuid: orderItemVariationResource.uuid,
 		count: orderItemVariationResource.count,
 		variationItems
+	}
+}
+
+export function convertStringToTheme(value: string): Theme {
+	switch (value) {
+		case lightThemeKey:
+			return Theme.Light
+		case darkThemeKey:
+			return Theme.Dark
+		default:
+			return Theme.System
 	}
 }
 //#endregion

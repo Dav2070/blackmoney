@@ -1,6 +1,6 @@
 import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
-import { Router, ActivatedRoute } from "@angular/router"
+import { Router, ActivatedRoute, ParamMap } from "@angular/router"
 import { faArrowRightArrowLeft } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
@@ -85,6 +85,7 @@ export class BookingPageComponent {
 	consoleActive: boolean = false
 
 	commaUsed: boolean = false
+	uuid: string = null
 	room: Room = null
 	table: Table = null
 	orderUuid: string = null
@@ -121,9 +122,9 @@ export class BookingPageComponent {
 	constructor(
 		public dataService: DataService,
 		private apiService: ApiService,
-		private activatedRoute: ActivatedRoute,
 		private localizationService: LocalizationService,
 		private router: Router,
+		private activatedRoute: ActivatedRoute,
 		@Inject(PLATFORM_ID) private platformId: object
 	) {}
 
@@ -133,8 +134,16 @@ export class BookingPageComponent {
 		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
 		await this.dataService.restaurantPromiseHolder.AwaitResult()
 
-		await this.loadTable(this.activatedRoute.snapshot.paramMap.get("uuid"))
-		await this.loadOrders()
+		this.activatedRoute.paramMap.subscribe(async (paramMap: ParamMap) => {
+			const uuid = paramMap.get("uuid")
+
+			if (this.uuid !== uuid) {
+				this.uuid = uuid
+
+				await this.loadTable()
+				await this.loadOrders()
+			}
+		})
 
 		this.showTotal()
 
@@ -396,15 +405,12 @@ export class BookingPageComponent {
 			if (this.selectedMenuItem.offer.offerItems.length > 1) {
 				this.selectedMenuItem.count += 1
 				for (let item of this.selectedMenuItem.orderItems) {
-					console.log("OrderItem: ", item)
 					// Finde die entsprechende maxSelections für dieses Produkt
 					let maxSelectionsForThisItem = 0
 					for (let offerItem of this.selectedMenuItem.offer.offerItems) {
 						for (let product of offerItem.products) {
 							if (product.uuid === item.uuid) {
 								maxSelectionsForThisItem = offerItem.maxSelections
-								console.log("Product: ", product)
-								console.log("maxSelections: ", offerItem.maxSelections)
 								break
 							}
 						}
@@ -947,25 +953,20 @@ export class BookingPageComponent {
 			this.isSpecialVariationMode = false
 			this.tmpLastPickedVariation = []
 			this.lastClickedMenuItem = null
-			console.log("showtotal aufgerufen")
 			this.showTotal()
 		}
 	}
 
-	async loadTable(uuid: string) {
-		if (uuid == null) return
+	async loadTable() {
+		if (this.uuid == null) return
 
 		for (let room of this.dataService.restaurant.rooms) {
 			for (let table of room.tables) {
-				if (table.uuid === uuid) {
+				if (table.uuid === this.uuid) {
 					this.room = room
 					this.table = table
 					break
 				}
-			}
-
-			if (this.table != null) {
-				break
 			}
 		}
 	}
@@ -1062,7 +1063,7 @@ export class BookingPageComponent {
 					this.stagedItems.calculateTotal()) /
 				100
 			).toFixed(2) + " €"
-		console.log("showtotal aufgerufen", this.console)
+
 		this.consoleActive = false
 		this.commaUsed = false
 		this.tmpAnzahl = 0
@@ -1261,9 +1262,6 @@ export class BookingPageComponent {
 
 	selectMenuItem(pickedItem: OfferOrderItem, AllItemHandler: AllItemHandler) {
 		this.selectedMenuItem = pickedItem
-		for (let item of this.selectedMenuItem.offer.offerItems) {
-			console.log("Selected Menu Item maxSelections", item.maxSelections)
-		}
 		this.tmpAllItemHandler = AllItemHandler
 		this.selectedItem = null
 	}
@@ -1365,7 +1363,7 @@ export class BookingPageComponent {
 				}
 			})
 		}
-		console.log(this.bills)
+
 		this.pickedBill = this.bills[0]
 
 		this.isBillPopupVisible = !this.isBillPopupVisible
@@ -1859,7 +1857,6 @@ export class BookingPageComponent {
 			}
 
 			let itemPrice = this.calculateSpecialPrice(processedItem)
-			console.log("Item Price:", itemPrice)
 
 			// Bestimme das aktuelle Menü/Special für MenuOrderItem
 			let currentMenuOrSpecial = this.currentMenu || this.currentSpecial

@@ -31,6 +31,7 @@ export interface RestaurantResource {
 	line1: string
 	line2: string
 	postalCode: string
+	menu: MenuResource
 	users: List<UserResource>
 	rooms: List<RoomResource>
 	printers: List<PrinterResource>
@@ -58,6 +59,33 @@ export interface PrinterResource {
 	uuid: string
 	name: string
 	ipAddress: string
+}
+
+export interface MenuResource {
+	uuid: string
+	categories: List<CategoryResource>
+	offers: List<OfferResource>
+}
+
+export interface OfferResource {
+	uuid: string
+	name: string
+	offerType: OfferType
+	discountType?: DiscountType
+	offerValue: number
+	startDate?: string
+	endDate?: string
+	startTime?: string
+	endTime?: string
+	weekdays: Weekday[]
+	offerItems: List<OfferItemResource>
+}
+
+export interface OfferItemResource {
+	uuid: string
+	name: string
+	maxSelections: number
+	products: List<ProductResource>
 }
 
 export interface ProductResource {

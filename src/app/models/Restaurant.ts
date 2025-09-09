@@ -1,6 +1,7 @@
 import { User } from "./User"
 import { Room } from "./Room"
 import { Printer } from "./Printer"
+import { Menu } from "./Menu"
 import { Country } from "../types"
 
 export class Restaurant {
@@ -14,4 +15,5 @@ export class Restaurant {
 	users: User[]
 	rooms: Room[]
 	printers: Printer[]
+	menu: Menu
 }

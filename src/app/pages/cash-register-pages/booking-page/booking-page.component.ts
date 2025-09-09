@@ -18,10 +18,10 @@ import { Offer } from "src/app/models/Offer"
 import { OfferItem } from "src/app/models/OfferItem"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
-import { MenuePageComponent } from "../../settings-pages/menue-page/menue-page.component"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import {
 	convertCategoryResourceToCategory,
+	convertOfferResourceToOffer,
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
@@ -50,7 +50,6 @@ export class BookingPageComponent {
 	selectedInventory: Product[] = []
 	selectedCategory: string = ""
 
-	menuInventory = new MenuePageComponent()
 	menues: Offer[] = []
 	specials: Offer[] = []
 	isMenuePopupVisible: boolean = false
@@ -132,56 +131,90 @@ export class BookingPageComponent {
 		if (isPlatformServer(this.platformId)) return
 
 		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
+		await this.dataService.restaurantPromiseHolder.AwaitResult()
 
 		await this.loadTable(this.activatedRoute.snapshot.paramMap.get("uuid"))
 		await this.loadOrders()
 
 		this.showTotal()
 
-		let listCategoriesResult = await this.apiService.listCategories(
+		let retrieveRestaurantResponse = await this.apiService.retrieveRestaurant(
 			`
-				total
-				items {
-					uuid
-					name
-					type
-					products {
-						total
+				menu {
+					categories {
 						items {
-							id
 							uuid
 							name
-							price
-							variations {
+							type
+							products {
 								total
 								items {
+									id
 									uuid
 									name
-									variationItems {
+									price
+									variations {
 										total
 										items {
 											uuid
 											name
-											additionalCost
+											variationItems {
+												total
+												items {
+													uuid
+													name
+													additionalCost
+												}
+											}
 										}
 									}
 								}
 							}
 						}
 					}
+					offers {
+						items {
+							uuid
+							name
+							offerType
+							discountType
+							offerValue
+							startDate
+							endDate
+							startTime
+							endTime
+							weekdays
+							offerItems {
+								total
+								items {
+									uuid
+									name
+									maxSelections
+								}
+							}
+						}
+					}
 				}
-			`
+			`,
+			{ uuid: this.dataService.restaurant.uuid }
 		)
 
-		if (listCategoriesResult.errors != null) {
-			console.error(listCategoriesResult.errors)
+		if (retrieveRestaurantResponse.errors != null) {
+			console.error(retrieveRestaurantResponse.errors)
 			return
 		}
 
-		this.categories = []
+		const retrieveRestaurantResponseData =
+			retrieveRestaurantResponse.data.retrieveRestaurant
+		const categories = retrieveRestaurantResponseData.menu.categories.items
+		const offers = retrieveRestaurantResponseData.menu.offers.items
+		if (categories == null || offers == null) return
 
-		for (let categoryResource of listCategoriesResult.data.listCategories
-			.items) {
+		this.categories = []
+		this.menues = []
+		this.specials = []
+
+		for (const categoryResource of categories) {
 			this.categories.push(
 				convertCategoryResourceToCategory(categoryResource)
 			)
@@ -191,14 +224,33 @@ export class BookingPageComponent {
 			this.selectedCategory = this.categories[0].uuid
 			this.selectedInventory = this.categories[0].products
 		}
+
+		for (const offerResource of offers) {
+			const offer = convertOfferResourceToOffer(offerResource)
+			if (offer.offerItems.length === 0) continue
+
+			if (offer.offerItems.length === 1) {
+				this.specials.push(offer)
+			} else {
+				this.menues.push(offer)
+			}
+		}
 	}
 
 	// Lade Items zur ausgewählten Kategorie
 	selectCategory(category: Category) {
 		this.selectedCategory = category.uuid
 		this.selectedInventory = category.products
-		this.menues = []
-		this.specials = []
+	}
+
+	showMenus() {
+		this.selectedCategory = "menues"
+		this.selectedInventory = []
+	}
+
+	showSpecials() {
+		this.selectedCategory = "specials"
+		this.selectedInventory = []
 	}
 
 	selectTableButtonClick() {
@@ -1471,20 +1523,6 @@ export class BookingPageComponent {
 		}
 
 		return (total / 100).toFixed(2)
-	}
-
-	showMenus() {
-		this.selectedCategory = "menues"
-		this.menues = this.menuInventory.menus
-		this.specials = []
-		this.selectedInventory = []
-	}
-
-	showSpecials() {
-		this.selectedCategory = "specials"
-		this.specials = this.menuInventory.specials
-		this.menues = []
-		this.selectedInventory = []
 	}
 
 	clickSpecial(special: Offer) {

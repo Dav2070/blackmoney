@@ -398,18 +398,24 @@
 
 	<div class="product-selection-container">
 		<div class="product-items">
-			@for (item of selectedInventory; track item.uuid) {
-				<dav-button (click)="clickItem(item)">{{ item.name }}</dav-button>
-			}
-
-			@for (menu of menues; track menu.uuid) {
-				<dav-button (click)="clickMenu(menu)">{{ menu.name }}</dav-button>
-			}
-
-			@for (special of specials; track special.uuid) {
-				<dav-button (click)="clickSpecial(special)">
-					{{ special.name }}
-				</dav-button>
+			@if (selectedCategory === "menues") {
+				@for (menu of menues; track menu.uuid) {
+					<dav-button (click)="clickMenu(menu)">
+						{{ menu.name }}
+					</dav-button>
+				}
+			} @else if (selectedCategory === "specials") {
+				@for (special of specials; track special.uuid) {
+					<dav-button (click)="clickSpecial(special)">
+						{{ special.name }}
+					</dav-button>
+				}
+			} @else {
+				@for (item of selectedInventory; track item.uuid) {
+					<dav-button (click)="clickItem(item)">
+						{{ item.name }}
+					</dav-button>
+				}
 			}
 		</div>
 	</div>
@@ -422,6 +428,7 @@
 				[active]="selectedCategory === 'menues'"
 				(click)="showMenus()"
 			></dav-sidenav-item>
+
 			<dav-sidenav-item
 				value="Specials"
 				[active]="selectedCategory === 'specials'"
@@ -737,8 +744,8 @@
 						@for (product of specialProducts; track product.uuid) {
 							<button
 								[disabled]="
-									this.currentMenu.offerItems[currentIndex].maxSelections <=
-									0
+									this.currentMenu.offerItems[currentIndex]
+										.maxSelections <= 0
 								"
 								(click)="clickSpecialProduct(product)"
 								mat-flat-button

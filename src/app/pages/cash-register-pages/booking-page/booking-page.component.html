@@ -6,7 +6,7 @@
 	<div class="orders-numpad-container">
 		<div id="order">
 			<div class="tables">
-				@for (item of bookedItems.getOrderItems(); track item) {
+				@for (item of bookedItems.getOrderItems(); track item.uuid) {
 					<mat-card
 						(click)="selectItem(item, bookedItems)"
 						style="cursor: pointer"
@@ -38,7 +38,7 @@
 						@if (item.orderItemVariations) {
 							@for (
 								variation of item.orderItemVariations;
-								track variation
+								track variation.uuid
 							) {
 								<mat-card-content>
 									{{ variation.count }} x
@@ -75,7 +75,7 @@
 						</mat-card-content>
 					</mat-card>
 				}
-				@for (menuItem of bookedItems.getMenuOrderItems(); track menuItem) {
+				@for (menuItem of bookedItems.getMenuOrderItems(); track menuItem.uuid) {
 					<mat-card
 						style="cursor: pointer"
 						[style.background-color]="'white'"
@@ -104,7 +104,7 @@
 									@if (orderItem.orderItemVariations.length > 0) {
 										@for (
 											variation of orderItem.orderItemVariations;
-											track variation
+											track variation.uuid
 										) {
 											<div>
 												{{ variation.count }}x
@@ -168,7 +168,7 @@
 					</div>
 				}
 
-				@for (item of stagedItems.getOrderItems(); track item) {
+				@for (item of stagedItems.getOrderItems(); track item.uuid) {
 					<mat-card
 						(click)="selectItem(item, stagedItems)"
 						style="cursor: pointer"
@@ -200,7 +200,7 @@
 						@if (item.orderItemVariations) {
 							@for (
 								variation of item.orderItemVariations;
-								track variation
+								track variation.uuid
 							) {
 								<mat-card-content>
 									{{ variation.count }} x
@@ -237,7 +237,7 @@
 						</mat-card-content>
 					</mat-card>
 				}
-				@for (menuItem of stagedItems.getMenuOrderItems(); track menuItem) {
+				@for (menuItem of stagedItems.getMenuOrderItems(); track menuItem.uuid) {
 					<mat-card
 						(click)="selectMenuItem(menuItem, stagedItems)"
 						style="cursor: pointer"
@@ -272,7 +272,7 @@
 									@if (orderItem.orderItemVariations.length > 0) {
 										@for (
 											variation of orderItem.orderItemVariations;
-											track variation
+											track variation.uuid
 										) {
 											<div>
 												{{ variation.count }}x
@@ -325,6 +325,7 @@
 				}
 			</div>
 		</div>
+
 		<div id="numpad">
 			<mat-card>
 				<mat-card-content> {{ console }} </mat-card-content>
@@ -517,7 +518,7 @@
 	@if (pickedBill) {
 		<div class="bill-popup-content">
 			<div class="bill-list">
-				@for (bill of bills; track bill) {
+				@for (bill of bills; track bill.uuid) {
 					<div
 						class="bill-item"
 						(click)="pickedBill = bill"
@@ -553,7 +554,7 @@
 					</span>
 				</h2>
 				<div class="bill-items">
-					@for (item of pickedBill.orderItems; track item) {
+					@for (item of pickedBill.orderItems; track item.uuid) {
 						<div class="bill-item-detail">
 							<div class="item-header">
 								<span>{{ item.count }} x {{ item.product.name }}</span>
@@ -565,7 +566,7 @@
 							@if (item.orderItemVariations.length > 0) {
 								@for (
 									variation of item.orderItemVariations;
-									track variation
+									track variation.uuid
 								) {
 									<span
 										>{{ variation.count }} x
@@ -623,7 +624,7 @@
 					@if (variationMap.get(tmpCountVariations)) {
 						@for (
 							variation of variationMap.get(tmpCountVariations).values();
-							track variation
+							track variation.uuid
 						) {
 							@if (tmpCountVariations != 0) {
 								{{ displayVariation(variation) }}
@@ -670,7 +671,7 @@
 				</h2>
 				@for (
 					variation of tmpSelectedItem.orderItemVariations;
-					track variation
+					track variation.uuid
 				) {
 					<div class="popup-content-dish">
 						<button
@@ -684,7 +685,7 @@
 							{{ variation.count }}x
 							@for (
 								variationItem of variation.variationItems;
-								track variationItem
+								track variationItem.uuid
 							) {
 								{{ variationItem.name }}
 							}
@@ -771,12 +772,12 @@
 
 										@for (
 											variation of item.orderItemVariations;
-											track variation
+											track variation.uuid
 										) {
 											{{ variation.count }}x
 											@for (
 												variationItem of variation.variationItems;
-												track variationItem
+												track variationItem.uuid
 											) {
 												{{ variationItem.name }}
 											}
@@ -870,12 +871,12 @@
 
 										@for (
 											variation of item.orderItemVariations;
-											track variation
+											track variation.uuid
 										) {
 											{{ variation.count }}x
 											@for (
 												variationItem of variation.variationItems;
-												track variationItem
+												track variationItem.uuid
 											) {
 												{{ variationItem.name }}
 											}
@@ -942,7 +943,7 @@
 					@if (variationMap.get(tmpCountVariations)) {
 						@for (
 							variation of variationMap.get(tmpCountVariations).values();
-							track variation
+							track variation.uuid
 						) {
 							@if (tmpCountVariations != 0) {
 								{{ displayVariation(variation) }}
@@ -999,7 +1000,7 @@
 					@if (variationMap.get(tmpCountVariations)) {
 						@for (
 							variation of variationMap.get(tmpCountVariations).values();
-							track variation
+							track variation.uuid
 						) {
 							@if (tmpCountVariations != 0) {
 								{{ displayVariation(variation) }}
@@ -1035,7 +1036,7 @@
 				</h2>
 				@for (
 					variation of tmpSelectedItem.orderItemVariations;
-					track variation
+					track variation.uuid
 				) {
 					<div class="popup-content-dish">
 						<button
@@ -1049,7 +1050,7 @@
 							{{ variation.count }}x
 							@for (
 								variationItem of variation.variationItems;
-								track variationItem
+								track variationItem.uuid
 							) {
 								{{ variationItem.name }}
 							}

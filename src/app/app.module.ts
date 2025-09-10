@@ -87,6 +87,7 @@ import { EmployeeManagementComponent } from "./pages/settings-pages/employee-man
 import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
 import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
+import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 
 @NgModule({
 	declarations: [
@@ -121,6 +122,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		SeparatePayPageComponent,
 		//Landing-Pages
 		PrintersPageComponent,
+		MenuPageComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,

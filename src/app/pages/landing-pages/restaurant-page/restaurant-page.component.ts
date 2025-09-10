@@ -6,7 +6,8 @@ import {
 	faLocationDot,
 	faPen,
 	faPrint,
-	faSeat
+	faSeat,
+	faMap
 } from "@fortawesome/pro-regular-svg-icons"
 import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
@@ -25,6 +26,7 @@ export class RestaurantPageComponent {
 	faPen = faPen
 	faPrint = faPrint
 	faSeat = faSeat
+	faMap = faMap
 	uuid: string = null
 	name: string = ""
 	nameError: string = ""
@@ -101,6 +103,12 @@ export class RestaurantPageComponent {
 		event.preventDefault()
 
 		this.router.navigate(["user", "restaurants", this.uuid, "rooms"])
+	}
+
+	navigateToMenuPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "restaurants", this.uuid, "menu"])
 	}
 
 	showEditRestaurantNameDialog() {

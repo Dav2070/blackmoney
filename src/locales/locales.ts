@@ -42,7 +42,8 @@ export const de = {
 	restaurantPage: {
 		addAddress: "Adresse angeben",
 		managePrinters: "Drucker verwalten",
-		manageRooms: "Räume verwalten"
+		manageRooms: "Räume verwalten",
+		manageMenu: "Speisekarte verwalten"
 	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"
@@ -59,6 +60,13 @@ export const de = {
 		statusLoading: "Wird geprüft...",
 		testPrintSuccess: "Test-Druck erfolgreich gesendet",
 		testPrintError: "Test-Druck fehlgeschlagen: {errorMessage}"
+	},
+	menuPage: {
+		headline: "Deine Speisekarte",
+		clone: "Speisekarte klonen",
+		products: "Produkte verwalten",
+		offers: "Angebote verwalten",
+		menu: "Menüs verwalten"
 	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}"

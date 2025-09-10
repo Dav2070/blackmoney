@@ -1,0 +1,47 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			(backButtonClick)="navigateBack()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		<div class="separator"></div>
+
+		<div class="actions-container">
+			<div class="actions-container">
+				<dav-icon-card
+					[text]="locale.clone"
+					[href]="'/user/restaurants/' + uuid + '/printers'"
+					(click)="openCopyDialog($event)"
+				>
+					<fa-icon [icon]="faCopy"></fa-icon>
+				</dav-icon-card>
+				<dav-icon-card
+					[text]="locale.products"
+					[href]="'/user/restaurants/' + uuid + '/menu/products'"
+					(click)="navigateToProductsPage($event)"
+				>
+					<fa-icon [icon]="faUtensils"></fa-icon>
+				</dav-icon-card>
+
+				<dav-icon-card
+					[text]="locale.offers"
+					[href]="'/user/restaurants/' + uuid + '/menu/offers'"
+					(click)="navigateToOffersPage($event)"
+				>
+					<fa-icon [icon]="faPercent"></fa-icon>
+				</dav-icon-card>
+
+				<dav-icon-card
+					[text]="locale.menu"
+					[href]="'/user/restaurants/' + uuid + '/menu/menus'"
+					(click)="navigateToMenusPage($event)"
+				>
+					<fa-icon [icon]="faReceipt"></fa-icon>
+				</dav-icon-card>
+			</div>
+		</div>
+	</div>
+</div>

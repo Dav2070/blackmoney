@@ -56,6 +56,14 @@
 			>
 				<fa-icon [icon]="faSeat"></fa-icon>
 			</dav-icon-card>
+
+			<dav-icon-card
+				[text]="locale.manageMenu"
+				[href]="'/user/restaurants/' + uuid + '/menu'"
+				(click)="navigateToMenuPage($event)"
+			>
+				<fa-icon [icon]="faMap"></fa-icon>
+			</dav-icon-card>
 		</div>
 	</div>
 </div>

@@ -47,6 +47,7 @@
 
 .product-items {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 6px;
 }
 
@@ -55,6 +56,18 @@
 	grid-row: 2;
 	background-color: var(--dav-color-surface);
 	padding: 0 4px;
+}
+
+.category-item-skeleton {
+	width: 133px;
+	height: 34px;
+	border-radius: 20px;
+}
+
+.product-item-skeleton {
+	width: 120px;
+	height: 40px;
+	border-radius: 20px;
 }
 
 .table-info-container {

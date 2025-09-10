@@ -75,7 +75,10 @@
 						</mat-card-content>
 					</mat-card>
 				}
-				@for (menuItem of bookedItems.getMenuOrderItems(); track menuItem.uuid) {
+				@for (
+					menuItem of bookedItems.getMenuOrderItems();
+					track menuItem.uuid
+				) {
 					<mat-card
 						style="cursor: pointer"
 						[style.background-color]="'white'"
@@ -237,7 +240,10 @@
 						</mat-card-content>
 					</mat-card>
 				}
-				@for (menuItem of stagedItems.getMenuOrderItems(); track menuItem.uuid) {
+				@for (
+					menuItem of stagedItems.getMenuOrderItems();
+					track menuItem.uuid
+				) {
 					<mat-card
 						(click)="selectMenuItem(menuItem, stagedItems)"
 						style="cursor: pointer"
@@ -399,7 +405,56 @@
 
 	<div class="product-selection-container">
 		<div class="product-items">
-			@if (selectedCategory === "menues") {
+			@if (categoriesLoading) {
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 145px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 115px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 130px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 120px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 125px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 100px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 140px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 135px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 120px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 110px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 130px"
+				></dav-skeleton>
+				<dav-skeleton
+					class="product-item-skeleton"
+					style="width: 100px"
+				></dav-skeleton>
+			} @else if (selectedCategory === "menues") {
 				@for (menu of menues; track menu.uuid) {
 					<dav-button (click)="clickMenu(menu)">
 						{{ menu.name }}
@@ -423,26 +478,39 @@
 
 	<div class="categories-sidenav-container">
 		<dav-sidenav>
-			<!-- Menues & Specials -->
-			<dav-sidenav-item
-				value="Menüs"
-				[active]="selectedCategory === 'menues'"
-				(click)="showMenus()"
-			></dav-sidenav-item>
-
-			<dav-sidenav-item
-				value="Specials"
-				[active]="selectedCategory === 'specials'"
-				(click)="showSpecials()"
-			></dav-sidenav-item>
-
-			<!-- Dynamic categories -->
-			@for (category of categories; track category.uuid) {
+			@if (categoriesLoading) {
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
+			} @else {
+				<!-- Menues & Specials -->
 				<dav-sidenav-item
-					[value]="category.name"
-					[active]="selectedCategory === category.uuid"
-					(click)="selectCategory(category)"
+					value="Menüs"
+					[active]="selectedCategory === 'menues'"
+					(click)="showMenus()"
 				></dav-sidenav-item>
+
+				<dav-sidenav-item
+					value="Specials"
+					[active]="selectedCategory === 'specials'"
+					(click)="showSpecials()"
+				></dav-sidenav-item>
+
+				<!-- Dynamic categories -->
+				@for (category of categories; track category.uuid) {
+					<dav-sidenav-item
+						[value]="category.name"
+						[active]="selectedCategory === category.uuid"
+						(click)="selectCategory(category)"
+					></dav-sidenav-item>
+				}
 			}
 		</dav-sidenav>
 	</div>

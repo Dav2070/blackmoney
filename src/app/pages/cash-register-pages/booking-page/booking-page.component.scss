@@ -93,6 +93,23 @@
 	background-color: rgba(27, 167, 251, 255);
 }
 
+.staged-items-separator {
+	display: flex;
+	align-items: center;
+	margin: 16px 16px;
+	gap: 14px;
+}
+
+.staged-items-separator p {
+	margin: 0;
+	text-wrap-mode: nowrap;
+}
+
+.separator {
+	width: 100%;
+	border-top: 1px solid var(--dav-color-outline-variant);
+}
+
 .popup-overlay {
 	display: none;
 	position: fixed;

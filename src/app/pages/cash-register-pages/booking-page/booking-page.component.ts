@@ -200,6 +200,13 @@ export class BookingPageComponent {
 									uuid
 									name
 									maxSelections
+									products {
+										items {
+											uuid
+											name
+											price
+										}
+									}
 								}
 							}
 						}

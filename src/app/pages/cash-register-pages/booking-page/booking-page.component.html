@@ -790,7 +790,7 @@
 				<div class="categories-section">
 					<h3>Kategorien</h3>
 					<div class="category-list">
-						@for (item of currentMenu.offerItems; track $index) {
+						@for (item of currentMenu.offerItems; track item.uuid) {
 							<button
 								[disabled]="item.maxSelections <= 0"
 								[class.selected-category]="currentIndex === $index"

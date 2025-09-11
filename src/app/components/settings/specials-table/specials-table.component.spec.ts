@@ -3,10 +3,10 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { MatTableModule } from "@angular/material/table"
-
 import { SpecialsTableComponent } from "./specials-table.component"
-import { Menu, MenuItem, OfferType, Weekday } from "src/app/models/Menu"
-import { Product } from "src/app/models/Product"
+import { Offer } from "src/app/models/Offer"
+import { OfferItem } from "src/app/models/OfferItem"
+import { Weekday, OfferType } from "src/app/types"
 
 describe("SpecialsTableComponent", () => {
 	let component: SpecialsTableComponent
@@ -35,35 +35,30 @@ describe("SpecialsTableComponent", () => {
 	})
 
 	it("should limit items to one per special", () => {
-		const mockSpecial: Menu = {
+		const mockSpecial: Offer = {
 			uuid: "test-special",
-			id: 1,
 			name: "Test Special",
 			offerType: "FIXED_PRICE" as OfferType,
 			offerValue: 10,
-			selectedProducts: [] as Product[],
-			validity: {
-				startDate: undefined,
-				endDate: undefined,
-				startTime: undefined,
-				endTime: undefined,
-				weekdays: [] as Weekday[]
-			},
-			items: [] as MenuItem[]
+			startDate: undefined,
+			endDate: undefined,
+			startTime: undefined,
+			endTime: undefined,
+			weekdays: [] as Weekday[],
+			offerItems: [] as OfferItem[]
 		}
 
 		// Initially should be able to add item
 		expect(component.canAddItem(mockSpecial)).toBe(true)
 
 		// Add one item
-		const mockItem: MenuItem = {
+		const mockItem: OfferItem = {
 			uuid: "test-item",
 			name: "Test Item",
-			categories: [],
 			products: [],
 			maxSelections: 1
 		}
-		mockSpecial.items.push(mockItem)
+		mockSpecial.offerItems.push(mockItem)
 
 		// Should not be able to add another item
 		expect(component.canAddItem(mockSpecial)).toBe(false)

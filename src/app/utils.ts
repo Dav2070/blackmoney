@@ -19,6 +19,9 @@ import { OrderItemVariation } from "./models/OrderItemVariation"
 import { Bill } from "./models/Bill"
 import { Restaurant } from "./models/Restaurant"
 import { Printer } from "./models/Printer"
+import { Menu } from "./models/Menu"
+import { Offer } from "./models/Offer"
+import { OfferItem } from "./models/OfferItem"
 import {
 	CategoryResource,
 	CompanyResource,
@@ -26,6 +29,7 @@ import {
 	RoomResource,
 	TableResource,
 	PrinterResource,
+	MenuResource,
 	UserResource,
 	VariationResource,
 	VariationItemResource,
@@ -34,6 +38,8 @@ import {
 	OrderItemVariationResource,
 	BillResource,
 	RestaurantResource,
+	OfferResource,
+	OfferItemResource,
 	ErrorCode,
 	Theme
 } from "./types"
@@ -172,7 +178,8 @@ export function convertRestaurantResourceToRestaurant(
 		postalCode: restaurantResource.postalCode,
 		users,
 		rooms,
-		printers
+		printers,
+		menu: convertMenuResourceToMenu(restaurantResource.menu)
 	}
 }
 
@@ -233,6 +240,91 @@ export function convertPrinterResourceToPrinter(
 	}
 }
 
+export function convertMenuResourceToMenu(menuResource: MenuResource): Menu {
+	if (menuResource == null) {
+		return null
+	}
+
+	const categories: Category[] = []
+
+	if (menuResource.categories != null) {
+		for (let category of menuResource.categories.items) {
+			categories.push(convertCategoryResourceToCategory(category))
+		}
+	}
+
+	const offers: Offer[] = []
+
+	if (menuResource.offers != null) {
+		for (let offer of menuResource.offers.items) {
+			offers.push(convertOfferResourceToOffer(offer))
+		}
+	}
+
+	return {
+		uuid: menuResource.uuid,
+		categories,
+		offers
+	}
+}
+
+export function convertOfferResourceToOffer(
+	offerResource: OfferResource
+): Offer {
+	if (offerResource == null) {
+		return null
+	}
+
+	const offerItems: OfferItem[] = []
+
+	if (offerResource.offerItems != null) {
+		for (let offerItem of offerResource.offerItems.items) {
+			offerItems.push(convertOfferItemResourceToOfferItem(offerItem))
+		}
+	}
+
+	return {
+		uuid: offerResource.uuid,
+		name: offerResource.name,
+		offerType: offerResource.offerType,
+		discountType: offerResource.discountType,
+		offerValue: offerResource.offerValue,
+		startDate: offerResource.startDate
+			? new Date(offerResource.startDate)
+			: undefined,
+		endDate: offerResource.endDate
+			? new Date(offerResource.endDate)
+			: undefined,
+		startTime: offerResource.startTime,
+		endTime: offerResource.endTime,
+		weekdays: offerResource.weekdays,
+		offerItems
+	}
+}
+
+export function convertOfferItemResourceToOfferItem(
+	offerItemResource: OfferItemResource
+): OfferItem {
+	if (offerItemResource == null) {
+		return null
+	}
+
+	const products: Product[] = []
+
+	if (offerItemResource.products != null) {
+		for (let product of offerItemResource.products.items) {
+			products.push(convertProductResourceToProduct(product))
+		}
+	}
+
+	return {
+		uuid: offerItemResource.uuid,
+		name: offerItemResource.name,
+		maxSelections: offerItemResource.maxSelections,
+		products
+	}
+}
+
 export function convertProductResourceToProduct(
 	productResource: ProductResource
 ): Product {
@@ -253,6 +345,7 @@ export function convertProductResourceToProduct(
 		uuid: productResource.uuid,
 		name: productResource.name,
 		price: productResource.price,
+		category: convertCategoryResourceToCategory(productResource.category),
 		variations
 	}
 }

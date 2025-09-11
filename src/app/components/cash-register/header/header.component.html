@@ -1,12 +1,30 @@
-<div id="headerContainer">
-	@if (dataService.user?.name && dataService.restaurant?.name) {
-		<p>
-			{{ dataService.user?.name ?? "" }} –
-			{{ dataService.restaurant?.name ?? "" }}
-		</p>
-	}
-	<h2>BMKS</h2>
-	<p>{{ currentDate }}</p>
+<div class="header-container">
+	<div class="user-details-container">
+		<p>{{ dataService.user?.name ?? "" }}</p>
+		<p>{{ dataService.restaurant?.name ?? "" }}</p>
+	</div>
+
+	<div class="logo-container">
+		<img
+			[src]="
+				dataService.darkTheme
+					? '/assets/icons/icon-unplated-light-128.png'
+					: '/assets/icons/icon-unplated-dark-128.png'
+			"
+			width="68"
+			height="68"
+		/>
+
+		<div class="logo-container-text">
+			<span class="logo-container-text-1">butler</span>
+			<span class="logo-container-text-2">Kassensysteme</span>
+		</div>
+	</div>
+
+	<div class="date-time-container">
+		<p>{{ currentDate }}</p>
+		<p>{{ currentTime }}</p>
+	</div>
 </div>
 
 @if (showButton) {

@@ -1,4 +1,3 @@
-import { isPlatformBrowser } from "@angular/common"
 import {
 	Component,
 	ElementRef,
@@ -9,6 +8,7 @@ import {
 	PLATFORM_ID,
 	ViewChild
 } from "@angular/core"
+import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 

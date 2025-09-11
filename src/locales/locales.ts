@@ -60,6 +60,9 @@ export const de = {
 		testPrintSuccess: "Test-Druck erfolgreich gesendet",
 		testPrintError: "Test-Druck fehlgeschlagen: {errorMessage}"
 	},
+	bookingPage: {
+		tableHeadline: "Tisch {name}"
+	},
 	dialogs: {
 		logoutDialog: {
 			headline: "Abmelden",
@@ -87,9 +90,12 @@ export const de = {
 			ipAddress: "IP-Adresse"
 		},
 		editPrinterDialog: {
-			editHeadline: "Drucker bearbeiten",
+			headline: "Drucker bearbeiten",
 			name: "Name des Druckers",
 			ipAddress: "IP-Adresse"
+		},
+		selectTableDialog: {
+			headline: "Tisch auswählen"
 		},
 		addRoomDialog:{
 			headline: "Raum erstellen",
@@ -114,6 +120,7 @@ export const de = {
 	actions: {
 		save: "Speichern",
 		cancel: "Abbrechen",
+		select: "Auswählen",
 		logout: "Abmelden"
 	},
 	errors: {

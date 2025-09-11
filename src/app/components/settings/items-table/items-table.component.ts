@@ -63,6 +63,7 @@ export class ItemsTableComponent implements AfterViewInit, OnChanges {
 			uuid: "product_" + Date.now(),
 			name: "",
 			price: 0,
+			category: null,
 			variations: []
 		}
 

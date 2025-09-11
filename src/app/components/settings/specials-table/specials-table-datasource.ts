@@ -2,25 +2,23 @@ import { DataSource } from "@angular/cdk/collections"
 import { MatPaginator } from "@angular/material/paginator"
 import { MatSort } from "@angular/material/sort"
 import { map } from "rxjs/operators"
-import { Observable, of as observableOf, merge, BehaviorSubject } from "rxjs"
-import { Menu } from "src/app/models/Menu"
+import { Observable, merge, BehaviorSubject } from "rxjs"
+import { Offer } from "src/app/models/Offer"
 
-export interface SpecialsTableItem extends Menu {}
-
-export class SpecialsTableDataSource extends DataSource<SpecialsTableItem> {
-	data: SpecialsTableItem[]
+export class SpecialsTableDataSource extends DataSource<Offer> {
+	data: Offer[]
 	paginator: MatPaginator | undefined
 	sort: MatSort | undefined
 
-	private dataSubject = new BehaviorSubject<SpecialsTableItem[]>([])
+	private dataSubject = new BehaviorSubject<Offer[]>([])
 
-	constructor(specials: Menu[] = []) {
+	constructor(specials: Offer[] = []) {
 		super()
-		this.data = specials as SpecialsTableItem[]
+		this.data = specials as Offer[]
 		this.dataSubject.next(this.data)
 	}
 
-	connect(): Observable<SpecialsTableItem[]> {
+	connect(): Observable<Offer[]> {
 		if (this.paginator && this.sort) {
 			return merge(
 				this.dataSubject,
@@ -42,7 +40,7 @@ export class SpecialsTableDataSource extends DataSource<SpecialsTableItem> {
 		this.dataSubject.complete()
 	}
 
-	private getPagedData(data: SpecialsTableItem[]): SpecialsTableItem[] {
+	private getPagedData(data: Offer[]): Offer[] {
 		if (this.paginator) {
 			const startIndex = this.paginator.pageIndex * this.paginator.pageSize
 			return data.splice(startIndex, this.paginator.pageSize)
@@ -51,7 +49,7 @@ export class SpecialsTableDataSource extends DataSource<SpecialsTableItem> {
 		}
 	}
 
-	private getSortedData(data: SpecialsTableItem[]): SpecialsTableItem[] {
+	private getSortedData(data: Offer[]): Offer[] {
 		if (!this.sort || !this.sort.active || this.sort.direction === "") {
 			return data
 		}
@@ -59,8 +57,8 @@ export class SpecialsTableDataSource extends DataSource<SpecialsTableItem> {
 		return data.sort((a, b) => {
 			const isAsc = this.sort?.direction === "asc"
 			switch (this.sort?.active) {
-				case "id":
-					return compare(a.id, b.id, isAsc)
+				case "uuid":
+					return compare(a.uuid, b.uuid, isAsc)
 				case "name":
 					return compare(a.name, b.name, isAsc)
 				default:

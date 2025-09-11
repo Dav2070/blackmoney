@@ -365,13 +365,13 @@ export class ApiService {
 	async listRooms(
 		queryData: string,
 		variables: {
-			restaurantUuid?: string
+			restaurantUuid: string
 		}
 	): Promise<ApolloQueryResult<{ listRooms: List<RoomResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ listRooms: List<RoomResource> }>({
 				query: gql`
-					query ListRooms(restaurantUuid: String!) {
+					query ListRooms($restaurantUuid: String!) {
 						listRooms(restaurantUuid: $restaurantUuid) {
 							${queryData}
 						}

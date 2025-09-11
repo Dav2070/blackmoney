@@ -1,33 +1,8 @@
 import { Category } from "./Category"
-import { Product } from "./Product"
-
-export type OfferType = 'FIXED_PRICE' | 'DISCOUNT';
-export type DiscountType = 'PERCENTAGE' | 'AMOUNT';
-export type Weekday = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
-
-export interface ValidityPeriod {
-	startDate?: Date
-	endDate?: Date
-	startTime?: string
-	endTime?: string
-	weekdays: Weekday[]
-}
-
-export interface MenuItem {
-	uuid: string
-	name: string
-	categories: Category[]
-	products: Product[]
-	maxSelections: number
-}
+import { Offer } from "./Offer"
 
 export class Menu {
 	uuid: string
-	id: number
-	name: string
-	offerType: OfferType
-	discountType?: DiscountType
-	offerValue: number
-	validity: ValidityPeriod
-	items: MenuItem[]
+	categories: Category[]
+	offers: Offer[]
 }

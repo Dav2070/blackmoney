@@ -31,6 +31,7 @@ export interface RestaurantResource {
 	line1: string
 	line2: string
 	postalCode: string
+	menu: MenuResource
 	users: List<UserResource>
 	rooms: List<RoomResource>
 	printers: List<PrinterResource>
@@ -60,11 +61,39 @@ export interface PrinterResource {
 	ipAddress: string
 }
 
+export interface MenuResource {
+	uuid: string
+	categories: List<CategoryResource>
+	offers: List<OfferResource>
+}
+
+export interface OfferResource {
+	uuid: string
+	name: string
+	offerType: OfferType
+	discountType?: DiscountType
+	offerValue: number
+	startDate?: string
+	endDate?: string
+	startTime?: string
+	endTime?: string
+	weekdays: Weekday[]
+	offerItems: List<OfferItemResource>
+}
+
+export interface OfferItemResource {
+	uuid: string
+	name: string
+	maxSelections: number
+	products: List<ProductResource>
+}
+
 export interface ProductResource {
 	id: number
 	uuid: string
 	name: string
 	price: number
+	category: CategoryResource
 	variations: List<VariationResource>
 }
 
@@ -117,10 +146,21 @@ export interface OrderItemVariationResource {
 	variationItems: List<VariationItemResource>
 }
 
-export type CategoryType = "FOOD" | "DRINK"
-export type PaymentMethod = "CASH" | "CARD"
 export type UserRole = "OWNER" | "ADMIN" | "USER"
+export type CategoryType = "FOOD" | "DRINK"
+export type OfferType = "FIXED_PRICE" | "DISCOUNT"
+export type DiscountType = "PERCENTAGE" | "AMOUNT"
+export type PaymentMethod = "CASH" | "CARD"
 export type Country = "DE"
+
+export type Weekday =
+	| "MONDAY"
+	| "TUESDAY"
+	| "WEDNESDAY"
+	| "THURSDAY"
+	| "FRIDAY"
+	| "SATURDAY"
+	| "SUNDAY"
 
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists

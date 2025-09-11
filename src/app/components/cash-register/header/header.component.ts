@@ -12,6 +12,7 @@ export class HeaderComponent {
 	showButton: boolean = true
 	timer: any
 	currentDate: string = ""
+	currentTime: string = ""
 	bediener: string = ""
 
 	constructor(
@@ -24,7 +25,12 @@ export class HeaderComponent {
 			this.timer = setInterval(() => {
 				this.ngZone.run(() => {
 					let date = new Date()
-					this.currentDate = `${date.toLocaleDateString()} – ${date.getHours()}:${date
+
+					this.currentDate = date.toLocaleDateString()
+					this.currentTime = `${date
+						.getHours()
+						.toString()
+						.padStart(2, "0")}:${date
 						.getMinutes()
 						.toString()
 						.padStart(2, "0")}:${date

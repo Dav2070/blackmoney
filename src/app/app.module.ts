@@ -45,6 +45,7 @@ import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-a
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
 import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
+import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -107,6 +108,7 @@ import { TableCombinationComponent } from "./pages/landing-pages/table-combinati
 		AddEmployeeDialogComponent,
 		AddPrinterDialogComponent,
 		EditPrinterDialogComponent,
+		SelectTableDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -190,4 +192,4 @@ import { TableCombinationComponent } from "./pages/landing-pages/table-combinati
 		provideHttpClient(withInterceptorsFromDi())
 	]
 })
-export class AppModule { }
+export class AppModule {}

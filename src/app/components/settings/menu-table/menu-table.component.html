@@ -386,9 +386,9 @@
 						<h3>Items für "{{ menu.name }}"</h3>
 
 						<!-- Items List -->
-						@if (menu.items.length > 0) {
+						@if (menu.offerItems.length > 0) {
 							<div class="items-list">
-								@for (item of menu.items; track item.uuid) {
+								@for (item of menu.offerItems; track item.uuid) {
 									<div class="item-card">
 										@if (editingItem !== item) {
 											<div class="item-display">
@@ -415,21 +415,18 @@
 													<!-- Direkte Kategorien-Anzeige -->
 													<p>
 														<strong>Kategorien:</strong>
-														@if (item.categories.length === 0) {
-															<span
-																>Keine Kategorien
-																ausgewählt</span
-															>
+														@if (item.products.length === 0) {
+															<span>Keine Kategorien ausgewählt</span>
 														} @else {
 															@for (
-																category of item.categories;
-																track category.uuid;
+																product of item.products;
+																track product.uuid;
 																let i = $index
 															) {
-																{{ category.name }}
+																{{ product.category.name }}
 																@if (
 																	i <
-																	item.categories.length - 1
+																	item.products.length - 1
 																) {
 																	<span>, </span>
 																}
@@ -530,49 +527,49 @@
 												</div>
 
 												<!-- Produkte aus den ausgewählten Kategorien -->
-												@if (item.categories.length > 0) {
+												@if (item.products.length > 0) {
 													<div class="products-selection">
 														<mat-label
 															>Produkte auswählen:</mat-label
 														>
 														<div class="products-by-category">
 															@for (
-																category of item.categories;
-																track category.uuid
+																product of item.products;
+																track product.uuid
 															) {
 																<div class="category-products">
-																	<h5>{{ category.name }}</h5>
+																	<h5>{{ product.category.name }}</h5>
 																	@if (
-																		category.products &&
-																		category.products.length >
+																		product.category.products &&
+																		product.category.products.length >
 																			0
 																	) {
 																		<div
 																			class="product-checkboxes"
 																		>
 																			@for (
-																				product of category.products;
-																				track product.uuid
+																				p of product.category.products;
+																				track p.uuid
 																			) {
 																				<mat-checkbox
 																					[checked]="
 																						isProductSelected(
 																							item,
-																							product
+																							p
 																						)
 																					"
 																					(change)="
 																						toggleProductSelection(
 																							item,
-																							product
+																							p
 																						)
 																					"
 																				>
 																					{{
-																						product.name
+																						p.name
 																					}}
 																					({{
-																						product.price
+																						p.price
 																							| number
 																								: "1.2-2"
 																					}}€)

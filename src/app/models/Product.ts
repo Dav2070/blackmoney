@@ -1,3 +1,4 @@
+import { Category } from "./Category"
 import { Variation } from "./Variation"
 
 export class Product {
@@ -5,5 +6,6 @@ export class Product {
 	uuid: string
 	name: string
 	price: number
+	category: Category
 	variations: Variation[]
 }

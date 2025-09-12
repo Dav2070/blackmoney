@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { i } from 'node_modules/@angular/material/module.d-gWBlTHnh';
 import { LocalizationService } from 'src/app/services/localization-service';
-import { faPen, faFolder } from "@fortawesome/pro-regular-svg-icons"
+import { faPen, faFolder } from "@fortawesome/pro-regular-svg-icons";
+import {Room} from "src/app/models/Room";
 import {
 	ElementRef,
 	EventEmitter,
@@ -11,14 +11,7 @@ import {
 	PLATFORM_ID,
 	ViewChild
 } from "@angular/core"
-import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
-
-interface Room {
-  id: number;
-  name: string;
-  number: number;
-}
 
 @Component({
   selector: 'app-rooms',
@@ -45,15 +38,10 @@ export class RoomsComponent {
 
 rooms: Room[] = [];
 selectedRoom: Room | null = null;
-nextRoomId = 1;
-nextTableId = 1;
 
 @Input() loading: boolean = false
-@Input() line1: string = ""
-roomName: string = ""
+@Input() roomName: string = ""
 @Input() line1Error: string = ""
-@Input() line2: number = this.rooms.length + 1
-@Input() line2Error: string = ""
 @Output() clearErrors = new EventEmitter()
 @ViewChild("dialog") dialog: ElementRef<Dialog>
 visible: boolean = false; 
@@ -83,28 +71,18 @@ closeAddRoomForm(){
 }
 
 roomNameTextfieldChange(event: Event) {
-		this.line1 = (event as CustomEvent).detail.value
+		this.roomName = (event as CustomEvent).detail.value
 		this.clearErrors.emit()
 	}
 
-numberfieldChange(event: Event) {
-	this.line2 = (event as CustomEvent).detail.value
-	this.clearErrors.emit()
-}
-
-
 addRoom(){
   const room: Room = {
-    id: this.nextRoomId++,
-    name: this.line1.trim(),
-    number: this.line2,
+    uuid: '',
+    name: this.roomName.trim(),
+    tables: []
   };
   this.rooms.push(room);
-  this.line2++;
-  this.line1 = '';
-  this.showAddRoomForm = false;
-  this.showAllRoomsForm = true;
-  this.visible = false;
+  this.cancelEdit();
 }
 
 // Öffnet das Dialogformular zum Bearbeiten
@@ -112,9 +90,7 @@ addRoom(){
     this.selectedRoom = room;
 
     // Formular mit bestehenden Werten füllen
-    this.line1 = room.name;
-    this.line2 = room.number;
-
+    this.roomName = room.name;
     // Dialog anzeigen, Liste ausblenden
     this.showAllRoomsForm = false;
     this.showAddRoomForm = true;
@@ -125,9 +101,7 @@ updateRoom() {
     if (!this.selectedRoom) {
       return;
     }
-    this.selectedRoom.name   = this.line1.trim();
-    this.selectedRoom.number = this.line2;
-
+    this.selectedRoom.name   = this.roomName.trim();
     // Rücksetzen des Formular-Zustands
     this.cancelEdit();
   }
@@ -145,6 +119,7 @@ cancelEdit() {
     this.showAddRoomForm  = false;
     this.showAllRoomsForm = true;
     this.visible          = false;
+    this.roomName = '';
   }
 
 	show() {
@@ -157,44 +132,20 @@ cancelEdit() {
 
   showTableAdministrationDialog(room: Room) {
     // hinzufügen :roomName für URL
-
     this.roomName = room.name;
-
 		const currentUrl = this.router.url;
 		this.router.navigateByUrl(`${currentUrl}/${room.name}/tables`);
 	}
 
   // Entfern Einen Tisch und passt die Nummer an
   removeRoom(roomToRemove: Room){
-
     // 1) Index des zu entfernenden Tisches ermitteln
-    const idx = this.rooms.findIndex(t => t.id === roomToRemove.id);
+    const idx = this.rooms.findIndex(t => t.name === roomToRemove.name);
     if (idx === -1) return;  // Tisch nicht gefunden
-  
-    // 2) Nummer des entfernten Tisches sichern
-    const removedNumber = this.rooms[idx].number;
-  
-    // 3) löschen
+
+    // 2) löschen
     this.rooms.splice(idx, 1);
-
-    this.rooms.forEach(t =>{
-      if(t.number > removedNumber){
-        t.number--;
-      }
-    })
-    if (this.rooms.length === 0){
-      this.line1 = '';
-      this.nextTableId = 1;
-      this.selectedRoom = null;
-    }
-    this.line1 = '';
-    this.line2--;
+    this.cancelEdit();
   }
-
-
-  tmp(){
-
-  }
-
 
 }

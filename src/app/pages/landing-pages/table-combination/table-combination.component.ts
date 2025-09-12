@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalizationService } from 'src/app/services/localization-service';
 import { faPen, faFolder } from "@fortawesome/pro-regular-svg-icons"
+import { Table, TableCombination } from "src/app/models/Table";
 import {
 	ElementRef,
 	EventEmitter,
@@ -10,23 +11,8 @@ import {
 	PLATFORM_ID,
 	ViewChild
 } from "@angular/core"
-import { isPlatformBrowser, NumberSymbol } from "@angular/common"
 import { Dialog } from "dav-ui-components"
 import { FormControl } from '@angular/forms';
-
-
-
-interface TableCombination {
-  id: number;
-  number: number[];
-  chairs: number;
-}
-
-interface Table {
-  id: number;
-  number: number;
-  chairs: number;
-}
 
 @Component({
   selector: 'app-table-combination',
@@ -42,38 +28,27 @@ actionsLocale = this.localizationService.locale.actions;
 locale = this.localizationService.locale.dialogs.addTableCombinationDialog;
   
 
-faPen = faPen
-faFolder = faFolder;
+faPen = faPen;
 
 table: Table[] = [
-  {id: 1, number: 1, chairs: 4},
-  {id: 2, number: 2, chairs: 4},
-  {id: 3, number: 3, chairs: 6}
+  {uuid: '', name: 1, seats: 4},
+  {uuid: '', name: 2, seats: 4},
+  {uuid: '', name: 3, seats: 6}
 ]
 tableCombination: TableCombination[] = [];
 selectedTable: TableCombination | null = null;
-nextTableId = 1;
-selectedTableIds: number[] = [];
-selectedTables: number[] = [];
-selectedChairs: number[] = [];
 tableCombinations = new FormControl<number[]>([]);
 
 @Input() loading: boolean = false
-@Input() line1: number[] = [];
-roomName: string = ""
+@Input() name: number[] = [];
 @Input() line1Error: string = ""
-@Input() line2: number = this.tableCombination.length + 1
+@Input() seats: number = null
 @Input() line2Error: string = ""
 @Output() clearErrors = new EventEmitter()
 @ViewChild("dialog") dialog: ElementRef<Dialog>
 @Input() bulkMode = false;
 visible: boolean = false;
 showAllForm = false;
-
-combNumber: number[];
-combChairs: number;
-
-
 
 constructor(
       private localizationService: LocalizationService,
@@ -83,13 +58,8 @@ constructor(
       
     ) {}
 
-  tableIdNumberfieldChange(event: Event) {
-      this.line1 = (event as CustomEvent).detail.value
-      this.clearErrors.emit()
-    }
-  
   chairNumberfieldChange(event: Event) {
-    this.line2 = (event as CustomEvent).detail.value
+    this.seats = (event as CustomEvent).detail.value
     this.clearErrors.emit()
   }
 
@@ -102,23 +72,13 @@ constructor(
 	}
 
   addTableCombination(){
-    this.line1 = this.tableCombinations.value ?? []; // Nummer wird gespeichert (1,2,3)
-    this.combChairs = 0;
-    // addiert die Sitzplätze zusammen
-    this.line1.forEach(number =>{
-        this.table.forEach(t =>{
-          if (number === t.number){
-            this.combChairs = this.combChairs + t.chairs;
-          }
-        })
-      }
-      
-    )
+    this.name = this.tableCombinations.value ?? []; // Nummer wird gespeichert (1,2,3)
+
     // fügt die Tischkombination hinzu
     const tableCombination: TableCombination = {
-      id: this.tableCombination.length + 1,
-      number: this.line1,
-      chairs: this.combChairs
+      uuid: '',
+      name: this.name,
+      seats: this.seats
     };
     this.tableCombination.push(tableCombination);
     this.cancelEdit();
@@ -127,8 +87,8 @@ constructor(
   openEditForm(tableCombination: TableCombination) {
       this.selectedTable = tableCombination;
       // Formular mit bestehenden Werten füllen
-      this.tableCombinations.setValue(tableCombination.number);
-      this.line2 = tableCombination.chairs;
+      this.tableCombinations.setValue(tableCombination.name);
+      this.seats = tableCombination.seats;
       this.showAllForm = false;
       this.visible = true;
     }
@@ -137,19 +97,9 @@ constructor(
       if (!this.selectedTable) {
         return;
       }
-      this.line1 = this.tableCombinations.value ?? []; // Nummer wird gespeichert (1,2,3)
-      this.combChairs = 0;
-      // addiert die Sitzplätze zusammen
-      this.line1.forEach(number =>{
-          this.table.forEach(t =>{
-            if (number === t.number){
-              this.combChairs = this.combChairs + t.chairs;
-            }
-          })
-        } 
-      )
-      this.selectedTable.number = this.line1;
-      this.selectedTable.chairs = this.combChairs;
+      this.name = this.tableCombinations.value ?? []; // Nummer wird gespeichert (1,2,3)
+      this.selectedTable.name = this.name;
+      this.selectedTable.seats = this.seats;
       this.cancelEdit();
     }
 
@@ -164,14 +114,14 @@ constructor(
     cancelEdit() {
       this.showAllForm = true;
       this.visible = false;
-      this.line1 = [];
-      this.combChairs = 0;
+      this.name = [];
+      this.seats = null;
       this.tableCombinations.setValue([]);
     }
 
   removeTableCombination(tableCombinations: TableCombination){
 
-    const idx = this.tableCombination.findIndex(tc => tc.id === tableCombinations.id);
+    const idx = this.tableCombination.findIndex(tc => tc.name === tableCombinations.name);
     if (idx > -1) {
       this.tableCombination.splice(idx, 1);
     }
@@ -182,10 +132,6 @@ constructor(
     }
     
     this.cancelEdit();
-  }
-
-  tmp(){
-
   }
 
 }

@@ -50,8 +50,8 @@
       <dav-checkbox
         [checked]="bulkMode"
         (change)="toggleBulkMode($event)"
+		label="Mehrere Tische anlegen"
       >
-        Mehrere Tische anlegen
       </dav-checkbox>
     </div>
 
@@ -66,39 +66,28 @@
 		</dav-header>
 		<dav-button
 			outline
-			class="test-printer-btn"
+			class="test-table-btn"
 			(click)="showTableCombinationDialog()"
 			size="sm">
 			{{ tablesLocale.roomCombination }}
 		</dav-button>
-		@for (table of table; track table.number) {
+		@for (table of table; track table.name) {
 			<dav-card>
-				<div class="printer-card-container">
-
-					<div class="printer-card-content">
+				<div class="table-card-container">
+					<div class="table-card-content">
 						<p>
-							<strong>Nummer: {{ table.number }}</strong>
+							<strong>Nummer: {{ table.name }}</strong>
 						</p>
-						<p>Sitzplätze: {{ table.chairs }}</p>
-						<div class="printer-actions-row">
-							<!--<fa-icon [icon]="faFolder" class="printer-icon"></fa-icon>-->
+						<p>Sitzplätze: {{ table.seats }}</p>
+						<div class="table-actions-row">
 							<dav-button
 								outline
-								class="test-printer-btn"
+								class="test-table-btn"
 								(click)="removeTable(table)"
 								size="sm"
 							>
 								{{ tablesLocale.delete }}
 							</dav-button>
-							<!--<dav-button
-								outline
-								class="test-printer-btn" 
-								(click)="tmp()"
-								size="sm"
-							>
-								{{ tablesLocale.add }}
-							</dav-button>-->
-						
 						</div>
 					</div>
 					<dav-icon-button size="xs" (click)="openEditForm(table)">

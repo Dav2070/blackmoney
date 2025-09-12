@@ -16,11 +16,22 @@
 		<mat-form-field appearance="fill" class="dialog-formfield-container">
 			<mat-label>Table Numbers</mat-label>
 			<mat-select [formControl]="tableCombinations" multiple>
-				<mat-option *ngFor="let t of table" [value]="t.number">
-				Table {{ t.number }} ({{ t.chairs }} chairs)
+				<mat-option *ngFor="let t of table" [value]="t.name">
+				Table {{ t.name }} ({{ t.seats }} chairs)
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
+
+		<!-- Line 2 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="seats"
+				[label]="locale.line2"
+				[disabled]="loading"
+				[errorMessage]="line2Error"
+				(change)="chairNumberfieldChange($event)"
+			></dav-textfield>
+		</div>
 
 	</form>
 </dav-dialog>
@@ -32,19 +43,18 @@
 			{{ tablesLocale.headline }}
 		</dav-header>
 		
-		@for (oneTableCombination of tableCombination; track oneTableCombination.id) {
+		@for (oneTableCombination of tableCombination; track oneTableCombination.name) {
 			<dav-card>
-				<div class="printer-card-container">
-					<div class="printer-card-content">
+				<div class="tableCombination-card-container">
+					<div class="tableCombination-card-content">
 						<p>
-							<strong>Nummern: {{ oneTableCombination.number }}</strong>
+							<strong>Nummern: {{ oneTableCombination.name }}</strong>
 						</p>
-						<p>Sitzplätze: {{ oneTableCombination.chairs }}</p>
-						<div class="printer-actions-row">
-							<!--<fa-icon [icon]="faFolder" class="printer-icon"></fa-icon>-->
+						<p>Sitzplätze: {{ oneTableCombination.seats }}</p>
+						<div class="tableCombination-actions-row">
 							<dav-button
 								outline
-								class="test-printer-btn"
+								class="test-tableCombination-btn"
 								(click)="removeTableCombination(oneTableCombination)"
 								size="sm"
 							>

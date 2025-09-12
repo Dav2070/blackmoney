@@ -21,6 +21,9 @@ import { SettingsPageComponent } from "./pages/settings-pages/settings-page/sett
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
+import { RoomsComponent } from "./pages/landing-pages/rooms/rooms.component"
+import { TableCombinationComponent } from "./pages/landing-pages/table-combination/table-combination.component"
+import { TablesComponent } from "./pages/tables/tables.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 
 const routes: Routes = [
@@ -71,8 +74,24 @@ const routes: Routes = [
 			{
 				path: "user/employees/:uuid",
 				component: EmployeePageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/rooms",
+				component: RoomsComponent
+			},
+			{
+				path: "user/restaurants/:uuid/rooms/:roomName/tables",
+				component: TablesComponent
+			},
+			{
+				path: "user/restaurants/:uuid/rooms/:roomName/tables/Combinations",
+				component: TableCombinationComponent
 			}
 		]
+	},
+	{
+		path: "login",
+		component: LoginPageComponent
 	},
 	{
 		path: "onboarding",

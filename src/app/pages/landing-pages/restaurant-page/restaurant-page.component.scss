@@ -42,3 +42,25 @@ dav-card {
 	width: 300px;
 	border-top: 1px solid var(--dav-color-outline-variant);
 }
+
+.room-card-container {
+	display: flex;
+	align-items: start;
+	margin: 0;
+	gap: 10px;
+
+	fa-icon {
+		padding: 4px;
+	}
+}
+
+.room-card-content {
+	margin-top: 4px;
+	line-height: 20px;
+}
+
+.room-card-content > p {
+	margin: 0;
+	color: var(--dav-color-on-surface);
+}
+

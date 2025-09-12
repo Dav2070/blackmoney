@@ -1,0 +1,116 @@
+<!--<div id="rooms-sidebar" class="rooms-sidebar">
+  <a href="javascript:void(0)" (click)="closeAddRoomForm()">Home</a>
+  <a href="javascript:void(0)" (click)="openAddRoomForm()">Raum hinzufügen</a>
+  <a href="#">Raum bearbeiten</a>
+</div>-->
+
+<!-- Liste der Räume -->
+<!--<div *ngIf="showAllRoomsForm" class="rooms-content">
+  <div class="rooms-list">
+    <div *ngFor="let room of rooms" class="room-card">
+      <h2 class="white-text">Name: {{ room.name }} (Nr. {{ room.number }})</h2>
+      <button (click)="tmp()">Tisch hinzufügen</button>
+    </div>
+  </div>
+</div>
+-->
+<!--
+<div *ngIf="showAddRoomForm" class="form-card">
+  <h1 class="white-text">Neuen Raum hinzufügen</h1>
+  <label class="white-text">
+    Name
+    <input type="text" [(ngModel)]="newRoomName"/>
+  </label>
+  <label class="white-text">
+    Nummer
+    <input type="number" [(ngModel)]="newRoomNumber"/>
+  </label>
+  <button (click)="addRoom()">speichern</button>
+  <button (click)="closeAddRoomForm()">abbrechen</button>
+</div>
+-->
+
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submitRoom()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Line 1 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="line1"
+				[label]="locale.line1"
+				[disabled]="loading"
+				[errorMessage]="line1Error"
+				(change)="roomNameTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Line 2 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="line2"
+				[label]="locale.line2"
+				[disabled]="loading"
+				[errorMessage]="line2Error"
+				(change)="numberfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		
+	</form>
+</dav-dialog>
+
+
+
+
+
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header addButtonVisible (addButtonClick)="show()">
+			{{ roomLocale.headline }}
+		</dav-header>
+		@for (room of rooms; track room.number) {
+			<dav-card>
+				<div class="printer-card-container">
+					<div class="printer-card-content">
+						<p>
+							<strong>Raum: {{ room.name }}</strong>
+						</p>
+						<p>Nr.: {{ room.number }}</p>
+						<div class="printer-actions-row">
+							<fa-icon [icon]="faFolder" class="printer-icon"></fa-icon>
+							<dav-button
+								outline
+								class="test-printer-btn"
+								(click)="showTableAdministrationDialog(room)"
+								size="sm"
+							>
+								{{ roomLocale.addTable }}
+							</dav-button>
+							<dav-button
+								outline
+								class="test-printer-btn"
+								(click)="removeRoom(room)"
+								size="sm"
+							>
+								{{ roomLocale.delete }}
+							</dav-button>
+						</div>
+					</div>
+					<dav-icon-button size="xs" (click)="openEditRoomForm(room)">
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
+				</div>
+			</dav-card>
+		}
+	</div>
+</div>

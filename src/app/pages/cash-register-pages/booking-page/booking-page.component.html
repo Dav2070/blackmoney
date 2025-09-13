@@ -4,7 +4,7 @@
 	</div>
 
 	<div class="orders-numpad-container">
-		<div id="order">
+		<div class="orders-container">
 			@if (room != null && table != null) {
 				<div class="table-info-container">
 					<p>
@@ -339,11 +339,11 @@
 			</div>
 		</div>
 
-		<div id="numpad">
+		<div class="numpad-container">
 			<mat-card>
 				<mat-card-content> {{ console }} </mat-card-content>
 			</mat-card>
-			<div>
+			<div class="numpad-buttons">
 				@for (number of numberpad; track number) {
 					<button
 						mat-flat-button

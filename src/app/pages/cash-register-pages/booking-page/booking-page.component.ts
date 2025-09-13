@@ -202,6 +202,7 @@ export class BookingPageComponent {
 									maxSelections
 									products {
 										items {
+											id
 											uuid
 											name
 											price
@@ -210,6 +211,7 @@ export class BookingPageComponent {
 												name
 												products {
 													items {
+														id
 														uuid
 														name
 														price

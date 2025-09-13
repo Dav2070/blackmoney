@@ -48,7 +48,7 @@ export class BookingPageComponent {
 	faArrowRightArrowLeft = faArrowRightArrowLeft
 	categories: Category[] = []
 	selectedInventory: Product[] = []
-	selectedCategory: string = ""
+	selectedCategory: string = "menues"
 	categoriesLoading: boolean = true
 
 	menues: Offer[] = []
@@ -205,6 +205,17 @@ export class BookingPageComponent {
 											uuid
 											name
 											price
+											category {
+												uuid
+												name
+												products {
+													items {
+														uuid
+														name
+														price
+													}
+												}
+											}
 										}
 									}
 								}
@@ -235,11 +246,6 @@ export class BookingPageComponent {
 			this.categories.push(
 				convertCategoryResourceToCategory(categoryResource)
 			)
-		}
-
-		if (this.categories.length > 0) {
-			this.selectedCategory = this.categories[0].uuid
-			this.selectedInventory = this.categories[0].products
 		}
 
 		for (const offerResource of offers) {

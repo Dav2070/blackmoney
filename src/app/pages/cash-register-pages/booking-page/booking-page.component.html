@@ -343,68 +343,102 @@
 			<mat-card>
 				<mat-card-content> {{ console }} </mat-card-content>
 			</mat-card>
-			<div class="numpad-buttons">
-				<button mat-flat-button (click)="consoleInput('1')">1</button>
-				<button mat-flat-button (click)="consoleInput('2')">2</button>
-				<button mat-flat-button (click)="consoleInput('3')">3</button>
 
-				<button
-					mat-flat-button
+			<div class="numpad-buttons">
+				<dav-button color="secondary" tonal (click)="consoleInput('1')">
+					1
+				</dav-button>
+
+				<dav-button color="secondary" tonal (click)="consoleInput('2')">
+					2
+				</dav-button>
+
+				<dav-button color="secondary" tonal (click)="consoleInput('3')">
+					3
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
 					[disabled]="
 						commaUsed || !consoleActive || checkforZero() || xUsed
 					"
 					(click)="setAnzahl()"
 				>
 					×
-				</button>
+				</dav-button>
 
-				<button mat-flat-button (click)="consoleInput('4')">4</button>
-				<button mat-flat-button (click)="consoleInput('5')">5</button>
-				<button mat-flat-button (click)="consoleInput('6')">6</button>
+				<dav-button color="secondary" tonal (click)="consoleInput('4')">
+					4
+				</dav-button>
 
-				<button mat-flat-button (click)="showTotal()">Clear</button>
+				<dav-button color="secondary" tonal (click)="consoleInput('5')">
+					5
+				</dav-button>
 
-				<button mat-flat-button (click)="consoleInput('7')">7</button>
-				<button mat-flat-button (click)="consoleInput('8')">8</button>
-				<button mat-flat-button (click)="consoleInput('9')">9</button>
+				<dav-button color="secondary" tonal (click)="consoleInput('6')">
+					6
+				</dav-button>
 
-				<button
-					mat-flat-button
+				<dav-button color="secondary" text (click)="showTotal()">
+					Clear
+				</dav-button>
+
+				<dav-button color="secondary" tonal (click)="consoleInput('7')">
+					7
+				</dav-button>
+
+				<dav-button color="secondary" tonal (click)="consoleInput('8')">
+					8
+				</dav-button>
+
+				<dav-button color="secondary" tonal (click)="consoleInput('9')">
+					9
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
 					[disabled]="!consoleActive || commaUsed || checkArticleNumber()"
 					(click)="bookById()"
 				>
 					Artikel
-				</button>
+				</dav-button>
 
-				<button
-					mat-flat-button
+				<dav-button
+					color="secondary"
+					text
 					[disabled]="commaUsed || !consoleActive || xUsed"
-					(click)="consoleInput(',')"
-					(click)="commaUsed = true"
+					(click)="consoleInput(','); commaUsed = true"
 				>
 					,
-				</button>
+				</dav-button>
 
-				<button mat-flat-button (click)="consoleInput('0')">0</button>
+				<dav-button color="secondary" tonal (click)="consoleInput('0')">
+					0
+				</dav-button>
 
-				<button
-					[disabled]="!selectedItem"
-					[disabled]="!selectedMenuItem"
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="!selectedItem || !selectedMenuItem"
 					(click)="subtractitem()"
-					mat-flat-button
 				>
 					-
-				</button>
+				</dav-button>
 
-				<button
-					mat-flat-button
+				<dav-button
+					color="secondary"
+					text
 					[disabled]="!selectedItem"
 					[disabled]="!selectedMenuItem"
-					(click)="addSelectedItem(selectedItem)"
-					(click)="addSelectedMenuItem(selectedMenuItem)"
+					(click)="
+						addSelectedItem(selectedItem);
+						addSelectedMenuItem(selectedMenuItem)
+					"
 				>
 					+
-				</button>
+				</dav-button>
 			</div>
 		</div>
 	</div>

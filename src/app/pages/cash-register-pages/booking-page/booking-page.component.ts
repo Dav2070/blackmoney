@@ -67,7 +67,6 @@ export class BookingPageComponent {
 
 	bookedItems = new AllItemHandler()
 	stagedItems = new AllItemHandler()
-	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 	endpreis: number = 0.0
 
@@ -1199,6 +1198,7 @@ export class BookingPageComponent {
 			this.consoleActive = true
 			this.console = ""
 		}
+
 		this.console += input
 	}
 

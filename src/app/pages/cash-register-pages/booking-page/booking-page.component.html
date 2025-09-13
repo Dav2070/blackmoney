@@ -344,42 +344,38 @@
 				<mat-card-content> {{ console }} </mat-card-content>
 			</mat-card>
 			<div class="numpad-buttons">
-				@for (number of numberpad; track number) {
-					<button
-						mat-flat-button
-						(click)="consoleInput(number.toString())"
-					>
-						{{ number }}
-					</button>
-					@if (number == 3) {
-						<button
-							mat-flat-button
-							[disabled]="
-								commaUsed || !consoleActive || checkforZero() || xUsed
-							"
-							(click)="setAnzahl()"
-						>
-							X
-						</button>
-						<br />
-					}
-					@if (number == 6) {
-						<button mat-flat-button (click)="showTotal()">Clear</button>
-						<br />
-					}
-					@if (number == 9) {
-						<button
-							mat-flat-button
-							[disabled]="
-								!consoleActive || commaUsed || checkArticleNumber()
-							"
-							(click)="bookById()"
-						>
-							Artikel
-						</button>
-						<br />
-					}
-				}
+				<button mat-flat-button (click)="consoleInput('1')">1</button>
+				<button mat-flat-button (click)="consoleInput('2')">2</button>
+				<button mat-flat-button (click)="consoleInput('3')">3</button>
+
+				<button
+					mat-flat-button
+					[disabled]="
+						commaUsed || !consoleActive || checkforZero() || xUsed
+					"
+					(click)="setAnzahl()"
+				>
+					×
+				</button>
+
+				<button mat-flat-button (click)="consoleInput('4')">4</button>
+				<button mat-flat-button (click)="consoleInput('5')">5</button>
+				<button mat-flat-button (click)="consoleInput('6')">6</button>
+
+				<button mat-flat-button (click)="showTotal()">Clear</button>
+
+				<button mat-flat-button (click)="consoleInput('7')">7</button>
+				<button mat-flat-button (click)="consoleInput('8')">8</button>
+				<button mat-flat-button (click)="consoleInput('9')">9</button>
+
+				<button
+					mat-flat-button
+					[disabled]="!consoleActive || commaUsed || checkArticleNumber()"
+					(click)="bookById()"
+				>
+					Artikel
+				</button>
+
 				<button
 					mat-flat-button
 					[disabled]="commaUsed || !consoleActive || xUsed"
@@ -388,7 +384,9 @@
 				>
 					,
 				</button>
+
 				<button mat-flat-button (click)="consoleInput('0')">0</button>
+
 				<button
 					[disabled]="!selectedItem"
 					[disabled]="!selectedMenuItem"
@@ -397,6 +395,7 @@
 				>
 					-
 				</button>
+
 				<button
 					mat-flat-button
 					[disabled]="!selectedItem"

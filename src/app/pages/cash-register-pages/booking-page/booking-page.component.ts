@@ -184,6 +184,7 @@ export class BookingPageComponent {
 					}
 					offers {
 						items {
+							id
 							uuid
 							name
 							offerType

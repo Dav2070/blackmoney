@@ -284,6 +284,7 @@ export function convertOfferResourceToOffer(
 	}
 
 	return {
+		id: offerResource.id,
 		uuid: offerResource.uuid,
 		name: offerResource.name,
 		offerType: offerResource.offerType,

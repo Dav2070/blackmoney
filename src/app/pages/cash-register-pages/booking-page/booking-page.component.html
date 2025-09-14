@@ -7,6 +7,10 @@
 		<div class="orders-container">
 			@if (room != null && table != null) {
 				<div class="table-info-container">
+					<dav-icon-button size="sm" href="/dashboard" (click)="navigateToDashboard($event)">
+						<fa-icon [icon]="faArrowLeft"></fa-icon
+					></dav-icon-button>
+
 					<p>
 						{{
 							locale.tableHeadline.replace(
@@ -18,8 +22,8 @@
 					</p>
 
 					<dav-icon-button size="sm" (click)="selectTableButtonClick()">
-						<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon
-					></dav-icon-button>
+						<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon>
+					</dav-icon-button>
 				</div>
 			}
 

@@ -1,7 +1,10 @@
 import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
-import { faArrowRightArrowLeft } from "@fortawesome/pro-regular-svg-icons"
+import {
+	faArrowLeft,
+	faArrowRightArrowLeft
+} from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
@@ -46,6 +49,7 @@ interface AddProductsInputVariation {
 })
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
+	faArrowLeft = faArrowLeft
 	faArrowRightArrowLeft = faArrowRightArrowLeft
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []
@@ -280,6 +284,11 @@ export class BookingPageComponent {
 	showSpecials() {
 		this.selectedCategory = "specials"
 		this.selectedInventory = []
+	}
+
+	navigateToDashboard(event: MouseEvent) {
+		event.preventDefault()
+		this.router.navigate(["dashboard"])
 	}
 
 	selectTableButtonClick() {

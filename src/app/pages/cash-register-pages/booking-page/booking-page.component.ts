@@ -1287,19 +1287,6 @@ export class BookingPageComponent {
 
 	//Selektiert das Item in der Liste
 	selectItem(pickedItem: OrderItem, AllItemHandler: AllItemHandler) {
-		if(pickedItem.type === "menu" || pickedItem.type === "special") {
-			if (this.selectedMenuItem === pickedItem) {
-				// Deselect the clicked item
-				this.selectedMenuItem = null
-				this.tmpAllItemHandler = null
-			} else {
-				// Select the clicked item
-				this.selectedItem = pickedItem
-				this.tmpAllItemHandler = AllItemHandler
-			}
-
-			this.selectedItem = null
-		} else {
 			if (this.selectedItem === pickedItem) {
 				// Deselect the clicked item
 				this.selectedItem = null
@@ -1311,7 +1298,6 @@ export class BookingPageComponent {
 			}
 
 			this.selectedMenuItem = null
-		}
 	}
 
 	//Füge selektiertes Item hinzu
@@ -2133,25 +2119,85 @@ export class BookingPageComponent {
 		// Prüfe ob ein ähnliches OfferOrderItem bereits existiert und merge, oder füge neu hinzu
 		let existingOfferItem = this.stagedItems
 			.getAllPickedItems()
-			.find(item => item.offer.uuid === this.currentMenu.uuid)
+			.find(item => {
+				// Erst prüfen ob es dasselbe Angebot ist
+				if (item.offer?.uuid !== this.currentMenu.uuid) {
+					return false
+				}
+				
+				// Dann prüfen ob alle orderItems identisch sind
+				if (item.orderItems?.length !== allOrderItems.length) {
+					return false
+				}
+				
+				// Bidirektionale Prüfung: Jedes orderItem muss eine exakte 1:1 Entsprechung haben
+				return this.orderItemsAreIdentical(item.orderItems, allOrderItems, item.count)
+			})
+			
 		if (existingOfferItem) {
 			existingOfferItem.count += 1
-			// Füge alle OrderItems hinzu oder merge sie
+			
+			// Merge die orderItems durch Count-Erhöhung
 			for (let newOrderItem of allOrderItems) {
-				let existingOrderItem = existingOfferItem.orderItems.find(
-					(oi: OrderItem) => oi.product.id === newOrderItem.product.id
-				)
-				if (existingOrderItem) {
-					existingOrderItem.count += newOrderItem.count
-					// Merge Variationen
-					for (let newVar of newOrderItem.orderItemVariations) {
-						existingOrderItem.orderItemVariations.push(newVar)
+				// Finde das entsprechende existierende orderItem
+				let matchingOrderItem = existingOfferItem.orderItems.find(existingOrderItem => {
+					// Produkt-ID muss gleich sein
+					if (existingOrderItem.product.id !== newOrderItem.product.id) {
+						console.log("Product ID mismatch:", existingOrderItem.product.id, newOrderItem.product.id)
+						return false
 					}
-				} else {
-					existingOfferItem.orderItems.push(newOrderItem)
+					
+					// Variationen müssen gleich sein (gleiche Anzahl)
+					if (existingOrderItem.orderItemVariations?.length !== newOrderItem.orderItemVariations?.length) {
+						return false
+					}
+					
+					// Jede Variation muss übereinstimmen
+					return newOrderItem.orderItemVariations?.every(newVar => {
+						return existingOrderItem.orderItemVariations?.some(existingVar => {
+							// VariationItems müssen gleich sein
+							if (existingVar.variationItems?.length !== newVar.variationItems?.length) {
+								return false
+							}
+							
+							// Jedes VariationItem muss übereinstimmen
+							return newVar.variationItems?.every(newVarItem => {
+								return existingVar.variationItems?.some(existingVarItem => 
+									existingVarItem.id === newVarItem.id &&
+									existingVarItem.name === newVarItem.name &&
+									existingVarItem.additionalCost === newVarItem.additionalCost
+								)
+							}) ?? true
+						}) ?? false
+					}) ?? true
+				})
+				
+				if (matchingOrderItem) {
+					// Identisches orderItem gefunden -> Count erhöhen
+					matchingOrderItem.count += newOrderItem.count
+					
+					// Variation Counts auch erhöhen
+					for (let newVar of newOrderItem.orderItemVariations || []) {
+						let matchingVar = matchingOrderItem.orderItemVariations?.find(existingVar => {
+							return (existingVar.variationItems?.length === newVar.variationItems?.length) &&
+								(newVar.variationItems?.every(newVarItem => {
+									return existingVar.variationItems?.some(existingVarItem => 
+										existingVarItem.id === newVarItem.id &&
+										existingVarItem.name === newVarItem.name &&
+										existingVarItem.additionalCost === newVarItem.additionalCost
+									)
+								}) ?? true)
+						})
+						
+						if (matchingVar) {
+							matchingVar.count += newVar.count
+						}
+					}
 				}
 			}
+			
 			existingOfferItem.product.price += finalMenuPrice
+			console.log("Merged existing menu item, final count:", existingOfferItem.count)
 		} else {
 			this.stagedItems.pushNewItem(OrderItem)
 			console.log("Final OrderItem:", OrderItem)
@@ -2203,5 +2249,70 @@ export class BookingPageComponent {
 		}
 
 		return itemPrice
+	}
+
+	// Helper-Methode für bidirektionalen OrderItem-Vergleich
+	private orderItemsAreIdentical(existingOrderItems: OrderItem[], newOrderItems: OrderItem[], existingMenuCount: number = 1): boolean {
+		if (existingOrderItems.length !== newOrderItems.length) {
+			return false
+		}
+
+		// Erstelle Kopien der Arrays zum sicheren Manipulieren
+		const remainingExisting = [...existingOrderItems]
+		
+		// Für jedes neue OrderItem muss es genau ein passendes existierendes geben
+		for (let newOrderItem of newOrderItems) {
+			const matchIndex = remainingExisting.findIndex(existingOrderItem => {
+				// Produkt-ID muss gleich sein
+				if (existingOrderItem.product.id !== newOrderItem.product.id) {
+					console.log("Product ID mismatch:", existingOrderItem.product.id, newOrderItem.product.id)
+					return false
+				}
+				
+				// Count muss gleich sein (existing count durch menu count normalisiert)
+				if (existingOrderItem.count / existingMenuCount !== newOrderItem.count) {
+					return false
+				}
+				
+				// Variationen müssen gleich sein
+				if (existingOrderItem.orderItemVariations?.length !== newOrderItem.orderItemVariations?.length) {
+					return false
+				}
+				
+				// Jede Variation muss übereinstimmen
+				return newOrderItem.orderItemVariations?.every(newVar => {
+					return existingOrderItem.orderItemVariations?.some(existingVar => {
+						// Count der Variation muss gleich sein (normalisiert)
+						if (existingVar.count / existingMenuCount !== newVar.count) {
+							return false
+						}
+						
+						// VariationItems müssen gleich sein
+						if (existingVar.variationItems?.length !== newVar.variationItems?.length) {
+							return false
+						}
+						
+						// Jedes VariationItem muss übereinstimmen
+						return newVar.variationItems?.every(newVarItem => {
+							return existingVar.variationItems?.some(existingVarItem => 
+								existingVarItem.id === newVarItem.id &&
+								existingVarItem.name === newVarItem.name &&
+								existingVarItem.additionalCost === newVarItem.additionalCost
+							)
+						}) ?? true
+					}) ?? false
+				}) ?? true
+			})
+			
+			if (matchIndex === -1) {
+				return false // Kein Match gefunden
+			}
+			
+			// Entferne das gematchte Item um 1:1 Zuordnung sicherzustellen
+			remainingExisting.splice(matchIndex, 1)
+		}
+		
+		// Alle Items sollten zugeordnet worden sein
+		return remainingExisting.length === 0
 	}
 }

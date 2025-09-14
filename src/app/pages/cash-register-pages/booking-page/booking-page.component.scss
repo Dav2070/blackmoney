@@ -16,27 +16,33 @@
 .orders-numpad-container {
 	grid-column: 1;
 	grid-row: 2;
+	display: grid;
+	grid-template-rows: 1fr auto;
+	overflow: hidden;
+	margin: 0 16px;
+}
+
+.orders-container {
+	overflow-y: scroll;
+	grid-row: 1;
+	padding-bottom: 8px;
+}
+
+.numpad-container {
+	grid-row: 2;
 	display: flex;
 	flex-direction: column;
-	height: 100%;
-	min-height: 100%;
+	gap: 8px;
 }
 
-.clickcolor {
-	box-shadow:
-		0px 0px 0px 0px rgba(102, 9, 179, 0.2),
-		0px 0px 0px 0px rgba(240, 9, 9, 0.14),
-		0px 0px 0px 0px rgb(0, 0, 0, 0.12);
-	--mat-card-outlined-outline-color: #fff;
-}
+.numpad-buttons {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 4px;
 
-#order {
-	overflow-y: scroll;
-	flex: 1;
-}
-
-#numpad {
-	flex: 1;
+	dav-button {
+		width: 100%;
+	}
 }
 
 .product-selection-container {
@@ -74,7 +80,6 @@
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	padding: 0 16px;
 	margin-bottom: 12px;
 
 	p {
@@ -89,25 +94,54 @@
 	grid-row: 3;
 }
 
-.selected-card {
-	background-color: rgba(27, 167, 251, 255);
-}
-
 .staged-items-separator {
 	display: flex;
 	align-items: center;
-	margin: 16px 16px;
+	margin: 16px 0;
 	gap: 14px;
 }
 
 .staged-items-separator p {
 	margin: 0;
 	text-wrap-mode: nowrap;
+	color: var(--dav-color-on-surface);
 }
 
 .separator {
 	width: 100%;
 	border-top: 1px solid var(--dav-color-outline-variant);
+}
+
+.order-items-container {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 0;
+	margin: 0;
+}
+
+.order-item-card-skeleton {
+	width: 100%;
+	height: 55px;
+	border-radius: 12px;
+}
+
+.no-products-message {
+	color: var(--dav-color-on-surface);
+	margin: 0;
+	font-size: 14px;
+	font-style: italic;
+	font-weight: 200;
+}
+
+.console-output {
+	border-top: 1px solid var(--dav-color-outline-variant);
+}
+
+.console-output > p {
+	margin: 16px;
+	text-align: right;
+	color: var(--dav-color-on-surface);
 }
 
 .popup-overlay {
@@ -161,10 +195,6 @@
 	width: 100%;
 	margin: 25px;
 	height: 70px;
-}
-
-.item-price {
-	float: right;
 }
 
 .variationItem-price {
@@ -510,10 +540,4 @@
 .close-btn {
 	background-color: #f44336;
 	color: white;
-}
-
-.menu-item-name {
-	text-align: center;
-	display: block;
-	width: 100%;
 }

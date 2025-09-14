@@ -340,9 +340,9 @@
 		</div>
 
 		<div class="numpad-container">
-			<mat-card>
-				<mat-card-content> {{ console }} </mat-card-content>
-			</mat-card>
+			<div class="console-output">
+				<p>{{ console }}</p>
+			</div>
 
 			<div class="numpad-buttons">
 				<dav-button color="secondary" tonal (click)="consoleInput('1')">

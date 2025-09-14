@@ -11,7 +11,7 @@
 	</div>
 
 	<div class="order-item-card-unit-price">
-		@if (orderItem.orderItemVariations.length === 0) {
+		@if (orderItem.orderItemVariations.length === 0 && orderItem.count > 1) {
 			<p>
 				{{ orderItem.count }} ×
 				{{ (orderItem.product.price / 100).toFixed(2).replace(".", ",") }}

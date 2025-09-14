@@ -103,6 +103,7 @@
 .staged-items-separator p {
 	margin: 0;
 	text-wrap-mode: nowrap;
+	color: var(--dav-color-on-surface);
 }
 
 .separator {
@@ -124,6 +125,7 @@
 .console-output > p {
 	margin: 16px;
 	text-align: right;
+	color: var(--dav-color-on-surface);
 }
 
 .popup-overlay {

@@ -54,7 +54,9 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 		}
 	}
 
-	return ((total + orderItem.product.price * orderItem.count) / 100).toFixed(2)
+	return ((total + orderItem.product.price * orderItem.count) / 100)
+		.toFixed(2)
+		.replace(".", ",")
 }
 
 export function getGraphQLErrorCodes(

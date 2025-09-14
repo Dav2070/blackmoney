@@ -25,7 +25,22 @@
 
 			<div>
 				<ul class="order-items-container">
-					@for (orderItem of stagedItems.getOrderItems(); track orderItem.uuid) {
+					@if (loading) {
+						<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+						<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+						<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+						<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+						<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+					}
+
+					@if (!loading && stagedItems.getOrderItems().length === 0) {
+						<p class="no-products-message">Keine Produkte ausgewählt</p>
+					}
+
+					@for (
+						orderItem of stagedItems.getOrderItems();
+						track orderItem.uuid
+					) {
 						<app-order-item-card
 							[orderItem]="orderItem"
 							[selectedOrderItemUuid]="selectedItem?.uuid"
@@ -124,10 +139,12 @@
 					</mat-card>
 				}
 
-				<div class="staged-items-separator">
-					<p>Gebuchte Produkte</p>
-					<div class="separator"></div>
-				</div>
+				@if (!loading && bookedItems.getOrderItems().length > 0) {
+					<div class="staged-items-separator">
+						<p>Gebuchte Produkte</p>
+						<div class="separator"></div>
+					</div>
+				}
 
 				<ul class="order-items-container">
 					@for (
@@ -328,7 +345,7 @@
 
 	<div class="product-selection-container">
 		<div class="product-items">
-			@if (categoriesLoading) {
+			@if (loading) {
 				<dav-skeleton
 					class="product-item-skeleton"
 					style="width: 145px"
@@ -401,7 +418,7 @@
 
 	<div class="categories-sidenav-container">
 		<dav-sidenav>
-			@if (categoriesLoading) {
+			@if (loading) {
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>

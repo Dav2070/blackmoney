@@ -51,7 +51,7 @@ export class BookingPageComponent {
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 	selectedCategory: string = "menues"
-	categoriesLoading: boolean = true
+	loading: boolean = true
 
 	menues: Offer[] = []
 	specials: Offer[] = []
@@ -263,7 +263,7 @@ export class BookingPageComponent {
 			}
 		}
 
-		this.categoriesLoading = false
+		this.loading = false
 	}
 
 	// Lade Items zur ausgewählten Kategorie

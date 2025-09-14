@@ -39,6 +39,7 @@ import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page
 import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { OrderItemCardComponent } from "./components/cash-register/order-item-card/order-item-card.component"
+import { OfferOrderItemCardComponent } from "./components/cash-register/offer-order-item-card/offer-order-item-card.component"
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
@@ -96,6 +97,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		SettingsBarComponent,
 		HeaderComponent,
 		OrderItemCardComponent,
+		OfferOrderItemCardComponent,
 		// Dialog
 		LogoutDialogComponent,
 		EditRestaurantNameDialogComponent,

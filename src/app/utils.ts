@@ -22,6 +22,7 @@ import { Printer } from "./models/Printer"
 import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
+import { OfferOrderItem } from "./models/OfferOrderItem"
 import {
 	CategoryResource,
 	CompanyResource,
@@ -45,7 +46,7 @@ import {
 } from "./types"
 import { darkThemeKey, lightThemeKey } from "./constants"
 
-export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
+export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
 	let total = 0
 
 	for (let variation of orderItem.orderItemVariations) {
@@ -57,6 +58,26 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
 	return ((total + orderItem.product.price * orderItem.count) / 100)
 		.toFixed(2)
 		.replace(".", ",")
+}
+
+export function calculateTotalPriceOfOfferOrderItem(
+	offerOrderItem: OfferOrderItem
+): string {
+	let total = 0
+
+	for (let item of offerOrderItem.orderItems) {
+		total += item.product.price * item.count
+
+		if (item.orderItemVariations) {
+			for (const variation of item.orderItemVariations) {
+				for (const variationItem of variation.variationItems) {
+					total += variationItem.additionalCost * variation.count
+				}
+			}
+		}
+	}
+
+	return (total / 100).toFixed(2).replace(".", ",")
 }
 
 export function getGraphQLErrorCodes(

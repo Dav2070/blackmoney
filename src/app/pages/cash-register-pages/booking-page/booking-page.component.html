@@ -32,7 +32,11 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 				}
 
-				@if (!loading && stagedItems.getOrderItems().length === 0) {
+				@if (
+					!loading &&
+					stagedItems.getOrderItems().length === 0 &&
+					stagedItems.getMenuOrderItems().length === 0
+				) {
 					<p class="no-products-message">Keine Produkte ausgewählt</p>
 				}
 
@@ -48,94 +52,18 @@
 				}
 			</ul>
 
-			@for (
-				menuItem of stagedItems.getMenuOrderItems();
-				track menuItem.uuid
-			) {
-				<mat-card
-					(click)="selectMenuItem(menuItem, stagedItems)"
-					style="cursor: pointer"
-					[style.background-color]="
-						selectedMenuItem === menuItem
-							? 'rgba(27, 167, 251, 255)'
-							: 'white'
-					"
-				>
-					<mat-card-content class="card-content">
-						<strong class="menu-item-name">
-							{{ menuItem.product.name }}
-						</strong>
-					</mat-card-content>
-					@if (menuItem.orderItems) {
-						@for (
-							orderItem of menuItem.orderItems;
-							track orderItem.uuid
-						) {
-							<mat-card-content>
-								{{ orderItem.count }} x
-								{{ orderItem.product.name }}
-								<span class="item-price">
-									{{
-										(
-											(orderItem.count * orderItem.product.price) /
-											100
-										).toFixed(2)
-									}}€
-								</span>
-								@if (orderItem.orderItemVariations.length > 0) {
-									@for (
-										variation of orderItem.orderItemVariations;
-										track variation.uuid
-									) {
-										<div>
-											{{ variation.count }}x
-											@for (
-												variationItem of variation.variationItems;
-												track variationItem.uuid
-											) {
-												{{ variationItem.name }}
-												@if (variationItem.additionalCost > 0) {
-													<span class="variationItem-price">
-														+
-														{{
-															(
-																(variation.count *
-																	variationItem.additionalCost) /
-																100
-															).toFixed(2)
-														}}€</span
-													>
-												}
-												@if (variationItem.additionalCost < 0) {
-													<span class="variationItem-price">
-														{{
-															(
-																(variation.count *
-																	variationItem.additionalCost) /
-																100
-															).toFixed(2)
-														}}€</span
-													>
-												}
-											}
-										</div>
-									}
-								}
-							</mat-card-content>
-						}
-					}
-					<mat-card-content>
-						#{{ menuItem.offer.id }}
-						<span class="total-price">
-							{{
-								(stagedItems.getTotalMenuPrice(menuItem) / 100).toFixed(
-									2
-								)
-							}}€
-						</span>
-					</mat-card-content>
-				</mat-card>
-			}
+			<ul class="order-items-container">
+				@for (
+					menuOrderItem of stagedItems.getMenuOrderItems();
+					track menuOrderItem.uuid
+				) {
+					<app-offer-order-item-card
+						[offerOrderItem]="menuOrderItem"
+						[selectedOfferOrderItemUuid]="selectedMenuItem?.uuid"
+						(click)="selectMenuItem(menuOrderItem, stagedItems)"
+					></app-offer-order-item-card>
+				}
+			</ul>
 
 			@if (!loading && bookedItems.getOrderItems().length > 0) {
 				<div class="staged-items-separator">
@@ -157,83 +85,18 @@
 				}
 			</ul>
 
-			@for (
-				menuItem of bookedItems.getMenuOrderItems();
-				track menuItem.uuid
-			) {
-				<mat-card
-					style="cursor: pointer"
-					[style.background-color]="'white'"
-				>
-					<mat-card-content class="card-content">
-						<strong class="menu-item-name">
-							{{ menuItem.product.name }}
-						</strong>
-					</mat-card-content>
-					@if (menuItem.orderItems) {
-						@for (
-							orderItem of menuItem.orderItems;
-							track orderItem.uuid
-						) {
-							<mat-card-content>
-								{{ orderItem.count }} x
-								{{ orderItem.product.name }}
-								<span class="item-price">
-									{{
-										(
-											orderItem.count *
-											(orderItem.product.price / 100)
-										).toFixed(2)
-									}}€
-								</span>
-								@if (orderItem.orderItemVariations.length > 0) {
-									@for (
-										variation of orderItem.orderItemVariations;
-										track variation.uuid
-									) {
-										<div>
-											{{ variation.count }}x
-											@for (
-												variationItem of variation.variationItems;
-												track variationItem.uuid
-											) {
-												{{ variationItem.name }}
-												@if (variationItem.additionalCost > 0) {
-													<span class="variationItem-price">
-														+
-														{{
-															(
-																variation.count *
-																variationItem.additionalCost
-															).toFixed(2)
-														}}€</span
-													>
-												}
-												@if (variationItem.additionalCost < 0) {
-													<span class="variationItem-price">
-														{{
-															(
-																variation.count *
-																variationItem.additionalCost
-															).toFixed(2)
-														}}€</span
-													>
-												}
-											}
-										</div>
-									}
-								}
-							</mat-card-content>
-						}
-					}
-					<mat-card-content>
-						#{{ menuItem.offer.id }}
-						<span class="total-price">
-							{{ menuItem.product.price.toFixed(2) }}€
-						</span>
-					</mat-card-content>
-				</mat-card>
-			}
+			<ul class="order-items-container">
+				@for (
+					menuOrderItem of bookedItems.getMenuOrderItems();
+					track menuOrderItem.uuid
+				) {
+					<app-offer-order-item-card
+						[offerOrderItem]="menuOrderItem"
+						[selectedOfferOrderItemUuid]="selectedMenuItem?.uuid"
+						(click)="selectMenuItem(menuOrderItem, stagedItems)"
+					></app-offer-order-item-card>
+				}
+			</ul>
 		</div>
 
 		<div class="numpad-container">

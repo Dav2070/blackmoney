@@ -37,6 +37,8 @@ import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
+import { HeaderComponent } from "./components/cash-register/header/header.component"
+import { OrderItemCardComponent } from "./components/cash-register/order-item-card/order-item-card.component"
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
@@ -72,7 +74,6 @@ import { LocalizationService } from "./services/localization-service"
 
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
-import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 import { ItemsTableComponent } from "./components/settings/items-table/items-table.component"
@@ -92,8 +93,9 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 	declarations: [
 		// Components
 		AppComponent,
-		HeaderComponent,
 		SettingsBarComponent,
+		HeaderComponent,
+		OrderItemCardComponent,
 		// Dialog
 		LogoutDialogComponent,
 		EditRestaurantNameDialogComponent,

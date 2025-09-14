@@ -20,6 +20,7 @@ import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import {
+	calculateTotalPriceOfOrderItem,
 	convertCategoryResourceToCategory,
 	convertOfferResourceToOffer,
 	convertOrderItemResourceToOrderItem,
@@ -46,6 +47,7 @@ interface AddProductsInputVariation {
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
 	faArrowRightArrowLeft = faArrowRightArrowLeft
+	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 	selectedCategory: string = "menues"
@@ -1430,21 +1432,6 @@ export class BookingPageComponent {
 			return true
 		}
 		return false
-	}
-
-	calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
-		let total = 0
-
-		for (let variation of orderItem.orderItemVariations) {
-			for (let variationItem of variation.variationItems) {
-				total += variation.count * variationItem.additionalCost
-			}
-		}
-
-		return (
-			(total + orderItem.product.price * orderItem.count) /
-			100
-		).toFixed(2)
 	}
 
 	checkForPlusaddVariation(variation: TmpVariations) {

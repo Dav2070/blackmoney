@@ -47,6 +47,24 @@ import {
 import { darkThemeKey, lightThemeKey } from "./constants"
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
+	if (orderItem.type === "menu" || orderItem.type === "special") {
+		let total = 0
+
+		for (let item of orderItem.orderItems) {
+			total += item.product.price * item.count
+
+			if (item.orderItemVariations) {
+				for (const variation of item.orderItemVariations) {
+					for (const variationItem of variation.variationItems) {
+						total += variationItem.additionalCost * variation.count
+					}
+				}
+			}
+		}
+
+		return (total / 100).toFixed(2).replace(".", ",")
+	}else{
+
 	let total = 0
 
 	for (let variation of orderItem.orderItemVariations) {
@@ -58,6 +76,7 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
 	return ((total + orderItem.product.price * orderItem.count) / 100)
 		.toFixed(2)
 		.replace(".", ",")
+	}
 }
 
 export function calculateTotalPriceOfOfferOrderItem(
@@ -493,6 +512,7 @@ export function convertOrderItemResourceToOrderItem(
 
 	return {
 		uuid: orderItemResource.uuid,
+		type: orderItemResource.type,
 		count: orderItemResource.count,
 		order: convertOrderResourceToOrder(orderItemResource.order),
 		product: convertProductResourceToProduct(orderItemResource.product),

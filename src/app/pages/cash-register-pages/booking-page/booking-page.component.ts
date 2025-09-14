@@ -339,6 +339,7 @@ export class BookingPageComponent {
 
 		let newItem: OrderItem = {
 			uuid: product.uuid,
+			type: "product",
 			count: 0,
 			order: null,
 			product,
@@ -418,7 +419,7 @@ export class BookingPageComponent {
 				} else {
 					//Menu existiert nicht in stagedItems
 					newItem.count = this.tmpAnzahl
-					this.stagedItems.pushNewMenuItem(newItem)
+					this.stagedItems.pushNewOfferItem(newItem)
 				}
 			} else if (this.stagedItems.includesOfferItem(menuItem)) {
 				let existingItem = this.stagedItems.getOfferItem(
@@ -493,7 +494,7 @@ export class BookingPageComponent {
 						this.selectedMenuItem.orderItems[0].orderItemVariations[0].count -=
 							this.tmpAnzahl
 					} else if (this.selectedMenuItem.count === this.tmpAnzahl) {
-						this.stagedItems.deleteMenuItem(this.selectedMenuItem)
+						this.stagedItems.deleteOfferItem(this.selectedMenuItem)
 					} else {
 						window.alert("Anzahl ist zu hoch")
 					}
@@ -510,7 +511,7 @@ export class BookingPageComponent {
 					}
 				}
 
-				this.removeEmptyMenuItem(this.bookedItems)
+				this.removeEmptyOfferItem(this.bookedItems)
 				this.showTotal()
 			} else {
 				// Für staged MenuItems mit einem Produkt
@@ -535,7 +536,7 @@ export class BookingPageComponent {
 							this.selectedMenuItem.orderItems[0].count -= 1
 							this.selectedMenuItem.orderItems[0].orderItemVariations[0].count -= 1
 						}
-						this.removeEmptyMenuItem(this.stagedItems)
+						this.removeEmptyOfferItem(this.stagedItems)
 					}
 				} else {
 					// Menüs
@@ -606,7 +607,7 @@ export class BookingPageComponent {
 					}
 				}
 
-				this.removeEmptyMenuItem(this.stagedItems)
+				this.removeEmptyOfferItem(this.stagedItems)
 				this.showTotal()
 			}
 		} else {
@@ -771,9 +772,9 @@ export class BookingPageComponent {
 						)
 				}
 
-				// Entferne das gesamte MenuOrderItem wenn keine OrderItems mehr vorhanden
+				// Entferne das gesamte OfferOrderItem wenn keine OrderItems mehr vorhanden
 				if (this.selectedMenuItem.orderItems.length === 0) {
-					this.stagedItems.deleteMenuItem(this.selectedMenuItem)
+					this.stagedItems.deleteOfferItem(this.selectedMenuItem)
 				} else {
 					// Aktualisiere MenuOrderItem count basierend auf verbleibenden OrderItems
 					this.selectedMenuItem.count =
@@ -821,9 +822,9 @@ export class BookingPageComponent {
 		}
 	}
 
-	removeEmptyMenuItem(itemHandler: AllItemHandler) {
+	removeEmptyOfferItem(itemHandler: AllItemHandler) {
 		if (this.selectedMenuItem.count == 0) {
-			itemHandler.deleteMenuItem(this.selectedMenuItem)
+			itemHandler.deleteOfferItem(this.selectedMenuItem)
 		} else {
 			// Entferne leere OrderItemVariations von den OrderItems des MenuItems
 			for (let orderItem of this.selectedMenuItem.orderItems) {
@@ -932,6 +933,7 @@ export class BookingPageComponent {
 				// Normaler Modus: Erstelle neues OrderItem
 				let orderItem: OrderItem = {
 					uuid: this.lastClickedItem.uuid,
+					type: "product",
 					order: null,
 					product: this.lastClickedItem,
 					count: 0,
@@ -1285,31 +1287,31 @@ export class BookingPageComponent {
 
 	//Selektiert das Item in der Liste
 	selectItem(pickedItem: OrderItem, AllItemHandler: AllItemHandler) {
-		if (this.selectedItem === pickedItem) {
-			// Deselect the clicked item
+		if(pickedItem.type === "menu" || pickedItem.type === "special") {
+			if (this.selectedMenuItem === pickedItem) {
+				// Deselect the clicked item
+				this.selectedMenuItem = null
+				this.tmpAllItemHandler = null
+			} else {
+				// Select the clicked item
+				this.selectedItem = pickedItem
+				this.tmpAllItemHandler = AllItemHandler
+			}
+
 			this.selectedItem = null
-			this.tmpAllItemHandler = null
 		} else {
-			// Select the clicked item
-			this.selectedItem = pickedItem
-			this.tmpAllItemHandler = AllItemHandler
-		}
+			if (this.selectedItem === pickedItem) {
+				// Deselect the clicked item
+				this.selectedItem = null
+				this.tmpAllItemHandler = null
+			} else {
+				// Select the clicked item
+				this.selectedItem = pickedItem
+				this.tmpAllItemHandler = AllItemHandler
+			}
 
-		this.selectedMenuItem = null
-	}
-
-	selectMenuItem(pickedItem: OfferOrderItem, AllItemHandler: AllItemHandler) {
-		if (this.selectedMenuItem === pickedItem) {
-			// Deselect the clicked item
 			this.selectedMenuItem = null
-			this.tmpAllItemHandler = null
-		} else {
-			// Select the clicked item
-			this.selectedMenuItem = pickedItem
-			this.tmpAllItemHandler = AllItemHandler
 		}
-
-		this.selectedItem = null
 	}
 
 	//Füge selektiertes Item hinzu
@@ -1561,7 +1563,9 @@ export class BookingPageComponent {
 
 		for (let item of special.offerItems) {
 			for (let product of item.products) {
-				this.specialCategories.push(product.category)
+				if (!this.specialCategories.some(cat => cat.uuid === product.category.uuid)) {
+					this.specialCategories.push(product.category)
+				}
 			}
 		}
 	}
@@ -1578,7 +1582,9 @@ export class BookingPageComponent {
 
 		for (let item of this.currentMenu.offerItems) {
 			for (let product of item.products) {
-				this.specialCategories.push(product.category)
+				if (!this.specialCategories.some(cat => cat.uuid === product.category.uuid)) {
+					this.specialCategories.push(product.category)
+				}
 			}
 		}
 	}
@@ -1678,6 +1684,7 @@ export class BookingPageComponent {
 
 		let newItem: OrderItem = {
 			uuid: product.uuid,
+			type: "product",
 			count: 0,
 			order: null,
 			product,
@@ -1688,7 +1695,8 @@ export class BookingPageComponent {
 			// Produkt ohne Variationen, direkt hinzufügen
 			if (this.tmpSpecialAllItemsHandler.includes(newItem)) {
 				let existingItem = this.tmpSpecialAllItemsHandler.getItem(
-					newItem.product.id
+					newItem.product.id,
+					newItem.uuid
 				)
 				existingItem.count += 1
 			} else {
@@ -1912,7 +1920,7 @@ export class BookingPageComponent {
 			}
 
 			if (this.stagedItems.includesOfferItem(menuOrderItem)) {
-				for (let item of this.stagedItems.getAllPickedMenuItems()) {
+				for (let item of this.stagedItems.getAllPickedOfferItems()) {
 					for (let orderItem of item.orderItems) {
 						if (orderItem.product.id === processedItem.product.id) {
 							// Wenn das Produkt übereinstimmt, füge die OrderItemVariationen hinzu
@@ -2026,7 +2034,7 @@ export class BookingPageComponent {
 					item.product.price = totalPrice
 				}
 			} else {
-				this.stagedItems.pushNewMenuItem(menuOrderItem)
+				this.stagedItems.pushNewOfferItem(menuOrderItem)
 			}
 		}
 
@@ -2085,8 +2093,9 @@ export class BookingPageComponent {
 			}
 		}
 
-		let offerOrderItem: OfferOrderItem = {
+		let OrderItem: OrderItem = {
 			uuid: crypto.randomUUID(),
+			type: "menu",
 			count: 1,
 			order: null,
 			offer: this.currentMenu,
@@ -2121,15 +2130,15 @@ export class BookingPageComponent {
 			)
 		}
 
-		// Prüfe ob ein ähnliches MenuOrderItem bereits existiert und merge, oder füge neu hinzu
-		let existingMenuItem = this.stagedItems
-			.getAllPickedMenuItems()
+		// Prüfe ob ein ähnliches OfferOrderItem bereits existiert und merge, oder füge neu hinzu
+		let existingOfferItem = this.stagedItems
+			.getAllPickedItems()
 			.find(item => item.offer.uuid === this.currentMenu.uuid)
-		if (existingMenuItem) {
-			existingMenuItem.count += 1
+		if (existingOfferItem) {
+			existingOfferItem.count += 1
 			// Füge alle OrderItems hinzu oder merge sie
 			for (let newOrderItem of allOrderItems) {
-				let existingOrderItem = existingMenuItem.orderItems.find(
+				let existingOrderItem = existingOfferItem.orderItems.find(
 					(oi: OrderItem) => oi.product.id === newOrderItem.product.id
 				)
 				if (existingOrderItem) {
@@ -2139,12 +2148,13 @@ export class BookingPageComponent {
 						existingOrderItem.orderItemVariations.push(newVar)
 					}
 				} else {
-					existingMenuItem.orderItems.push(newOrderItem)
+					existingOfferItem.orderItems.push(newOrderItem)
 				}
 			}
-			existingMenuItem.product.price += finalMenuPrice
+			existingOfferItem.product.price += finalMenuPrice
 		} else {
-			this.stagedItems.pushNewMenuItem(offerOrderItem)
+			this.stagedItems.pushNewItem(OrderItem)
+			console.log("Final OrderItem:", OrderItem)
 		}
 
 		// Cleanup

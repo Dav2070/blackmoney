@@ -10,14 +10,14 @@ import { Order } from "../Order"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
-	private allPickedMenuItems: OfferOrderItem[] = []
+	private allPickedOfferItems: OfferOrderItem[] = []
 
 	getAllPickedItems() {
 		return this.allPickedItems
 	}
 
-	getAllPickedMenuItems() {
-		return this.allPickedMenuItems
+	getAllPickedOfferItems() {
+		return this.allPickedOfferItems
 	}
 
 	// Lade alle Items einer Order
@@ -95,7 +95,10 @@ export class AllItemHandler {
 	pushNewItem(pickedItem: OrderItem) {
 		const id = pickedItem.product.id
 
-		const item = this.allPickedItems.find(item => item.product.id === id)
+		const item = this.allPickedItems.find(item => 
+			item.product.id === id && item.uuid === pickedItem.uuid
+		)
+
 		// Prüfen, ob das Item bereits existiert
 		if (item != undefined) {
 			// Anzahl des bestehenden Items erhöhen
@@ -134,9 +137,9 @@ export class AllItemHandler {
 		}
 	}
 
-	//Füge MenuOrderItem hinzu
-	pushNewMenuItem(pickedItem: OfferOrderItem) {
-		this.allPickedMenuItems.push({ ...pickedItem })
+	//Füge OfferOrderItem hinzu
+	pushNewOfferItem(pickedItem: OfferOrderItem) {
+		this.allPickedOfferItems.push({ ...pickedItem })
 	}
 
 	//Übertrage alle Items aus einer anderen Map in diese
@@ -144,8 +147,8 @@ export class AllItemHandler {
 		for (let item of itemHandler.getOrderItems()) {
 			this.pushNewItem(item)
 		}
-		for (let menuItem of itemHandler.getMenuOrderItems()) {
-			this.pushNewMenuItem(menuItem)
+		for (let offerItem of itemHandler.getOfferOrderItems()) {
+			this.pushNewOfferItem(offerItem)
 		}
 
 		itemHandler.clearItems()
@@ -168,7 +171,7 @@ export class AllItemHandler {
 		}
 
 		// MenuOrderItems
-		for (let menuItem of this.allPickedMenuItems) {
+		for (let menuItem of this.allPickedOfferItems) {
 			for (let item of menuItem.orderItems) {
 				total += item.product.price * item.count
 
@@ -184,9 +187,9 @@ export class AllItemHandler {
 		return total
 	}
 
-	//Gib Liste mit jedem Item zurück (normale + Menu Items)
+	//Gib Liste mit jedem Item zurück (normale + Offer Items)
 	getItems(): (OrderItem | OfferOrderItem)[] {
-		return [...this.allPickedItems, ...this.allPickedMenuItems]
+		return [...this.allPickedItems, ...this.allPickedOfferItems]
 	}
 
 	// Nur normale OrderItems
@@ -194,9 +197,9 @@ export class AllItemHandler {
 		return this.allPickedItems
 	}
 
-	// Nur MenuOrderItems
-	getMenuOrderItems() {
-		return this.allPickedMenuItems
+	// Nur OfferOrderItems
+	getOfferOrderItems() {
+		return this.allPickedOfferItems
 	}
 
 	getItemsCountandId() {
@@ -262,14 +265,14 @@ export class AllItemHandler {
 	}
 
 	//Entferne OfferOrderItem aus der Map
-	deleteMenuItem(pickedItem: OfferOrderItem): void {
-		const index = this.allPickedMenuItems.findIndex(
+	deleteOfferItem(pickedItem: OfferOrderItem): void {
+		const index = this.allPickedOfferItems.findIndex(
 			item =>
 				item.product.id === pickedItem.product.id &&
 				item.offer.uuid === pickedItem.offer.uuid
 		)
 		if (index !== -1) {
-			this.allPickedMenuItems.splice(index, 1)
+			this.allPickedOfferItems.splice(index, 1)
 		}
 	}
 
@@ -281,13 +284,16 @@ export class AllItemHandler {
 		*/
 	}
 
-	getItem(id: number): OrderItem {
+	getItem(id: number, uuid?: string): OrderItem {
+		if (uuid) {
+			return this.allPickedItems.find(item => item.product.id === id && item.uuid === uuid)
+		}
 		return this.allPickedItems.find(item => item.product.id === id)
 	}
 
 	// Gibt ein OfferOrderItem zurück, das dem angegebenen ID entspricht
 	getOfferItem(productId: number, offerUuid: string): OfferOrderItem {
-		return this.allPickedMenuItems.find(
+		return this.allPickedOfferItems.find(
 			item => item.product.id === productId && item.offer.uuid === offerUuid
 		)
 	}
@@ -295,13 +301,13 @@ export class AllItemHandler {
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
 	includes(pickedItem: OrderItem): boolean {
 		return this.allPickedItems.some(
-			item => item.product.id === pickedItem.product.id
+			item => item.product.id === pickedItem.product.id && item.uuid === pickedItem.uuid
 		)
 	}
 
 	// Prüfen, ob ein bestimmtes OfferOrderItem in der Map enthalten ist, prüft auf die id des Produkts UND des Angebots
 	includesOfferItem(pickedItem: OfferOrderItem): boolean {
-		return this.allPickedMenuItems.some(
+		return this.allPickedOfferItems.some(
 			item =>
 				item.product.id === pickedItem.product.id &&
 				item.offer.uuid === pickedItem.offer.uuid
@@ -354,8 +360,8 @@ export class AllItemHandler {
 			number += item.count
 		}
 
-		for (let menuItem of this.allPickedMenuItems) {
-			number += menuItem.count
+		for (let offerItem of this.allPickedOfferItems) {
+			number += offerItem.count
 		}
 
 		return number
@@ -364,13 +370,13 @@ export class AllItemHandler {
 	//Entfernt alle Items aus Map
 	clearItems() {
 		this.allPickedItems = []
-		this.allPickedMenuItems = []
+		this.allPickedOfferItems = []
 	}
 
 	isEmpty() {
 		return (
 			this.allPickedItems.length === 0 &&
-			this.allPickedMenuItems.length === 0
+			this.allPickedOfferItems.length === 0
 		)
 	}
 }

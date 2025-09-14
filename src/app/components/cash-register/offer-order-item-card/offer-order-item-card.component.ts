@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core"
-import { OfferOrderItem } from "src/app/models/OfferOrderItem"
-import { calculateTotalPriceOfOfferOrderItem } from "src/app/utils"
+import { OrderItem } from "src/app/models/OrderItem"
+import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 
 @Component({
 	selector: "app-offer-order-item-card",
@@ -9,7 +9,7 @@ import { calculateTotalPriceOfOfferOrderItem } from "src/app/utils"
 	standalone: false
 })
 export class OfferOrderItemCardComponent {
-	calculateTotalPriceOfOfferOrderItem = calculateTotalPriceOfOfferOrderItem
-	@Input() offerOrderItem: OfferOrderItem = null
-	@Input() selectedOfferOrderItemUuid: string = null
+	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+	@Input() orderItem: OrderItem = null
+	@Input() selectedOrderItemUuid: string = null
 }

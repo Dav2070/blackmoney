@@ -83,7 +83,7 @@
 							</mat-card-content>
 						</mat-card>
 					}
-					@for (menuItem of bookedItemsLeft.getMenuOrderItems(); track menuItem.uuid) {
+					@for (menuItem of bookedItemsLeft.getOfferOrderItems(); track menuItem.uuid) {
 					<mat-card
 						style="border-left: 4px solid #ff9800; opacity: 0.7;"
 					>
@@ -278,7 +278,7 @@
 						</mat-card-content>
 					</mat-card>
 				}
-				@for (menuItem of bookedItemsRight.getMenuOrderItems(); track menuItem.uuid) {
+				@for (menuItem of bookedItemsRight.getOfferOrderItems(); track menuItem.uuid) {
 				<mat-card
 					style="border-left: 4px solid #ff9800; opacity: 0.7;"
 				>

@@ -65,7 +65,7 @@
 						 </mat-card-content>
 					</mat-card>
 					}
-					@for (menuItem of bookedItems.getMenuOrderItems(); track menuItem.uuid) {
+					@for (menuItem of bookedItems.getOfferOrderItems(); track menuItem.uuid) {
 					<mat-card
 						style="border-left: 4px solid #ff9800; opacity: 0.7;"
 					>
@@ -272,7 +272,7 @@
 						 </mat-card-content>
 					</mat-card>
 					}
-					@for (menuItem of bill.getMenuOrderItems(); track menuItem) {
+					@for (menuItem of bill.getOfferOrderItems(); track menuItem) {
 					<mat-card
 						style="border-left: 4px solid #ff9800; opacity: 0.7;"
 						(click)="setActiveBill(bill)"

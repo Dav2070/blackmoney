@@ -136,6 +136,7 @@ export interface OrderResource {
 export interface OrderItemResource {
 	uuid: string
 	count: number
+	type: "product" | "menu" | "special"
 	order: OrderResource
 	product: ProductResource
 	orderItemVariations: List<OrderItemVariationResource>

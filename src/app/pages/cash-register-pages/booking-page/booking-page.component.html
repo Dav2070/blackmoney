@@ -39,33 +39,27 @@
 				@if (
 					!loading &&
 					stagedItems.getOrderItems().length === 0 &&
-					stagedItems.getMenuOrderItems().length === 0
+					stagedItems.getOfferOrderItems().length === 0
 				) {
 					<p class="no-products-message">Keine Produkte ausgewählt</p>
-				}
-
+				}				
 				@for (
 					orderItem of stagedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					<app-order-item-card
-						[orderItem]="orderItem"
-						[selectedOrderItemUuid]="selectedItem?.uuid"
-						(click)="selectItem(orderItem, stagedItems)"
-					></app-order-item-card>
-				}
-			</ul>
-
-			<ul class="order-items-container">
-				@for (
-					menuOrderItem of stagedItems.getMenuOrderItems();
-					track menuOrderItem.uuid
-				) {
-					<app-offer-order-item-card
-						[offerOrderItem]="menuOrderItem"
-						[selectedOfferOrderItemUuid]="selectedMenuItem?.uuid"
-						(click)="selectMenuItem(menuOrderItem, stagedItems)"
-					></app-offer-order-item-card>
+					@if (orderItem.type === "product") {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							(click)="selectItem(orderItem, stagedItems)"
+						></app-order-item-card>
+					} @else if (orderItem.type === "menu" || orderItem.type === "special") {
+						<app-offer-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedMenuItem?.uuid"
+							(click)="selectItem(orderItem, stagedItems)"
+						></app-offer-order-item-card>
+					}
 				}
 			</ul>
 
@@ -81,24 +75,19 @@
 					orderItem of bookedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					<app-order-item-card
-						[orderItem]="orderItem"
-						[selectedOrderItemUuid]="selectedItem?.uuid"
-						(click)="selectItem(orderItem, bookedItems)"
-					></app-order-item-card>
-				}
-			</ul>
-
-			<ul class="order-items-container">
-				@for (
-					menuOrderItem of bookedItems.getMenuOrderItems();
-					track menuOrderItem.uuid
-				) {
-					<app-offer-order-item-card
-						[offerOrderItem]="menuOrderItem"
-						[selectedOfferOrderItemUuid]="selectedMenuItem?.uuid"
-						(click)="selectMenuItem(menuOrderItem, stagedItems)"
-					></app-offer-order-item-card>
+					@if (orderItem.type === "product") {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							(click)="selectItem(orderItem, bookedItems)"
+						></app-order-item-card>
+					} @else if (orderItem.type === "menu" || orderItem.type === "special") {
+						<app-offer-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedMenuItem?.uuid"
+							(click)="selectItem(orderItem, bookedItems)"
+						></app-offer-order-item-card>
+					}
 				}
 			</ul>
 		</div>
@@ -861,7 +850,7 @@
 			@if (
 				selectedMenuItem != null && selectedMenuItem.orderItems.length === 1
 			) {
-				<!-- Minus-Modus für MenuOrderItems -->
+				<!-- Minus-Modus für OfferOrderItems -->
 				<h2>
 					{{ lastClickedItem.variations[tmpCountVariations].name }}
 				</h2>

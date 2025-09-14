@@ -1,23 +1,23 @@
 <li
 	class="offer-order-item-card"
-	[class.selected]="selectedOfferOrderItemUuid === offerOrderItem.uuid"
+	[class.selected]="selectedOrderItemUuid === orderItem.uuid"
 >
 	<div class="offer-order-item-card-id">
-		<p>#{{ offerOrderItem.product.id }}</p>
+		<p>#{{ orderItem.product.id }}</p>
 	</div>
 
 	<div class="offer-order-item-card-name">
-		<p>{{ offerOrderItem.product.name }}</p>
+		<p>{{ orderItem.product.name }}</p>
 	</div>
 
 	<div class="offer-order-item-card-total-price">
-		<p>{{ calculateTotalPriceOfOfferOrderItem(offerOrderItem) }} €</p>
+		<p>{{ calculateTotalPriceOfOrderItem(orderItem) }} €</p>
 	</div>
 
-	@if (offerOrderItem.orderItems.length > 0) {
+	@if (orderItem.orderItems.length > 0) {
 		<div class="offer-order-item-variations-separator"></div>
 
-		@for (orderItem of offerOrderItem.orderItems; track orderItem.uuid) {
+		@for (orderItem of orderItem.orderItems; track orderItem.uuid) {
 			<div class="offer-order-item-card-variation-name">
 				<p>- {{ orderItem.product.name }}</p>
 			</div>

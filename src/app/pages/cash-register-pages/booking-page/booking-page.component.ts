@@ -1290,8 +1290,16 @@ export class BookingPageComponent {
 	}
 
 	selectMenuItem(pickedItem: OfferOrderItem, AllItemHandler: AllItemHandler) {
-		this.selectedMenuItem = pickedItem
-		this.tmpAllItemHandler = AllItemHandler
+		if (this.selectedMenuItem === pickedItem) {
+			// Deselect the clicked item
+			this.selectedMenuItem = null
+			this.tmpAllItemHandler = null
+		} else {
+			// Select the clicked item
+			this.selectedMenuItem = pickedItem
+			this.tmpAllItemHandler = AllItemHandler
+		}
+
 		this.selectedItem = null
 	}
 

@@ -1,6 +1,5 @@
 import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
-import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import {
 	faCopy,
@@ -51,7 +50,7 @@ export class MenuPageComponent {
 			"restaurants",
 			this.uuid,
 			"menu",
-			"products"
+			"product"
 		])
 	}
 

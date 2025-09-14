@@ -68,6 +68,10 @@ export const de = {
 		offers: "Angebote verwalten",
 		menu: "Menüs verwalten"
 	},
+	productPage: {
+		headline: "Produkte verwalten",
+		products: "Speisen"
+	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}"
 	},

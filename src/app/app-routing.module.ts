@@ -23,6 +23,7 @@ import { RoomManagementComponent } from "./pages/settings-pages/room-management/
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
+import { ProductPageComponent } from "./pages/landing-pages/product-page/product-page.component"
 
 const routes: Routes = [
 	{
@@ -76,6 +77,10 @@ const routes: Routes = [
 			{
 				path: "user/restaurants/:uuid/menu",
 				component: MenuPageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu/product",
+				component: ProductPageComponent
 			}
 		]
 	},

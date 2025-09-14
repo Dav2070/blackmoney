@@ -1,0 +1,57 @@
+<li
+	class="order-item-card"
+	[class.selected]="selectedOrderItemUuid === orderItem.uuid"
+>
+	<div class="order-item-card-id">
+		<p>#{{ orderItem.product.id }}</p>
+	</div>
+
+	<div class="order-item-card-name">
+		<p>{{ orderItem.product.name }}</p>
+	</div>
+
+	<div class="order-item-card-unit-price">
+		@if (orderItem.orderItemVariations.length === 0 && orderItem.count > 1) {
+			<p>
+				{{ orderItem.count }} ×
+				{{ (orderItem.product.price / 100).toFixed(2).replace(".", ",") }}
+				€
+			</p>
+		}
+	</div>
+
+	<div class="order-item-card-total-price">
+		<p>{{ calculateTotalPriceOfOrderItem(orderItem) }} €</p>
+	</div>
+
+	@if (orderItem.orderItemVariations.length > 0) {
+		<div class="order-item-variations-separator"></div>
+
+		@for (variation of orderItem.orderItemVariations; track variation.uuid) {
+			@for (
+				variationItem of variation.variationItems;
+				track variationItem.uuid
+			) {
+				<div class="order-item-card-variation-name">
+					<p>- {{ variationItem.name }}</p>
+				</div>
+
+				<div class="order-item-card-variation-unit-price">
+					<p>
+						{{ variation.count }} ×
+						{{
+							(
+								(orderItem.product.price +
+									variationItem.additionalCost) /
+								100
+							)
+								.toFixed(2)
+								.replace(".", ",")
+						}}
+						€
+					</p>
+				</div>
+			}
+		}
+	}
+</li>

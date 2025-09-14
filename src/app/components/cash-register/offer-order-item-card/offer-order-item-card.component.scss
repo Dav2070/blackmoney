@@ -1,0 +1,51 @@
+.offer-order-item-card {
+	display: grid;
+	grid-template-columns: 40px 2fr 2fr 1fr;
+	width: 100%;
+	background-color: var(--dav-color-surface);
+	color: var(--dav-color-on-surface);
+	border: 1px solid rgb(var(--dav-color-outline-rgb), 0.15);
+	border-radius: 12px;
+	box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+	padding: 16px;
+	box-sizing: border-box;
+	cursor: pointer;
+	transition: 200ms;
+
+	p {
+		margin: 0;
+	}
+}
+
+.offer-order-item-card:hover {
+	background-color: var(--dav-color-surface-hover);
+}
+
+.offer-order-item-card:focus,
+.offer-order-item-card:active,
+.offer-order-item-card.selected {
+	background-color: var(--dav-color-surface-focus);
+}
+
+.offer-order-item-card-total-price {
+	grid-column: 4;
+}
+
+.offer-order-item-card-total-price > p {
+	text-align: right;
+}
+
+.offer-order-item-card-variation-name {
+	grid-column: 2;
+}
+
+.offer-order-item-card-variation-unit-price {
+	grid-column: 3;
+	text-align: center;
+}
+
+.offer-order-item-variations-separator {
+	grid-column: span 4;
+	border-top: 1px solid var(--dav-color-outline-variant);
+	margin: 8px 0;
+}

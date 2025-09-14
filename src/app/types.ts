@@ -68,6 +68,7 @@ export interface MenuResource {
 }
 
 export interface OfferResource {
+	id: number
 	uuid: string
 	name: string
 	offerType: OfferType

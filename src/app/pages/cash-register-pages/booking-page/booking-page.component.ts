@@ -1,7 +1,10 @@
 import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
-import { faArrowRightArrowLeft } from "@fortawesome/pro-regular-svg-icons"
+import {
+	faArrowLeft,
+	faArrowRightArrowLeft
+} from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
@@ -20,6 +23,7 @@ import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import {
+	calculateTotalPriceOfOrderItem,
 	convertCategoryResourceToCategory,
 	convertOfferResourceToOffer,
 	convertOrderItemResourceToOrderItem,
@@ -45,11 +49,13 @@ interface AddProductsInputVariation {
 })
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
+	faArrowLeft = faArrowLeft
 	faArrowRightArrowLeft = faArrowRightArrowLeft
+	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []
 	selectedInventory: Product[] = []
-	selectedCategory: string = ""
-	categoriesLoading: boolean = true
+	selectedCategory: string = "menues"
+	loading: boolean = true
 
 	menues: Offer[] = []
 	specials: Offer[] = []
@@ -67,7 +73,6 @@ export class BookingPageComponent {
 
 	bookedItems = new AllItemHandler()
 	stagedItems = new AllItemHandler()
-	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 	endpreis: number = 0.0
 
@@ -184,6 +189,7 @@ export class BookingPageComponent {
 					}
 					offers {
 						items {
+							id
 							uuid
 							name
 							offerType
@@ -202,9 +208,22 @@ export class BookingPageComponent {
 									maxSelections
 									products {
 										items {
+											id
 											uuid
 											name
 											price
+											category {
+												uuid
+												name
+												products {
+													items {
+														id
+														uuid
+														name
+														price
+													}
+												}
+											}
 										}
 									}
 								}
@@ -237,11 +256,6 @@ export class BookingPageComponent {
 			)
 		}
 
-		if (this.categories.length > 0) {
-			this.selectedCategory = this.categories[0].uuid
-			this.selectedInventory = this.categories[0].products
-		}
-
 		for (const offerResource of offers) {
 			const offer = convertOfferResourceToOffer(offerResource)
 			if (offer.offerItems.length === 0) continue
@@ -253,7 +267,7 @@ export class BookingPageComponent {
 			}
 		}
 
-		this.categoriesLoading = false
+		this.loading = false
 	}
 
 	// Lade Items zur ausgewählten Kategorie
@@ -270,6 +284,11 @@ export class BookingPageComponent {
 	showSpecials() {
 		this.selectedCategory = "specials"
 		this.selectedInventory = []
+	}
+
+	navigateToDashboard(event: MouseEvent) {
+		event.preventDefault()
+		this.router.navigate(["dashboard"])
 	}
 
 	selectTableButtonClick() {
@@ -1190,6 +1209,7 @@ export class BookingPageComponent {
 			this.consoleActive = true
 			this.console = ""
 		}
+
 		this.console += input
 	}
 
@@ -1265,14 +1285,30 @@ export class BookingPageComponent {
 
 	//Selektiert das Item in der Liste
 	selectItem(pickedItem: OrderItem, AllItemHandler: AllItemHandler) {
-		this.selectedItem = pickedItem
-		this.tmpAllItemHandler = AllItemHandler
+		if (this.selectedItem === pickedItem) {
+			// Deselect the clicked item
+			this.selectedItem = null
+			this.tmpAllItemHandler = null
+		} else {
+			// Select the clicked item
+			this.selectedItem = pickedItem
+			this.tmpAllItemHandler = AllItemHandler
+		}
+
 		this.selectedMenuItem = null
 	}
 
 	selectMenuItem(pickedItem: OfferOrderItem, AllItemHandler: AllItemHandler) {
-		this.selectedMenuItem = pickedItem
-		this.tmpAllItemHandler = AllItemHandler
+		if (this.selectedMenuItem === pickedItem) {
+			// Deselect the clicked item
+			this.selectedMenuItem = null
+			this.tmpAllItemHandler = null
+		} else {
+			// Select the clicked item
+			this.selectedMenuItem = pickedItem
+			this.tmpAllItemHandler = AllItemHandler
+		}
+
 		this.selectedItem = null
 	}
 
@@ -1413,21 +1449,6 @@ export class BookingPageComponent {
 			return true
 		}
 		return false
-	}
-
-	calculateTotalPriceOfOrderItem(orderItem: OrderItem) {
-		let total = 0
-
-		for (let variation of orderItem.orderItemVariations) {
-			for (let variationItem of variation.variationItems) {
-				total += variation.count * variationItem.additionalCost
-			}
-		}
-
-		return (
-			(total + orderItem.product.price * orderItem.count) /
-			100
-		).toFixed(2)
 	}
 
 	checkForPlusaddVariation(variation: TmpVariations) {

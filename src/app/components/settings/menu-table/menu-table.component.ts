@@ -74,6 +74,7 @@ export class MenuTableComponent implements AfterViewInit, OnChanges {
 	// Menu CRUD
 	addNewMenu(): void {
 		this.newMenu = {
+			id: 0,
 			uuid: "menu_" + Date.now(),
 			name: "Neues Menü",
 			offerType: "FIXED_PRICE",

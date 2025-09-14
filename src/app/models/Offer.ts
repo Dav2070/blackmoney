@@ -2,6 +2,7 @@ import { OfferItem } from "./OfferItem"
 import { DiscountType, OfferType, Weekday } from "../types"
 
 export class Offer {
+	id: number
 	uuid: string
 	name: string
 	offerType: OfferType

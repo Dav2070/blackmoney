@@ -112,6 +112,7 @@ export class MenuePageComponent {
 
 	menus: Offer[] = [
 		{
+			id: 1,
 			uuid: "menu_1",
 			name: "Gutschein 205",
 			offerType: "FIXED_PRICE",
@@ -269,6 +270,7 @@ export class MenuePageComponent {
 			]
 		},
 		{
+			id: 2,
 			uuid: "menu_2",
 			name: "Abendkarte",
 			offerType: "FIXED_PRICE",
@@ -317,6 +319,7 @@ export class MenuePageComponent {
 
 	specials: Offer[] = [
 		{
+			id: 1,
 			uuid: "special_1",
 			name: "Happy Hour Special",
 			offerType: "DISCOUNT",
@@ -405,6 +408,7 @@ export class MenuePageComponent {
 			]
 		},
 		{
+			id: 2,
 			uuid: "special_2",
 			name: "Wochenend-Brunch",
 			offerType: "FIXED_PRICE",

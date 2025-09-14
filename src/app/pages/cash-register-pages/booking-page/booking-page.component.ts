@@ -1274,8 +1274,16 @@ export class BookingPageComponent {
 
 	//Selektiert das Item in der Liste
 	selectItem(pickedItem: OrderItem, AllItemHandler: AllItemHandler) {
-		this.selectedItem = pickedItem
-		this.tmpAllItemHandler = AllItemHandler
+		if (this.selectedItem === pickedItem) {
+			// Deselect the clicked item
+			this.selectedItem = null
+			this.tmpAllItemHandler = null
+		} else {
+			// Select the clicked item
+			this.selectedItem = pickedItem
+			this.tmpAllItemHandler = AllItemHandler
+		}
+
 		this.selectedMenuItem = null
 	}
 

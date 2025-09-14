@@ -23,7 +23,7 @@
 				</div>
 			}
 
-			<div class="tables">
+			<div>
 				@for (item of stagedItems.getOrderItems(); track item.uuid) {
 					<mat-card
 						(click)="selectItem(item, stagedItems)"
@@ -189,75 +189,75 @@
 					<div class="separator"></div>
 				</div>
 
-				@for (item of bookedItems.getOrderItems(); track item.uuid) {
-					<mat-card
-						(click)="selectItem(item, bookedItems)"
-						style="cursor: pointer"
-						[style.background-color]="
-							selectedItem === item ? 'rgba(27, 167, 251, 255)' : 'white'
-						"
-					>
-						<mat-card-content class="card-content">
+				<ul class="order-items-container">
+					@for (item of bookedItems.getOrderItems(); track item.uuid) {
+						<li
+							class="order-item-card"
+							[class.selected]="selectedItem === item"
+							(click)="selectItem(item, bookedItems)"
+						>
+							<div class="order-item-card-id">
+								<p>#{{ item.product.id }}</p>
+							</div>
+
+							<div class="order-item-card-id">
+								<p>{{ item.product.name }}</p>
+							</div>
+
+							<div class="order-item-card-unit-price">
+								@if (item.orderItemVariations.length === 0) {
+									<p>
+										{{ item.count }} ×
+										{{
+											(item.product.price / 100)
+												.toFixed(2)
+												.replace(".", ",")
+										}}
+										€
+									</p>
+								}
+							</div>
+
+							<div class="order-item-card-total-price">
+								<p>{{ calculateTotalPriceOfOrderItem(item) }} €</p>
+							</div>
+
 							@if (item.orderItemVariations.length > 0) {
-								<span class="item-price">
-									{{
-										(item.count * (item.product.price / 100)).toFixed(
-											2
-										)
-									}}
-									€
-								</span>
-							} @else {
-								<span class="total-price">
-									{{ calculateTotalPriceOfOrderItem(item) }}€
-								</span>
-							}
-							<strong>
-								{{ item.count }} x
-								{{ item.product.name }}
-								{{ (item.product.price / 100).toFixed(2) }} €
-							</strong>
-						</mat-card-content>
-						@if (item.orderItemVariations) {
-							@for (
-								variation of item.orderItemVariations;
-								track variation.uuid
-							) {
-								<mat-card-content>
-									{{ variation.count }} x
+								<div class="order-item-variations-separator"></div>
+
+								@for (
+									variation of item.orderItemVariations;
+									track variation.uuid
+								) {
 									@for (
 										variationItem of variation.variationItems;
 										track variationItem.uuid
 									) {
-										{{ variationItem.name }}
-										@if (variationItem.additionalCost > 0) {
-											<span class="variationItem-price">
-												+
+										<div class="order-item-card-variation-name">
+											<p>- {{ variationItem.name }}</p>
+										</div>
+
+										<div class="order-item-card-variation-unit-price">
+											<p>
+												{{ variation.count }} ×
 												{{
 													(
-														(variation.count *
+														(item.product.price +
 															variationItem.additionalCost) /
 														100
-													).toFixed(2)
-												}}€</span
-											>
-										}
-										<br />
+													)
+														.toFixed(2)
+														.replace(".", ",")
+												}}
+												€
+											</p>
+										</div>
 									}
-								</mat-card-content>
+								}
 							}
-						}
-						<mat-card-content>
-							#{{ item.product.id }}
-
-							@if (item.orderItemVariations.length > 0) {
-								<span class="total-price">
-									{{ calculateTotalPriceOfOrderItem(item) }}€
-								</span>
-							}
-						</mat-card-content>
-					</mat-card>
-				}
+						</li>
+					}
+				</ul>
 
 				@for (
 					menuItem of bookedItems.getMenuOrderItems();

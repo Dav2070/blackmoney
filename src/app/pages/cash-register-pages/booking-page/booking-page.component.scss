@@ -93,10 +93,6 @@
 	grid-row: 3;
 }
 
-.selected-card {
-	background-color: rgba(27, 167, 251, 255);
-}
-
 .staged-items-separator {
 	display: flex;
 	align-items: center;
@@ -112,6 +108,65 @@
 .separator {
 	width: 100%;
 	border-top: 1px solid var(--dav-color-outline-variant);
+}
+
+.order-items-container {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 0;
+}
+
+.order-item-card {
+	display: grid;
+	grid-template-columns: 40px 2fr 2fr 1fr;
+	width: 100%;
+	background-color: var(--dav-color-surface);
+	color: var(--dav-color-on-surface);
+	border: 1px solid rgb(var(--dav-color-outline-rgb), 0.15);
+	border-radius: 12px;
+	box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+	padding: 16px;
+	box-sizing: border-box;
+	cursor: pointer;
+	transition: 200ms;
+
+	p {
+		margin: 0;
+	}
+}
+
+.order-item-card:hover {
+	background-color: var(--dav-color-surface-hover);
+}
+
+.order-item-card:focus,
+.order-item-card:active,
+.order-item-card.selected {
+	background-color: var(--dav-color-surface-focus);
+}
+
+.order-item-card-unit-price > p {
+	text-align: center;
+}
+
+.order-item-card-total-price > p {
+	text-align: right;
+}
+
+.order-item-card-variation-name {
+	grid-column: 2;
+}
+
+.order-item-card-variation-unit-price {
+	grid-column: 3;
+	text-align: center;
+}
+
+.order-item-variations-separator {
+	grid-column: span 4;
+	border-top: 1px solid var(--dav-color-outline-variant);
+	margin: 8px 0;
 }
 
 .console-output {

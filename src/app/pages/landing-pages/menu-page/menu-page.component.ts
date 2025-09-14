@@ -8,10 +8,8 @@ import {
 	faReceipt,
 	faUtensils
 } from "@fortawesome/pro-regular-svg-icons"
-import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
-import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
-import * as ErrorCodes from "src/app/errorCodes"
+
 
 @Component({
 	selector: "app-menu-page",
@@ -29,11 +27,10 @@ export class MenuPageComponent {
 	uuid: string = null
 
 	constructor(
-		private apiService: ApiService,
-		private dataService: DataService,
-		private localizationService: LocalizationService,
-		private router: Router,
-		private activatedRoute: ActivatedRoute
+		private readonly dataService: DataService,
+		private readonly localizationService: LocalizationService,
+		private readonly router: Router,
+		private readonly activatedRoute: ActivatedRoute
 	) {}
 
 	async ngOnInit() {

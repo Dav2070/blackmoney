@@ -28,7 +28,7 @@
 			}
 
 			<ul class="order-items-container">
-				@if (loading) {
+				@if (ordersLoading) {
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
@@ -37,7 +37,7 @@
 				}
 
 				@if (
-					!loading &&
+					!ordersLoading &&
 					stagedItems.getOrderItems().length === 0 &&
 					stagedItems.getMenuOrderItems().length === 0
 				) {
@@ -69,7 +69,7 @@
 				}
 			</ul>
 
-			@if (!loading && bookedItems.getOrderItems().length > 0) {
+			@if (!ordersLoading && bookedItems.getOrderItems().length > 0) {
 				<div class="staged-items-separator">
 					<p>Gebuchte Produkte</p>
 					<div class="separator"></div>
@@ -209,7 +209,7 @@
 
 	<div class="product-selection-container">
 		<div class="product-items">
-			@if (loading) {
+			@if (productsLoading) {
 				<dav-skeleton
 					class="product-item-skeleton"
 					style="width: 145px"
@@ -282,7 +282,7 @@
 
 	<div class="categories-sidenav-container">
 		<dav-sidenav>
-			@if (loading) {
+			@if (productsLoading) {
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>

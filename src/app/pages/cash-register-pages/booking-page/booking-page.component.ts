@@ -55,7 +55,8 @@ export class BookingPageComponent {
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 	selectedCategory: string = "menues"
-	loading: boolean = true
+	productsLoading: boolean = true
+	ordersLoading: boolean = true
 
 	menues: Offer[] = []
 	specials: Offer[] = []
@@ -267,7 +268,7 @@ export class BookingPageComponent {
 			}
 		}
 
-		this.loading = false
+		this.productsLoading = false
 	}
 
 	// Lade Items zur ausgewählten Kategorie
@@ -1002,6 +1003,8 @@ export class BookingPageComponent {
 
 	//Aktualisiere Bestellungen aus DB
 	async loadOrders() {
+		this.ordersLoading = true
+
 		let order = await this.apiService.retrieveTable(
 			`
 				orders(paid: $paid) {
@@ -1066,6 +1069,8 @@ export class BookingPageComponent {
 				paid: false
 			}
 		)
+
+		this.ordersLoading = false
 
 		if (order.data.retrieveTable.orders.total > 0) {
 			if (this.orderUuid == null) {

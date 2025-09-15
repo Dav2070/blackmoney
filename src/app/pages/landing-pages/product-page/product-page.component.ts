@@ -1,8 +1,6 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import {
-	faPen
-} from "@fortawesome/pro-regular-svg-icons"
+import { faPen } from "@fortawesome/pro-regular-svg-icons"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 
@@ -43,21 +41,35 @@ export class ProductPageComponent {
 			"restaurants",
 			this.uuid,
 			"menu",
+			"product",
 			"products"
 		])
 	}
 
-	navigateToOffersPage(event: MouseEvent) {
+	navigateToVariationsPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", this.uuid, "menu", "offers"])
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.uuid,
+			"menu",
+			"product",
+			"variations"
+		])
 	}
 
-	navigateToMenusPage(event: MouseEvent) {
+	navigateToOptionsPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", this.uuid, "menu", "menus"])
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.uuid,
+			"menu",
+			"product",
+			"options"
+		])
 	}
 
-	openCopyDialog(event: MouseEvent) {}
 }

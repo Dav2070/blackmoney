@@ -24,6 +24,7 @@ import { EmployeeManagementComponent } from "./pages/settings-pages/employee-man
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { ProductPageComponent } from "./pages/landing-pages/product-page/product-page.component"
+import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
 
 const routes: Routes = [
 	{
@@ -81,7 +82,12 @@ const routes: Routes = [
 			{
 				path: "user/restaurants/:uuid/menu/product",
 				component: ProductPageComponent
-			}
+			},
+			{
+				path: "user/restaurants/:uuid/menu/product/products",
+				component: ProductsOverviewPageComponent
+			},
+			
 		]
 	},
 	{

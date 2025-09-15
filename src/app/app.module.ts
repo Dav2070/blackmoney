@@ -91,6 +91,7 @@ import { SpecialsTableComponent } from "./components/settings/specials-table/spe
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { ProductPageComponent } from "./pages/landing-pages/product-page/product-page.component"
+import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
 
 @NgModule({
 	declarations: [
@@ -126,6 +127,7 @@ import { ProductPageComponent } from "./pages/landing-pages/product-page/product
 		TransferPageComponent,
 		SeparatePayPageComponent,
 		ProductPageComponent,
+		ProductsOverviewPageComponent,
 		//Landing-Pages
 		PrintersPageComponent,
 		MenuPageComponent,

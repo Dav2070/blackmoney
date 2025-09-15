@@ -1648,6 +1648,7 @@ export class BookingPageComponent {
 	clickSpecialProduct(product: Product) {
 		if (product == null) return
 
+		let firstIndex = this.currentIndex
 		if (this.currentMenu) {
 			this.currentMenu.offerItems[this.currentIndex].maxSelections -= 1
 			this.currentMaxSelections =
@@ -1687,7 +1688,7 @@ export class BookingPageComponent {
 				existingItem.count += 1
 			} else {
 				newItem.count = 1
-				this.tmpSpecialAllItemsHandler.pushNewItem(newItem, this.currentIndex)
+				this.tmpSpecialAllItemsHandler.pushNewItem(newItem, firstIndex)
 			}
 		} else {
 			// Special-Variation-Popup öffnen

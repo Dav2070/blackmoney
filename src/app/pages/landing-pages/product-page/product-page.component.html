@@ -1,9 +1,6 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header
-			backButtonVisible
-			(backButtonClick)="navigateBack()"
-		>
+		<dav-header backButtonVisible (backButtonClick)="navigateBack()">
 			{{ locale.headline }}
 		</dav-header>
 
@@ -16,23 +13,23 @@
 					[href]="'/user/restaurants/' + uuid + '/menu/products'"
 					(click)="navigateToProductsPage($event)"
 				>
-					<fa-icon [icon]="faUtensils"></fa-icon>
+					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-card>
 
 				<dav-icon-card
-					[text]="locale.offers"
+					[text]="locale.variations"
 					[href]="'/user/restaurants/' + uuid + '/menu/offers'"
 					(click)="navigateToOffersPage($event)"
 				>
-					<fa-icon [icon]="faPercent"></fa-icon>
+					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-card>
 
 				<dav-icon-card
-					[text]="locale.menu"
+					[text]="locale.options"
 					[href]="'/user/restaurants/' + uuid + '/menu/menus'"
 					(click)="navigateToMenusPage($event)"
 				>
-					<fa-icon [icon]="faReceipt"></fa-icon>
+					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-card>
 			</div>
 		</div>

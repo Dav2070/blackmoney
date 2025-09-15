@@ -1,10 +1,7 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import {
-	faCopy,
-	faPercent,
-	faReceipt,
-	faUtensils
+	faPen
 } from "@fortawesome/pro-regular-svg-icons"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -16,12 +13,9 @@ import { LocalizationService } from "src/app/services/localization-service"
 	standalone: false
 })
 export class ProductPageComponent {
-	locale = this.localizationService.locale.menuPage
+	locale = this.localizationService.locale.productPage
 	errorsLocale = this.localizationService.locale.errors
-	faCopy = faCopy
-	faPercent = faPercent
-	faReceipt = faReceipt
-	faUtensils = faUtensils
+	faPen = faPen
 	uuid: string = null
 
 	constructor(

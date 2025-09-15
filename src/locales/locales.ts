@@ -63,14 +63,16 @@ export const de = {
 	},
 	menuPage: {
 		headline: "Deine Speisekarte",
-		clone: "Speisekarte klonen",
-		products: "Produkte verwalten",
-		offers: "Angebote verwalten",
-		menu: "Menüs verwalten"
+		clone: "Speisekarte kopieren",
+		products: "Produkte",
+		offers: "Angebote",
+		menu: "Menüs"
 	},
 	productPage: {
 		headline: "Produkte verwalten",
-		products: "Speisen"
+		products: "Speisen/Getränke",
+		variations: "Variationen",
+		options: "Extras",
 	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}"

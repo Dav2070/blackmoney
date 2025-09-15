@@ -92,7 +92,7 @@ export class AllItemHandler {
 	}
 
 	//Füge neues Item in die Map hinzu
-	pushNewItem(pickedItem: OrderItem) {
+	pushNewItem(pickedItem: OrderItem, index?: number) {
 		const id = pickedItem.product.id
 
 		const item = this.allPickedItems.find(item => 
@@ -133,7 +133,7 @@ export class AllItemHandler {
 			}
 		} else {
 			// Neues Item hinzufügen
-			this.allPickedItems.push({ ...pickedItem })
+			this.allPickedItems.splice(index, 0, { ...pickedItem })
 		}
 	}
 
@@ -157,22 +157,11 @@ export class AllItemHandler {
 	//Berechne Total Preis von items mit der selben ID
 	calculateTotal() {
 		let total = 0
-
+		
 		for (let item of this.allPickedItems) {
-			total += item.product.price * item.count
-
-			if (item.orderItemVariations) {
-				for (const variation of item.orderItemVariations) {
-					for (const variationItem of variation.variationItems) {
-						total += variationItem.additionalCost * variation.count
-					}
-				}
-			}
-		}
-
-		// MenuOrderItems
-		for (let menuItem of this.allPickedOfferItems) {
-			for (let item of menuItem.orderItems) {
+			if (item.type === 'menu' || item.type === 'special') {
+				total += item.product.price * item.count
+			} else {
 				total += item.product.price * item.count
 
 				if (item.orderItemVariations) {
@@ -184,6 +173,7 @@ export class AllItemHandler {
 				}
 			}
 		}
+
 		return total
 	}
 
@@ -237,7 +227,7 @@ export class AllItemHandler {
 	}
 
 	//Gibt den Preis eines OfferOrderItems aus dem jeweiligen Handler zurück
-	getTotalMenuPrice(pickedItem: OfferOrderItem): number {
+	getTotalMenuPrice(pickedItem: OrderItem): number {
 		let total = 0
 
 		for (let item of pickedItem.orderItems) {

@@ -1,4 +1,3 @@
-
 <dav-dialog
 	#dialog
 	[headline]="locale.headline"
@@ -17,7 +16,7 @@
 			<mat-label>Table Numbers</mat-label>
 			<mat-select [formControl]="tableCombinations" multiple>
 				<mat-option *ngFor="let t of table" [value]="t.name">
-				Table {{ t.name }} ({{ t.seats }} chairs)
+					Table {{ t.name }} ({{ t.seats }} chairs)
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
@@ -32,18 +31,19 @@
 				(change)="chairNumberfieldChange($event)"
 			></dav-textfield>
 		</div>
-
 	</form>
 </dav-dialog>
-
 
 <div class="container slide-up-in">
 	<div class="content-container">
 		<dav-header addButtonVisible (addButtonClick)="show()">
 			{{ tablesLocale.headline }}
 		</dav-header>
-		
-		@for (oneTableCombination of tableCombination; track oneTableCombination.name) {
+
+		@for (
+			oneTableCombination of tableCombination;
+			track oneTableCombination.name
+		) {
 			<dav-card>
 				<div class="tableCombination-card-container">
 					<div class="tableCombination-card-content">
@@ -62,7 +62,10 @@
 							</dav-button>
 						</div>
 					</div>
-					<dav-icon-button size="xs" (click)="openEditForm(oneTableCombination)">
+					<dav-icon-button
+						size="xs"
+						(click)="openEditForm(oneTableCombination)"
+					>
 						<fa-icon [icon]="faPen"></fa-icon>
 					</dav-icon-button>
 				</div>

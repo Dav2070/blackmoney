@@ -1,4 +1,3 @@
-
 <dav-dialog
 	#dialog
 	[headline]="locale.headline"
@@ -45,19 +44,17 @@
 			></dav-textfield>
 		</div>
 
-	<!-- Checkbox unten links -->
-    <div class="dialog-formfield-container">
-      <dav-checkbox
-        [checked]="bulkMode"
-        (change)="toggleBulkMode($event)"
-		label="Mehrere Tische anlegen"
-      >
-      </dav-checkbox>
-    </div>
-
+		<!-- Checkbox unten links -->
+		<div class="dialog-formfield-container">
+			<dav-checkbox
+				[checked]="bulkMode"
+				(change)="toggleBulkMode($event)"
+				label="Mehrere Tische anlegen"
+			>
+			</dav-checkbox>
+		</div>
 	</form>
 </dav-dialog>
-
 
 <div class="container slide-up-in">
 	<div class="content-container">
@@ -68,7 +65,8 @@
 			outline
 			class="test-table-btn"
 			(click)="showTableCombinationDialog()"
-			size="sm">
+			size="sm"
+		>
 			{{ tablesLocale.roomCombination }}
 		</dav-button>
 		@for (table of table; track table.name) {

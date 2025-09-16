@@ -75,30 +75,34 @@
 			{{ tablesLocale.roomCombination }}
 		</dav-button>
 
-		@for (table of table; track table.name) {
-			<dav-card>
-				<div class="table-card-container">
-					<div class="table-card-content">
-						<p>
-							<strong>Nummer: {{ table.name }}</strong>
-						</p>
-						<p>Sitzplätze: {{ table.seats }}</p>
-						<div class="table-actions-row">
-							<dav-button
-								outline
-								class="test-table-btn"
-								(click)="removeTable(table)"
-								size="sm"
-							>
-								{{ tablesLocale.delete }}
-							</dav-button>
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			@for (table of tables; track table.name) {
+				<dav-card>
+					<div class="table-card-container">
+						<div class="table-card-content">
+							<p>
+								<strong>Nummer: {{ table.name }}</strong>
+							</p>
+							<p>Sitzplätze: {{ table.seats }}</p>
+							<div class="table-actions-row">
+								<dav-button
+									outline
+									class="test-table-btn"
+									(click)="removeTable(table)"
+									size="sm"
+								>
+									{{ tablesLocale.delete }}
+								</dav-button>
+							</div>
 						</div>
+						<dav-icon-button size="xs" (click)="openEditForm(table)">
+							<fa-icon [icon]="faPen"></fa-icon>
+						</dav-icon-button>
 					</div>
-					<dav-icon-button size="xs" (click)="openEditForm(table)">
-						<fa-icon [icon]="faPen"></fa-icon>
-					</dav-icon-button>
-				</div>
-			</dav-card>
+				</dav-card>
+			}
 		}
 	</div>
 </div>

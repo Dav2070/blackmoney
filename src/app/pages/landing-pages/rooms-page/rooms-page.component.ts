@@ -66,12 +66,12 @@ export class RoomsPageComponent {
 				{ uuid: this.uuid }
 			)
 
+		this.loading = false
+
 		const retrieveRestaurantResponseData =
 			convertRestaurantResourceToRestaurant(
 				retrieveRestaurantResponse.data.retrieveRestaurant
 			)
-
-		this.loading = false
 
 		if (retrieveRestaurantResponseData == null) return
 
@@ -166,7 +166,7 @@ export class RoomsPageComponent {
 			"restaurants",
 			this.uuid,
 			"rooms",
-			room.name,
+			room.uuid,
 			"tables"
 		])
 	}

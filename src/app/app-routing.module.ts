@@ -80,11 +80,11 @@ const routes: Routes = [
 				component: RoomsPageComponent
 			},
 			{
-				path: "user/restaurants/:uuid/rooms/:name/tables",
+				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/tables",
 				component: TablesPageComponent
 			},
 			{
-				path: "user/restaurants/:uuid/rooms/:name/tables/combinations",
+				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/tables/combinations",
 				component: TableCombinationPageComponent
 			}
 		]

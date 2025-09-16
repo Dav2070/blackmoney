@@ -362,6 +362,27 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async retrieveRoom(
+		queryData: string,
+		variables: {
+			uuid: string
+		}
+	): Promise<ApolloQueryResult<{ retrieveRoom: RoomResource }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveRoom: RoomResource }>({
+				query: gql`
+					query RetrieveRoom($uuid: String!) {
+						retrieveRoom(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async listRooms(
 		queryData: string,
 		variables: {

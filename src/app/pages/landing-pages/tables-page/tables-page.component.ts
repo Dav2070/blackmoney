@@ -9,8 +9,12 @@ import {
 import { Router, ActivatedRoute } from "@angular/router"
 import { faPen } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
+import { DataService } from "src/app/services/data-service"
+import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Table } from "src/app/models/Table"
+import { Room } from "src/app/models/Room"
+import { convertRoomResourceToRoom } from "src/app/utils"
 
 @Component({
 	templateUrl: "./tables-page.component.html",
@@ -22,18 +26,16 @@ export class TablesPageComponent {
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addTableDialog
 	faPen = faPen
-	uuid: string = ""
+	restaurantUuid: string = null
+	roomUuid: string = null
 
-	constructor(
-		private localizationService: LocalizationService,
-		private router: Router,
-		private activatedRoute: ActivatedRoute
-	) {}
-
-	table: Table[] = []
+	room: Room = null
+	tables: Table[] = []
 	selectedTable: Table | null = null
+	loading: boolean = true
+	showAllForm = false
+	bulkMode = false
 
-	@Input() loading: boolean = false
 	@Input() line1: number = this.getNextTableNumber()
 	@Input() line1Error: string = ""
 	@Input() line2: number = 4
@@ -43,10 +45,45 @@ export class TablesPageComponent {
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
 
-	showAllForm = false
+	constructor(
+		private dataService: DataService,
+		private apiService: ApiService,
+		private localizationService: LocalizationService,
+		private router: Router,
+		private activatedRoute: ActivatedRoute
+	) {}
 
-	ngOnInit() {
-		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+	async ngOnInit() {
+		this.restaurantUuid =
+			this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
+		this.roomUuid = this.activatedRoute.snapshot.paramMap.get("roomUuid")
+
+		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
+
+		const retrieveRoomResponse = await this.apiService.retrieveRoom(
+			`
+				name
+				tables {
+					items {
+						uuid
+						name
+					}
+				}
+			`,
+			{ uuid: this.roomUuid }
+		)
+
+		this.loading = false
+
+		const retrieveRoomResponseData = convertRoomResourceToRoom(
+			retrieveRoomResponse.data.retrieveRoom
+		)
+
+		if (retrieveRoomResponseData == null) return
+
+		for (const table of retrieveRoomResponseData.tables) {
+			this.tables.push(table)
+		}
 	}
 
 	tableIdNumberfieldChange(event: Event) {
@@ -70,19 +107,19 @@ export class TablesPageComponent {
 			name: this.line1, // Tischnummer
 			seats: this.line2 // Anzahl Stühle
 		}
-		this.table.push(table)
+		this.tables.push(table)
 		this.cancelEdit()
 	}
 
 	// Entfern Einen Tisch
 	removeTable(tableToRemove: Table) {
 		// 1) Index des zu entfernenden Tisches ermitteln
-		const idx = this.table.findIndex(t => t.name === tableToRemove.name)
+		const idx = this.tables.findIndex(t => t.name === tableToRemove.name)
 		if (idx === -1) return // Tisch nicht gefunden
 		// 2) Nummer des entfernten Tisches sichern
-		const removedNumber = this.table[idx].name
+		const removedNumber = this.tables[idx].name
 		// 3) löschen
-		this.table.splice(idx, 1)
+		this.tables.splice(idx, 1)
 	}
 
 	// Öffnet das Dialogformular zum Bearbeiten
@@ -135,7 +172,6 @@ export class TablesPageComponent {
 		this.visible = false
 	}
 
-	bulkMode = false
 	toggleBulkMode(event: Event): void {
 		const isChecked = (event.target as HTMLInputElement).checked
 		this.bulkMode = isChecked
@@ -155,7 +191,7 @@ export class TablesPageComponent {
 				name: this.getNextTableNumber(),
 				seats: this.line2
 			}
-			this.table.push(table)
+			this.tables.push(table)
 		}
 		this.cancelEdit()
 	}
@@ -168,7 +204,7 @@ export class TablesPageComponent {
 	// gibt die nächste (höhste) freie Tischnummer
 	getNextTableNumber() {
 		let max = 0
-		for (const t of this.table) {
+		for (const t of this.tables) {
 			const num = t.name
 			if (!isNaN(num) && num > max) {
 				max = num
@@ -178,6 +214,11 @@ export class TablesPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user", "restaurants", this.uuid, "rooms"])
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.restaurantUuid,
+			"rooms"
+		])
 	}
 }

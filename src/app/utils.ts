@@ -225,8 +225,10 @@ export function convertRoomResourceToRoom(roomResource: RoomResource): Room {
 
 	const tables: Table[] = []
 
-	for (let table of roomResource.tables.items) {
-		tables.push(convertTableResourceToTable(table))
+	if (roomResource.tables != null) {
+		for (let table of roomResource.tables.items) {
+			tables.push(convertTableResourceToTable(table))
+		}
 	}
 
 	return {

@@ -1,9 +1,12 @@
 import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
 import { faPen, faFolder } from "@fortawesome/pro-regular-svg-icons"
-import { AddRoomDialogComponent } from "src/app/dialogs/add-room-dialog/add-room-dialog.component"
+import { DataService } from "src/app/services/data-service"
+import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
+import { AddRoomDialogComponent } from "src/app/dialogs/add-room-dialog/add-room-dialog.component"
 import { Room } from "src/app/models/Room"
+import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 
 @Component({
 	templateUrl: "./rooms-page.component.html",
@@ -17,7 +20,9 @@ export class RoomsPageComponent {
 
 	@ViewChild("addRoomDialog") addRoomDialog!: AddRoomDialogComponent
 
-	uuid: string = ""
+	uuid: string = null
+	loading: boolean = true
+
 	rooms: Room[] = []
 	selectedRoom: Room | null = null
 
@@ -36,13 +41,43 @@ export class RoomsPageComponent {
 	editTableChairs = 4
 
 	constructor(
+		private dataService: DataService,
+		private apiService: ApiService,
 		private localizationService: LocalizationService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute
 	) {}
 
-	ngOnInit() {
+	async ngOnInit() {
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+
+		await this.dataService.davUserPromiseHolder.AwaitResult()
+
+		const retrieveRestaurantResponse =
+			await this.apiService.retrieveRestaurant(
+				`
+					rooms {
+						items {
+							uuid
+							name
+						}
+					}
+				`,
+				{ uuid: this.uuid }
+			)
+
+		const retrieveRestaurantResponseData =
+			convertRestaurantResourceToRestaurant(
+				retrieveRestaurantResponse.data.retrieveRestaurant
+			)
+
+		this.loading = false
+
+		if (retrieveRestaurantResponseData == null) return
+
+		for (const room of retrieveRestaurantResponseData.rooms) {
+			this.rooms.push(room)
+		}
 	}
 
 	showAddRoomDialog() {

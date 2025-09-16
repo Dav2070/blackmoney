@@ -84,9 +84,10 @@ export class PrintersPageComponent {
 			convertRestaurantResourceToRestaurant(
 				retrieveRestaurantResponse.data.retrieveRestaurant
 			)
+
 		if (retrieveRestaurantResponseData == null) return
 
-		for (let printer of retrieveRestaurantResponseData.printers) {
+		for (const printer of retrieveRestaurantResponseData.printers) {
 			this.printers.push({
 				printer: {
 					uuid: printer.uuid,

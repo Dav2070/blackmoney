@@ -13,11 +13,11 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { Table } from "src/app/models/Table"
 
 @Component({
-	templateUrl: "./tables.component.html",
-	styleUrl: "./tables.component.scss",
+	templateUrl: "./tables-page.component.html",
+	styleUrl: "./tables-page.component.scss",
 	standalone: false
 })
-export class TablesComponent {
+export class TablesPageComponent {
 	tablesLocale = this.localizationService.locale.tablesPage
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addTableDialog

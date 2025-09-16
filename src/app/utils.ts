@@ -247,7 +247,8 @@ export function convertTableResourceToTable(
 
 	return {
 		uuid: tableResource.uuid,
-		name: tableResource.name
+		name: tableResource.name,
+		seats: tableResource.seats
 	}
 }
 

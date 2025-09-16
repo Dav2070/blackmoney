@@ -67,6 +67,7 @@ export class TablesPageComponent {
 					items {
 						uuid
 						name
+						seats
 					}
 				}
 			`,
@@ -80,6 +81,7 @@ export class TablesPageComponent {
 		)
 
 		if (retrieveRoomResponseData == null) return
+		this.room = retrieveRoomResponseData
 
 		for (const table of retrieveRoomResponseData.tables) {
 			this.tables.push(table)

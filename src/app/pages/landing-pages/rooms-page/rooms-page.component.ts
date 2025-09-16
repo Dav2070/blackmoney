@@ -125,6 +125,17 @@ export class RoomsPageComponent {
 		this.cancelEdit()
 	}
 
+	navigateToTablePage(room: Room) {
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.uuid,
+			"rooms",
+			room.name,
+			"tables"
+		])
+	}
+
 	navigateBack() {
 		this.router.navigate(["user", "restaurants", this.uuid])
 	}

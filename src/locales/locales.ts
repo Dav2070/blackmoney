@@ -60,6 +60,23 @@ export const de = {
 		testPrintSuccess: "Test-Druck erfolgreich gesendet",
 		testPrintError: "Test-Druck fehlgeschlagen: {errorMessage}"
 	},
+	roomsPage: {
+		headline: "Deine Räume",
+		addTable: "Tische",
+		delete: "löschen"
+	},
+	tablesPage: {
+		headline: "Deine Tische",
+		add: "+",
+		delete: "löschen",
+		roomCombination: "kombinieren"
+	},
+	tableCombinationPage: {
+		headline: "Deine Tischkombinationen",
+		add: "+",
+		delete: "löschen",
+		roomCombination: "kombinieren"
+	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}"
 	},
@@ -97,19 +114,19 @@ export const de = {
 		selectTableDialog: {
 			headline: "Tisch auswählen"
 		},
-		addRoomDialog:{
+		addRoomDialog: {
 			headline: "Raum erstellen",
 			line1: "Raumname",
 			line2: "Nummer"
 		},
-		addTableDialog:{
+		addTableDialog: {
 			headline: "Tisch erstellen",
 			line1: "Tischnummer",
 			line2: "Sitzplätze",
 			line3: "Anzahl Tische",
 			line4: "Anfangs Tischnummer"
 		},
-		addTableCombinationDialog:{
+		addTableCombinationDialog: {
 			headline: "Tisch Kombination erstellen",
 			line1: "Tischnummer",
 			line2: "Sitzplätze",
@@ -140,22 +157,5 @@ export const de = {
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
-	},
-	roomPage:{
-		headline: "Deine Räume",
-		addTable:"Tische",
-		delete:"löschen"
-	},
-	tablesPage:{
-		headline: "Deine Tische",
-		add:"+",
-		delete:"löschen",
-		roomCombination:"kombinieren"
-	},
-	tablesCombinationPage:{
-		headline: "Deine Tischkombinationen",
-		add:"+",
-		delete:"löschen",
-		roomCombination:"kombinieren"
 	}
 }

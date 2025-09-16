@@ -18,7 +18,7 @@ import { Table, TableCombination } from "src/app/models/Table"
 	standalone: false
 })
 export class TableCombinationPageComponent {
-	tablesLocale = this.localizationService.locale.tablesCombinationPage
+	tablesLocale = this.localizationService.locale.tableCombinationPage
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addTableCombinationDialog
 

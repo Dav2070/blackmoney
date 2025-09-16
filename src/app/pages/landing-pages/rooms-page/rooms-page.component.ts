@@ -18,17 +18,12 @@ import { Room } from "src/app/models/Room"
 	standalone: false
 })
 export class RoomsPageComponent {
-	roomLocale = this.localizationService.locale.roomPage
+	roomLocale = this.localizationService.locale.roomsPage
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addRoomDialog
 
 	faPen = faPen
 	faFolder = faFolder
-
-	constructor(
-		private localizationService: LocalizationService,
-		private router: Router
-	) {}
 
 	rooms: Room[] = []
 	selectedRoom: Room | null = null
@@ -52,6 +47,11 @@ export class RoomsPageComponent {
 	editTableIndex = 0
 	editTableNumber = 1
 	editTableChairs = 4
+
+	constructor(
+		private localizationService: LocalizationService,
+		private router: Router
+	) {}
 
 	openAddRoomForm() {
 		this.showAddRoomForm = true

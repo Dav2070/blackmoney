@@ -1,25 +1,23 @@
-import { Component, Input } from "@angular/core"
-import { ActivatedRoute, Router } from "@angular/router"
-import { LocalizationService } from "src/app/services/localization-service"
-import { faPen, faFolder } from "@fortawesome/pro-regular-svg-icons"
-import { Room } from "src/app/models/Room"
 import {
+	Component,
+	Input,
 	ElementRef,
 	EventEmitter,
-	Inject,
 	Output,
-	PLATFORM_ID,
 	ViewChild
 } from "@angular/core"
+import { Router } from "@angular/router"
+import { faPen, faFolder } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
+import { LocalizationService } from "src/app/services/localization-service"
+import { Room } from "src/app/models/Room"
 
 @Component({
-	selector: "app-rooms",
-	templateUrl: "./rooms.component.html",
-	styleUrl: "./rooms.component.scss",
+	templateUrl: "./rooms-page.component.html",
+	styleUrl: "./rooms-page.component.scss",
 	standalone: false
 })
-export class RoomsComponent {
+export class RoomsPageComponent {
 	roomLocale = this.localizationService.locale.roomPage
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addRoomDialog
@@ -29,9 +27,7 @@ export class RoomsComponent {
 
 	constructor(
 		private localizationService: LocalizationService,
-		private activatedRoute: ActivatedRoute,
-		private router: Router,
-		@Inject(PLATFORM_ID) private platformId: object
+		private router: Router
 	) {}
 
 	rooms: Room[] = []

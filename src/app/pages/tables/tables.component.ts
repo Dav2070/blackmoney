@@ -1,20 +1,18 @@
-import { Component, Input } from "@angular/core"
-import { ActivatedRoute, Router } from "@angular/router"
-import { LocalizationService } from "src/app/services/localization-service"
-import { faPen } from "@fortawesome/pro-regular-svg-icons"
-import { Table } from "src/app/models/Table"
 import {
+	Component,
+	Input,
 	ElementRef,
 	EventEmitter,
-	Inject,
 	Output,
-	PLATFORM_ID,
 	ViewChild
 } from "@angular/core"
+import { Router } from "@angular/router"
+import { faPen } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
+import { LocalizationService } from "src/app/services/localization-service"
+import { Table } from "src/app/models/Table"
 
 @Component({
-	selector: "app-tables",
 	templateUrl: "./tables.component.html",
 	styleUrl: "./tables.component.scss",
 	standalone: false
@@ -28,9 +26,7 @@ export class TablesComponent {
 
 	constructor(
 		private localizationService: LocalizationService,
-		private activatedRoute: ActivatedRoute,
-		private router: Router,
-		@Inject(PLATFORM_ID) private platformId: object
+		private router: Router
 	) {}
 
 	table: Table[] = []
@@ -161,7 +157,7 @@ export class TablesComponent {
 
 	showTableCombinationDialog() {
 		const currentUrl = this.router.url
-		this.router.navigateByUrl(`${currentUrl}/Combinations`)
+		this.router.navigateByUrl(`${currentUrl}/combinations`)
 	}
 
 	// gibt die nächste (höhste) freie Tischnummer

@@ -17,12 +17,12 @@ import { Room } from "src/app/models/Room"
 import { convertRoomResourceToRoom } from "src/app/utils"
 
 @Component({
-	templateUrl: "./tables-page.component.html",
-	styleUrl: "./tables-page.component.scss",
+	templateUrl: "./room-page.component.html",
+	styleUrl: "./room-page.component.scss",
 	standalone: false
 })
-export class TablesPageComponent {
-	tablesLocale = this.localizationService.locale.tablesPage
+export class RoomPageComponent {
+	tablesLocale = this.localizationService.locale.roomPage
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addTableDialog
 	faPen = faPen

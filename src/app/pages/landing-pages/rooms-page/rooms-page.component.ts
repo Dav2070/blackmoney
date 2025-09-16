@@ -166,8 +166,7 @@ export class RoomsPageComponent {
 			"restaurants",
 			this.uuid,
 			"rooms",
-			room.uuid,
-			"tables"
+			room.uuid
 		])
 	}
 

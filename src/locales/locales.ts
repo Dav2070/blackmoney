@@ -65,7 +65,7 @@ export const de = {
 		addTable: "Tische",
 		delete: "löschen"
 	},
-	tablesPage: {
+	roomPage: {
 		add: "+",
 		delete: "löschen",
 		roomCombination: "kombinieren"

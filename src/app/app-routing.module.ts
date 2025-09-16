@@ -22,7 +22,7 @@ import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-o
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
-import { TablesPageComponent } from "./pages/landing-pages/tables-page/tables-page.component"
+import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationPageComponent } from "./pages/landing-pages/table-combination-page/table-combination-page.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 
@@ -80,11 +80,11 @@ const routes: Routes = [
 				component: RoomsPageComponent
 			},
 			{
-				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/tables",
-				component: TablesPageComponent
+				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid",
+				component: RoomPageComponent
 			},
 			{
-				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/tables/combinations",
+				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/combinations",
 				component: TableCombinationPageComponent
 			}
 		]

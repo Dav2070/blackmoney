@@ -1,14 +1,6 @@
-import {
-	Component,
-	Input,
-	ElementRef,
-	EventEmitter,
-	Output,
-	ViewChild
-} from "@angular/core"
-import { Router } from "@angular/router"
+import { Component, ViewChild } from "@angular/core"
 import { faPen, faFolder } from "@fortawesome/pro-regular-svg-icons"
-import { Dialog } from "dav-ui-components"
+import { AddRoomDialogComponent } from "src/app/dialogs/add-room-dialog/add-room-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Room } from "src/app/models/Room"
 
@@ -18,26 +10,19 @@ import { Room } from "src/app/models/Room"
 	standalone: false
 })
 export class RoomsPageComponent {
-	roomLocale = this.localizationService.locale.roomsPage
-	actionsLocale = this.localizationService.locale.actions
-	locale = this.localizationService.locale.dialogs.addRoomDialog
-
+	locale = this.localizationService.locale.roomsPage
 	faPen = faPen
 	faFolder = faFolder
+
+	@ViewChild("addRoomDialog") addRoomDialog!: AddRoomDialogComponent
 
 	rooms: Room[] = []
 	selectedRoom: Room | null = null
 
-	@Input() loading: boolean = false
-	@Input() roomName: string = ""
-	@Input() line1Error: string = ""
-	@Output() clearErrors = new EventEmitter()
-	@ViewChild("dialog") dialog: ElementRef<Dialog>
-	visible: boolean = false
-
 	showAllRoomsForm = false
 	showAddRoomForm = false
 	newRoomName = ""
+	newRoomNameError = ""
 	newRoomNumber = 1
 
 	newTableNumber = 1
@@ -48,10 +33,11 @@ export class RoomsPageComponent {
 	editTableNumber = 1
 	editTableChairs = 4
 
-	constructor(
-		private localizationService: LocalizationService,
-		private router: Router
-	) {}
+	constructor(private localizationService: LocalizationService) {}
+
+	showAddRoomDialog() {
+		this.addRoomDialog.show()
+	}
 
 	openAddRoomForm() {
 		this.showAddRoomForm = true
@@ -64,71 +50,58 @@ export class RoomsPageComponent {
 		this.showAllRoomsForm = true
 	}
 
-	roomNameTextfieldChange(event: Event) {
-		this.roomName = (event as CustomEvent).detail.value
-		this.clearErrors.emit()
-	}
-
-	addRoom() {
+	addRoomDialogPrimaryButtonClick(event: { name: string }) {
 		const room: Room = {
 			uuid: "",
-			name: this.roomName.trim(),
+			name: event.name.trim(),
 			tables: []
 		}
+
 		this.rooms.push(room)
-		this.cancelEdit()
+		this.addRoomDialog.hide()
 	}
 
 	// Öffnet das Dialogformular zum Bearbeiten
 	openEditRoomForm(room: Room) {
-		this.selectedRoom = room
-
-		// Formular mit bestehenden Werten füllen
-		this.roomName = room.name
-		// Dialog anzeigen, Liste ausblenden
-		this.showAllRoomsForm = false
-		this.showAddRoomForm = true
-		this.visible = true
+		// this.selectedRoom = room
+		// // Formular mit bestehenden Werten füllen
+		// this.roomName = room.name
+		// // Dialog anzeigen, Liste ausblenden
+		// this.showAllRoomsForm = false
+		// this.showAddRoomForm = true
+		// this.addRoomDialog.hide()
 	}
 
 	updateRoom() {
-		if (!this.selectedRoom) {
-			return
-		}
-		this.selectedRoom.name = this.roomName.trim()
-		// Rücksetzen des Formular-Zustands
-		this.cancelEdit()
+		// if (!this.selectedRoom) {
+		// 	return
+		// }
+		// this.selectedRoom.name = this.roomName.trim()
+		// // Rücksetzen des Formular-Zustands
+		// this.cancelEdit()
 	}
 
 	submitRoom() {
-		if (this.selectedRoom) {
-			this.updateRoom()
-		} else {
-			this.addRoom()
-		}
+		// if (this.selectedRoom) {
+		// 	this.updateRoom()
+		// } else {
+		// 	this.addRoom()
+		// }
 	}
 
 	cancelEdit() {
-		this.selectedRoom = null
-		this.showAddRoomForm = false
-		this.showAllRoomsForm = true
-		this.visible = false
-		this.roomName = ""
-	}
-
-	show() {
-		this.visible = true
-	}
-
-	hide() {
-		this.visible = false
+		// this.selectedRoom = null
+		// this.showAddRoomForm = false
+		// this.showAllRoomsForm = true
+		// this.visible = false
+		// this.roomName = ""
 	}
 
 	showTableAdministrationDialog(room: Room) {
 		// hinzufügen :roomName für URL
-		this.roomName = room.name
-		const currentUrl = this.router.url
-		this.router.navigateByUrl(`${currentUrl}/${room.name}/tables`)
+		// this.roomName = room.name
+		// const currentUrl = this.router.url
+		// this.router.navigateByUrl(`${currentUrl}/${room.name}/tables`)
 	}
 
 	// Entfern Einen Tisch und passt die Nummer an

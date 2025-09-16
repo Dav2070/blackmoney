@@ -115,12 +115,11 @@ export const de = {
 			headline: "Tisch auswählen"
 		},
 		addRoomDialog: {
-			headline: "Raum erstellen",
-			line1: "Raumname",
-			line2: "Nummer"
+			headline: "Raum hinzufügen",
+			name: "Name"
 		},
 		addTableDialog: {
-			headline: "Tisch erstellen",
+			headline: "Tisch hinzufügen",
 			line1: "Tischnummer",
 			line2: "Sitzplätze",
 			line3: "Anzahl Tische",

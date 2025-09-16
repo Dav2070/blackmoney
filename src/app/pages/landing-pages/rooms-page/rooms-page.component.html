@@ -1,33 +1,7 @@
-<dav-dialog
-	#dialog
-	[headline]="locale.headline"
-	[primaryButtonText]="actionsLocale.save"
-	[defaultButtonText]="actionsLocale.cancel"
-	[visible]="visible"
-	maxWidth="450"
-	[loading]="loading"
-	(dismiss)="hide()"
-	(primaryButtonClick)="submitRoom()"
-	(defaultButtonClick)="hide()"
->
-	<form>
-		<!-- Line 1 -->
-		<div class="dialog-formfield-container">
-			<dav-textfield
-				[value]="roomName"
-				[label]="locale.line1"
-				[disabled]="loading"
-				[errorMessage]="line1Error"
-				(change)="roomNameTextfieldChange($event)"
-			></dav-textfield>
-		</div>
-	</form>
-</dav-dialog>
-
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header addButtonVisible (addButtonClick)="show()">
-			{{ roomLocale.headline }}
+		<dav-header addButtonVisible (addButtonClick)="showAddRoomDialog()">
+			{{ locale.headline }}
 		</dav-header>
 		@for (room of rooms; track room.name) {
 			<dav-card>
@@ -43,7 +17,7 @@
 								(click)="showTableAdministrationDialog(room)"
 								size="sm"
 							>
-								{{ roomLocale.addTable }}
+								{{ locale.addTable }}
 							</dav-button>
 							<dav-button
 								outline
@@ -51,7 +25,7 @@
 								(click)="removeRoom(room)"
 								size="sm"
 							>
-								{{ roomLocale.delete }}
+								{{ locale.delete }}
 							</dav-button>
 						</div>
 					</div>
@@ -63,3 +37,9 @@
 		}
 	</div>
 </div>
+
+<app-add-room-dialog
+	#addRoomDialog
+	[nameError]="newRoomNameError"
+	(primaryButtonClick)="addRoomDialogPrimaryButtonClick($event)"
+></app-add-room-dialog>

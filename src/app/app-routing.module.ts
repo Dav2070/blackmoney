@@ -22,7 +22,7 @@ import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-o
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
-import { TablesPageComponent } from "./pages/tables-page/tables-page.component"
+import { TablesPageComponent } from "./pages/landing-pages/tables-page/tables-page.component"
 import { TableCombinationComponent } from "./pages/landing-pages/table-combination/table-combination.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 

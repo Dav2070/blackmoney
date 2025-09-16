@@ -66,7 +66,7 @@ import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
-import { TablesPageComponent } from "./pages/tables-page/tables-page.component"
+import { TablesPageComponent } from "./pages/landing-pages/tables-page/tables-page.component"
 import { TableCombinationComponent } from "./pages/landing-pages/table-combination/table-combination.component"
 
 // Services

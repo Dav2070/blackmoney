@@ -1,8 +1,14 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header addButtonVisible (addButtonClick)="showAddRoomDialog()">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddRoomDialog()"
+		>
 			{{ locale.headline }}
 		</dav-header>
+
 		@for (room of rooms; track room.name) {
 			<dav-card>
 				<div class="room-card-container">

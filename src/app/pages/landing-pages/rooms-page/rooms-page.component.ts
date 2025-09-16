@@ -1,4 +1,5 @@
 import { Component, ViewChild } from "@angular/core"
+import { Router, ActivatedRoute } from "@angular/router"
 import { faPen, faFolder } from "@fortawesome/pro-regular-svg-icons"
 import { AddRoomDialogComponent } from "src/app/dialogs/add-room-dialog/add-room-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -16,6 +17,7 @@ export class RoomsPageComponent {
 
 	@ViewChild("addRoomDialog") addRoomDialog!: AddRoomDialogComponent
 
+	uuid: string = ""
 	rooms: Room[] = []
 	selectedRoom: Room | null = null
 
@@ -33,7 +35,15 @@ export class RoomsPageComponent {
 	editTableNumber = 1
 	editTableChairs = 4
 
-	constructor(private localizationService: LocalizationService) {}
+	constructor(
+		private localizationService: LocalizationService,
+		private router: Router,
+		private activatedRoute: ActivatedRoute
+	) {}
+
+	ngOnInit() {
+		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+	}
 
 	showAddRoomDialog() {
 		this.addRoomDialog.show()
@@ -113,5 +123,9 @@ export class RoomsPageComponent {
 		// 2) löschen
 		this.rooms.splice(idx, 1)
 		this.cancelEdit()
+	}
+
+	navigateBack() {
+		this.router.navigate(["user", "restaurants", this.uuid])
 	}
 }

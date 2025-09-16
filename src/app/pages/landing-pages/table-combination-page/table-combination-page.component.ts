@@ -1,26 +1,23 @@
-import { Component, Input } from "@angular/core"
-import { ActivatedRoute, Router } from "@angular/router"
-import { LocalizationService } from "src/app/services/localization-service"
-import { faPen, faFolder } from "@fortawesome/pro-regular-svg-icons"
-import { Table, TableCombination } from "src/app/models/Table"
 import {
+	Component,
+	Input,
 	ElementRef,
 	EventEmitter,
-	Inject,
 	Output,
-	PLATFORM_ID,
 	ViewChild
 } from "@angular/core"
-import { Dialog } from "dav-ui-components"
 import { FormControl } from "@angular/forms"
+import { faPen } from "@fortawesome/pro-regular-svg-icons"
+import { Dialog } from "dav-ui-components"
+import { LocalizationService } from "src/app/services/localization-service"
+import { Table, TableCombination } from "src/app/models/Table"
 
 @Component({
-	selector: "app-table-combination",
-	templateUrl: "./table-combination.component.html",
-	styleUrl: "./table-combination.component.scss",
+	templateUrl: "./table-combination-page.component.html",
+	styleUrl: "./table-combination-page.component.scss",
 	standalone: false
 })
-export class TableCombinationComponent {
+export class TableCombinationPageComponent {
 	tablesLocale = this.localizationService.locale.tablesCombinationPage
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addTableCombinationDialog
@@ -47,12 +44,7 @@ export class TableCombinationComponent {
 	visible: boolean = false
 	showAllForm = false
 
-	constructor(
-		private localizationService: LocalizationService,
-		private activatedRoute: ActivatedRoute,
-		private router: Router,
-		@Inject(PLATFORM_ID) private platformId: object
-	) {}
+	constructor(private localizationService: LocalizationService) {}
 
 	chairNumberfieldChange(event: Event) {
 		this.seats = (event as CustomEvent).detail.value

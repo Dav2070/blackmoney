@@ -1,1 +1,28 @@
-<p>products-overview-page works!</p>
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		<div class="separator"></div>
+	</div>
+
+	<div class="sidenav-container">
+		@if (categories.length > 0) {
+			<dav-sidenav>
+				<!-- Dynamic categories -->
+				@for (category of categories; track category.uuid) {
+					<dav-sidenav-item
+						[value]="category.name"
+						[active]="selectedCategory === category.uuid"
+						(click)="selectCategory(category)"
+					></dav-sidenav-item>
+				}
+			</dav-sidenav>
+		}
+	</div>
+</div>

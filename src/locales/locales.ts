@@ -68,11 +68,14 @@ export const de = {
 		offers: "Angebote",
 		menu: "Menüs"
 	},
+	categoryPage: {
+		headline: "Deine Kategorien"
+	},
 	productPage: {
 		headline: "Produkte verwalten",
-		products: "Speisen/Getränke",
+		category: "Kategorien",
 		variations: "Variationen",
-		options: "Extras",
+		options: "Extras"
 	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}"

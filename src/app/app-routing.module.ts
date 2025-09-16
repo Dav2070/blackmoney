@@ -25,6 +25,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { ProductPageComponent } from "./pages/landing-pages/product-page/product-page.component"
 import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
+import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 
 const routes: Routes = [
 	{
@@ -84,7 +85,11 @@ const routes: Routes = [
 				component: ProductPageComponent
 			},
 			{
-				path: "user/restaurants/:uuid/menu/product/products",
+				path: "user/restaurants/:uuid/menu/product/category",
+				component: CategoryPageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu/product/category/:categoryuuid",
 				component: ProductsOverviewPageComponent
 			},
 			

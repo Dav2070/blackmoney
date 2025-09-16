@@ -92,6 +92,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { ProductPageComponent } from "./pages/landing-pages/product-page/product-page.component"
 import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
+import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 
 @NgModule({
 	declarations: [
@@ -128,6 +129,7 @@ import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-ov
 		SeparatePayPageComponent,
 		ProductPageComponent,
 		ProductsOverviewPageComponent,
+		CategoryPageComponent,
 		//Landing-Pages
 		PrintersPageComponent,
 		MenuPageComponent,

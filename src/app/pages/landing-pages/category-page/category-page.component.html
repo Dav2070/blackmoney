@@ -1,0 +1,22 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			addButtonVisible
+			backButtonVisible
+			(addButtonClick)="showAddCategoryDialog()"
+			(backButtonClick)="navigateBack()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		<dav-list>
+			@for (category of categories; track category.uuid) {
+				<dav-list-item
+					[headline]="category.name"
+					[href]="'/user/employees/' + category.uuid"
+					(click)="navigateToProducts($event, category)"
+				></dav-list-item>
+			}
+		</dav-list>
+	</div>
+</div>

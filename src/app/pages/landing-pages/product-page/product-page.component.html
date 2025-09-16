@@ -4,14 +4,12 @@
 			{{ locale.headline }}
 		</dav-header>
 
-		<div class="separator"></div>
-
 		<div class="actions-container">
 			<div class="actions-container">
 				<dav-icon-card
-					[text]="locale.products"
-					[href]="'/user/restaurants/' + uuid + '/menu/products'"
-					(click)="navigateToProductsPage($event)"
+					[text]="locale.category"
+					[href]="'/user/restaurants/' + uuid + '/menu/category'"
+					(click)="navigateToCategoryPage($event)"
 				>
 					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-card>

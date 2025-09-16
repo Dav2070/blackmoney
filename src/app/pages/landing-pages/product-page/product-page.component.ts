@@ -33,7 +33,7 @@ export class ProductPageComponent {
 		this.router.navigate(["user", "restaurants", this.uuid, "menu"])
 	}
 
-	navigateToProductsPage(event: MouseEvent) {
+	navigateToCategoryPage(event: MouseEvent) {
 		event.preventDefault()
 
 		this.router.navigate([
@@ -42,7 +42,7 @@ export class ProductPageComponent {
 			this.uuid,
 			"menu",
 			"product",
-			"products"
+			"category"
 		])
 	}
 
@@ -71,5 +71,4 @@ export class ProductPageComponent {
 			"options"
 		])
 	}
-
 }

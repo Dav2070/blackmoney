@@ -1,28 +1,23 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { faPen } from "@fortawesome/pro-regular-svg-icons"
-import { systemThemeKey } from "src/app/constants"
 import { Category } from "src/app/models/Category"
+import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
-	selector: "app-products-overview-page",
-	standalone: false,
-	templateUrl: "./products-overview-page.component.html",
-	styleUrl: "./products-overview-page.component.scss"
+	selector: "app-category-page",
+	templateUrl: "./category-page.component.html",
+	styleUrl: "./category-page.component.scss",
+	standalone: false
 })
-export class ProductsOverviewPageComponent {
-	deleteCategory(_t7: Category) {
+export class CategoryPageComponent {
+	showAddCategoryDialog() {
 		throw new Error("Method not implemented.")
 	}
-	editCategory(_t7: Category) {
-		throw new Error("Method not implemented.")
-	}
-	locale = this.localizationService.locale.productPage
+	locale = this.localizationService.locale.categoryPage
 	errorsLocale = this.localizationService.locale.errors
-	faPen = faPen
-	uuid: string = null
 	categories: Category[] = [
 		{ uuid: "1", name: "Vorspeise", type: "FOOD", products: [] },
 		{ uuid: "2", name: "Hauptspeise", type: "FOOD", products: [] },
@@ -39,21 +34,21 @@ export class ProductsOverviewPageComponent {
 			products: []
 		}
 	]
-	selectedCategory: String = null
+	category: Category = null
+	uuid: string = null
 
 	constructor(
-		private readonly dataService: DataService,
-		private readonly localizationService: LocalizationService,
-		private readonly router: Router,
+		private apiService: ApiService,
+		private dataService: DataService,
+		private localizationService: LocalizationService,
+		private router: Router,
 		private readonly activatedRoute: ActivatedRoute
 	) {}
 
 	async ngOnInit() {
-		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
-		this.selectedCategory =
-			this.activatedRoute.snapshot.paramMap.get("categoryuuid")
+		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
 
-		await this.dataService.davUserPromiseHolder.AwaitResult()
+		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 	}
 
 	navigateBack() {
@@ -62,12 +57,13 @@ export class ProductsOverviewPageComponent {
 			"restaurants",
 			this.uuid,
 			"menu",
-			"product",
-			"category"
+			"product"
 		])
 	}
 
-	selectCategory(category: Category) {
+	navigateToProducts(event: MouseEvent, category: Category) {
+		event.preventDefault()
+
 		this.router.navigate([
 			"user",
 			"restaurants",
@@ -77,6 +73,5 @@ export class ProductsOverviewPageComponent {
 			"category",
 			category.uuid
 		])
-		this.selectedCategory = category.uuid
 	}
 }

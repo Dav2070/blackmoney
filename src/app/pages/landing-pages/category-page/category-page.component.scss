@@ -1,0 +1,57 @@
+.printer-card-container {
+	display: flex;
+	align-items: start;
+	margin: 0;
+	gap: 10px;
+
+	fa-icon {
+		padding: 4px;
+	}
+}
+
+.printer-card-content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start; 
+	margin-top: 4px;
+	line-height: 20px;
+}
+
+.printer-card-content > p {
+	margin: 0;
+	color: var(--dav-color-on-surface);
+	text-align: left; 
+}
+
+.printer-actions-row {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-top: 16px;
+}
+
+.printer-icon {
+	font-size: 1.6rem;
+	color: var(--dav-color-on-surface);
+}
+
+.test-printer-btn {
+	display: block;
+	align-self: center; 
+	margin: 0;
+}
+
+.online {
+	color: #4caf50;
+	font-weight: bold;
+}
+
+.offline {
+	color: #f44336;
+	font-weight: bold;
+}
+
+.loading {
+	color: #999;
+	font-weight: normal;
+}

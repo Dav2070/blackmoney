@@ -1,0 +1,98 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="bulkMode ? multi() : submitTable()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Line 1 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="line1"
+				[label]="bulkMode ? locale.line4 : locale.line1"
+				[disabled]="loading"
+				[errorMessage]="line1Error"
+				(change)="tableIdNumberfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Line 2 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="line2"
+				[label]="locale.line2"
+				[disabled]="loading"
+				[errorMessage]="line2Error"
+				(change)="chairNumberfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Line 3 -->
+		<div *ngIf="bulkMode" class="dialog-formfield-container">
+			<dav-textfield
+				[value]="line3"
+				[label]="locale.line3"
+				[disabled]="loading"
+				[errorMessage]="line2Error"
+				(change)="tableNumberfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Checkbox unten links -->
+		<div class="dialog-formfield-container">
+			<dav-checkbox
+				[checked]="bulkMode"
+				(change)="toggleBulkMode($event)"
+				label="Mehrere Tische anlegen"
+			>
+			</dav-checkbox>
+		</div>
+	</form>
+</dav-dialog>
+
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header addButtonVisible (addButtonClick)="show()">
+			{{ tablesLocale.headline }}
+		</dav-header>
+		<dav-button
+			outline
+			class="test-table-btn"
+			(click)="showTableCombinationDialog()"
+			size="sm"
+		>
+			{{ tablesLocale.roomCombination }}
+		</dav-button>
+		@for (table of table; track table.name) {
+			<dav-card>
+				<div class="table-card-container">
+					<div class="table-card-content">
+						<p>
+							<strong>Nummer: {{ table.name }}</strong>
+						</p>
+						<p>Sitzplätze: {{ table.seats }}</p>
+						<div class="table-actions-row">
+							<dav-button
+								outline
+								class="test-table-btn"
+								(click)="removeTable(table)"
+								size="sm"
+							>
+								{{ tablesLocale.delete }}
+							</dav-button>
+						</div>
+					</div>
+					<dav-icon-button size="xs" (click)="openEditForm(table)">
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
+				</div>
+			</dav-card>
+		}
+	</div>
+</div>

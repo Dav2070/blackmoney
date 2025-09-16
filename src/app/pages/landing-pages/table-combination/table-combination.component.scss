@@ -1,0 +1,42 @@
+.tableCombination-card-container {
+	display: flex;
+	align-items: start;
+	margin: 0;
+	gap: 10px;
+
+	fa-icon {
+		padding: 4px;
+	}
+}
+
+.tableCombination-card-content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start; // Texte linksbündig
+	margin-top: 4px;
+	line-height: 20px;
+}
+
+.tableCombination-card-content > p {
+	margin: 0;
+	color: var(--dav-color-on-surface);
+	text-align: left; // falls nötig
+}
+
+.tableCombination-actions-row {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-top: 16px;
+}
+
+.tableCombination-icon {
+	font-size: 1.6rem;
+	color: var(--dav-color-on-surface);
+}
+
+.test-tableCombination-btn {
+	display: block;
+	align-self: center; // Button mittig
+	margin: 0;
+}

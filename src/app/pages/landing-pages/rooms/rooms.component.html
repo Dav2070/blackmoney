@@ -1,0 +1,65 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submitRoom()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Line 1 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="roomName"
+				[label]="locale.line1"
+				[disabled]="loading"
+				[errorMessage]="line1Error"
+				(change)="roomNameTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+	</form>
+</dav-dialog>
+
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header addButtonVisible (addButtonClick)="show()">
+			{{ roomLocale.headline }}
+		</dav-header>
+		@for (room of rooms; track room.name) {
+			<dav-card>
+				<div class="room-card-container">
+					<div class="room-card-content">
+						<p>
+							<strong>Raum: {{ room.name }}</strong>
+						</p>
+						<div class="room-actions-row">
+							<dav-button
+								outline
+								class="test-room-btn"
+								(click)="showTableAdministrationDialog(room)"
+								size="sm"
+							>
+								{{ roomLocale.addTable }}
+							</dav-button>
+							<dav-button
+								outline
+								class="test-room-btn"
+								(click)="removeRoom(room)"
+								size="sm"
+							>
+								{{ roomLocale.delete }}
+							</dav-button>
+						</div>
+					</div>
+					<dav-icon-button size="xs" (click)="openEditRoomForm(room)">
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
+				</div>
+			</dav-card>
+		}
+	</div>
+</div>

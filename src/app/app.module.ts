@@ -65,6 +65,7 @@ import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-pag
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
+import { RoomsComponent } from "./pages/landing-pages/rooms/rooms.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -89,6 +90,12 @@ import { EmployeeManagementComponent } from "./pages/settings-pages/employee-man
 import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
 import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
+
+
+
+import { TablesComponent } from "./pages/tables/tables.component"
+import { TableCombinationComponent } from "./pages/landing-pages/table-combination/table-combination.component"
+
 
 @NgModule({
 	declarations: [
@@ -125,6 +132,9 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		SeparatePayPageComponent,
 		//Landing-Pages
 		PrintersPageComponent,
+		RoomsComponent,
+		TablesComponent,
+		TableCombinationComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,

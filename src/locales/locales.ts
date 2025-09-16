@@ -96,6 +96,25 @@ export const de = {
 		},
 		selectTableDialog: {
 			headline: "Tisch auswählen"
+		},
+		addRoomDialog:{
+			headline: "Raum erstellen",
+			line1: "Raumname",
+			line2: "Nummer"
+		},
+		addTableDialog:{
+			headline: "Tisch erstellen",
+			line1: "Tischnummer",
+			line2: "Sitzplätze",
+			line3: "Anzahl Tische",
+			line4: "Anfangs Tischnummer"
+		},
+		addTableCombinationDialog:{
+			headline: "Tisch Kombination erstellen",
+			line1: "Tischnummer",
+			line2: "Sitzplätze",
+			line3: "Anzahl Tische",
+			line4: "Anfangs Tischnummer"
 		}
 	},
 	actions: {
@@ -121,5 +140,22 @@ export const de = {
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
+	},
+	roomPage:{
+		headline: "Deine Räume",
+		addTable:"Tische",
+		delete:"löschen"
+	},
+	tablesPage:{
+		headline: "Deine Tische",
+		add:"+",
+		delete:"löschen",
+		roomCombination:"kombinieren"
+	},
+	tablesCombinationPage:{
+		headline: "Deine Tischkombinationen",
+		add:"+",
+		delete:"löschen",
+		roomCombination:"kombinieren"
 	}
 }

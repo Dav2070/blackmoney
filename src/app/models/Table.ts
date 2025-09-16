@@ -3,3 +3,9 @@ export class Table {
 	name: number // Tischnummer
 	seats?: number // Sitzplätze
 }
+
+export class TableCombination {
+	uuid: string;
+  	name: number[];
+  	seats?: number;
+}

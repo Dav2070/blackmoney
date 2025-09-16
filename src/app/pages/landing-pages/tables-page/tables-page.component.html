@@ -58,7 +58,12 @@
 
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header addButtonVisible (addButtonClick)="show()">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="show()"
+		>
 			{{ tablesLocale.headline }}
 		</dav-header>
 		<dav-button
@@ -69,6 +74,7 @@
 		>
 			{{ tablesLocale.roomCombination }}
 		</dav-button>
+
 		@for (table of table; track table.name) {
 			<dav-card>
 				<div class="table-card-container">

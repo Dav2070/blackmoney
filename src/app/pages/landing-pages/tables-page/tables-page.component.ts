@@ -6,7 +6,7 @@ import {
 	Output,
 	ViewChild
 } from "@angular/core"
-import { Router } from "@angular/router"
+import { Router, ActivatedRoute } from "@angular/router"
 import { faPen } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -21,12 +21,13 @@ export class TablesPageComponent {
 	tablesLocale = this.localizationService.locale.tablesPage
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addTableDialog
-
 	faPen = faPen
+	uuid: string = ""
 
 	constructor(
 		private localizationService: LocalizationService,
-		private router: Router
+		private router: Router,
+		private activatedRoute: ActivatedRoute
 	) {}
 
 	table: Table[] = []
@@ -43,6 +44,10 @@ export class TablesPageComponent {
 	visible: boolean = false
 
 	showAllForm = false
+
+	ngOnInit() {
+		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+	}
 
 	tableIdNumberfieldChange(event: Event) {
 		this.line1 = (event as CustomEvent).detail.value
@@ -170,5 +175,9 @@ export class TablesPageComponent {
 			}
 		}
 		return max + 1
+	}
+
+	navigateBack() {
+		this.router.navigate(["user", "restaurants", this.uuid, "rooms"])
 	}
 }

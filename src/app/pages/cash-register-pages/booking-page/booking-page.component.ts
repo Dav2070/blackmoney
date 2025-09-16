@@ -3,7 +3,9 @@ import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
 import {
 	faArrowLeft,
-	faArrowRightArrowLeft
+	faArrowRightArrowLeft,
+	faPaperPlaneTop,
+	faCreditCard
 } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
@@ -51,6 +53,8 @@ export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
 	faArrowLeft = faArrowLeft
 	faArrowRightArrowLeft = faArrowRightArrowLeft
+	faPaperPlaneTop = faPaperPlaneTop
+	faCreditCard = faCreditCard
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []
 	selectedInventory: Product[] = []
@@ -294,6 +298,11 @@ export class BookingPageComponent {
 
 	selectTableButtonClick() {
 		this.selectTableDialog.show()
+	}
+
+	navigateToSeparatePayPage(event: MouseEvent) {
+		event.preventDefault()
+		this.router.navigate(["dashboard", "tables", this.uuid, "separate"])
 	}
 
 	selectTableDialogPrimaryButtonClick(event: { uuid: string }) {

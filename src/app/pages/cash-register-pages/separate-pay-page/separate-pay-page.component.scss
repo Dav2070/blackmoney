@@ -1,50 +1,42 @@
-#wrapper {
-	display: flex;
-	flex-direction: column;
+.container {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	grid-template-rows: auto 1fr auto;
 	height: 100vh;
-	background-color: white;
+	background-color: var(--dav-color-surface);
+	padding: 0;
 }
 
 .header {
-	flex: 1;
-	background-color: deepskyblue;
+	grid-column: 1 / span 3;
+	grid-row: 1;
 }
 
-#mehrspaltig {
-	flex: 10;
-	display: flex;
-	flex-direction: row;
-	background-color: silver;
-}
-
-nav {
+.orders-container {
 	flex: 4;
-	background-color: darkgray;
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 	min-height: 100%;
 }
 
-article {
+.actions-container {
 	flex: 5;
-	background-color: orange;
 	display: flex;
 	flex-direction: column;
 }
 
-aside {
+.bills-container {
 	flex: 4;
-	background-color: gray;
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 	min-height: 100%;
 }
 
-footer {
-	flex: 1;
-	background-color: limegreen;
+.footer {
+	grid-column: 1 / span 3;
+	grid-row: 3;
 }
 
 #footerButtonsContainer {
@@ -65,12 +57,10 @@ footer {
 .items {
 	overflow-y: scroll;
 	flex: 1;
-	background-color: purple;
 }
 
 #top {
 	flex: 1;
-	background-color: blue;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -79,7 +69,6 @@ footer {
 
 #bottom {
 	flex: 2;
-	background-color: orange;
 	display: flex;
 	flex-direction: column;
 	align-items: center;

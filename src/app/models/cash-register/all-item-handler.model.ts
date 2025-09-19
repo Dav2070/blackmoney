@@ -7,6 +7,7 @@ import {
 	convertOrderResourceToOrder
 } from "src/app/utils"
 import { Order } from "../Order"
+import { n } from "node_modules/@angular/cdk/overlay-module.d-BvvR6Y05"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
@@ -368,5 +369,60 @@ export class AllItemHandler {
 			this.allPickedItems.length === 0 &&
 			this.allPickedOfferItems.length === 0
 		)
+	}
+
+	sameOrderItemExists(item: OrderItem): OrderItem {
+		if (item.type !== 'menu' && item.type !== 'special') {
+			return undefined
+		}
+
+		return this.allPickedItems.find(existingItem => {
+			if (existingItem.type !== item.type || 
+				existingItem.offer?.uuid !== item.offer?.uuid ||
+				existingItem.orderItems?.length !== item.orderItems?.length) {
+				return false
+			}
+
+			const allNewItemsHaveMatch = item.orderItems.every(newOrderItem => {
+				return existingItem.orderItems.some(existingOrderItem => {
+					if (existingOrderItem.product.id !== newOrderItem.product.id) {
+						return false
+					}
+
+					if (existingOrderItem.count / existingItem.count !== newOrderItem.count) {
+						return false
+					}
+
+					const existingVarCount = existingOrderItem.orderItemVariations?.length || 0
+					const newVarCount = newOrderItem.orderItemVariations?.length || 0
+					
+					if (existingVarCount !== newVarCount) {
+						return false
+					}
+
+					// Alle Variationen müssen passen
+					return newOrderItem.orderItemVariations?.every(newVar => {
+						return existingOrderItem.orderItemVariations.some(existingVar => {
+							if (existingVar.count / existingItem.count !== newVar.count) {
+								return false
+							}
+
+							if (existingVar.variationItems.length !== newVar.variationItems.length) {
+								return false
+							}
+
+							return newVar.variationItems.every((newVarItem, index) => {
+								const existingVarItem = existingVar.variationItems[index]
+								return existingVarItem.id === newVarItem.id &&
+									existingVarItem.name === newVarItem.name &&
+									existingVarItem.additionalCost === newVarItem.additionalCost
+							})
+						})
+					}) ?? true
+				})
+			})
+
+			return allNewItemsHaveMatch
+		})
 	}
 }

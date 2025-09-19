@@ -2095,11 +2095,11 @@ export class BookingPageComponent {
 				category: null,
 				variations: []
 			},
-			orderItems: allOrderItems
+			orderItems: allOrderItems,
+			orderItemVariations: []
 		}
 
-		// Rabattvariation am ende einfügen
-		if (allOrderItems.length > 0 && totalRabattBetrag !== 0) {
+		if (totalRabattBetrag !== 0) {
 			let menuRabattVariation: OrderItemVariation = {
 				uuid: crypto.randomUUID(),
 				count: 1,
@@ -2113,31 +2113,18 @@ export class BookingPageComponent {
 				]
 			}
 
-			allOrderItems[allOrderItems.length - 1].orderItemVariations.push(
-				menuRabattVariation
-			)
+			orderItem.orderItemVariations.push(menuRabattVariation)
 		}
 
-		// Prüfe ob ein ähnliches OfferOrderItem bereits existiert und merge, oder füge neu hinzu
-		let existingOfferItem = this.stagedItems
-			.getAllPickedItems()
-			.find(item => {
-				// Erst prüfen ob es dasselbe Angebot ist
-				if (item.offer?.uuid !== this.currentMenu.uuid) {
-					return false
-				}
-				
-				// Dann prüfen ob alle orderItems identisch sind
-				if (item.orderItems?.length !== allOrderItems.length) {
-					return false
-				}
-				
-				// Bidirektionale Prüfung: Jedes orderItem muss eine exakte 1:1 Entsprechung haben
-				return this.orderItemsAreIdentical(item.orderItems, allOrderItems, item.count)
-			})
+		// Prüfe ob ein ähnliches OrderItem bereits existiert und merge, oder füge neu hinzu
+		let existingOfferItem = this.stagedItems.sameOrderItemExists(orderItem)
 			
 		if (existingOfferItem) {
 			existingOfferItem.count += 1
+
+			for(let variation of existingOfferItem.orderItemVariations) {
+					variation.count += 1
+			}
 			
 			for (let i = 0; i < allOrderItems.length; i++) {
 				let newOrderItem = allOrderItems[i]

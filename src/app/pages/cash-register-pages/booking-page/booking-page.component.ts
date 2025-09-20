@@ -176,6 +176,7 @@ export class BookingPageComponent {
 											variationItems {
 												total
 												items {
+													id
 													uuid
 													name
 													additionalCost
@@ -221,6 +222,22 @@ export class BookingPageComponent {
 														uuid
 														name
 														price
+													}
+												}
+											}
+											variations {
+												total
+												items {
+													uuid
+													name
+													variationItems {
+														total
+														items {
+															id
+															uuid
+															name
+															additionalCost
+														}
 													}
 												}
 											}
@@ -957,20 +974,37 @@ export class BookingPageComponent {
 					}
 				}
 
-				// Je nach Modus in stagedItems oder tmpSpecialAllItemsHandler hinzufügen
 				if (this.isSpecialVariationMode) {
-					// Prüfe ob wir ein MenuOrderItem erstellen sollen
+					// Index- und maxSelections-Logik für Produkte mit Variationen
+					let firstIndex = this.currentIndex
+					if (this.currentMenu) {
+						this.currentMenu.offerItems[this.currentIndex].maxSelections -= 1
+						this.currentMaxSelections =
+							this.currentMenu.offerItems[this.currentIndex].maxSelections
+
+						// Wenn maxSelections = 0, dann nächsten Index suchen
+						if (this.currentMaxSelections === 0) {
+							let nextIndex = this.findNextAvailableCategory()
+							// Wenn gültiger Index gefunden wurde
+							if (nextIndex !== -1) {
+								this.currentIndex = nextIndex
+								this.changeSelectedMenuInventory(
+									this.currentMenu.offerItems[this.currentIndex],
+									this.currentMenu.offerItems[this.currentIndex].maxSelections,
+									this.currentIndex
+								)
+							}
+						}
+					}
+
 					if (this.lastClickedMenuItem) {
-						// Verwende confirmSpecials Logik - füge zu tmpSpecialAllItemsHandler hinzu und rufe confirmSpecials auf
 						this.tmpSpecialAllItemsHandler.pushNewItem(orderItem)
-						// Temporär currentSpecial und andere Werte für confirmSpecials setzen
 						const originalSpecial = this.currentSpecial
 						this.currentSpecial = this.lastClickedMenuItem.offer
 						this.confirmSpecials()
 						this.currentSpecial = originalSpecial
 					} else {
-						// Normal für tmpSpecialAllItemsHandler
-						this.tmpSpecialAllItemsHandler.pushNewItem(orderItem)
+						this.tmpSpecialAllItemsHandler.pushNewItem(orderItem, firstIndex)
 					}
 					this.isSpecialVariationPopupVisible = false
 				} else {
@@ -1428,8 +1462,6 @@ export class BookingPageComponent {
 				v.variationItems.every(
 					(item, index) =>
 						item.name === variation.variationItems[index].name
-					//&&
-					//item.uuid === variation.variationItems[index].uuid
 				)
 		)?.count
 
@@ -1462,6 +1494,14 @@ export class BookingPageComponent {
 			// Don't allow adding more variations than tmpAnzahl
 			if (totalCount >= this.tmpAnzahl) {
 				return true // Disable the button
+			}
+		}
+
+		if (this.currentMenu) {
+			if (totalCount >= this.currentMenu.offerItems[this.currentIndex].maxSelections) {
+				return true
+			} else {
+				return false
 			}
 		}
 
@@ -1648,27 +1688,6 @@ export class BookingPageComponent {
 	clickSpecialProduct(product: Product) {
 		if (product == null) return
 
-		let firstIndex = this.currentIndex
-		if (this.currentMenu) {
-			this.currentMenu.offerItems[this.currentIndex].maxSelections -= 1
-			this.currentMaxSelections =
-				this.currentMenu.offerItems[this.currentIndex].maxSelections
-
-			// Wenn maxSelections = 0, dann nächsten Index suchen
-			if (this.currentMaxSelections === 0) {
-				let nextIndex = this.findNextAvailableCategory()
-				// Wenn gültiger Index gefunden wurde
-				if (nextIndex !== -1) {
-					this.currentIndex = nextIndex
-					this.changeSelectedMenuInventory(
-						this.currentMenu.offerItems[this.currentIndex],
-						this.currentMenu.offerItems[this.currentIndex].maxSelections,
-						this.currentIndex
-					)
-				}
-			}
-		}
-
 		let newItem: OrderItem = {
 			uuid: product.uuid,
 			type: "product",
@@ -1679,7 +1698,26 @@ export class BookingPageComponent {
 		}
 
 		if (product.variations.length === 0) {
-			// Produkt ohne Variationen, direkt hinzufügen
+			let firstIndex = this.currentIndex
+			
+			if (this.currentMenu) {
+				this.currentMenu.offerItems[this.currentIndex].maxSelections -= 1
+				this.currentMaxSelections =
+					this.currentMenu.offerItems[this.currentIndex].maxSelections
+
+				if (this.currentMaxSelections === 0) {
+					let nextIndex = this.findNextAvailableCategory()
+					if (nextIndex !== -1) {
+						this.currentIndex = nextIndex
+						this.changeSelectedMenuInventory(
+							this.currentMenu.offerItems[this.currentIndex],
+							this.currentMenu.offerItems[this.currentIndex].maxSelections,
+							this.currentIndex
+						)
+					}
+				}
+			}
+			
 			if (this.tmpSpecialAllItemsHandler.includes(newItem)) {
 				let existingItem = this.tmpSpecialAllItemsHandler.getItem(
 					newItem.product.id,
@@ -1772,21 +1810,16 @@ export class BookingPageComponent {
 	}
 
 	editSpecial(item: OrderItem) {
-		// Item hat Variationen - öffne Variations-Popup für Bearbeitung
 		this.selectedItem = item
-		this.tmpSelectedItem = JSON.parse(JSON.stringify(item)) // Deep copy für Bearbeitung
-		this.minusUsed = false // Edit-Modus, nicht Minus-Modus
-		this.lastClickedItem = item.product // Setze das Produkt für sendVariation
+		this.tmpSelectedItem = JSON.parse(JSON.stringify(item))
+		this.minusUsed = false
+		this.lastClickedItem = item.product
 
-		// Initialisiere tmpPickedVariationResource mit den bestehenden Variationen
 		this.tmpPickedVariationResource = []
 		this.tmpCountVariations = 0
 
-		// Lade die bestehenden Variationen des Items
-		// Verwende die bestehenden Variationen für das Popup
 		for (let orderItemVariation of item.orderItemVariations) {
 			for (let variationItem of orderItemVariation.variationItems) {
-				// Überspringe Rabatt-Items
 				if (variationItem.name === "Rabatt") {
 					continue
 				}
@@ -2117,7 +2150,7 @@ export class BookingPageComponent {
 		}
 
 		// Prüfe ob ein ähnliches OrderItem bereits existiert und merge, oder füge neu hinzu
-		let existingOfferItem = this.stagedItems.sameOrderItemExists(orderItem)
+		let existingOfferItem = this.stagedItems.sameOfferOrderItemExists(orderItem)
 			
 		if (existingOfferItem) {
 			existingOfferItem.count += 1
@@ -2145,6 +2178,8 @@ export class BookingPageComponent {
 		} else {
 			this.stagedItems.pushNewItem(orderItem)
 		}
+
+		console.log("Order Item Staging:", orderItem);
 
 		// Cleanup
 		this.isMenuePopupVisible = false

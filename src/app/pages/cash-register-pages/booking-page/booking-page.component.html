@@ -631,18 +631,25 @@
 									<span>
 										{{ item.count }}x {{ item.product.name }}
 
+									@for (
+										variation of item.orderItemVariations;
+										track variation.uuid
+									) {
+										{{ variation.count }}x
 										@for (
-											variation of item.orderItemVariations;
-											track variation.uuid
+											variationItem of variation.variationItems;
+											track variationItem.uuid
 										) {
-											{{ variation.count }}x
-											@for (
-												variationItem of variation.variationItems;
-												track variationItem.uuid
-											) {
-												{{ variationItem.name }}
-											}
+											{{ variationItem.name }}
 										}
+										<button
+												mat-mini-fab
+												(click)="editSpecial(item)"
+												color="accent"
+											>
+												<mat-icon>edit</mat-icon>
+										</button>
+									}
 									</span>
 								} @else {
 									<button
@@ -818,10 +825,8 @@
 								>
 									<mat-icon>remove</mat-icon>
 								</button>
-								<b>
 									{{ variation.count }}x
 									{{ variation.display }}
-								</b>
 								<button
 									mat-mini-fab
 									[disabled]="checkForPlusaddVariation(variation)"

@@ -371,7 +371,7 @@ export class AllItemHandler {
 		)
 	}
 
-	sameOrderItemExists(item: OrderItem): OrderItem {
+	sameOfferOrderItemExists(item: OrderItem): OrderItem {
 		if (item.type !== 'menu' && item.type !== 'special') {
 			return undefined
 		}
@@ -383,7 +383,7 @@ export class AllItemHandler {
 				return false
 			}
 
-			const allNewItemsHaveMatch = item.orderItems.every(newOrderItem => {
+			return item.orderItems.every(newOrderItem => {
 				return existingItem.orderItems.some(existingOrderItem => {
 					if (existingOrderItem.product.id !== newOrderItem.product.id) {
 						return false
@@ -421,8 +421,6 @@ export class AllItemHandler {
 					}) ?? true
 				})
 			})
-
-			return allNewItemsHaveMatch
 		})
 	}
 }

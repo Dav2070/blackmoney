@@ -27,6 +27,7 @@
 
 <app-add-room-dialog
 	#addRoomDialog
-	[nameError]="newRoomNameError"
+	[loading]="addRoomDialogLoading"
+	[nameError]="addRoomDialogNameError"
 	(primaryButtonClick)="addRoomDialogPrimaryButtonClick($event)"
 ></app-add-room-dialog>

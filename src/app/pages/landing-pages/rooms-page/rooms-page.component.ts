@@ -6,7 +6,12 @@ import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { AddRoomDialogComponent } from "src/app/dialogs/add-room-dialog/add-room-dialog.component"
 import { Room } from "src/app/models/Room"
-import { convertRestaurantResourceToRestaurant } from "src/app/utils"
+import {
+	convertRestaurantResourceToRestaurant,
+	convertRoomResourceToRoom,
+	getGraphQLErrorCodes
+} from "src/app/utils"
+import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
 	templateUrl: "./rooms-page.component.html",
@@ -15,14 +20,16 @@ import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 })
 export class RoomsPageComponent {
 	locale = this.localizationService.locale.roomsPage
+	errorsLocale = this.localizationService.locale.errors
 	faFolder = faFolder
 
 	@ViewChild("addRoomDialog") addRoomDialog!: AddRoomDialogComponent
+	addRoomDialogLoading: boolean = false
+	addRoomDialogNameError: string = ""
 
 	uuid: string = null
 	loading: boolean = true
 	rooms: Room[] = []
-	newRoomNameError = ""
 
 	constructor(
 		private dataService: DataService,
@@ -68,15 +75,51 @@ export class RoomsPageComponent {
 		this.addRoomDialog.show()
 	}
 
-	addRoomDialogPrimaryButtonClick(event: { name: string }) {
-		const room: Room = {
-			uuid: "",
-			name: event.name.trim(),
-			tables: []
+	async addRoomDialogPrimaryButtonClick(event: { name: string }) {
+		const name = event.name.trim()
+
+		if (name.length === 0) {
+			this.addRoomDialogNameError = this.errorsLocale.nameMissing
+			return
 		}
 
-		this.rooms.push(room)
-		this.addRoomDialog.hide()
+		this.addRoomDialogLoading = true
+
+		const createRoomResponse = await this.apiService.createRoom(
+			`
+				uuid
+				name
+			`,
+			{ name: event.name.trim(), restaurantUuid: this.uuid }
+		)
+
+		this.addRoomDialogLoading = false
+
+		if (createRoomResponse.data?.createRoom != null) {
+			const responseData = createRoomResponse.data.createRoom
+
+			this.rooms.push(convertRoomResourceToRoom(responseData))
+
+			this.addRoomDialog.hide()
+		} else {
+			const errors = getGraphQLErrorCodes(createRoomResponse)
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.addRoomDialogNameError = this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.addRoomDialogNameError = this.errorsLocale.nameTooLong
+						break
+					default:
+						this.addRoomDialogNameError =
+							this.errorsLocale.unexpectedError
+						break
+				}
+			}
+		}
 	}
 
 	navigateBack() {

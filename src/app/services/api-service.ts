@@ -404,6 +404,31 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createRoom(
+		queryData: string,
+		variables: { restaurantUuid: string; name: string }
+	) {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createRoom: RoomResource }>({
+				mutation: gql`
+					mutation CreateRoom(
+						$restaurantUuid: String!
+						$name: String!
+					) {
+						createRoom(
+							restaurantUuid: $restaurantUuid
+							name: $name
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async listCategories(
 		queryData: string
 	): Promise<ApolloQueryResult<{ listCategories: List<CategoryResource> }>> {

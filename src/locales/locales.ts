@@ -61,9 +61,7 @@ export const de = {
 		testPrintError: "Test-Druck fehlgeschlagen: {errorMessage}"
 	},
 	roomsPage: {
-		headline: "Deine Räume",
-		addTable: "Tische",
-		delete: "löschen"
+		headline: "Deine Räume"
 	},
 	roomPage: {
 		add: "+",

@@ -1,14 +1,7 @@
-import {
-	Component,
-	Input,
-	ElementRef,
-	EventEmitter,
-	Output,
-	ViewChild
-} from "@angular/core"
+import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
 import { faPen } from "@fortawesome/pro-regular-svg-icons"
-import { Dialog } from "dav-ui-components"
+import { AddTableDialogComponent } from "src/app/dialogs/add-table-dialog/add-table-dialog.component"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -22,12 +15,12 @@ import { convertRoomResourceToRoom } from "src/app/utils"
 	standalone: false
 })
 export class RoomPageComponent {
-	tablesLocale = this.localizationService.locale.roomPage
-	actionsLocale = this.localizationService.locale.actions
-	locale = this.localizationService.locale.dialogs.addTableDialog
+	locale = this.localizationService.locale.roomPage
 	faPen = faPen
 	restaurantUuid: string = null
 	roomUuid: string = null
+
+	@ViewChild("addTableDialog") addTableDialog!: AddTableDialogComponent
 
 	room: Room = null
 	tables: Table[] = []
@@ -35,15 +28,6 @@ export class RoomPageComponent {
 	loading: boolean = true
 	showAllForm = false
 	bulkMode = false
-
-	@Input() line1: number = this.getNextTableNumber()
-	@Input() line1Error: string = ""
-	@Input() line2: number = 4
-	@Input() line3: number = 1
-	@Input() line2Error: string = ""
-	@Output() clearErrors = new EventEmitter()
-	@ViewChild("dialog") dialog: ElementRef<Dialog>
-	visible: boolean = false
 
 	constructor(
 		private dataService: DataService,
@@ -88,30 +72,28 @@ export class RoomPageComponent {
 		}
 	}
 
-	tableIdNumberfieldChange(event: Event) {
-		this.line1 = (event as CustomEvent).detail.value
-		this.clearErrors.emit()
+	showAddTableDialog() {
+		this.addTableDialog.show()
 	}
 
-	chairNumberfieldChange(event: Event) {
-		this.line2 = (event as CustomEvent).detail.value
-		this.clearErrors.emit()
+	addTableDialogPrimaryButtonClick(event: {
+		tableNumber: number
+		seats: number
+		numberOfTables: number
+		bulkMode: boolean
+	}) {
+		console.log(event)
 	}
 
-	tableNumberfieldChange(event: Event) {
-		this.line3 = (event as CustomEvent).detail.value
-		this.clearErrors.emit()
-	}
-
-	addTable() {
-		const table: Table = {
-			uuid: "",
-			name: this.line1, // Tischnummer
-			seats: this.line2 // Anzahl Stühle
-		}
-		this.tables.push(table)
-		this.cancelEdit()
-	}
+	// addTable() {
+	// 	const table: Table = {
+	// 		uuid: "",
+	// 		name: this.line1, // Tischnummer
+	// 		seats: this.line2 // Anzahl Stühle
+	// 	}
+	// 	this.tables.push(table)
+	// 	this.cancelEdit()
+	// }
 
 	// Entfern Einen Tisch
 	removeTable(tableToRemove: Table) {
@@ -125,78 +107,65 @@ export class RoomPageComponent {
 	}
 
 	// Öffnet das Dialogformular zum Bearbeiten
-	openEditForm(table: Table) {
-		this.selectedTable = table
-		// Formular mit bestehenden Werten füllen
-		this.line1 = table.name
-		this.line2 = table.seats
-		this.showAllForm = false
-		this.visible = true
-	}
+	// openEditForm(table: Table) {
+	// 	this.selectedTable = table
+	// 	// Formular mit bestehenden Werten füllen
+	// 	this.line1 = table.name
+	// 	this.line2 = table.seats
+	// 	this.showAllForm = false
+	// 	this.visible = true
+	// }
 
-	updateTable() {
-		if (!this.selectedTable) {
-			return
-		}
-		this.selectedTable.name = this.line1
-		this.selectedTable.seats = this.line2
-		this.cancelEdit()
-	}
+	// updateTable() {
+	// 	if (!this.selectedTable) {
+	// 		return
+	// 	}
+	// 	this.selectedTable.name = this.line1
+	// 	this.selectedTable.seats = this.line2
+	// 	this.cancelEdit()
+	// }
 
-	submitTable() {
-		if (this.selectedTable) {
-			this.updateTable()
-		} else {
-			this.addTable()
-		}
-	}
+	// submitTable() {
+	// 	if (this.selectedTable) {
+	// 		this.updateTable()
+	// 	} else {
+	// 		this.addTable()
+	// 	}
+	// }
 
-	cancelEdit() {
-		this.line1 = this.getNextTableNumber()
-		this.showAllForm = true
-		this.visible = false
-		this.line2 = 4
-		this.line3 = 1
-	}
+	// cancelEdit() {
+	// 	this.line1 = this.getNextTableNumber()
+	// 	this.showAllForm = true
+	// 	this.visible = false
+	// 	this.line2 = 4
+	// 	this.line3 = 1
+	// }
 
-	dupplicateTable(table: Table) {
-		this.selectedTable = table
-		this.line1 = this.getNextTableNumber()
-		this.line2 = table.seats
-		this.addTable()
-	}
+	// dupplicateTable(table: Table) {
+	// 	this.selectedTable = table
+	// 	this.line1 = this.getNextTableNumber()
+	// 	this.line2 = table.seats
+	// 	this.addTable()
+	// }
 
-	show() {
-		this.visible = true
-	}
+	// multi() {
+	// 	this.addMuliTable(this.line1, this.line3)
+	// }
 
-	hide() {
-		this.visible = false
-	}
-
-	toggleBulkMode(event: Event): void {
-		const isChecked = (event.target as HTMLInputElement).checked
-		this.bulkMode = isChecked
-	}
-
-	multi() {
-		this.addMuliTable(this.line1, this.line3)
-	}
-
-	addMuliTable(Anfang: number, Tischanzahl: number) {
-		const start = Number(Anfang)
-		const count = Number(Tischanzahl)
-		const Anzahl = start + count
-		for (let i = Anfang; i < Anzahl; i++) {
-			let table: Table = {
-				uuid: "",
-				name: this.getNextTableNumber(),
-				seats: this.line2
-			}
-			this.tables.push(table)
-		}
-		this.cancelEdit()
-	}
+	// addMuliTable(Anfang: number, Tischanzahl: number) {
+	// 	const start = Number(Anfang)
+	// 	const count = Number(Tischanzahl)
+	// 	const Anzahl = start + count
+	// 	for (let i = Anfang; i < Anzahl; i++) {
+	// 		let table: Table = {
+	// 			uuid: "",
+	// 			name: this.getNextTableNumber(),
+	// 			seats: this.line2
+	// 		}
+	// 		this.tables.push(table)
+	// 	}
+	// 	this.cancelEdit()
+	// }
 
 	showTableCombinationDialog() {
 		const currentUrl = this.router.url
@@ -204,16 +173,16 @@ export class RoomPageComponent {
 	}
 
 	// gibt die nächste (höhste) freie Tischnummer
-	getNextTableNumber() {
-		let max = 0
-		for (const t of this.tables) {
-			const num = t.name
-			if (!isNaN(num) && num > max) {
-				max = num
-			}
-		}
-		return max + 1
-	}
+	// getNextTableNumber() {
+	// 	let max = 0
+	// 	for (const t of this.tables) {
+	// 		const num = t.name
+	// 		if (!isNaN(num) && num > max) {
+	// 			max = num
+	// 		}
+	// 	}
+	// 	return max + 1
+	// }
 
 	navigateBack() {
 		this.router.navigate([

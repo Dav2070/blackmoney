@@ -119,10 +119,10 @@ export const de = {
 		},
 		addTableDialog: {
 			headline: "Tisch hinzufügen",
-			line1: "Tischnummer",
-			line2: "Sitzplätze",
-			line3: "Anzahl Tische",
-			line4: "Anfangs Tischnummer"
+			tableNumber: "Tischnummer",
+			seats: "Sitzplätze",
+			numberOfTables: "Anzahl Tische",
+			startTableName: "Anfangstischnummer"
 		},
 		addTableCombinationDialog: {
 			headline: "Tisch Kombination erstellen",

@@ -49,6 +49,7 @@ import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-em
 import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
 import { AddRoomDialogComponent } from "./dialogs/add-room-dialog/add-room-dialog.component"
+import { AddTableDialogComponent } from "./dialogs/add-table-dialog/add-table-dialog.component"
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
 
 // Pages
@@ -110,6 +111,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		AddPrinterDialogComponent,
 		EditPrinterDialogComponent,
 		AddRoomDialogComponent,
+		AddTableDialogComponent,
 		SelectTableDialogComponent,
 		// Pages
 		LandingPageComponent,

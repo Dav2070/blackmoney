@@ -21,13 +21,13 @@ export class AddRoomDialogComponent {
 	locale = this.localizationService.locale.dialogs.addRoomDialog
 	actionsLocale = this.localizationService.locale.actions
 
+	visible: boolean = false
 	name: string = ""
 
 	@Input() nameError: string = ""
 	@Input() loading: boolean = false
 	@Output() primaryButtonClick = new EventEmitter()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
-	visible: boolean = false
 
 	constructor(
 		private localizationService: LocalizationService,

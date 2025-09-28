@@ -407,7 +407,7 @@ export class ApiService {
 	async createRoom(
 		queryData: string,
 		variables: { restaurantUuid: string; name: string }
-	) {
+	): Promise<MutationResult<{ createRoom: RoomResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createRoom: RoomResource }>({
 				mutation: gql`
@@ -417,6 +417,31 @@ export class ApiService {
 					) {
 						createRoom(
 							restaurantUuid: $restaurantUuid
+							name: $name
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updateRoom(
+		queryData: string,
+		variables: { uuid: string; name: string }
+	): Promise<MutationResult<{ updateRoom: RoomResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateRoom: RoomResource }>({
+				mutation: gql`
+					mutation UpdateRoom(
+						$uuid: String!
+						$name: String
+					) {
+						updateRoom(
+							uuid: $uuid
 							name: $name
 						) {
 							${queryData}

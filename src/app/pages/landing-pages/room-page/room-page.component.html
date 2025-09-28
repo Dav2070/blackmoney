@@ -3,8 +3,10 @@
 		<dav-header
 			backButtonVisible
 			addButtonVisible
+			editButtonVisible
 			(backButtonClick)="navigateBack()"
 			(addButtonClick)="showAddTableDialog()"
+			(editButtonClick)="showEditRoomDialog()"
 		>
 			{{ room?.name }}
 		</dav-header>
@@ -48,6 +50,14 @@
 		}
 	</div>
 </div>
+
+<app-edit-room-dialog
+	#editRoomDialog
+	[name]="editRoomDialogName"
+	[nameError]="editRoomDialogNameError"
+	[loading]="editRoomDialogLoading"
+	(primaryButtonClick)="editRoomDialogPrimaryButtonClick($event)"
+></app-edit-room-dialog>
 
 <app-add-table-dialog
 	#addTableDialog

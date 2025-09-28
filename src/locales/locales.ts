@@ -115,6 +115,10 @@ export const de = {
 			headline: "Raum hinzufügen",
 			name: "Name"
 		},
+		editRoomDialog: {
+			headline: "Raum bearbeiten",
+			name: "Name"
+		},
 		addTableDialog: {
 			headline: "Tisch hinzufügen",
 			tableNumber: "Tischnummer",

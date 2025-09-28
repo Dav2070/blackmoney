@@ -1,13 +1,15 @@
 import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
 import { faPen } from "@fortawesome/pro-regular-svg-icons"
+import { EditRoomDialogComponent } from "src/app/dialogs/edit-room-dialog/edit-room-dialog.component"
 import { AddTableDialogComponent } from "src/app/dialogs/add-table-dialog/add-table-dialog.component"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
-import { convertRoomResourceToRoom } from "src/app/utils"
+import { convertRoomResourceToRoom, getGraphQLErrorCodes } from "src/app/utils"
+import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
 	templateUrl: "./room-page.component.html",
@@ -16,9 +18,15 @@ import { convertRoomResourceToRoom } from "src/app/utils"
 })
 export class RoomPageComponent {
 	locale = this.localizationService.locale.roomPage
+	errorsLocale = this.localizationService.locale.errors
 	faPen = faPen
 	restaurantUuid: string = null
 	roomUuid: string = null
+
+	@ViewChild("editRoomDialog") editRoomDialog!: EditRoomDialogComponent
+	editRoomDialogLoading: boolean = false
+	editRoomDialogName: string = ""
+	editRoomDialogNameError: string = ""
 
 	@ViewChild("addTableDialog") addTableDialog!: AddTableDialogComponent
 
@@ -69,6 +77,55 @@ export class RoomPageComponent {
 
 		for (const table of retrieveRoomResponseData.tables) {
 			this.tables.push(table)
+		}
+	}
+
+	showEditRoomDialog() {
+		this.editRoomDialogName = this.room.name
+		this.editRoomDialogNameError = ""
+		this.editRoomDialogLoading = false
+		this.editRoomDialog.show()
+	}
+
+	async editRoomDialogPrimaryButtonClick(event: { name: string }) {
+		const name = event.name.trim()
+
+		if (name.length === 0) {
+			this.editRoomDialogNameError = this.errorsLocale.nameMissing
+			return
+		}
+
+		this.editRoomDialogLoading = true
+
+		const updateRoomResponse = await this.apiService.updateRoom(`name`, {
+			uuid: this.roomUuid,
+			name
+		})
+
+		this.editRoomDialogLoading = false
+
+		if (updateRoomResponse.data?.updateRoom != null) {
+			const responseData = updateRoomResponse.data.updateRoom
+			this.room.name = responseData.name
+			this.editRoomDialog.hide()
+		} else {
+			const errors = getGraphQLErrorCodes(updateRoomResponse)
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.editRoomDialogNameError = this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.editRoomDialogNameError = this.errorsLocale.nameTooLong
+						break
+					default:
+						this.editRoomDialogNameError =
+							this.errorsLocale.unexpectedError
+						break
+				}
+			}
 		}
 	}
 

@@ -7,6 +7,7 @@
 		@if (table != null) {
 			<app-orders-header
 				[headline]="'Tisch ' + table.name.toString()"
+				(backButtonClick)="navigateToBookingPage($event)"
 			></app-orders-header>
 		}
 

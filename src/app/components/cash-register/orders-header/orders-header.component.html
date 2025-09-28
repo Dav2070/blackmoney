@@ -2,7 +2,7 @@
 	<dav-icon-button
 		size="sm"
 		href="/dashboard"
-		(click)="backButtonClick.emit()"
+		(click)="backButtonClick.emit($event)"
 	>
 		<fa-icon [icon]="faArrowLeft"></fa-icon
 	></dav-icon-button>

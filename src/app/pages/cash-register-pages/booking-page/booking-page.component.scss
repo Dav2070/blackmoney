@@ -75,19 +75,6 @@
 	border-radius: 20px;
 }
 
-.table-info-container {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	margin-bottom: 12px;
-
-	p {
-		color: var(--dav-color-on-surface);
-		margin: 0;
-		font-size: 18px;
-	}
-}
-
 .footer {
 	grid-column: 1 / span 3;
 	grid-row: 3;

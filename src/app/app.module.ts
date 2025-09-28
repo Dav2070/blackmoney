@@ -38,6 +38,7 @@ import { AppComponent } from "./app.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
+import { OrdersHeaderComponent } from "./components/cash-register/orders-header/orders-header.component"
 import { OrderItemCardComponent } from "./components/cash-register/order-item-card/order-item-card.component"
 import { OfferOrderItemCardComponent } from "./components/cash-register/offer-order-item-card/offer-order-item-card.component"
 
@@ -102,6 +103,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		AppComponent,
 		SettingsBarComponent,
 		HeaderComponent,
+		OrdersHeaderComponent,
 		OrderItemCardComponent,
 		OfferOrderItemCardComponent,
 		// Dialog

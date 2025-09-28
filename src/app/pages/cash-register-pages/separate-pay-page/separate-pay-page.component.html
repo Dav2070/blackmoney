@@ -4,11 +4,14 @@
 	</div>
 
 	<div class="orders-container">
+		@if (table != null) {
+			<app-orders-header
+				[headline]="'Tisch ' + table.name.toString()"
+			></app-orders-header>
+		}
+
 		<div class="items">
 			<div>
-				<mat-card>
-					<mat-card-content>Tisch {{ table?.name }}</mat-card-content>
-				</mat-card>
 				@for (item of bookedItems.getOrderItems(); track item.uuid) {
 					<mat-card
 						style="cursor: pointer"

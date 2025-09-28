@@ -1,0 +1,12 @@
+.orders-header-container {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 12px;
+
+	p {
+		color: var(--dav-color-on-surface);
+		margin: 0;
+		font-size: 18px;
+	}
+}

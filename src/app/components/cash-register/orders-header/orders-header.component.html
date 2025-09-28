@@ -1,0 +1,15 @@
+<div class="orders-header-container">
+	<dav-icon-button
+		size="sm"
+		href="/dashboard"
+		(click)="backButtonClick.emit()"
+	>
+		<fa-icon [icon]="faArrowLeft"></fa-icon
+	></dav-icon-button>
+
+	<p>
+		{{ headline }}
+	</p>
+
+	<ng-content></ng-content>
+</div>

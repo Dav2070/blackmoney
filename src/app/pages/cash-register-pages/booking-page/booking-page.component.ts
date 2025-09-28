@@ -2,7 +2,6 @@ import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
 import {
-	faArrowLeft,
 	faArrowRightArrowLeft,
 	faPaperPlaneTop,
 	faCreditCard
@@ -51,7 +50,6 @@ interface AddProductsInputVariation {
 })
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
-	faArrowLeft = faArrowLeft
 	faArrowRightArrowLeft = faArrowRightArrowLeft
 	faPaperPlaneTop = faPaperPlaneTop
 	faCreditCard = faCreditCard

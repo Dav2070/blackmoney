@@ -95,11 +95,13 @@ export class SeparatePayPageComponent {
 	}
 
 	calculateTotalBills() {
-		// let tmpTotal = 0
-		// for (let bill of this.bills) {
-		// 	tmpTotal += bill.calculatTotal()
-		// }
-		// return tmpTotal.toFixed(2) + "€"
+		let tmpTotal = 0
+
+		for (let bill of this.bills) {
+			tmpTotal += bill.calculateTotal()
+		}
+
+		return tmpTotal.toFixed(2).replace(".", ",") + " €"
 	}
 
 	setActiveBill(bill: AllItemHandler) {

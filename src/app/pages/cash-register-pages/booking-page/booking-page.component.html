@@ -8,6 +8,7 @@
 			@if (room != null && table != null) {
 				<app-orders-header
 					[headline]="`${locale.tableHeadline.replace('{name}', table.name.toString())} — ${room.name}`"
+					[showBackButton]="true"
 					(backButtonClick)="navigateToDashboard($event)"
 				>
 					<dav-icon-button size="sm" (click)="selectTableButtonClick()">

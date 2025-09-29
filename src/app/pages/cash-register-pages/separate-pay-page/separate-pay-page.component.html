@@ -8,6 +8,7 @@
 			@if (table != null) {
 				<app-orders-header
 					[headline]="'Tisch ' + table.name.toString()"
+					[showBackButton]="true"
 					(backButtonClick)="navigateToBookingPage($event)"
 				></app-orders-header>
 			}
@@ -99,179 +100,62 @@
 		</div>
 	</div>
 
-	<div class="bills-container">
-		<div class="items">
-			<div>
-				@for (bill of bills; track bill; let index = $index) {
-					<mat-card
-						(click)="setActiveBill(bill)"
-						style="cursor: pointer"
-						[style.background-color]="
-							activeBill === bill ? 'rgba(27, 167, 251, 255)' : 'white'
-						"
-					>
-						<mat-card-content>Rechnung {{ index + 1 }}</mat-card-content>
-					</mat-card>
-					@for (item of bill.getOrderItems(); track item) {
-						<mat-card
-							style="cursor: pointer"
-							(click)="setActiveBill(bill)"
-							(click)="transferItem(item, activeBill, bookedItems)"
-						>
-							<mat-card-content class="card-content">
-								@if (item.orderItemVariations.length > 0) {
-									<span class="item-price">
-										{{
-											(
-												item.count *
-												(item.product.price / 100)
-											).toFixed(2)
-										}}
-										€
-									</span>
-								} @else {
-									<span class="total-price">
-										{{ calculateTotalPriceOfOrderItem(item) }}€
-									</span>
-								}
-								<strong>
-									{{ item.count }} x
-									{{ item.product.name }}
-									{{ (item.product.price / 100).toFixed(2) }} €
-								</strong>
-							</mat-card-content>
-							@if (item.orderItemVariations) {
-								@for (
-									variation of item.orderItemVariations;
-									track variation
-								) {
-									<mat-card-content>
-										{{ variation.count }} x
-										@for (
-											variationItem of variation.variationItems;
-											track variationItem.uuid
-										) {
-											{{ variationItem.name }}
-											@if (variationItem.additionalCost > 0) {
-												<span class="variationItem-price">
-													+
-													{{
-														(
-															(variation.count *
-																variationItem.additionalCost) /
-															100
-														).toFixed(2)
-													}}€</span
-												>
-											}
-											<br />
-										}
-									</mat-card-content>
-								}
-							}
-							<mat-card-content>
-								#{{ item.product.id }}
+	<div class="bills-price-container">
+		<div class="bills-container">
+			<app-orders-header headline="Rechnungen"></app-orders-header>
 
-								@if (item.orderItemVariations.length > 0) {
-									<span class="total-price">
-										{{ calculateTotalPriceOfOrderItem(item) }}€
-									</span>
-								}
-							</mat-card-content>
-						</mat-card>
-					}
-					@for (menuItem of bill.getMenuOrderItems(); track menuItem) {
-						<mat-card
-							style="border-left: 4px solid #ff9800; opacity: 0.7"
+			<div class="bills-list-container">
+				@for (bill of bills; let index = $index; track index) {
+					<div>
+						<button
+							class="bill-select-button"
+							[class.active]="bill === activeBill"
 							(click)="setActiveBill(bill)"
 						>
-							<mat-card-content class="card-content">
-								<span class="total-price">
-									{{ calculateTotalPriceOfOfferOrderItem(menuItem) }}€
-								</span>
-								<strong>
-									{{ menuItem.count }} x
-									{{ menuItem.product.name }}
-									{{ (menuItem.product.price / 100).toFixed(2) }} €
-								</strong>
-								<div
-									style="
-										font-size: 0.8em;
-										color: #666;
-										margin-top: 5px;
-									"
-								>
-									Menü/Special - Kann nicht einzeln übertragen werden
-								</div>
-							</mat-card-content>
-							@if (menuItem.orderItems) {
-								@for (
-									orderItem of menuItem.orderItems;
-									track orderItem.uuid
-								) {
-									<mat-card-content style="margin-left: 20px">
-										{{ orderItem.count }} x
-										{{ orderItem.product.name }}
-										@if (orderItem.orderItemVariations.length > 0) {
-											@for (
-												variation of orderItem.orderItemVariations;
-												track variation
-											) {
-												<div style="margin-left: 20px">
-													{{ variation.count }}x
-													@for (
-														variationItem of variation.variationItems;
-														track variationItem.uuid
-													) {
-														{{ variationItem.name }}
-														@if (
-															variationItem.additionalCost > 0
-														) {
-															<span class="variationItem-price">
-																+
-																{{
-																	(
-																		(variation.count *
-																			variationItem.additionalCost) /
-																		100
-																	).toFixed(2)
-																}}€</span
-															>
-														}
-														@if (
-															variationItem.additionalCost < 0
-														) {
-															<span class="variationItem-price">
-																{{
-																	(
-																		(variation.count *
-																			variationItem.additionalCost) /
-																		100
-																	).toFixed(2)
-																}}€</span
-															>
-														}
-													}
-												</div>
-											}
-										}
-									</mat-card-content>
-								}
+							{{ "Rechnung " + (index + 1) }}
+						</button>
+
+						<ul class="order-items-container">
+							@if (
+								!ordersLoading &&
+								bill.getOrderItems().length === 0 &&
+								bill.getMenuOrderItems().length === 0
+							) {
+								<p class="no-products-message">
+									Keine Produkte ausgewählt
+								</p>
 							}
-							<mat-card-content>
-								#{{ menuItem.offer.uuid }}
-							</mat-card-content>
-						</mat-card>
-					}
+
+							@for (
+								orderItem of bill.getOrderItems();
+								track orderItem.uuid
+							) {
+								<app-order-item-card
+									[orderItem]="orderItem"
+									(click)="
+										transferItem(orderItem, activeBill, bookedItems)
+									"
+								></app-order-item-card>
+							}
+						</ul>
+
+						<ul class="order-items-container">
+							@for (
+								menuOrderItem of bill.getMenuOrderItems();
+								track menuOrderItem.uuid
+							) {
+								<app-offer-order-item-card
+									[offerOrderItem]="menuOrderItem"
+								></app-offer-order-item-card>
+							}
+						</ul>
+					</div>
 				}
 			</div>
 		</div>
-		<div>
-			<mat-card class="price">
-				<mat-card-content>
-					{{ calculateTotalBills() }}
-				</mat-card-content>
-			</mat-card>
+
+		<div class="price-container">
+			<p>{{ calculateTotalBills() }}</p>
 		</div>
 	</div>
 

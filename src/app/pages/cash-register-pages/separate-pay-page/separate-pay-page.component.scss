@@ -68,12 +68,35 @@
 	flex-direction: column;
 }
 
-.bills-container {
-	flex: 4;
+.bills-price-container {
+	grid-column: 3;
+	grid-row: 2;
+	display: grid;
+	grid-template-rows: 1fr auto;
+	overflow: hidden;
+	margin: 0 16px;
+}
+
+.bills-list-container {
 	display: flex;
 	flex-direction: column;
-	height: 100%;
-	min-height: 100%;
+	gap: 12px;
+}
+
+.bill-select-button {
+	background-color: var(--dav-color-surface);
+	color: var(--dav-color-on-surface);
+	border: none;
+	margin-bottom: 12px;
+	padding: 0;
+	font-size: 18px;
+	font-family: var(--dav-font);
+	cursor: pointer;
+	transition: 200ms;
+}
+
+.bill-select-button.active {
+	text-decoration: underline;
 }
 
 .footer {

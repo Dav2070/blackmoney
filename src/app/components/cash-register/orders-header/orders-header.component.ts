@@ -11,5 +11,6 @@ export class OrdersHeaderComponent {
 	faArrowLeft = faArrowLeft
 
 	@Input() headline: string = ""
+	@Input() showBackButton: boolean = false
 	@Output() backButtonClick = new EventEmitter()
 }

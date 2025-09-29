@@ -22,6 +22,28 @@
 	padding-bottom: 8px;
 }
 
+.order-items-container {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 0;
+	margin: 0;
+}
+
+.order-item-card-skeleton {
+	width: 100%;
+	height: 55px;
+	border-radius: 12px;
+}
+
+.no-products-message {
+	color: var(--dav-color-on-surface);
+	margin: 0;
+	font-size: 14px;
+	font-style: italic;
+	font-weight: 200;
+}
+
 .actions-container {
 	flex: 5;
 	display: flex;
@@ -77,11 +99,6 @@
 	justify-content: center;
 }
 
-.total-price {
-	float: right;
-	font-weight: bold;
-}
-
 .popup-overlay {
 	display: none;
 	position: fixed;
@@ -125,10 +142,6 @@
 }
 
 .item-price {
-	float: right;
-}
-
-.variationItem-price {
 	float: right;
 }
 

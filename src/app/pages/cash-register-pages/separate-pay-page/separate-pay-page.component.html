@@ -11,151 +11,31 @@
 			></app-orders-header>
 		}
 
-		<div class="items">
-			<div>
-				@for (item of bookedItems.getOrderItems(); track item.uuid) {
-					<mat-card
-						style="cursor: pointer"
-						(click)="transferItem(item, bookedItems, activeBill)"
-					>
-						<mat-card-content class="card-content">
-							@if (item.orderItemVariations.length > 0) {
-								<span class="item-price">
-									{{
-										(item.count * (item.product.price / 100)).toFixed(
-											2
-										)
-									}}
-									€
-								</span>
-							} @else {
-								<span class="total-price">
-									{{ calculateTotalPriceOfOrderItem(item) }}€
-								</span>
-							}
-							<strong>
-								{{ item.count }} x
-								{{ item.product.name }}
-								{{ (item.product.price / 100).toFixed(2) }} €
-							</strong>
-						</mat-card-content>
-						@if (item.orderItemVariations) {
-							@for (
-								variation of item.orderItemVariations;
-								track variation
-							) {
-								<mat-card-content>
-									{{ variation.count }} x
-									@for (
-										variationItem of variation.variationItems;
-										track variationItem.uuid
-									) {
-										{{ variationItem.name }}
-										@if (variationItem.additionalCost > 0) {
-											<span class="variationItem-price">
-												+
-												{{
-													(
-														(variation.count *
-															variationItem.additionalCost) /
-														100
-													).toFixed(2)
-												}}€</span
-											>
-										}
-										<br />
-									}
-								</mat-card-content>
-							}
-						}
-						<mat-card-content>
-							#{{ item.product.id }}
+		<ul class="order-items-container">
+			@if (ordersLoading) {
+				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+			}
 
-							@if (item.orderItemVariations.length > 0) {
-								<span class="total-price">
-									{{ calculateTotalPriceOfOrderItem(item) }}€
-								</span>
-							}
-						</mat-card-content>
-					</mat-card>
-				}
-				@for (
-					menuItem of bookedItems.getMenuOrderItems();
-					track menuItem.uuid
-				) {
-					<mat-card style="border-left: 4px solid #ff9800; opacity: 0.7">
-						<mat-card-content class="card-content">
-							<span class="total-price">
-								{{ calculateTotalPriceOfOfferOrderItem(menuItem) }}€
-							</span>
-							<strong>
-								{{ menuItem.count }} x
-								{{ menuItem.product.name }}
-								{{ (menuItem.product.price / 100).toFixed(2) }} €
-							</strong>
-							<div
-								style="font-size: 0.8em; color: #666; margin-top: 5px"
-							>
-								Menü/Special - Kann nicht einzeln übertragen werden
-							</div>
-						</mat-card-content>
-						@if (menuItem.orderItems) {
-							@for (
-								orderItem of menuItem.orderItems;
-								track orderItem.uuid
-							) {
-								<mat-card-content style="margin-left: 20px">
-									{{ orderItem.count }} x
-									{{ orderItem.product.name }}
-									@if (orderItem.orderItemVariations.length > 0) {
-										@for (
-											variation of orderItem.orderItemVariations;
-											track variation
-										) {
-											<div style="margin-left: 20px">
-												{{ variation.count }}x
-												@for (
-													variationItem of variation.variationItems;
-													track variationItem.uuid
-												) {
-													{{ variationItem.name }}
-													@if (variationItem.additionalCost > 0) {
-														<span class="variationItem-price">
-															+
-															{{
-																(
-																	(variation.count *
-																		variationItem.additionalCost) /
-																	100
-																).toFixed(2)
-															}}€</span
-														>
-													}
-													@if (variationItem.additionalCost < 0) {
-														<span class="variationItem-price">
-															{{
-																(
-																	(variation.count *
-																		variationItem.additionalCost) /
-																	100
-																).toFixed(2)
-															}}€</span
-														>
-													}
-												}
-											</div>
-										}
-									}
-								</mat-card-content>
-							}
-						}
-						<mat-card-content>
-							#{{ menuItem.offer.uuid }}
-						</mat-card-content>
-					</mat-card>
-				}
-			</div>
-		</div>
+			@if (
+				!ordersLoading &&
+				bookedItems.getOrderItems().length === 0 &&
+				bookedItems.getMenuOrderItems().length === 0
+			) {
+				<p class="no-products-message">Keine Produkte ausgewählt</p>
+			}
+
+			@for (orderItem of bookedItems.getOrderItems(); track orderItem.uuid) {
+				<app-order-item-card
+					[orderItem]="orderItem"
+					(click)="transferItem(orderItem, bookedItems, activeBill)"
+				></app-order-item-card>
+			}
+		</ul>
+
 		<div>
 			<mat-card class="price">
 				<mat-card-content>

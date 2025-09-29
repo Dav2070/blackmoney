@@ -22,6 +22,7 @@ export class SeparatePayPageComponent {
 	table: Table = null
 	console: string
 	consoleActive: boolean = false
+	ordersLoading: boolean = true
 
 	orderUuid: string = ""
 	billUuid: string = ""
@@ -60,7 +61,8 @@ export class SeparatePayPageComponent {
 		)
 
 		this.orderUuid = order.uuid
-		this.billUuid = order.bill.uuid
+		this.billUuid = order.bill?.uuid
+		this.ordersLoading = false
 	}
 
 	navigateToBookingPage(event: MouseEvent) {

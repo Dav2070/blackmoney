@@ -83,7 +83,7 @@ export class BookingPageComponent {
 
 	lastClickedItemSource: "new" | "booked" | null = null
 
-	console: string = "0.00 €"
+	console: string = "0,00 €"
 
 	selectedItemNew: Product = null
 
@@ -1099,11 +1099,9 @@ export class BookingPageComponent {
 	// Aktualisiert den Gesamtpreis
 	async showTotal() {
 		this.console =
-			(
-				(this.bookedItems.calculateTotal() +
-					this.stagedItems.calculateTotal()) /
-				100
-			).toFixed(2) + " €"
+			(this.bookedItems.calculateTotal() + this.stagedItems.calculateTotal())
+				.toFixed(2)
+				.replace(".", ",") + " €"
 
 		this.consoleActive = false
 		this.commaUsed = false

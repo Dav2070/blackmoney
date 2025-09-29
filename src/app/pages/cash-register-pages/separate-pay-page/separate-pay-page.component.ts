@@ -72,7 +72,7 @@ export class SeparatePayPageComponent {
 
 	//Berechnet den Preis aller Items eines Tisches
 	showTotal(bookedItems: AllItemHandler) {
-		// return bookedItems.calculatTotal().toFixed(2) + "€"
+		return bookedItems.calculateTotal().toFixed(2).replace(".", ",") + " €"
 	}
 
 	//Fügt die gedrückte Nummer in die Konsole ein

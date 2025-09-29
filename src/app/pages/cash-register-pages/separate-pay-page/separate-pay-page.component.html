@@ -3,45 +3,46 @@
 		<app-header [showButton]="false" />
 	</div>
 
-	<div class="orders-container">
-		@if (table != null) {
-			<app-orders-header
-				[headline]="'Tisch ' + table.name.toString()"
-				(backButtonClick)="navigateToBookingPage($event)"
-			></app-orders-header>
-		}
-
-		<ul class="order-items-container">
-			@if (ordersLoading) {
-				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-				<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+	<div class="orders-price-container">
+		<div class="orders-container">
+			@if (table != null) {
+				<app-orders-header
+					[headline]="'Tisch ' + table.name.toString()"
+					(backButtonClick)="navigateToBookingPage($event)"
+				></app-orders-header>
 			}
 
-			@if (
-				!ordersLoading &&
-				bookedItems.getOrderItems().length === 0 &&
-				bookedItems.getMenuOrderItems().length === 0
-			) {
-				<p class="no-products-message">Keine Produkte ausgewählt</p>
-			}
+			<ul class="order-items-container">
+				@if (ordersLoading) {
+					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+				}
 
-			@for (orderItem of bookedItems.getOrderItems(); track orderItem.uuid) {
-				<app-order-item-card
-					[orderItem]="orderItem"
-					(click)="transferItem(orderItem, bookedItems, activeBill)"
-				></app-order-item-card>
-			}
-		</ul>
+				@if (
+					!ordersLoading &&
+					bookedItems.getOrderItems().length === 0 &&
+					bookedItems.getMenuOrderItems().length === 0
+				) {
+					<p class="no-products-message">Keine Produkte ausgewählt</p>
+				}
 
-		<div>
-			<mat-card class="price">
-				<mat-card-content>
-					{{ showTotal(bookedItems) }}
-				</mat-card-content>
-			</mat-card>
+				@for (
+					orderItem of bookedItems.getOrderItems();
+					track orderItem.uuid
+				) {
+					<app-order-item-card
+						[orderItem]="orderItem"
+						(click)="transferItem(orderItem, bookedItems, activeBill)"
+					></app-order-item-card>
+				}
+			</ul>
+		</div>
+
+		<div class="price-container">
+			<p>{{ showTotal(bookedItems) }}</p>
 		</div>
 	</div>
 

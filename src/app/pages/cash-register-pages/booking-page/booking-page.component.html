@@ -956,3 +956,8 @@
 	[currentTableUuid]="table?.uuid"
 	(primaryButtonClick)="selectTableDialogPrimaryButtonClick($event)"
 ></app-select-table-dialog>
+
+<app-select-product-variation-dialog
+	#selectProductVariationDialog
+	[product]="lastClickedItem"
+></app-select-product-variation-dialog>

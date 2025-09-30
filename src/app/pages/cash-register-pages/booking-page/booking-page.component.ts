@@ -23,6 +23,7 @@ import { OfferItem } from "src/app/models/OfferItem"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
+import { SelectProductVariationDialogComponent } from "src/app/dialogs/select-product-variation-dialog/select-product-variation-dialog.component"
 import {
 	calculateTotalPriceOfOrderItem,
 	convertCategoryResourceToCategory,
@@ -126,6 +127,11 @@ export class BookingPageComponent {
 	//#region SelectTableDialog
 	@ViewChild("selectTableDialog")
 	selectTableDialog: SelectTableDialogComponent
+	//#endregion
+
+	//#region SelectProductVariationDialog
+	@ViewChild("selectProductVariationDialog")
+	selectProductVariationDialog: SelectProductVariationDialogComponent
 	//#endregion
 
 	constructor(
@@ -310,7 +316,8 @@ export class BookingPageComponent {
 
 	// Zeige Variations-Popup an
 	toggleItemPopup() {
-		this.isItemPopupVisible = !this.isItemPopupVisible
+		// this.isItemPopupVisible = !this.isItemPopupVisible
+		this.selectProductVariationDialog.show()
 	}
 
 	closeItemPopup() {
@@ -393,7 +400,8 @@ export class BookingPageComponent {
 				)
 			}
 
-			this.isItemPopupVisible = true
+			// this.isItemPopupVisible = true
+			this.selectProductVariationDialog.show()
 		}
 	}
 

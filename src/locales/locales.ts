@@ -138,6 +138,7 @@ export const de = {
 		save: "Speichern",
 		cancel: "Abbrechen",
 		select: "Auswählen",
+		add: "Hinzufügen",
 		logout: "Abmelden"
 	},
 	errors: {

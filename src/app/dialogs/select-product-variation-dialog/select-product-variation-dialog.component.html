@@ -1,0 +1,42 @@
+<dav-dialog
+	#dialog
+	[headline]="product?.variations[0].name ?? ''"
+	[primaryButtonText]="actionsLocale.add"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	@if (product != null) {
+		<div class="container">
+			@for (
+				variationItem of product.variations[currentVariation]
+					.variationItems;
+				track variationItem.uuid
+			) {
+				<div class="variation-selection-container">
+					<dav-icon-button
+						size="sm"
+						(click)="removeButtonClick(variationItem.uuid)"
+					>
+						<fa-icon [icon]="faMinus"></fa-icon>
+					</dav-icon-button>
+
+					<p>
+						{{ selectedVariations[variationItem.uuid] ?? 0 }} ×
+						{{ variationItem.name }}
+					</p>
+
+					<dav-icon-button
+						size="sm"
+						(click)="addButtonClick(variationItem.uuid)"
+					>
+						<fa-icon [icon]="faPlus"></fa-icon>
+					</dav-icon-button>
+				</div>
+			}
+		</div>
+	}
+</dav-dialog>

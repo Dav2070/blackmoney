@@ -362,6 +362,27 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async retrieveRoom(
+		queryData: string,
+		variables: {
+			uuid: string
+		}
+	): Promise<ApolloQueryResult<{ retrieveRoom: RoomResource }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveRoom: RoomResource }>({
+				query: gql`
+					query RetrieveRoom($uuid: String!) {
+						retrieveRoom(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async listRooms(
 		queryData: string,
 		variables: {
@@ -373,6 +394,56 @@ export class ApiService {
 				query: gql`
 					query ListRooms($restaurantUuid: String!) {
 						listRooms(restaurantUuid: $restaurantUuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createRoom(
+		queryData: string,
+		variables: { restaurantUuid: string; name: string }
+	): Promise<MutationResult<{ createRoom: RoomResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createRoom: RoomResource }>({
+				mutation: gql`
+					mutation CreateRoom(
+						$restaurantUuid: String!
+						$name: String!
+					) {
+						createRoom(
+							restaurantUuid: $restaurantUuid
+							name: $name
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updateRoom(
+		queryData: string,
+		variables: { uuid: string; name: string }
+	): Promise<MutationResult<{ updateRoom: RoomResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateRoom: RoomResource }>({
+				mutation: gql`
+					mutation UpdateRoom(
+						$uuid: String!
+						$name: String
+					) {
+						updateRoom(
+							uuid: $uuid
+							name: $name
+						) {
 							${queryData}
 						}
 					}

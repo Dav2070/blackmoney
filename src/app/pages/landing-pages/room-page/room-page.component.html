@@ -1,0 +1,65 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			editButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddTableDialog()"
+			(editButtonClick)="showEditRoomDialog()"
+		>
+			{{ room?.name }}
+		</dav-header>
+		<dav-button
+			outline
+			class="test-table-btn"
+			(click)="showTableCombinationDialog()"
+			size="sm"
+		>
+			{{ locale.roomCombination }}
+		</dav-button>
+
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			@for (table of tables; track table.name) {
+				<dav-card>
+					<div class="table-card-container">
+						<div class="table-card-content">
+							<p>
+								<strong>Nummer: {{ table.name }}</strong>
+							</p>
+							<p>Sitzplätze: {{ table.seats }}</p>
+							<div class="table-actions-row">
+								<dav-button
+									outline
+									class="test-table-btn"
+									(click)="removeTable(table)"
+									size="sm"
+								>
+									{{ locale.delete }}
+								</dav-button>
+							</div>
+						</div>
+						<dav-icon-button size="xs">
+							<fa-icon [icon]="faPen"></fa-icon>
+						</dav-icon-button>
+					</div>
+				</dav-card>
+			}
+		}
+	</div>
+</div>
+
+<app-edit-room-dialog
+	#editRoomDialog
+	[name]="editRoomDialogName"
+	[nameError]="editRoomDialogNameError"
+	[loading]="editRoomDialogLoading"
+	(primaryButtonClick)="editRoomDialogPrimaryButtonClick($event)"
+></app-edit-room-dialog>
+
+<app-add-table-dialog
+	#addTableDialog
+	(primaryButtonClick)="addTableDialogPrimaryButtonClick($event)"
+></app-add-table-dialog>

@@ -1,7 +1,6 @@
 import { Component } from "@angular/core"
-import { ActivatedRoute } from "@angular/router"
+import { ActivatedRoute, Router } from "@angular/router"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
-import { HardcodeService } from "src/app/services/hardcode-service"
 import { OrderItem } from "src/app/models/OrderItem"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { ApiService } from "src/app/services/api-service"
@@ -23,6 +22,7 @@ export class SeparatePayPageComponent {
 	table: Table = null
 	console: string
 	consoleActive: boolean = false
+	ordersLoading: boolean = true
 
 	orderUuid: string = ""
 	billUuid: string = ""
@@ -39,10 +39,10 @@ export class SeparatePayPageComponent {
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 
 	constructor(
-		private hardcodeService: HardcodeService,
 		private activatedRoute: ActivatedRoute,
 		private apiService: ApiService,
-		private dataService: DataService
+		private dataService: DataService,
+		private router: Router
 	) {}
 
 	async ngOnInit() {
@@ -61,12 +61,18 @@ export class SeparatePayPageComponent {
 		)
 
 		this.orderUuid = order.uuid
-		this.billUuid = order.bill.uuid
+		this.billUuid = order.bill?.uuid
+		this.ordersLoading = false
+	}
+
+	navigateToBookingPage(event: MouseEvent) {
+		event.preventDefault()
+		this.router.navigate(["dashboard", "tables", this.table.uuid])
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
 	showTotal(bookedItems: AllItemHandler) {
-		// return bookedItems.calculatTotal().toFixed(2) + "€"
+		return bookedItems.calculateTotal().toFixed(2).replace(".", ",") + " €"
 	}
 
 	//Fügt die gedrückte Nummer in die Konsole ein
@@ -89,11 +95,13 @@ export class SeparatePayPageComponent {
 	}
 
 	calculateTotalBills() {
-		// let tmpTotal = 0
-		// for (let bill of this.bills) {
-		// 	tmpTotal += bill.calculatTotal()
-		// }
-		// return tmpTotal.toFixed(2) + "€"
+		let tmpTotal = 0
+
+		for (let bill of this.bills) {
+			tmpTotal += bill.calculateTotal()
+		}
+
+		return tmpTotal.toFixed(2).replace(".", ",") + " €"
 	}
 
 	setActiveBill(bill: AllItemHandler) {

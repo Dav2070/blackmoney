@@ -1,0 +1,64 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Table number / Start table number -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="tableNumber"
+				[label]="bulkMode ? locale.startTableName : locale.tableNumber"
+				type="number"
+				min="1"
+				[disabled]="loading"
+				[errorMessage]="tableNumberError"
+				(change)="tableNumberTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Seats -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="seats"
+				[label]="locale.seats"
+				type="number"
+				min="1"
+				[disabled]="loading"
+				[errorMessage]="seatsError"
+				(change)="seatsTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		@if (bulkMode) {
+			<!-- Number of tables -->
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="numberOfTables"
+					[label]="locale.numberOfTables"
+					type="number"
+					min="1"
+					[disabled]="loading"
+					[errorMessage]="numberOfTablesError"
+					(change)="numberOfTablesTextfieldChange($event)"
+				></dav-textfield>
+			</div>
+		}
+
+		<!-- Checkbox unten links -->
+		<div class="dialog-formfield-container">
+			<dav-checkbox
+				[checked]="bulkMode"
+				(change)="toggleBulkMode($event)"
+				label="Mehrere Tische anlegen"
+			></dav-checkbox>
+		</div>
+	</form>
+</dav-dialog>

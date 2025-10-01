@@ -61,6 +61,20 @@ export const de = {
 		testPrintSuccess: "Test-Druck erfolgreich gesendet",
 		testPrintError: "Test-Druck fehlgeschlagen: {errorMessage}"
 	},
+	roomsPage: {
+		headline: "Deine Räume"
+	},
+	roomPage: {
+		add: "+",
+		delete: "löschen",
+		roomCombination: "kombinieren"
+	},
+	tableCombinationPage: {
+		headline: "Deine Tischkombinationen",
+		add: "+",
+		delete: "löschen",
+		roomCombination: "kombinieren"
+	},
 	menuPage: {
 		headline: "Deine Speisekarte",
 		clone: "Speisekarte kopieren",
@@ -113,6 +127,28 @@ export const de = {
 		},
 		selectTableDialog: {
 			headline: "Tisch auswählen"
+		},
+		addRoomDialog: {
+			headline: "Raum hinzufügen",
+			name: "Name"
+		},
+		editRoomDialog: {
+			headline: "Raum bearbeiten",
+			name: "Name"
+		},
+		addTableDialog: {
+			headline: "Tisch hinzufügen",
+			tableNumber: "Tischnummer",
+			seats: "Sitzplätze",
+			numberOfTables: "Anzahl Tische",
+			startTableName: "Anfangstischnummer"
+		},
+		addTableCombinationDialog: {
+			headline: "Tisch Kombination erstellen",
+			line1: "Tischnummer",
+			line2: "Sitzplätze",
+			line3: "Anzahl Tische",
+			line4: "Anfangs Tischnummer"
 		}
 	},
 	actions: {

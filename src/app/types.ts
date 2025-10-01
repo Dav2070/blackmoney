@@ -52,6 +52,7 @@ export interface RoomResource {
 export interface TableResource {
 	uuid: string
 	name: number
+	seats: number
 	orders: List<OrderResource>
 }
 

@@ -6,25 +6,27 @@
 	<div class="orders-numpad-container">
 		<div class="orders-container">
 			@if (room != null && table != null) {
-				<div class="table-info-container">
-					<dav-icon-button size="sm" href="/dashboard" (click)="navigateToDashboard($event)">
-						<fa-icon [icon]="faArrowLeft"></fa-icon
-					></dav-icon-button>
-
-					<p>
-						{{
-							locale.tableHeadline.replace(
-								"{name}",
-								table.name.toString()
-							)
-						}}
-						— {{ room.name }}
-					</p>
-
+				<app-orders-header
+					[headline]="`${locale.tableHeadline.replace('{name}', table.name.toString())} — ${room.name}`"
+					[showBackButton]="true"
+					(backButtonClick)="navigateToDashboard($event)"
+				>
 					<dav-icon-button size="sm" (click)="selectTableButtonClick()">
 						<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon>
 					</dav-icon-button>
-				</div>
+
+					<dav-icon-button size="sm" (click)="sendOrder()">
+						<fa-icon [icon]="faPaperPlaneTop"></fa-icon>
+					</dav-icon-button>
+
+					<dav-icon-button
+						size="sm"
+						[href]="'/dashboard/tables/' + uuid + '/separate'"
+						(click)="navigateToSeparatePayPage($event)"
+					>
+						<fa-icon [icon]="faCreditCard"></fa-icon>
+					</dav-icon-button>
+				</app-orders-header>
 			}
 
 			<ul class="order-items-container">

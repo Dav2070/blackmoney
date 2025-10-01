@@ -1,0 +1,75 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submitTableCombination()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Line 1 -->
+		<mat-form-field appearance="fill" class="dialog-formfield-container">
+			<mat-label>Table Numbers</mat-label>
+			<mat-select [formControl]="tableCombinations" multiple>
+				<mat-option *ngFor="let t of table" [value]="t.name">
+					Table {{ t.name }} ({{ t.seats }} chairs)
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+		<!-- Line 2 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="seats"
+				[label]="locale.line2"
+				[disabled]="loading"
+				[errorMessage]="line2Error"
+				(change)="chairNumberfieldChange($event)"
+			></dav-textfield>
+		</div>
+	</form>
+</dav-dialog>
+
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header addButtonVisible (addButtonClick)="show()">
+			{{ tablesLocale.headline }}
+		</dav-header>
+
+		@for (
+			oneTableCombination of tableCombination;
+			track oneTableCombination.name
+		) {
+			<dav-card>
+				<div class="tableCombination-card-container">
+					<div class="tableCombination-card-content">
+						<p>
+							<strong>Nummern: {{ oneTableCombination.name }}</strong>
+						</p>
+						<p>Sitzplätze: {{ oneTableCombination.seats }}</p>
+						<div class="tableCombination-actions-row">
+							<dav-button
+								outline
+								class="test-tableCombination-btn"
+								(click)="removeTableCombination(oneTableCombination)"
+								size="sm"
+							>
+								{{ tablesLocale.delete }}
+							</dav-button>
+						</div>
+					</div>
+					<dav-icon-button
+						size="xs"
+						(click)="openEditForm(oneTableCombination)"
+					>
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
+				</div>
+			</dav-card>
+		}
+	</div>
+</div>

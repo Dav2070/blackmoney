@@ -2,8 +2,9 @@ import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
 import {
-	faArrowLeft,
-	faArrowRightArrowLeft
+	faArrowRightArrowLeft,
+	faPaperPlaneTop,
+	faCreditCard
 } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
@@ -49,8 +50,9 @@ interface AddProductsInputVariation {
 })
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
-	faArrowLeft = faArrowLeft
 	faArrowRightArrowLeft = faArrowRightArrowLeft
+	faPaperPlaneTop = faPaperPlaneTop
+	faCreditCard = faCreditCard
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []
 	selectedInventory: Product[] = []
@@ -81,7 +83,7 @@ export class BookingPageComponent {
 
 	lastClickedItemSource: "new" | "booked" | null = null
 
-	console: string = "0.00 €"
+	console: string = "0,00 €"
 
 	selectedItemNew: Product = null
 
@@ -294,6 +296,11 @@ export class BookingPageComponent {
 
 	selectTableButtonClick() {
 		this.selectTableDialog.show()
+	}
+
+	navigateToSeparatePayPage(event: MouseEvent) {
+		event.preventDefault()
+		this.router.navigate(["dashboard", "tables", this.uuid, "separate"])
 	}
 
 	selectTableDialogPrimaryButtonClick(event: { uuid: string }) {
@@ -1092,11 +1099,9 @@ export class BookingPageComponent {
 	// Aktualisiert den Gesamtpreis
 	async showTotal() {
 		this.console =
-			(
-				(this.bookedItems.calculateTotal() +
-					this.stagedItems.calculateTotal()) /
-				100
-			).toFixed(2) + " €"
+			(this.bookedItems.calculateTotal() + this.stagedItems.calculateTotal())
+				.toFixed(2)
+				.replace(".", ",") + " €"
 
 		this.consoleActive = false
 		this.commaUsed = false

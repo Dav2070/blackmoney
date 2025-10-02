@@ -160,8 +160,11 @@ export class AllItemHandler {
 		let total = 0
 		
 		for (let item of this.allPickedItems) {
-			if (item.type === 'menu' || item.type === 'special') {
+			if (item.type === 'menu') {
 				total += item.product.price * item.count
+
+			} else if (item.type === 'special') {
+				total += item.product.price 
 			} else {
 				total += item.product.price * item.count
 

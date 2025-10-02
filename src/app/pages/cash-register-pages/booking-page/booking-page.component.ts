@@ -1907,111 +1907,166 @@ export class BookingPageComponent {
 	}
 
 	confirmSpecials() {
-		let allOrderItems: OrderItem[] = []
-		let originalTotalPrice = 0
+		let rabattFaktor = 0
 
-		// Durch alle ausgewählten Produkte gehen
+		// Prüfe ob wir im Special-Modus oder Menü-Modus sind
+		if (
+			this.currentSpecial &&
+			this.currentSpecial.discountType === "PERCENTAGE"
+		) {
+			rabattFaktor = this.currentSpecial.offerValue / 100
+		}
+
+		// Durch alle ausgewählten Produkte gehen und für jedes ein separates Special OrderItem erstellen
 		for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
-			let processedItem: OrderItem = JSON.parse(JSON.stringify(item))
-			allOrderItems.push(processedItem)
-
-			let itemPrice = processedItem.product.price * processedItem.count
+			let processedItem: OrderItem = JSON.parse(JSON.stringify(item))			// Berechne den ursprünglichen Preis des Items (ohne Special-Rabatt)
+			let originalPrice = processedItem.product.price * processedItem.count
+			
 			for (let variation of processedItem.orderItemVariations) {
 				for (let variationItem of variation.variationItems) {
-					itemPrice += variation.count * variationItem.additionalCost
+					if (variationItem.name !== "Rabatt") {
+						originalPrice += variation.count * variationItem.additionalCost
+					}
 				}
 			}
-			originalTotalPrice += itemPrice
-		}
 
-		let finalSpecialPrice = originalTotalPrice
-		let totalRabattBetrag = 0
+			// Bestimme das aktuelle Menü/Special für MenuOrderItem
+			let currentSpecial = this.currentSpecial
+			let menuName = currentSpecial
+				? currentSpecial.name
+				: "Unknown Special"
 
-		if (this.currentSpecial && this.currentSpecial.offerType) {
-			switch (this.currentSpecial.offerType) {
-				case "FIXED_PRICE":
-					finalSpecialPrice = this.currentSpecial.offerValue
-					totalRabattBetrag = finalSpecialPrice - originalTotalPrice
-					break
-				case "DISCOUNT":
-					if (this.currentSpecial.discountType === "PERCENTAGE") {
-						finalSpecialPrice =
-							originalTotalPrice *
-							(1 - this.currentSpecial.offerValue / 100)
-						totalRabattBetrag = finalSpecialPrice - originalTotalPrice
-					} else if (this.currentSpecial.discountType === "AMOUNT") {
-						finalSpecialPrice =
-							originalTotalPrice - this.currentSpecial.offerValue
-						totalRabattBetrag = -this.currentSpecial.offerValue
-					}
-					break
-				default:
-					finalSpecialPrice = originalTotalPrice
-					break
-			}
-		}
-
-		let orderItem: OrderItem = {
-			uuid: crypto.randomUUID(),
-			type: "special",
-			count: 1,
-			order: null,
-			offer: this.currentSpecial,
-			product: {
-				id: 1,
-				uuid: crypto.randomUUID(),
-				name: this.currentSpecial.name,
-				price: finalSpecialPrice,
-				category: null,
-				variations: []
-			},
-			orderItems: allOrderItems,
-			orderItemVariations: []
-		}
-
-		// Rabattvariation am Special selbst einfügen (nicht an den einzelnen OrderItems)
-		if (totalRabattBetrag !== 0) {
-			let specialRabattVariation: OrderItemVariation = {
-				uuid: crypto.randomUUID(),
-				count: 1,
-				variationItems: [
-					{
-						id: 0,
-						uuid: crypto.randomUUID(),
-						name: "Rabatt",
-						additionalCost: totalRabattBetrag
-					}
-				]
+			// Berechne finalen Preis (Original minus Rabatt)
+			let finalPrice = originalPrice
+			if (rabattFaktor > 0) {
+				finalPrice = originalPrice * (1 - rabattFaktor)
 			}
 
-			orderItem.orderItemVariations.push(specialRabattVariation)
-		}
+			let orderItem: OrderItem = {
+				uuid: crypto.randomUUID(),
+				type: "special",
+				count: processedItem.count,
+				order: null,
+				offer: currentSpecial,
+				product: {
+					id: currentSpecial.id,
+					uuid: processedItem.product.uuid,
+					name: menuName,
+					price: finalPrice,
+					category: processedItem.product.category,
+					variations: []
+				},
+				orderItems: [processedItem],
+				orderItemVariations: []
+			}
 
-		// Prüfe ob ein ähnliches OrderItem bereits existiert und merge, oder füge neu hinzu
-		let existingOfferItem = this.stagedItems.sameOfferOrderItemExists(orderItem)
-			
-		if (existingOfferItem) {
-			existingOfferItem.count += 1
-			
-			for (let i = 0; i < allOrderItems.length; i++) {
-				let newOrderItem = allOrderItems[i]
-				let existingOrderItem = existingOfferItem.orderItems[i]
+			// Füge Rabatt als Variation zum Special hinzu, falls vorhanden
+			if (rabattFaktor > 0) {
+				// Berechne Rabatt pro Einheit (nicht total)
+				let rabattBetragPerUnit = -(originalPrice / processedItem.count * rabattFaktor)
 				
-				// Count des OrderItems erhöhen
-				existingOrderItem.count += newOrderItem.count
+				let specialRabattVariation: OrderItemVariation = {
+					uuid: crypto.randomUUID(),
+					count: processedItem.count,
+					variationItems: [
+						{
+							id: 0,
+							uuid: crypto.randomUUID(),
+							name: "Rabatt",
+							additionalCost: rabattBetragPerUnit
+						}
+					]
+				}
+				orderItem.orderItemVariations.push(specialRabattVariation)
+			}
+
+			let existingSpecialItem = this.stagedItems.getAllPickedItems().find(item => 
+				item.type === "special" && 
+				item.orderItems?.length === 1 && 
+				item.orderItems[0].product.id === processedItem.product.id &&
+				item.offer?.uuid === currentSpecial?.uuid
+			)
+
+			if (existingSpecialItem) {
+				// Merge mit existierendem Item
+				existingSpecialItem.count += processedItem.count
 				
-				// Variation Counts auch erhöhen (ebenfalls per Index)
-				for (let j = 0; j < (newOrderItem.orderItemVariations?.length || 0); j++) {
-					let newVar = newOrderItem.orderItemVariations[j]
-					let existingVar = existingOrderItem.orderItemVariations[j]
+				let existingOrderItem = existingSpecialItem.orderItems[0]
+				existingOrderItem.count += processedItem.count
+
+				for (let newVar of processedItem.orderItemVariations) {
+					let existingVar = existingOrderItem.orderItemVariations.find(
+						ex => 
+							ex.variationItems.length === newVar.variationItems.length &&
+							ex.variationItems.every((vi, idx) => 
+								vi.name === newVar.variationItems[idx].name &&
+								vi.additionalCost === newVar.variationItems[idx].additionalCost
+							)
+					)
 					
-					existingVar.count += newVar.count
+					if (existingVar) {
+						existingVar.count += newVar.count
+					} else {
+						existingOrderItem.orderItemVariations.push({ ...newVar })
+					}
 				}
+
+				// Merge die Rabatt-Variation des Special OrderItems
+				if (rabattFaktor > 0) {
+					// Berechne Rabatt pro Einheit (nicht total)
+					let rabattBetragPerUnit = -(originalPrice / processedItem.count * rabattFaktor)
+					
+					let existingRabattVar = existingSpecialItem.orderItemVariations.find(
+						v => v.variationItems.length === 1 && 
+						v.variationItems[0].name === "Rabatt" &&
+						v.variationItems[0].additionalCost === rabattBetragPerUnit
+					)
+					
+					if (existingRabattVar) {
+						// Erhöhe nur die Anzahl, behalte den Rabatt pro Einheit
+						existingRabattVar.count += processedItem.count
+					} else {
+						let specialRabattVariation: OrderItemVariation = {
+							uuid: crypto.randomUUID(),
+							count: processedItem.count,
+							variationItems: [
+								{
+									id: 0,
+									uuid: crypto.randomUUID(),
+									name: "Rabatt",
+									additionalCost: rabattBetragPerUnit
+								}
+							]
+						}
+						existingSpecialItem.orderItemVariations.push(specialRabattVariation)
+					}
+				}
+
+				// Berechne den ursprünglichen Gesamtpreis OHNE Rabatt für das bestehende Item
+				let existingOriginalPrice = existingOrderItem.product.price * existingOrderItem.count
+				for (let variation of existingOrderItem.orderItemVariations) {
+					for (let variationItem of variation.variationItems) {
+						if (variationItem.name !== "Rabatt") {
+							existingOriginalPrice += variation.count * variationItem.additionalCost
+						}
+					}
+				}
+				
+				// Berechne finalen Preis pro Einheit (nach Rabatt)
+				let originalPricePerUnit = existingOriginalPrice / existingSpecialItem.count
+				let finalPricePerUnit = originalPricePerUnit
+				if (rabattFaktor > 0) {
+					finalPricePerUnit = originalPricePerUnit * (1 - rabattFaktor)
+				}
+				
+				// Setze den finalen Gesamtpreis
+				existingSpecialItem.product.price = finalPricePerUnit * existingSpecialItem.count
+
+			} else {
+				this.stagedItems.pushNewItem(orderItem)
 			}
-			
-		} else {
-			this.stagedItems.pushNewItem(orderItem)
 		}
+
 		// Cleanup
 		this.isMenuePopupVisible = false
 		this.specialCategories = []
@@ -2021,6 +2076,7 @@ export class BookingPageComponent {
 		this.tmpSpecialAllItemsHandler = new AllItemHandler()
 		this.showTotal()
 	}
+
 
 	confirmMenu() {
 		let allOrderItems: OrderItem[] = []
@@ -2181,69 +2237,5 @@ export class BookingPageComponent {
 		}
 
 		return itemPrice
-	}
-
-	// Helper-Methode für bidirektionalen OrderItem-Vergleich
-	private orderItemsAreIdentical(existingOrderItems: OrderItem[], newOrderItems: OrderItem[], existingMenuCount: number = 1): boolean {
-		if (existingOrderItems.length !== newOrderItems.length) {
-			return false
-		}
-
-		// Erstelle Kopien der Arrays zum sicheren Manipulieren
-		const remainingExisting = [...existingOrderItems]
-		
-		// Für jedes neue OrderItem muss es genau ein passendes existierendes geben
-		for (let newOrderItem of newOrderItems) {
-			const matchIndex = remainingExisting.findIndex(existingOrderItem => {
-				// Produkt-ID muss gleich sein
-				if (existingOrderItem.product.id !== newOrderItem.product.id) {
-					return false
-				}
-				
-				// Count muss gleich sein (existing count durch menu count normalisiert)
-				if (existingOrderItem.count / existingMenuCount !== newOrderItem.count) {
-					return false
-				}
-				
-				// Variationen müssen gleich sein
-				if (existingOrderItem.orderItemVariations?.length !== newOrderItem.orderItemVariations?.length) {
-					return false
-				}
-				
-				// Jede Variation muss übereinstimmen
-				return newOrderItem.orderItemVariations?.every(newVar => {
-					return existingOrderItem.orderItemVariations?.some(existingVar => {
-						// Count der Variation muss gleich sein (normalisiert)
-						if (existingVar.count / existingMenuCount !== newVar.count) {
-							return false
-						}
-						
-						// VariationItems müssen gleich sein
-						if (existingVar.variationItems?.length !== newVar.variationItems?.length) {
-							return false
-						}
-						
-						// Jedes VariationItem muss übereinstimmen
-						return newVar.variationItems?.every(newVarItem => {
-							return existingVar.variationItems?.some(existingVarItem => 
-								existingVarItem.id === newVarItem.id &&
-								existingVarItem.name === newVarItem.name &&
-								existingVarItem.additionalCost === newVarItem.additionalCost
-							)
-						}) ?? true
-					}) ?? false
-				}) ?? true
-			})
-			
-			if (matchIndex === -1) {
-				return false // Kein Match gefunden
-			}
-			
-			// Entferne das gematchte Item um 1:1 Zuordnung sicherzustellen
-			remainingExisting.splice(matchIndex, 1)
-		}
-		
-		// Alle Items sollten zugeordnet worden sein
-		return remainingExisting.length === 0
 	}
 }

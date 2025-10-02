@@ -64,6 +64,7 @@ export class BookingPageComponent {
 	specialProducts: Product[] = []
 	currentSpecial: Offer | null = null
 	currentMenu: Offer | null = null
+	tmpCurrentMenu: Offer | null = null
 	currentMaxSelections: number = 0
 	currentIndex: number = 0
 	tmpSpecialSelectedItems: OrderItem[] = []
@@ -944,6 +945,24 @@ export class BookingPageComponent {
 				}
 				this.selectedItem.count = totalCount
 
+				if (this.currentMenu) {
+					this.currentMenu.offerItems[this.currentIndex].maxSelections -= 1
+					this.currentMaxSelections =
+					this.currentMenu.offerItems[this.currentIndex].maxSelections
+
+					if (this.currentMaxSelections === 0) {
+						let nextIndex = this.findNextAvailableCategory()
+						if (nextIndex !== -1) {
+							this.currentIndex = nextIndex
+							this.changeSelectedMenuInventory(
+								this.currentMenu.offerItems[this.currentIndex],
+								this.currentMenu.offerItems[this.currentIndex].maxSelections,
+								this.currentIndex
+							)
+						}
+					}
+				}
+
 				this.isSpecialVariationPopupVisible = false
 				this.isSpecialVariationMode = false
 			} else {
@@ -1496,9 +1515,11 @@ export class BookingPageComponent {
 				return true // Disable the button
 			}
 		}
+		console.log("Total maxSelections:", this.tmpCurrentMenu.offerItems[this.currentIndex].maxSelections);
 
 		if (this.currentMenu) {
-			if (totalCount >= this.currentMenu.offerItems[this.currentIndex].maxSelections) {
+			if (totalCount >= this.tmpCurrentMenu.offerItems[this.currentIndex].maxSelections) {
+				console.log("Max selections reached", totalCount, this.tmpCurrentMenu.offerItems[this.currentIndex].maxSelections);
 				return true
 			} else {
 				return false
@@ -1542,7 +1563,6 @@ export class BookingPageComponent {
 					.get(this.tmpCountVariations)
 					.values()) {
 					count += tmpVariation.count
-					// Prüfen, ob bereits ein Eintrag mit der gleichen lastPickedVariation existiert
 					const exists = countVariations.some(
 						v =>
 							v.lastPickedVariation === tmpVariation.lastPickedVariation
@@ -1598,6 +1618,7 @@ export class BookingPageComponent {
 
 	clickMenu(menu: Offer) {
 		this.currentMenu = JSON.parse(JSON.stringify(menu))
+		this.tmpCurrentMenu = JSON.parse(JSON.stringify(menu))
 		this.currentSpecial = null
 		this.isMenuePopupVisible = true
 		this.changeSelectedMenuInventory(
@@ -1696,10 +1717,10 @@ export class BookingPageComponent {
 			product,
 			orderItemVariations: []
 		}
-
+		
 		if (product.variations.length === 0) {
 			let firstIndex = this.currentIndex
-			
+
 			if (this.currentMenu) {
 				this.currentMenu.offerItems[this.currentIndex].maxSelections -= 1
 				this.currentMaxSelections =
@@ -1818,17 +1839,26 @@ export class BookingPageComponent {
 		this.tmpPickedVariationResource = []
 		this.tmpCountVariations = 0
 
-		for (let orderItemVariation of item.orderItemVariations) {
-			for (let variationItem of orderItemVariation.variationItems) {
-				if (variationItem.name === "Rabatt") {
-					continue
+		if (item.product.variations && item.product.variations.length > 0) {
+			for (let variationItem of item.product.variations[this.tmpCountVariations].variationItems) {
+				let currentCount = 0
+				
+				for (let orderItemVariation of item.orderItemVariations) {
+					for (let existingVariationItem of orderItemVariation.variationItems) {
+						if (existingVariationItem.uuid === variationItem.uuid && 
+							existingVariationItem.name !== "Rabatt") {
+							currentCount = orderItemVariation.count
+							break
+						}
+					}
+					if (currentCount > 0) break
 				}
 
 				this.tmpPickedVariationResource.push(
 					new Map<number, TmpVariations[]>().set(0, [
 						{
 							uuid: variationItem.uuid,
-							count: orderItemVariation.count,
+							count: currentCount,
 							max: undefined,
 							lastPickedVariation: undefined,
 							combination: variationItem.name,
@@ -1838,6 +1868,37 @@ export class BookingPageComponent {
 					])
 				)
 			}
+		}
+
+		let targetCategoryIndex = -1
+		for (let i = 0; i < this.currentMenu.offerItems.length; i++) {
+			const menuItem = this.currentMenu.offerItems[i]
+
+			let fountCategory = false
+
+			for (let product of menuItem.products) {
+				if (product.uuid === item.product.uuid) {
+					fountCategory = true
+					break
+				}
+			}
+
+			if (fountCategory) {
+				targetCategoryIndex = i
+				break
+			}
+		}
+
+		// Erhöhe die maxSelections der entsprechenden Kategorie
+		if (targetCategoryIndex >= 0) {
+
+			// Springe zur entsprechenden Kategorie
+			this.currentIndex = targetCategoryIndex
+			this.changeSelectedMenuInventory(
+				this.currentMenu.offerItems[targetCategoryIndex],
+				this.currentMenu.offerItems[targetCategoryIndex].maxSelections,
+				targetCategoryIndex
+			)
 		}
 
 		this.isSpecialVariationPopupVisible = true
@@ -2187,6 +2248,7 @@ export class BookingPageComponent {
 		this.specialProducts = []
 		this.selectedInventory = []
 		this.currentMenu = null
+		this.tmpCurrentMenu = null
 		this.tmpSpecialAllItemsHandler = new AllItemHandler()
 		this.showTotal()
 	}

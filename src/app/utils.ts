@@ -50,9 +50,11 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
 	if (orderItem.type === "menu" || orderItem.type === "special") {
 		let total = 0
 
-		for (let variation of orderItem.orderItemVariations) {
-			for (let variationItem of variation.variationItems) {
-				total += variation.count * variationItem.additionalCost
+		if (orderItem.orderItemVariations) {
+			for (let variation of orderItem.orderItemVariations) {
+				for (let variationItem of variation.variationItems) {
+					total += variation.count * variationItem.additionalCost
+				}
 			}
 		}
 

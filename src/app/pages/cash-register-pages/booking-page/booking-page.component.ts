@@ -1907,219 +1907,111 @@ export class BookingPageComponent {
 	}
 
 	confirmSpecials() {
-		let rabattFaktor = 0
+		let allOrderItems: OrderItem[] = []
+		let originalTotalPrice = 0
 
-		// Prüfe ob wir im Special-Modus oder Menü-Modus sind
-		if (
-			this.currentSpecial &&
-			this.currentSpecial.discountType === "PERCENTAGE"
-		) {
-			rabattFaktor = this.currentSpecial.offerValue / 100
-		}
-
-		// Durch alle ausgewählten Produkte gehen und für jedes ein separates MenuOrderItem erstellen
+		// Durch alle ausgewählten Produkte gehen
 		for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
 			let processedItem: OrderItem = JSON.parse(JSON.stringify(item))
-			let existingVariations = [...processedItem.orderItemVariations]
-			let newOrderItemVariations: OrderItemVariation[] = []
+			allOrderItems.push(processedItem)
 
-			// Füge für jede bestehende OrderItemVariation die Variation und direkt danach den Rabatt hinzu
-			for (let orderItemVariation of existingVariations) {
-				// Füge die ursprüngliche Variation hinzu
-				newOrderItemVariations.push(orderItemVariation)
-
-				// Berechne Rabatt für diese Variation
-				let sumAdditional = orderItemVariation.variationItems.reduce(
-					(acc, vi) => acc + vi.additionalCost,
-					0
-				)
-				let originalCostPerUnit =
-					processedItem.product.price + sumAdditional
-				let rabattBetrag = -(originalCostPerUnit * rabattFaktor)
-
-				let rabattVariation: OrderItemVariation = {
-					uuid: crypto.randomUUID(),
-					count: orderItemVariation.count,
-					variationItems: [
-						{
-							id: 0,
-							uuid: crypto.randomUUID(),
-							name: "Rabatt",
-							additionalCost: rabattBetrag
-						}
-					]
+			let itemPrice = processedItem.product.price * processedItem.count
+			for (let variation of processedItem.orderItemVariations) {
+				for (let variationItem of variation.variationItems) {
+					itemPrice += variation.count * variationItem.additionalCost
 				}
-				newOrderItemVariations.push(rabattVariation)
 			}
+			originalTotalPrice += itemPrice
+		}
 
-			// Ersetze die ursprünglichen Variationen mit der neuen sortierten Liste
-			processedItem.orderItemVariations = newOrderItemVariations
+		let finalSpecialPrice = originalTotalPrice
+		let totalRabattBetrag = 0
 
-			// Für Produkte ohne Variationen: Rabatt direkt auf das Basis-Produkt anwenden
-			if (existingVariations.length === 0) {
-				let originalCost = processedItem.product.price
-				let rabattBetrag = -(originalCost * rabattFaktor)
-
-				let rabattVariation: OrderItemVariation = {
-					uuid: crypto.randomUUID(),
-					count: processedItem.count,
-					variationItems: [
-						{
-							id: 0,
-							uuid: crypto.randomUUID(),
-							name: "Rabatt",
-							additionalCost: rabattBetrag
-						}
-					]
-				}
-
-				processedItem.orderItemVariations.push(rabattVariation)
-			}
-
-			let itemPrice = this.calculateSpecialPrice(processedItem)
-
-			// Bestimme das aktuelle Menü/Special für MenuOrderItem
-			let currentMenuOrSpecial = this.currentMenu || this.currentSpecial
-			let menuName = currentMenuOrSpecial
-				? currentMenuOrSpecial.name
-				: "Unknown Menu"
-
-			let orderItem: OrderItem = {
-				uuid: crypto.randomUUID(),
-				type: "special",
-				count: processedItem.count,
-				order: null,
-				offer: currentMenuOrSpecial,
-				product: {
-					id: processedItem.product.id,
-					uuid: processedItem.product.uuid,
-					name: menuName,
-					price: itemPrice,
-					category: processedItem.product.category,
-					variations: []
-				},
-				orderItems: [processedItem]
-			}
-
-			if (this.stagedItems.includes(orderItem)) {
-				for (let item of this.stagedItems.getAllPickedItems()) {
-					for (let orderItem of item.orderItems) {
-						if (orderItem.product.id === processedItem.product.id) {
-							// Wenn das Produkt übereinstimmt, füge die OrderItemVariationen hinzu
-							orderItem.count += processedItem.count
-
-							// Füge auch die neuen Variationen (inklusive Rabatt) hinzu
-							// Neue Logik: paarweise Mergen (Basisvariation gefolgt von Rabatt)
-							let isDiscountVar = (v: OrderItemVariation) =>
-								v.variationItems.length === 1 &&
-								v.variationItems[0].name === "Rabatt"
-							let basesEqual = (
-								a: OrderItemVariation,
-								b: OrderItemVariation
-							) => {
-								if (isDiscountVar(a) || isDiscountVar(b)) return false
-								if (a.variationItems.length !== b.variationItems.length)
-									return false
-								for (let i = 0; i < a.variationItems.length; i++) {
-									let ai = a.variationItems[i]
-									let bi = b.variationItems[i]
-									if (ai.name !== bi.name) return false
-									if (ai.additionalCost !== bi.additionalCost)
-										return false
-								}
-								return true
-							}
-
-							let idx = 0
-							while (idx < processedItem.orderItemVariations.length) {
-								let newVar = processedItem.orderItemVariations[idx]
-								if (!isDiscountVar(newVar)) {
-									// Basisvariation finden/erstellen
-									let baseIdx =
-										orderItem.orderItemVariations.findIndex(ex =>
-											basesEqual(ex, newVar)
-										)
-									if (baseIdx >= 0) {
-										orderItem.orderItemVariations[baseIdx].count +=
-											newVar.count
-									} else {
-										orderItem.orderItemVariations.push({ ...newVar })
-										baseIdx = orderItem.orderItemVariations.length - 1
-									}
-
-									// Falls die nächste neue Variation ein Rabatt ist, direkt dahinter mergen/einfügen
-									let hasNextDiscount =
-										idx + 1 <
-											processedItem.orderItemVariations.length &&
-										isDiscountVar(
-											processedItem.orderItemVariations[idx + 1]
-										)
-									if (hasNextDiscount) {
-										let newDisc =
-											processedItem.orderItemVariations[idx + 1]
-										let expectedDiscCost =
-											newDisc.variationItems[0].additionalCost
-
-										if (
-											baseIdx + 1 <
-												orderItem.orderItemVariations.length &&
-											isDiscountVar(
-												orderItem.orderItemVariations[baseIdx + 1]
-											) &&
-											orderItem.orderItemVariations[baseIdx + 1]
-												.variationItems[0].additionalCost ===
-												expectedDiscCost
-										) {
-											orderItem.orderItemVariations[
-												baseIdx + 1
-											].count += newDisc.count
-										} else {
-											orderItem.orderItemVariations.splice(
-												baseIdx + 1,
-												0,
-												{ ...newDisc }
-											)
-										}
-										idx += 2
-									} else {
-										idx += 1
-									}
-								} else {
-									// Standalone-Rabatt (z. B. Produkt ohne Variationen)
-									let expectedDiscCost =
-										newVar.variationItems[0].additionalCost
-									let existingDiscIdx =
-										orderItem.orderItemVariations.findIndex(
-											ex =>
-												isDiscountVar(ex) &&
-												ex.variationItems[0].additionalCost ===
-													expectedDiscCost
-										)
-									if (existingDiscIdx >= 0) {
-										orderItem.orderItemVariations[
-											existingDiscIdx
-										].count += newVar.count
-									} else {
-										orderItem.orderItemVariations.push({ ...newVar })
-									}
-									idx += 1
-								}
-							}
-						}
+		if (this.currentSpecial && this.currentSpecial.offerType) {
+			switch (this.currentSpecial.offerType) {
+				case "FIXED_PRICE":
+					finalSpecialPrice = this.currentSpecial.offerValue
+					totalRabattBetrag = finalSpecialPrice - originalTotalPrice
+					break
+				case "DISCOUNT":
+					if (this.currentSpecial.discountType === "PERCENTAGE") {
+						finalSpecialPrice =
+							originalTotalPrice *
+							(1 - this.currentSpecial.offerValue / 100)
+						totalRabattBetrag = finalSpecialPrice - originalTotalPrice
+					} else if (this.currentSpecial.discountType === "AMOUNT") {
+						finalSpecialPrice =
+							originalTotalPrice - this.currentSpecial.offerValue
+						totalRabattBetrag = -this.currentSpecial.offerValue
 					}
-
-					// Aktualisiere den Gesamtpreis des MenuItems
-					let totalPrice = 0
-					for (let orderItem of item.orderItems) {
-						totalPrice += this.calculateSpecialPrice(orderItem)
-					}
-					item.product.price = totalPrice
-				}
-			} else {
-				this.stagedItems.pushNewItem(orderItem)
+					break
+				default:
+					finalSpecialPrice = originalTotalPrice
+					break
 			}
 		}
 
+		let orderItem: OrderItem = {
+			uuid: crypto.randomUUID(),
+			type: "special",
+			count: 1,
+			order: null,
+			offer: this.currentSpecial,
+			product: {
+				id: 1,
+				uuid: crypto.randomUUID(),
+				name: this.currentSpecial.name,
+				price: finalSpecialPrice,
+				category: null,
+				variations: []
+			},
+			orderItems: allOrderItems,
+			orderItemVariations: []
+		}
+
+		// Rabattvariation am Special selbst einfügen (nicht an den einzelnen OrderItems)
+		if (totalRabattBetrag !== 0) {
+			let specialRabattVariation: OrderItemVariation = {
+				uuid: crypto.randomUUID(),
+				count: 1,
+				variationItems: [
+					{
+						id: 0,
+						uuid: crypto.randomUUID(),
+						name: "Rabatt",
+						additionalCost: totalRabattBetrag
+					}
+				]
+			}
+
+			orderItem.orderItemVariations.push(specialRabattVariation)
+		}
+
+		// Prüfe ob ein ähnliches OrderItem bereits existiert und merge, oder füge neu hinzu
+		let existingOfferItem = this.stagedItems.sameOfferOrderItemExists(orderItem)
+			
+		if (existingOfferItem) {
+			existingOfferItem.count += 1
+			
+			for (let i = 0; i < allOrderItems.length; i++) {
+				let newOrderItem = allOrderItems[i]
+				let existingOrderItem = existingOfferItem.orderItems[i]
+				
+				// Count des OrderItems erhöhen
+				existingOrderItem.count += newOrderItem.count
+				
+				// Variation Counts auch erhöhen (ebenfalls per Index)
+				for (let j = 0; j < (newOrderItem.orderItemVariations?.length || 0); j++) {
+					let newVar = newOrderItem.orderItemVariations[j]
+					let existingVar = existingOrderItem.orderItemVariations[j]
+					
+					existingVar.count += newVar.count
+				}
+			}
+			
+		} else {
+			this.stagedItems.pushNewItem(orderItem)
+		}
 		// Cleanup
 		this.isMenuePopupVisible = false
 		this.specialCategories = []

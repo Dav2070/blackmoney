@@ -377,12 +377,33 @@ export class AllItemHandler {
 		}
 
 		return this.allPickedItems.find(existingItem => {
+			// Grundlegende Checks
 			if (existingItem.type !== item.type || 
 				existingItem.offer?.uuid !== item.offer?.uuid ||
 				existingItem.orderItems?.length !== item.orderItems?.length) {
 				return false
 			}
 
+			// Für Specials: Nur prüfen ob die gleichen Produkte vorhanden sind (Count egal)
+			if (item.type === 'special') {
+				// Bidirektionaler Vergleich: Jedes neue OrderItem muss einen Partner finden
+				const allNewItemsHaveMatch = item.orderItems.every(newOrderItem => {
+					return existingItem.orderItems.some(existingOrderItem => {
+						return existingOrderItem.product.id === newOrderItem.product.id
+					})
+				})
+
+				// UND: Jedes existierende OrderItem muss auch einen Partner finden
+				const allExistingItemsHaveMatch = existingItem.orderItems.every(existingOrderItem => {
+					return item.orderItems.some(newOrderItem => {
+						return existingOrderItem.product.id === newOrderItem.product.id
+					})
+				})
+
+				return allNewItemsHaveMatch && allExistingItemsHaveMatch
+			}
+
+			// Für Menüs: Strenger Vergleich mit Count und Variationen
 			return item.orderItems.every(newOrderItem => {
 				return existingItem.orderItems.some(existingOrderItem => {
 					if (existingOrderItem.product.id !== newOrderItem.product.id) {

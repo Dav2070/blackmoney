@@ -6,6 +6,7 @@ export class Product {
 	uuid: string
 	name: string
 	price: number
-	category: Category
+	category?: Category
 	variations: Variation[]
+	takeaway?: boolean
 }

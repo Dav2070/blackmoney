@@ -9,6 +9,17 @@
 		</dav-header>
 
 		<div class="separator"></div>
+
+		<!-- Produktkarten der ausgewählten Kategorie -->
+		@if (selectedCategoryObj?.products?.length > 0) {
+			@for (product of selectedCategoryObj.products; track product.uuid) {
+				<dav-card class="product-card">
+					{{ product.name }}
+				</dav-card>
+			}
+		} @else {
+			<p class="no-products">Keine Produkte in dieser Kategorie.</p>
+		}
 	</div>
 
 	<div class="sidenav-container">

@@ -130,6 +130,7 @@ export class ProductsOverviewPageComponent {
 		}
 	]
 	selectedCategory: String = null
+	selectedCategoryObj: Category | null = null
 
 	constructor(
 		private readonly dataService: DataService,
@@ -158,15 +159,7 @@ export class ProductsOverviewPageComponent {
 	}
 
 	selectCategory(category: Category) {
-		this.router.navigate([
-			"user",
-			"restaurants",
-			this.uuid,
-			"menu",
-			"product",
-			"category",
-			category.uuid
-		])
 		this.selectedCategory = category.uuid
+		this.selectedCategoryObj = category
 	}
 }

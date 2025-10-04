@@ -957,7 +957,8 @@
 	(primaryButtonClick)="selectTableDialogPrimaryButtonClick($event)"
 ></app-select-table-dialog>
 
-<app-select-product-variation-dialog
-	#selectProductVariationDialog
+<app-select-product-variations-dialog
+	#selectProductVariationsDialog
 	[product]="lastClickedItem"
-></app-select-product-variation-dialog>
+	(primaryButtonClick)="selectProductVariationsDialogPrimaryButtonClick($event)"
+></app-select-product-variations-dialog>

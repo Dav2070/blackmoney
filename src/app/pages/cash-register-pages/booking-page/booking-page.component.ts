@@ -23,7 +23,7 @@ import { OfferItem } from "src/app/models/OfferItem"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
-import { SelectProductVariationDialogComponent } from "src/app/dialogs/select-product-variation-dialog/select-product-variation-dialog.component"
+import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import {
 	calculateTotalPriceOfOrderItem,
 	convertCategoryResourceToCategory,
@@ -32,6 +32,7 @@ import {
 	convertOrderResourceToOrder
 } from "src/app/utils"
 import { PaymentMethod } from "src/app/types"
+import { Variation } from "src/app/models/Variation"
 
 interface AddProductsInput {
 	uuid: string
@@ -129,9 +130,9 @@ export class BookingPageComponent {
 	selectTableDialog: SelectTableDialogComponent
 	//#endregion
 
-	//#region SelectProductVariationDialog
-	@ViewChild("selectProductVariationDialog")
-	selectProductVariationDialog: SelectProductVariationDialogComponent
+	//#region SelectProductVariationsDialog
+	@ViewChild("selectProductVariationsDialog")
+	selectProductVariationsDialog: SelectProductVariationsDialogComponent
 	//#endregion
 
 	constructor(
@@ -317,7 +318,7 @@ export class BookingPageComponent {
 	// Zeige Variations-Popup an
 	toggleItemPopup() {
 		// this.isItemPopupVisible = !this.isItemPopupVisible
-		this.selectProductVariationDialog.show()
+		this.selectProductVariationsDialog.show()
 	}
 
 	closeItemPopup() {
@@ -401,7 +402,7 @@ export class BookingPageComponent {
 			}
 
 			// this.isItemPopupVisible = true
-			this.selectProductVariationDialog.show()
+			this.selectProductVariationsDialog.show()
 		}
 	}
 
@@ -849,6 +850,39 @@ export class BookingPageComponent {
 					)
 			}
 		}
+	}
+
+	selectProductVariationsDialogPrimaryButtonClick(event: {
+		// selectedVariations: {
+		// 	[key: string]: {
+		// 		variationItem: VariationItem
+		// 		count: number
+		// 	}
+		// }
+	}) {
+		// const newItem: OrderItem = {
+		// 	uuid: crypto.randomUUID(),
+		// 	count: 1,
+		// 	order: null,
+		// 	product: this.lastClickedItem,
+		// 	orderItemVariations: [
+		// 		{
+		// 			uuid: crypto.randomUUID(),
+		// 			count: 1,
+		// 			variationItems: []
+		// 		}
+		// 	]
+		// }
+		// for (const selectedVariationItemUuid of Object.keys(
+		// 	event.selectedVariations
+		// )) {
+		// 	const selectedVariation =
+		// 		event.selectedVariations[selectedVariationItemUuid]
+		// 	newItem.orderItemVariations[0].variationItems.push(
+		// 		selectedVariation.variationItem
+		// 	)
+		// }
+		// this.stagedItems.pushNewItem(newItem)
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu

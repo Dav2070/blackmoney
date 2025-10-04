@@ -1,0 +1,63 @@
+<dav-dialog
+	#dialog
+	[headline]="product?.variations?.[currentVariation]?.name ?? ''"
+	[primaryButtonText]="
+		currentVariation >= product?.variations?.length - 1
+			? actionsLocale.add
+			: actionsLocale.next
+	"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	@if (product != null) {
+		<div class="container">
+			<div class="variation-container">
+				@let groupedVariations =
+					getGroupedVariations(variationTree[currentVariation] ?? {});
+
+				@for (key of Object.keys(groupedVariations); track key) {
+					<div class="variation-group">
+						@if (key) {
+							<h3>{{ key }}</h3>
+						}
+
+						<div class="variation-group-item">
+							@for (
+								value of Object.keys(groupedVariations[key] ?? {});
+								track value
+							) {
+								<div class="variation-selection-container">
+									<dav-icon-button
+										size="sm"
+										(click)="removeButtonClick(value)"
+									>
+										<fa-icon [icon]="faMinus"></fa-icon>
+									</dav-icon-button>
+
+									<p>
+										{{
+											variationTree[currentVariation]?.[value] ?? 0
+										}}
+										×
+										{{ value }}
+									</p>
+
+									<dav-icon-button
+										size="sm"
+										(click)="addButtonClick(value)"
+									>
+										<fa-icon [icon]="faPlus"></fa-icon>
+									</dav-icon-button>
+								</div>
+							}
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	}
+</dav-dialog>

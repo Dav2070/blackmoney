@@ -132,6 +132,9 @@ export const de = {
 			line2: "Sitzplätze",
 			line3: "Anzahl Tische",
 			line4: "Anfangs Tischnummer"
+		},
+		selectProductVariationsDialog: {
+			headline: "Variationen auswählen"
 		}
 	},
 	actions: {
@@ -139,6 +142,7 @@ export const de = {
 		cancel: "Abbrechen",
 		select: "Auswählen",
 		add: "Hinzufügen",
+		next: "Weiter",
 		logout: "Abmelden"
 	},
 	errors: {

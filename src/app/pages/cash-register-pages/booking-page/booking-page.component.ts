@@ -13,7 +13,7 @@ import {
 	faArrowTurnDownRight,
 	faCupTogo,
 	faNoteSticky,
-	faUfo,
+	faStar,
 	faSeat
 } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
@@ -71,7 +71,7 @@ export class BookingPageComponent {
 	faArrowTurnDownRight = faArrowTurnDownRight
 	faCupTogo = faCupTogo
 	faNoteSticky = faNoteSticky
-	faUfo = faUfo
+	faStar = faStar
 	faSeat = faSeat
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []

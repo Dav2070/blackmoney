@@ -37,7 +37,9 @@
 					stagedItems.getOrderItems().length === 0 &&
 					stagedItems.getMenuOrderItems().length === 0
 				) {
-					<p class="no-products-message">Keine Produkte ausgewählt</p>
+					<p class="no-products-message">
+						{{ locale.noProductsSelected }}
+					</p>
 				}
 
 				@for (
@@ -67,7 +69,7 @@
 
 			@if (!ordersLoading && bookedItems.getOrderItems().length > 0) {
 				<div class="staged-items-separator">
-					<p>Gebuchte Produkte</p>
+					<p>{{ locale.bookedProducts }}</p>
 					<div class="separator"></div>
 				</div>
 			}
@@ -141,7 +143,7 @@
 				</dav-button>
 
 				<dav-button color="secondary" text (click)="showTotal()">
-					Clear
+					{{ locale.clear }}
 				</dav-button>
 
 				<dav-button color="secondary" tonal (click)="consoleInput('7')">
@@ -162,7 +164,7 @@
 					[disabled]="!consoleActive || commaUsed || checkArticleNumber()"
 					(click)="bookById()"
 				>
-					Artikel
+					{{ locale.article }}
 				</dav-button>
 
 				<dav-button
@@ -205,7 +207,7 @@
 			<div class="numpad-footer">
 				<dav-button color="secondary" text (click)="sendOrder()">
 					<fa-icon [icon]="faPaperPlaneTop" slot="icon-left"></fa-icon>
-					Bestellung abschicken
+					{{ locale.sendOrder }}
 				</dav-button>
 
 				<dav-button
@@ -216,7 +218,7 @@
 					(click)="navigateToSeparatePayPage($event)"
 				>
 					<fa-icon [icon]="faCreditCard" slot="icon-left"></fa-icon>
-					Bezahlen
+					{{ locale.pay }}
 				</dav-button>
 
 				<dav-button
@@ -235,12 +237,7 @@
 						[icon]="faArrowTurnDownRight"
 						slot="icon-left"
 					></fa-icon>
-					Umbuchen
-				</dav-button>
-
-				<dav-button color="secondary" text>
-					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
-					Außer Haus
+					{{ locale.rebook }}
 				</dav-button>
 
 				<dav-button
@@ -255,17 +252,22 @@
 					"
 				>
 					<fa-icon [icon]="faSeat" slot="icon-left"></fa-icon>
-					Tisch
+					{{ locale.switchTable }}
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
+					{{ locale.takeAway }}
 				</dav-button>
 
 				<dav-button color="secondary" text>
 					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
-					Notiz
+					{{ locale.notes }}
 				</dav-button>
 
 				<dav-button color="secondary" text>
-					<fa-icon [icon]="faUfo" slot="icon-left"></fa-icon>
-					Extras
+					<fa-icon [icon]="faStar" slot="icon-left"></fa-icon>
+					{{ locale.extras }}
 				</dav-button>
 			</div>
 		</div>

@@ -75,7 +75,18 @@ export const de = {
 		roomCombination: "kombinieren"
 	},
 	bookingPage: {
-		tableHeadline: "Tisch {name}"
+		tableHeadline: "Tisch {name}",
+		noProductsSelected: "Keine Produkte ausgewählt",
+		bookedProducts: "Gebuchte Produkte",
+		clear: "Clear",
+		article: "Artikel",
+		sendOrder: "Bestellung abschicken",
+		pay: "Bezahlen",
+		rebook: "Umbuchen",
+		switchTable: "Tisch wechseln",
+		takeAway: "Außer Haus",
+		notes: "Notizen",
+		extras: "Extras"
 	},
 	dialogs: {
 		logoutDialog: {

@@ -1,7 +1,7 @@
 .container {
 	display: grid;
 	grid-template-columns: 1fr 1fr auto;
-	grid-template-rows: auto 1fr auto;
+	grid-template-rows: auto 1fr;
 	height: 100vh;
 	background-color: var(--dav-color-surface);
 	padding: 0;
@@ -18,7 +18,7 @@
 	display: grid;
 	grid-template-rows: 1fr auto;
 	overflow: hidden;
-	margin: 0 16px;
+	margin: 0 16px 16px 16px;
 }
 
 .orders-container {
@@ -42,6 +42,13 @@
 	dav-button {
 		width: 100%;
 	}
+}
+
+.numpad-footer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 4px;
 }
 
 .product-selection-container {
@@ -73,11 +80,6 @@
 	width: 120px;
 	height: 40px;
 	border-radius: 20px;
-}
-
-.footer {
-	grid-column: 1 / span 3;
-	grid-row: 3;
 }
 
 .staged-items-separator {
@@ -170,17 +172,6 @@
 		margin-left: auto;
 		font-weight: bold;
 	}
-}
-
-#footerButtonsContainer {
-	display: flex;
-	justify-content: space-around;
-}
-
-.footerButton {
-	width: 100%;
-	margin: 25px;
-	height: 70px;
 }
 
 .variationItem-price {

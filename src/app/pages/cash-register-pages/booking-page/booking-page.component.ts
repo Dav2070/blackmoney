@@ -4,7 +4,17 @@ import { Router, ActivatedRoute, ParamMap } from "@angular/router"
 import {
 	faArrowRightArrowLeft,
 	faFileLines,
-	faCreditCard
+	faXmark,
+	faMinus,
+	faPlus,
+	faComma,
+	faCreditCard,
+	faPaperPlaneTop,
+	faArrowTurnDownRight,
+	faCupTogo,
+	faNoteSticky,
+	faUfo,
+	faSeat
 } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
@@ -31,8 +41,6 @@ import {
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
-import { PaymentMethod } from "src/app/types"
-import { Variation } from "src/app/models/Variation"
 
 interface AddProductsInput {
 	uuid: string
@@ -54,7 +62,17 @@ export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
 	faArrowRightArrowLeft = faArrowRightArrowLeft
 	faFileLines = faFileLines
+	faXmark = faXmark
+	faMinus = faMinus
+	faPlus = faPlus
+	faComma = faComma
 	faCreditCard = faCreditCard
+	faPaperPlaneTop = faPaperPlaneTop
+	faArrowTurnDownRight = faArrowTurnDownRight
+	faCupTogo = faCupTogo
+	faNoteSticky = faNoteSticky
+	faUfo = faUfo
+	faSeat = faSeat
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []
 	selectedInventory: Product[] = []
@@ -1382,37 +1400,37 @@ export class BookingPageComponent {
 		this.clickMenuItem(menuItem)
 	}
 
-	async createBill(payment: PaymentMethod) {
-		// Create a bill if it doesn't exist
-		if (this.billUuid == null) {
-			// TODO: Get the current register client
-			const createBillResponse = await this.apiService.createBill(`uuid`, {
-				registerClientUuid: "eb76aee4-0054-4e56-89b1-0cbefde357a9"
-			})
+	// async createBill(payment: PaymentMethod) {
+	// 	// Create a bill if it doesn't exist
+	// 	if (this.billUuid == null) {
+	// 		// TODO: Get the current register client
+	// 		const createBillResponse = await this.apiService.createBill(`uuid`, {
+	// 			registerClientUuid: "eb76aee4-0054-4e56-89b1-0cbefde357a9"
+	// 		})
 
-			if (createBillResponse.data == null) {
-				return
-			}
+	// 		if (createBillResponse.data == null) {
+	// 			return
+	// 		}
 
-			this.billUuid = createBillResponse.data.createBill.uuid
-		}
+	// 		this.billUuid = createBillResponse.data.createBill.uuid
+	// 	}
 
-		const completeOrderResponse = await this.apiService.completeOrder(
-			"uuid",
-			{
-				uuid: this.orderUuid,
-				billUuid: this.billUuid,
-				paymentMethod: payment
-			}
-		)
+	// 	const completeOrderResponse = await this.apiService.completeOrder(
+	// 		"uuid",
+	// 		{
+	// 			uuid: this.orderUuid,
+	// 			billUuid: this.billUuid,
+	// 			paymentMethod: payment
+	// 		}
+	// 	)
 
-		if (completeOrderResponse.data == null) {
-			// TODO: Error handling
-			return
-		}
+	// 	if (completeOrderResponse.data == null) {
+	// 		// TODO: Error handling
+	// 		return
+	// 	}
 
-		window.location.reload()
-	}
+	// 	window.location.reload()
+	// }
 
 	async openBills() {
 		let listOrdersResult = await this.apiService.listOrders(

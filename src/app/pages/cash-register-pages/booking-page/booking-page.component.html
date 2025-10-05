@@ -7,7 +7,9 @@
 		<div class="orders-container">
 			@if (room != null && table != null) {
 				<app-orders-header
-					[headline]="`${locale.tableHeadline.replace('{name}', table.name.toString())} — ${room.name}`"
+					[headline]="
+						`${locale.tableHeadline.replace('{name}', table.name.toString())} — ${room.name}`
+					"
 					[showBackButton]="true"
 					(backButtonClick)="navigateToDashboard($event)"
 				>
@@ -15,16 +17,8 @@
 						<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon>
 					</dav-icon-button>
 
-					<dav-icon-button size="sm">
+					<dav-icon-button size="sm" (click)="openBills()">
 						<fa-icon [icon]="faFileLines"></fa-icon>
-					</dav-icon-button>
-
-					<dav-icon-button
-						size="sm"
-						[href]="'/dashboard/tables/' + uuid + '/separate'"
-						(click)="navigateToSeparatePayPage($event)"
-					>
-						<fa-icon [icon]="faCreditCard"></fa-icon>
 					</dav-icon-button>
 				</app-orders-header>
 			}
@@ -131,7 +125,7 @@
 					"
 					(click)="setAnzahl()"
 				>
-					×
+					<fa-icon [icon]="faXmark"></fa-icon>
 				</dav-button>
 
 				<dav-button color="secondary" tonal (click)="consoleInput('4')">
@@ -177,7 +171,7 @@
 					[disabled]="commaUsed || !consoleActive || xUsed"
 					(click)="consoleInput(','); commaUsed = true"
 				>
-					,
+					<fa-icon [icon]="faComma"></fa-icon>
 				</dav-button>
 
 				<dav-button color="secondary" tonal (click)="consoleInput('0')">
@@ -190,20 +184,88 @@
 					[disabled]="!selectedItem || !selectedMenuItem"
 					(click)="subtractitem()"
 				>
-					-
+					<fa-icon [icon]="faMinus"></fa-icon>
 				</dav-button>
 
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedItem"
-					[disabled]="!selectedMenuItem"
+					[disabled]="!selectedItem || !selectedMenuItem"
 					(click)="
 						addSelectedItem(selectedItem);
 						addSelectedMenuItem(selectedMenuItem)
 					"
 				>
-					+
+					<fa-icon [icon]="faPlus"></fa-icon>
+				</dav-button>
+			</div>
+
+			<div class="separator"></div>
+
+			<div class="numpad-footer">
+				<dav-button color="secondary" text (click)="sendOrder()">
+					<fa-icon [icon]="faPaperPlaneTop" slot="icon-left"></fa-icon>
+					Bestellung abschicken
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="bookedItems.isEmpty()"
+					[href]="'/dashboard/tables/' + uuid + '/separate'"
+					(click)="navigateToSeparatePayPage($event)"
+				>
+					<fa-icon [icon]="faCreditCard" slot="icon-left"></fa-icon>
+					Bezahlen
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="
+						commaUsed ||
+						!consoleActive ||
+						table?.uuid == console ||
+						checkforZero() ||
+						xUsed
+					"
+					(click)="navigateToTransferPage()"
+				>
+					<fa-icon
+						[icon]="faArrowTurnDownRight"
+						slot="icon-left"
+					></fa-icon>
+					Umbuchen
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
+					Außer Haus
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="
+						commaUsed ||
+						!consoleActive ||
+						table?.uuid == console ||
+						checkforZero() ||
+						xUsed
+					"
+				>
+					<fa-icon [icon]="faSeat" slot="icon-left"></fa-icon>
+					Tisch
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
+					Notiz
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faUfo" slot="icon-left"></fa-icon>
+					Extras
 				</dav-button>
 			</div>
 		</div>
@@ -319,72 +381,6 @@
 				}
 			}
 		</dav-sidenav>
-	</div>
-
-	<div class="footer">
-		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton" (click)="sendOrder()">
-				Bestellung abschicken
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[disabled]="
-					commaUsed ||
-					!consoleActive ||
-					table?.uuid == console ||
-					checkforZero() ||
-					xUsed
-				"
-				(click)="navigateToTransferPage()"
-			>
-				Umbuchen
-			</button>
-			<button mat-flat-button class="footerButton" [routerLink]="['../../']">
-				Tischplan
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[routerLink]="['../' + console]"
-				[disabled]="
-					commaUsed ||
-					!consoleActive ||
-					table?.uuid == console ||
-					checkforZero() ||
-					xUsed
-				"
-			>
-				Tisch
-			</button>
-			<button mat-flat-button class="footerButton" (click)="openBills()">
-				Rechnungen
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				(click)="createBill('CASH')"
-				[disabled]="bookedItems.isEmpty()"
-			>
-				Bar
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				(click)="createBill('CARD')"
-				[disabled]="bookedItems.isEmpty()"
-			>
-				Karte
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[routerLink]="['separate']"
-				[disabled]="bookedItems.isEmpty()"
-			>
-				Getrennt
-			</button>
-		</div>
 	</div>
 </div>
 
@@ -960,5 +956,7 @@
 <app-select-product-variations-dialog
 	#selectProductVariationsDialog
 	[product]="lastClickedItem"
-	(primaryButtonClick)="selectProductVariationsDialogPrimaryButtonClick($event)"
+	(primaryButtonClick)="
+		selectProductVariationsDialogPrimaryButtonClick($event)
+	"
 ></app-select-product-variations-dialog>

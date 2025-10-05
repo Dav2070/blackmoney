@@ -6,6 +6,7 @@ import {
 	Output,
 	ViewChild
 } from "@angular/core"
+import { Router, ActivatedRoute } from "@angular/router"
 import { FormControl } from "@angular/forms"
 import { faPen } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
@@ -24,6 +25,8 @@ export class TableCombinationsPageComponent {
 
 	faPen = faPen
 
+	restaurantUuid: string = null
+	roomUuid: string = null
 	table: Table[] = [
 		{ uuid: "", name: 1, seats: 4 },
 		{ uuid: "", name: 2, seats: 4 },
@@ -44,7 +47,17 @@ export class TableCombinationsPageComponent {
 	visible: boolean = false
 	showAllForm = false
 
-	constructor(private localizationService: LocalizationService) {}
+	constructor(
+		private localizationService: LocalizationService,
+		private router: Router,
+		private activatedRoute: ActivatedRoute
+	) {}
+
+	ngOnInit() {
+		this.restaurantUuid =
+			this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
+		this.roomUuid = this.activatedRoute.snapshot.paramMap.get("roomUuid")
+	}
 
 	chairNumberfieldChange(event: Event) {
 		this.seats = (event as CustomEvent).detail.value
@@ -121,5 +134,15 @@ export class TableCombinationsPageComponent {
 		}
 
 		this.cancelEdit()
+	}
+
+	navigateBack() {
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.restaurantUuid,
+			"rooms",
+			this.roomUuid
+		])
 	}
 }

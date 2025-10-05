@@ -3,7 +3,7 @@ import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
 import {
 	faArrowRightArrowLeft,
-	faPaperPlaneTop,
+	faFileLines,
 	faCreditCard
 } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
@@ -53,7 +53,7 @@ interface AddProductsInputVariation {
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
 	faArrowRightArrowLeft = faArrowRightArrowLeft
-	faPaperPlaneTop = faPaperPlaneTop
+	faFileLines = faFileLines
 	faCreditCard = faCreditCard
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []

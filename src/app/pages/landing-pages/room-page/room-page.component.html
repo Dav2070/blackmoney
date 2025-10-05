@@ -9,15 +9,19 @@
 			(editButtonClick)="showEditRoomDialog()"
 		>
 			{{ room?.name }}
+
+			<div class="header-icons-container" slot="icons">
+				<dav-icon-button
+					size="sm"
+					[href]="
+						`/user/restaurants/${restaurantUuid}/rooms/${roomUuid}/combinations`
+					"
+					(click)="navigateToTableCombinationsPage($event)"
+				>
+					<fa-icon [icon]="faObjectUnion"></fa-icon>
+				</dav-icon-button>
+			</div>
 		</dav-header>
-		<dav-button
-			outline
-			class="test-table-btn"
-			(click)="showTableCombinationDialog()"
-			size="sm"
-		>
-			{{ locale.roomCombination }}
-		</dav-button>
 
 		@if (loading) {
 			<dav-progress-ring size="24"></dav-progress-ring>

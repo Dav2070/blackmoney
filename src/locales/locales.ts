@@ -64,9 +64,7 @@ export const de = {
 		headline: "Deine Räume"
 	},
 	roomPage: {
-		add: "+",
-		delete: "löschen",
-		roomCombination: "kombinieren"
+		delete: "löschen"
 	},
 	tableCombinationPage: {
 		headline: "Deine Tischkombinationen",

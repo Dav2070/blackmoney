@@ -1,6 +1,6 @@
 import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
-import { faPen } from "@fortawesome/pro-regular-svg-icons"
+import { faPen, faObjectUnion } from "@fortawesome/pro-regular-svg-icons"
 import { EditRoomDialogComponent } from "src/app/dialogs/edit-room-dialog/edit-room-dialog.component"
 import { AddTableDialogComponent } from "src/app/dialogs/add-table-dialog/add-table-dialog.component"
 import { DataService } from "src/app/services/data-service"
@@ -20,6 +20,7 @@ export class RoomPageComponent {
 	locale = this.localizationService.locale.roomPage
 	errorsLocale = this.localizationService.locale.errors
 	faPen = faPen
+	faObjectUnion = faObjectUnion
 	restaurantUuid: string = null
 	roomUuid: string = null
 
@@ -224,11 +225,6 @@ export class RoomPageComponent {
 	// 	this.cancelEdit()
 	// }
 
-	showTableCombinationDialog() {
-		const currentUrl = this.router.url
-		this.router.navigateByUrl(`${currentUrl}/combinations`)
-	}
-
 	// gibt die nächste (höhste) freie Tischnummer
 	// getNextTableNumber() {
 	// 	let max = 0
@@ -240,6 +236,19 @@ export class RoomPageComponent {
 	// 	}
 	// 	return max + 1
 	// }
+
+	navigateToTableCombinationsPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.restaurantUuid,
+			"rooms",
+			this.roomUuid,
+			"combinations"
+		])
+	}
 
 	navigateBack() {
 		this.router.navigate([

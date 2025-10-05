@@ -164,14 +164,40 @@ export class SelectProductVariationsDialogComponent {
 		return variationItems.map(v => v.name).join(", ")
 	}
 
+	getAllCurrentTreeVariationItemCount() {
+		const currentVariationTree =
+			this.variationTree[this.currentVariation] ?? {}
+		let count = 0
+
+		for (const key of Object.keys(currentVariationTree)) {
+			count += currentVariationTree[key]
+		}
+
+		return count
+	}
+
 	getCurrentTreeVariationItemCount(variationItemUuid: string) {
-		const currentVariationTree = this.variationTree[this.currentVariation]
+		const currentVariationTree =
+			this.variationTree[this.currentVariation] ?? {}
 		let count = 0
 
 		for (const key of Object.keys(currentVariationTree)) {
 			if (key.includes(variationItemUuid)) {
 				count += currentVariationTree[key]
 			}
+		}
+
+		return count
+	}
+
+	getAllPreviousTreeVariationItemCount() {
+		if (this.currentVariation === 0) return 0
+
+		const currentVariationTree = this.variationTree[this.currentVariation - 1]
+		let count = 0
+
+		for (const key of Object.keys(currentVariationTree)) {
+			count += currentVariationTree[key]
 		}
 
 		return count

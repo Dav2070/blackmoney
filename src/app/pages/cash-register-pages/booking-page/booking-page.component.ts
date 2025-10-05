@@ -853,36 +853,45 @@ export class BookingPageComponent {
 	}
 
 	selectProductVariationsDialogPrimaryButtonClick(event: {
-		// selectedVariations: {
-		// 	[key: string]: {
-		// 		variationItem: VariationItem
-		// 		count: number
-		// 	}
-		// }
+		variationTree: { [key: string]: number }[]
 	}) {
-		// const newItem: OrderItem = {
-		// 	uuid: crypto.randomUUID(),
-		// 	count: 1,
-		// 	order: null,
-		// 	product: this.lastClickedItem,
-		// 	orderItemVariations: [
-		// 		{
-		// 			uuid: crypto.randomUUID(),
-		// 			count: 1,
-		// 			variationItems: []
-		// 		}
-		// 	]
-		// }
-		// for (const selectedVariationItemUuid of Object.keys(
-		// 	event.selectedVariations
-		// )) {
-		// 	const selectedVariation =
-		// 		event.selectedVariations[selectedVariationItemUuid]
-		// 	newItem.orderItemVariations[0].variationItems.push(
-		// 		selectedVariation.variationItem
-		// 	)
-		// }
-		// this.stagedItems.pushNewItem(newItem)
+		this.selectProductVariationsDialog.hide()
+
+		const lastVariationTree = event.variationTree.pop()
+		const allVariationItems = this.lastClickedItem.variations
+			.map(v => v.variationItems)
+			.flat()
+
+		const newItem: OrderItem = {
+			uuid: crypto.randomUUID(),
+			count: 1,
+			order: null,
+			product: this.lastClickedItem,
+			orderItemVariations: []
+		}
+
+		for (const key of Object.keys(lastVariationTree)) {
+			const value = lastVariationTree[key]
+			if (value === 0) continue
+
+			const variationItems: VariationItem[] = []
+
+			for (const variationItemUuid of key.split(",")) {
+				const item = allVariationItems.find(
+					vi => vi.uuid === variationItemUuid
+				)
+				if (item) variationItems.push(item)
+			}
+
+			newItem.orderItemVariations.push({
+				uuid: crypto.randomUUID(),
+				count: value,
+				variationItems
+			})
+		}
+
+		newItem.count = newItem.orderItemVariations.length
+		this.stagedItems.pushNewItem(newItem)
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu

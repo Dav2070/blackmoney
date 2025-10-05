@@ -9,6 +9,11 @@
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
 	maxWidth="450"
+	[primaryButtonDisabled]="
+		currentVariation > 0 &&
+		getAllCurrentTreeVariationItemCount() !==
+			getAllPreviousTreeVariationItemCount()
+	"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"

@@ -23,7 +23,7 @@ import { RoomManagementComponent } from "./pages/settings-pages/room-management/
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
-import { TableCombinationPageComponent } from "./pages/landing-pages/table-combination-page/table-combination-page.component"
+import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 
 const routes: Routes = [
@@ -85,7 +85,7 @@ const routes: Routes = [
 			},
 			{
 				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/combinations",
-				component: TableCombinationPageComponent
+				component: TableCombinationsPageComponent
 			}
 		]
 	},

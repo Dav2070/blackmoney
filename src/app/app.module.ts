@@ -72,7 +72,7 @@ import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-ov
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
-import { TableCombinationPageComponent } from "./pages/landing-pages/table-combination-page/table-combination-page.component"
+import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -140,7 +140,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		PrintersPageComponent,
 		RoomsPageComponent,
 		RoomPageComponent,
-		TableCombinationPageComponent,
+		TableCombinationsPageComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,

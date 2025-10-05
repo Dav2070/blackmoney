@@ -13,11 +13,11 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { Table, TableCombination } from "src/app/models/Table"
 
 @Component({
-	templateUrl: "./table-combination-page.component.html",
-	styleUrl: "./table-combination-page.component.scss",
+	templateUrl: "./table-combinations-page.component.html",
+	styleUrl: "./table-combinations-page.component.scss",
 	standalone: false
 })
-export class TableCombinationPageComponent {
+export class TableCombinationsPageComponent {
 	tablesLocale = this.localizationService.locale.tableCombinationPage
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addTableCombinationDialog

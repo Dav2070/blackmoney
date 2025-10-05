@@ -15,23 +15,38 @@
 			@for (product of selectedCategoryObj.products; track product.uuid) {
 				<dav-card class="product-card">
 					<div class="product-info-row">
-						<div class="product-info">
-							<b>ID:</b> {{ product.id }}<br />
-							<b>Name:</b> {{ product.name }}<br />
-							<b>Preis:</b>
-							{{ product.price | currency: "EUR" : "symbol" : "1.2-2"
-							}}<br />
-							<b>Variationen:</b>
-							<span *ngIf="product.variations?.length > 0; else noVar">
-								<span
-									*ngFor="let v of product.variations; let last = last"
+						<div class="product-main">
+							<div class="product-title-row">
+								<span class="product-id">#{{ product.id }}</span>
+								<span class="product-name">{{ product.name }}</span>
+								<span class="product-price">{{
+									product.price | currency: "EUR" : "symbol" : "1.2-2"
+								}}</span>
+							</div>
+							<div class="product-details-row">
+								<span class="product-detail"
+									><b>Variationen:</b>
+									<span
+										*ngIf="product.variations?.length > 0; else noVar"
+									>
+										<span
+											*ngFor="
+												let v of product.variations;
+												let last = last
+											"
+										>
+											{{ v.name }}<span *ngIf="!last">, </span>
+										</span>
+									</span>
+									<ng-template #noVar
+										><span>Keine</span></ng-template
+									></span
 								>
-									{{ v.name }}<span *ngIf="!last">, </span>
+								<span class="product-detail"
+									><b>Außerhaus:</b>
+									{{ product.takeaway ? "Ja" : "Nein" }}
 								</span>
-							</span>
-							<ng-template #noVar><span>Keine</span></ng-template
-							><br />
-							<b>Außerhaus:</b> {{ product.takeaway ? "Ja" : "Nein" }}
+							</div>
 						</div>
 						<div class="product-actions">
 							<dav-icon-button size="sm" (click)="editProduct(product)">

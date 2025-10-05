@@ -144,6 +144,9 @@ export class ProductsOverviewPageComponent {
 		this.selectedCategory =
 			this.activatedRoute.snapshot.paramMap.get("categoryuuid")
 
+		this.selectedCategoryObj =
+			this.categories.find(c => c.uuid === this.selectedCategory) || null
+
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 	}
 

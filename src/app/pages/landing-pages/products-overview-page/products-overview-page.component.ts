@@ -1,8 +1,8 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen } from "@fortawesome/pro-regular-svg-icons"
-import { systemThemeKey } from "src/app/constants"
+import { faPen, faTrash } from "@fortawesome/pro-regular-svg-icons"
 import { Category } from "src/app/models/Category"
+import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
 import { DataService } from "src/app/services/data-service"
@@ -24,6 +24,7 @@ export class ProductsOverviewPageComponent {
 	locale = this.localizationService.locale.productPage
 	errorsLocale = this.localizationService.locale.errors
 	faPen = faPen
+	faTrash = faTrash
 	uuid: string = null
 
 	// Beispiel-VariationItems
@@ -164,5 +165,13 @@ export class ProductsOverviewPageComponent {
 	selectCategory(category: Category) {
 		this.selectedCategory = category.uuid
 		this.selectedCategoryObj = category
+	}
+
+	editProduct(product: Product) {
+		// Öffne Dialog oder setze das Produkt zum Bearbeiten
+	}
+
+	deleteProduct(product: Product) {
+		// Lösche das Produkt oder öffne Bestätigungsdialog
 	}
 }

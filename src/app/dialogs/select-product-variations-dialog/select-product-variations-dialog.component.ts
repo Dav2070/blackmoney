@@ -31,12 +31,6 @@ export class SelectProductVariationsDialogComponent {
 
 	visible: boolean = false
 	currentVariation: number = 0
-	// selectedVariations: {
-	// 	[key: string]: {
-	// 		variationItem: VariationItem
-	// 		count: number
-	// 	}
-	// } = {}
 	// Index: variation index
 	// Object key: list of variation item uuids separated by comma
 	// Object value: count
@@ -46,12 +40,9 @@ export class SelectProductVariationsDialogComponent {
 
 	@Input() product: Product = null
 	@Output() primaryButtonClick = new EventEmitter<{
-		// selectedVariations: {
-		// 	[key: string]: {
-		// 		variationItem: VariationItem
-		// 		count: number
-		// 	}
-		// }
+		variationTree: {
+			[key: string]: number
+		}[]
 	}>()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
@@ -173,6 +164,34 @@ export class SelectProductVariationsDialogComponent {
 		return variationItems.map(v => v.name).join(", ")
 	}
 
+	getCurrentTreeVariationItemCount(variationItemUuid: string) {
+		const currentVariationTree = this.variationTree[this.currentVariation]
+		let count = 0
+
+		for (const key of Object.keys(currentVariationTree)) {
+			if (key.includes(variationItemUuid)) {
+				count += currentVariationTree[key]
+			}
+		}
+
+		return count
+	}
+
+	getPreviousTreeVariationItemCount(variationItemUuid: string) {
+		if (this.currentVariation === 0) return 0
+
+		const currentVariationTree = this.variationTree[this.currentVariation - 1]
+		let count = 0
+
+		for (const key of Object.keys(currentVariationTree)) {
+			if (variationItemUuid.includes(key)) {
+				count += currentVariationTree[key]
+			}
+		}
+
+		return count
+	}
+
 	submit() {
 		if (this.currentVariation < this.product.variations.length - 1) {
 			this.currentVariation++
@@ -180,7 +199,7 @@ export class SelectProductVariationsDialogComponent {
 		}
 
 		this.primaryButtonClick.emit({
-			// selectedVariations: this.selectedVariations
+			variationTree: this.variationTree
 		})
 	}
 }

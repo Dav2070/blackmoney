@@ -30,9 +30,17 @@
 								value of Object.keys(groupedVariations[key] ?? {});
 								track value
 							) {
+								@let currentVariationKey =
+									(key ? key + "," : "") + value;
+
 								<div class="variation-selection-container">
 									<dav-icon-button
 										size="sm"
+										[disabled]="
+											variationTree[currentVariation]?.[
+												currentVariationKey
+											] === 0
+										"
 										(click)="removeButtonClick(key, value)"
 									>
 										<fa-icon [icon]="faMinus"></fa-icon>
@@ -40,7 +48,9 @@
 
 									<p>
 										{{
-											variationTree[currentVariation]?.[(key ? key + "," : "") + value] ?? 0
+											variationTree[currentVariation]?.[
+												currentVariationKey
+											] ?? 0
 										}}
 										×
 										{{ getHeadlineForKey(value) }}
@@ -48,6 +58,12 @@
 
 									<dav-icon-button
 										size="sm"
+										[disabled]="
+											currentVariation > 0
+												? getCurrentTreeVariationItemCount(key) >=
+													getPreviousTreeVariationItemCount(key)
+												: false
+										"
 										(click)="addButtonClick(key, value)"
 									>
 										<fa-icon [icon]="faPlus"></fa-icon>

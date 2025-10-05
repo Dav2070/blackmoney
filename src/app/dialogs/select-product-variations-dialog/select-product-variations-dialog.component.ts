@@ -86,7 +86,7 @@ export class SelectProductVariationsDialogComponent {
 				let currentItems: string[] = []
 
 				for (const variationItem of variation.variationItems) {
-					currentItems.push(variationItem.name)
+					currentItems.push(variationItem.uuid)
 				}
 
 				items.push(currentItems)
@@ -108,30 +108,18 @@ export class SelectProductVariationsDialogComponent {
 		this.visible = false
 	}
 
-	addButtonClick(uuid: string) {
-		// if (this.selectedVariations[uuid] == null) {
-		// 	this.selectedVariations[uuid] = {
-		// 		variationItem: this.product.variations[
-		// 			this.currentVariation
-		// 		].variationItems.find(v => v.uuid === uuid),
-		// 		count: 1
-		// 	}
-		// } else {
-		// 	this.selectedVariations[uuid].count++
-		// }
+	addButtonClick(key: string, value: string) {
+		this.variationTree[this.currentVariation][
+			(key ? key + "," : "") + value
+		]++
 	}
 
-	removeButtonClick(uuid: string) {
-		// if (this.selectedVariations[uuid] == null) {
-		// 	this.selectedVariations[uuid] = {
-		// 		variationItem: this.product.variations[
-		// 			this.currentVariation
-		// 		].variationItems.find(v => v.uuid === uuid),
-		// 		count: 0
-		// 	}
-		// } else if (this.selectedVariations[uuid].count > 0) {
-		// 	this.selectedVariations[uuid].count--
-		// }
+	removeButtonClick(key: string, value: string) {
+		const currentVariationKey = (key ? key + "," : "") + value
+
+		if (this.variationTree[this.currentVariation][currentVariationKey] > 0) {
+			this.variationTree[this.currentVariation][currentVariationKey]--
+		}
 	}
 
 	cartesian(args: string[][]) {
@@ -162,10 +150,27 @@ export class SelectProductVariationsDialogComponent {
 				groupedVariations[headline] = {}
 			}
 
-			groupedVariations[headline][keyParts[keyParts.length - 1]] = variationTree[key]
+			groupedVariations[headline][keyParts[keyParts.length - 1]] =
+				variationTree[key]
 		}
 
 		return groupedVariations
+	}
+
+	getHeadlineForKey(key: string) {
+		const keyParts = key.split(",")
+		const variationItems: VariationItem[] = []
+
+		for (const variationItemUuid of keyParts) {
+			const variationItem = this.product.variations
+				.map(v => v.variationItems)
+				.flat()
+				.find(v => v.uuid === variationItemUuid)
+
+			if (variationItem) variationItems.push(variationItem)
+		}
+
+		return variationItems.map(v => v.name).join(", ")
 	}
 
 	submit() {

@@ -22,7 +22,7 @@
 				@for (key of Object.keys(groupedVariations); track key) {
 					<div class="variation-group">
 						@if (key) {
-							<h3>{{ key }}</h3>
+							<h3>{{ getHeadlineForKey(key) }}</h3>
 						}
 
 						<div class="variation-group-item">
@@ -33,22 +33,22 @@
 								<div class="variation-selection-container">
 									<dav-icon-button
 										size="sm"
-										(click)="removeButtonClick(value)"
+										(click)="removeButtonClick(key, value)"
 									>
 										<fa-icon [icon]="faMinus"></fa-icon>
 									</dav-icon-button>
 
 									<p>
 										{{
-											variationTree[currentVariation]?.[value] ?? 0
+											variationTree[currentVariation]?.[(key ? key + "," : "") + value] ?? 0
 										}}
 										×
-										{{ value }}
+										{{ getHeadlineForKey(value) }}
 									</p>
 
 									<dav-icon-button
 										size="sm"
-										(click)="addButtonClick(value)"
+										(click)="addButtonClick(key, value)"
 									>
 										<fa-icon [icon]="faPlus"></fa-icon>
 									</dav-icon-button>

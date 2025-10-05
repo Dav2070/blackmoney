@@ -29,6 +29,7 @@ h3 {
 .variation-selection-container {
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	width: 100%;
 	box-sizing: border-box;
 	background-color: var(--dav-color-surface);
@@ -44,9 +45,10 @@ h3 {
 	}
 
 	p {
-		margin: 0;
+		margin: 0 8px;
 		font-size: 18px;
 		line-height: 32px;
+		text-align: center;
 	}
 }
 

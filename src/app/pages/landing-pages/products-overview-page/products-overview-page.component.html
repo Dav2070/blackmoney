@@ -1,5 +1,5 @@
-<div class="container slide-up-in">
-	<div class="content-container">
+<div class="page-layout">
+	<div class="main-content">
 		<dav-header
 			backButtonVisible
 			addButtonVisible
@@ -7,78 +7,76 @@
 		>
 			{{ locale.headline }}
 		</dav-header>
-
-		<div class="separator"></div>
-
-		<!-- Produktkarten der ausgewählten Kategorie -->
-		@if (selectedCategoryObj?.products?.length > 0) {
-			@for (product of selectedCategoryObj.products; track product.uuid) {
-				<dav-card class="product-card">
-					<div class="product-info-row">
-						<div class="product-main">
-							<div class="product-title-row">
-								<span class="product-id">#{{ product.id }}</span>
-								<span class="product-name">{{ product.name }}</span>
-								<span class="product-price">{{
-									product.price | currency: "EUR" : "symbol" : "1.2-2"
-								}}</span>
-							</div>
-							<div class="product-details-row">
-								<span class="product-detail"
-									><b>Variationen:</b>
-									<span
-										*ngIf="product.variations?.length > 0; else noVar"
-									>
-										<span
-											*ngFor="
-												let v of product.variations;
-												let last = last
-											"
-										>
-											{{ v.name }}<span *ngIf="!last">, </span>
-										</span>
+		<div class="products-list">
+			@if (selectedCategoryObj?.products?.length > 0) {
+				@for (product of selectedCategoryObj.products; track product.uuid) {
+					<dav-card class="product-card">
+						<div class="product-info-row">
+							<div class="product-main">
+								<div class="product-title-row">
+									<span class="product-id">#{{ product.id }}</span>
+									<span class="product-name">{{ product.name }}</span>
+									<span class="product-price">
+										{{
+											product.price
+												| currency: "EUR" : "symbol" : "1.2-2"
+										}}
 									</span>
-									<ng-template #noVar
-										><span>Keine</span></ng-template
-									></span
+								</div>
+								<div class="product-details-row">
+									<span class="product-detail">
+										<b>Variationen:</b>
+										@if (product.variations?.length > 0) {
+											@for (v of product.variations; track v.name) {
+												{{ v.name }}
+												@if (
+													product.variations.indexOf(v) <
+													product.variations.length - 1
+												) {
+													<span>, </span>
+												}
+											}
+										} @else {
+											<span>Keine</span>
+										}
+									</span>
+									<span class="product-detail">
+										<b>Außerhaus:</b>
+										{{ product.takeaway ? "Ja" : "Nein" }}
+									</span>
+								</div>
+							</div>
+							<div class="product-actions">
+								<dav-icon-button
+									size="sm"
+									(click)="editProduct(product)"
 								>
-								<span class="product-detail"
-									><b>Außerhaus:</b>
-									{{ product.takeaway ? "Ja" : "Nein" }}
-								</span>
+									<fa-icon [icon]="faPen"></fa-icon>
+								</dav-icon-button>
+								<dav-icon-button
+									size="sm"
+									(click)="deleteProduct(product)"
+								>
+									<fa-icon [icon]="faTrash"></fa-icon>
+								</dav-icon-button>
 							</div>
 						</div>
-						<div class="product-actions">
-							<dav-icon-button size="sm" (click)="editProduct(product)">
-								<fa-icon [icon]="faPen"></fa-icon>
-							</dav-icon-button>
-							<dav-icon-button
-								size="sm"
-								(click)="deleteProduct(product)"
-							>
-								<fa-icon [icon]="faTrash"></fa-icon>
-							</dav-icon-button>
-						</div>
-					</div>
-				</dav-card>
-			}
-		} @else {
-			<p class="no-products">Keine Produkte in dieser Kategorie.</p>
-		}
-	</div>
-
-	<div class="sidenav-container">
-		@if (categories.length > 0) {
-			<dav-sidenav>
-				<!-- Dynamic categories -->
-				@for (category of categories; track category.uuid) {
-					<dav-sidenav-item
-						[value]="category.name"
-						[active]="selectedCategory === category.uuid"
-						(click)="selectCategory(category)"
-					></dav-sidenav-item>
+					</dav-card>
 				}
-			</dav-sidenav>
-		}
+			} @else {
+				<p class="no-products">Keine Produkte in dieser Kategorie.</p>
+			}
+		</div>
+	</div>
+	<div class="sidenav-container">
+		<dav-sidenav>
+			@for (category of categories; track category.uuid) {
+				<dav-sidenav-item
+					[value]="category.name"
+					[active]="selectedCategory === category.uuid"
+					(click)="selectCategory(category)"
+				></dav-sidenav-item>
+			}
+		</dav-sidenav>
 	</div>
 </div>

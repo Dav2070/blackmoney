@@ -53,6 +53,7 @@ import { AddRoomDialogComponent } from "./dialogs/add-room-dialog/add-room-dialo
 import { EditRoomDialogComponent } from "./dialogs/edit-room-dialog/edit-room-dialog.component"
 import { AddTableDialogComponent } from "./dialogs/add-table-dialog/add-table-dialog.component"
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
+import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -71,7 +72,7 @@ import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-ov
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
-import { TableCombinationPageComponent } from "./pages/landing-pages/table-combination-page/table-combination-page.component"
+import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -121,6 +122,7 @@ import { CategoryPageComponent } from "./pages/landing-pages/category-page/categ
 		EditRoomDialogComponent,
 		AddTableDialogComponent,
 		SelectTableDialogComponent,
+		SelectProductVariationsDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -145,7 +147,7 @@ import { CategoryPageComponent } from "./pages/landing-pages/category-page/categ
 		PrintersPageComponent,
 		RoomsPageComponent,
 		RoomPageComponent,
-		TableCombinationPageComponent,
+		TableCombinationsPageComponent,
 		MenuPageComponent,
 		//Settings-Pages
 		SettingsPageComponent,

@@ -62,12 +62,6 @@
 	}
 }
 
-.actions-container {
-	flex: 5;
-	display: flex;
-	flex-direction: column;
-}
-
 .bills-price-container {
 	grid-column: 3;
 	grid-row: 2;
@@ -122,22 +116,6 @@
 .items {
 	overflow-y: scroll;
 	flex: 1;
-}
-
-#top {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: space-around;
-}
-
-#bottom {
-	flex: 2;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
 }
 
 .popup-overlay {

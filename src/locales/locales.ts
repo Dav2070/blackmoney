@@ -65,9 +65,7 @@ export const de = {
 		headline: "Deine Räume"
 	},
 	roomPage: {
-		add: "+",
-		delete: "löschen",
-		roomCombination: "kombinieren"
+		delete: "löschen"
 	},
 	tableCombinationPage: {
 		headline: "Deine Tischkombinationen",
@@ -92,7 +90,18 @@ export const de = {
 		options: "Extras"
 	},
 	bookingPage: {
-		tableHeadline: "Tisch {name}"
+		tableHeadline: "Tisch {name}",
+		noProductsSelected: "Keine Produkte ausgewählt",
+		bookedProducts: "Gebuchte Produkte",
+		clear: "Clear",
+		article: "Artikel",
+		sendOrder: "Bestellung abschicken",
+		pay: "Bezahlen",
+		rebook: "Umbuchen",
+		switchTable: "Tisch wechseln",
+		takeAway: "Außer Haus",
+		notes: "Notizen",
+		extras: "Extras"
 	},
 	dialogs: {
 		logoutDialog: {
@@ -149,12 +158,17 @@ export const de = {
 			line2: "Sitzplätze",
 			line3: "Anzahl Tische",
 			line4: "Anfangs Tischnummer"
+		},
+		selectProductVariationsDialog: {
+			headline: "Variationen auswählen"
 		}
 	},
 	actions: {
 		save: "Speichern",
 		cancel: "Abbrechen",
 		select: "Auswählen",
+		add: "Hinzufügen",
+		next: "Weiter",
 		logout: "Abmelden"
 	},
 	errors: {

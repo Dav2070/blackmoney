@@ -37,6 +37,7 @@
 					<app-order-item-card
 						[orderItem]="orderItem"
 						(click)="transferItem(orderItem, bookedItems, activeBill)"
+						(contextmenu)="showContextMenu($event, orderItem)"
 					></app-order-item-card>
 				}
 			</ul>
@@ -47,62 +48,25 @@
 		</div>
 	</div>
 
-	<div class="actions-container">
-		<div id="top">
-			<button
-				mat-flat-button
-				[disabled]="checkMaxBills()"
-				(click)="addBill()"
-			>
-				Rechnung hinzufügen
-			</button>
-			<button
-				[disabled]="bills.length === 1"
-				(click)="deleteBill()"
-				mat-flat-button
-			>
-				Rechnung entfernen
-			</button>
-		</div>
-		<div id="bottom">
-			<mat-card style="width: 30%; margin-bottom: 2px">
-				<mat-card-content> {{ console }} </mat-card-content>
-			</mat-card>
-			<div>
-				@for (number of numberpad; track number) {
-					<button
-						mat-flat-button
-						(click)="consoleInput(number.toString())"
-					>
-						{{ number }}
-					</button>
-					@if (number == 3) {
-						<br />
-					}
-					@if (number == 6) {
-						<br />
-					}
-					@if (number == 9) {
-						<br />
-					}
-				}
-			</div>
-			<div>
-				<button mat-flat-button (click)="clearInput()">clear</button>
-				<button
-					mat-flat-button
-					[disabled]="!consoleActive"
-					(click)="consoleInput('0')"
-				>
-					0
-				</button>
-			</div>
-		</div>
-	</div>
-
 	<div class="bills-price-container">
 		<div class="bills-container">
-			<app-orders-header headline="Rechnungen"></app-orders-header>
+			<app-orders-header headline="Rechnungen">
+				<dav-icon-button
+					size="sm"
+					[disabled]="checkMaxBills()"
+					(click)="addBill()"
+				>
+					<fa-icon [icon]="faPlus"></fa-icon>
+				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[disabled]="bills.length <= 1"
+					(click)="deleteBill()"
+				>
+					<fa-icon [icon]="faMinus"></fa-icon>
+				</dav-icon-button>
+			</app-orders-header>
 
 			<div class="bills-list-container">
 				@for (bill of bills; let index = $index; track index) {
@@ -174,8 +138,6 @@
 			<button
 				mat-flat-button
 				class="footerButton"
-				[disabled]="!consoleActive"
-				[routerLink]="['../../' + console]"
 			>
 				Tisch
 			</button>
@@ -246,3 +208,16 @@
 		</button>
 	</div>
 </div>
+
+<dav-context-menu
+	#contextMenu
+	[visible]="contextMenuVisible"
+	[posX]="contextMenuPositionX"
+	[posY]="contextMenuPositionY"
+>
+	<dav-context-menu-item
+		value="Mehrere verschieben"
+	>
+		<fa-icon slot="icon" [icon]="faChevronsRight"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

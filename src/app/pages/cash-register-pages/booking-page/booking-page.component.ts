@@ -3,8 +3,18 @@ import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
 import {
 	faArrowRightArrowLeft,
+	faFileLines,
+	faXmark,
+	faMinus,
+	faPlus,
+	faComma,
+	faCreditCard,
 	faPaperPlaneTop,
-	faCreditCard
+	faArrowTurnDownRight,
+	faCupTogo,
+	faNoteSticky,
+	faStar,
+	faSeat
 } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
@@ -23,6 +33,7 @@ import { OfferItem } from "src/app/models/OfferItem"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
+import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import {
 	calculateTotalPriceOfOrderItem,
 	convertCategoryResourceToCategory,
@@ -30,7 +41,6 @@ import {
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
-import { PaymentMethod } from "src/app/types"
 
 interface AddProductsInput {
 	uuid: string
@@ -51,8 +61,18 @@ interface AddProductsInputVariation {
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
 	faArrowRightArrowLeft = faArrowRightArrowLeft
-	faPaperPlaneTop = faPaperPlaneTop
+	faFileLines = faFileLines
+	faXmark = faXmark
+	faMinus = faMinus
+	faPlus = faPlus
+	faComma = faComma
 	faCreditCard = faCreditCard
+	faPaperPlaneTop = faPaperPlaneTop
+	faArrowTurnDownRight = faArrowTurnDownRight
+	faCupTogo = faCupTogo
+	faNoteSticky = faNoteSticky
+	faStar = faStar
+	faSeat = faSeat
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []
 	selectedInventory: Product[] = []
@@ -126,6 +146,11 @@ export class BookingPageComponent {
 	//#region SelectTableDialog
 	@ViewChild("selectTableDialog")
 	selectTableDialog: SelectTableDialogComponent
+	//#endregion
+
+	//#region SelectProductVariationsDialog
+	@ViewChild("selectProductVariationsDialog")
+	selectProductVariationsDialog: SelectProductVariationsDialogComponent
 	//#endregion
 
 	constructor(
@@ -310,7 +335,8 @@ export class BookingPageComponent {
 
 	// Zeige Variations-Popup an
 	toggleItemPopup() {
-		this.isItemPopupVisible = !this.isItemPopupVisible
+		// this.isItemPopupVisible = !this.isItemPopupVisible
+		this.selectProductVariationsDialog.show()
 	}
 
 	closeItemPopup() {
@@ -393,7 +419,8 @@ export class BookingPageComponent {
 				)
 			}
 
-			this.isItemPopupVisible = true
+			// this.isItemPopupVisible = true
+			this.selectProductVariationsDialog.show()
 		}
 	}
 
@@ -841,6 +868,48 @@ export class BookingPageComponent {
 					)
 			}
 		}
+	}
+
+	selectProductVariationsDialogPrimaryButtonClick(event: {
+		variationTree: { [key: string]: number }[]
+	}) {
+		this.selectProductVariationsDialog.hide()
+
+		const lastVariationTree = event.variationTree.pop()
+		const allVariationItems = this.lastClickedItem.variations
+			.map(v => v.variationItems)
+			.flat()
+
+		const newItem: OrderItem = {
+			uuid: crypto.randomUUID(),
+			count: 1,
+			order: null,
+			product: this.lastClickedItem,
+			orderItemVariations: []
+		}
+
+		for (const key of Object.keys(lastVariationTree)) {
+			const value = lastVariationTree[key]
+			if (value === 0) continue
+
+			const variationItems: VariationItem[] = []
+
+			for (const variationItemUuid of key.split(",")) {
+				const item = allVariationItems.find(
+					vi => vi.uuid === variationItemUuid
+				)
+				if (item) variationItems.push(item)
+			}
+
+			newItem.orderItemVariations.push({
+				uuid: crypto.randomUUID(),
+				count: value,
+				variationItems
+			})
+		}
+
+		newItem.count = newItem.orderItemVariations.length
+		this.stagedItems.pushNewItem(newItem)
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu
@@ -1331,37 +1400,37 @@ export class BookingPageComponent {
 		this.clickMenuItem(menuItem)
 	}
 
-	async createBill(payment: PaymentMethod) {
-		// Create a bill if it doesn't exist
-		if (this.billUuid == null) {
-			// TODO: Get the current register client
-			const createBillResponse = await this.apiService.createBill(`uuid`, {
-				registerClientUuid: "eb76aee4-0054-4e56-89b1-0cbefde357a9"
-			})
+	// async createBill(payment: PaymentMethod) {
+	// 	// Create a bill if it doesn't exist
+	// 	if (this.billUuid == null) {
+	// 		// TODO: Get the current register client
+	// 		const createBillResponse = await this.apiService.createBill(`uuid`, {
+	// 			registerClientUuid: "eb76aee4-0054-4e56-89b1-0cbefde357a9"
+	// 		})
 
-			if (createBillResponse.data == null) {
-				return
-			}
+	// 		if (createBillResponse.data == null) {
+	// 			return
+	// 		}
 
-			this.billUuid = createBillResponse.data.createBill.uuid
-		}
+	// 		this.billUuid = createBillResponse.data.createBill.uuid
+	// 	}
 
-		const completeOrderResponse = await this.apiService.completeOrder(
-			"uuid",
-			{
-				uuid: this.orderUuid,
-				billUuid: this.billUuid,
-				paymentMethod: payment
-			}
-		)
+	// 	const completeOrderResponse = await this.apiService.completeOrder(
+	// 		"uuid",
+	// 		{
+	// 			uuid: this.orderUuid,
+	// 			billUuid: this.billUuid,
+	// 			paymentMethod: payment
+	// 		}
+	// 	)
 
-		if (completeOrderResponse.data == null) {
-			// TODO: Error handling
-			return
-		}
+	// 	if (completeOrderResponse.data == null) {
+	// 		// TODO: Error handling
+	// 		return
+	// 	}
 
-		window.location.reload()
-	}
+	// 	window.location.reload()
+	// }
 
 	async openBills() {
 		let listOrdersResult = await this.apiService.listOrders(

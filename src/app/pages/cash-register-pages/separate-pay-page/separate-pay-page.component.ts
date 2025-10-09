@@ -1,5 +1,6 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
+import { faPlus, faMinus } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { OrderItem } from "src/app/models/OrderItem"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
@@ -16,12 +17,11 @@ import { PaymentMethod } from "src/app/types"
 	standalone: false
 })
 export class SeparatePayPageComponent {
-	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+	faPlus = faPlus
+	faMinus = faMinus
 	bookedItems = new AllItemHandler()
 	bills: AllItemHandler[] = [new AllItemHandler()]
 	table: Table = null
-	console: string
-	consoleActive: boolean = false
 	ordersLoading: boolean = true
 
 	orderUuid: string = ""
@@ -73,20 +73,6 @@ export class SeparatePayPageComponent {
 	//Berechnet den Preis aller Items eines Tisches
 	showTotal(bookedItems: AllItemHandler) {
 		return bookedItems.calculateTotal().toFixed(2).replace(".", ",") + " €"
-	}
-
-	//Fügt die gedrückte Nummer in die Konsole ein
-	consoleInput(input: string) {
-		if (this.consoleActive == false) {
-			this.consoleActive = true
-			this.console = ""
-		}
-		this.console += input
-	}
-
-	clearInput() {
-		this.console = ""
-		this.consoleActive = false
 	}
 
 	addBill() {

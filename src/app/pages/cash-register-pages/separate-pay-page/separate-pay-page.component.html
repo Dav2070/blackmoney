@@ -37,6 +37,7 @@
 					<app-order-item-card
 						[orderItem]="orderItem"
 						(click)="transferItem(orderItem, bookedItems, activeBill)"
+						(contextmenu)="showContextMenu($event, orderItem)"
 					></app-order-item-card>
 				}
 			</ul>
@@ -207,3 +208,16 @@
 		</button>
 	</div>
 </div>
+
+<dav-context-menu
+	#contextMenu
+	[visible]="contextMenuVisible"
+	[posX]="contextMenuPositionX"
+	[posY]="contextMenuPositionY"
+>
+	<dav-context-menu-item
+		value="Mehrere verschieben"
+	>
+		<fa-icon slot="icon" [icon]="faChevronsRight"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

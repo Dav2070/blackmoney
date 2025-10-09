@@ -1,6 +1,11 @@
-import { Component } from "@angular/core"
+import { Component, HostListener, ViewChild, ElementRef } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPlus, faMinus } from "@fortawesome/pro-regular-svg-icons"
+import {
+	faPlus,
+	faMinus,
+	faChevronsRight
+} from "@fortawesome/pro-regular-svg-icons"
+import { ContextMenu } from "dav-ui-components"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { OrderItem } from "src/app/models/OrderItem"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
@@ -19,10 +24,14 @@ import { PaymentMethod } from "src/app/types"
 export class SeparatePayPageComponent {
 	faPlus = faPlus
 	faMinus = faMinus
+	faChevronsRight = faChevronsRight
 	bookedItems = new AllItemHandler()
 	bills: AllItemHandler[] = [new AllItemHandler()]
 	table: Table = null
 	ordersLoading: boolean = true
+	contextMenuVisible: boolean = false
+	contextMenuPositionX: number = 0
+	contextMenuPositionY: number = 0
 
 	orderUuid: string = ""
 	billUuid: string = ""
@@ -37,6 +46,9 @@ export class SeparatePayPageComponent {
 	tmpReceiver: AllItemHandler
 
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+
+	@ViewChild("contextMenu")
+	contextMenu: ElementRef<ContextMenu>
 
 	constructor(
 		private activatedRoute: ActivatedRoute,
@@ -63,6 +75,13 @@ export class SeparatePayPageComponent {
 		this.orderUuid = order.uuid
 		this.billUuid = order.bill?.uuid
 		this.ordersLoading = false
+	}
+
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		if (!this.contextMenu.nativeElement.contains(event.target as Node)) {
+			this.contextMenuVisible = false
+		}
 	}
 
 	navigateToBookingPage(event: MouseEvent) {
@@ -364,5 +383,23 @@ export class SeparatePayPageComponent {
 	calculateTotalPriceOfOfferOrderItem(offerItem: OfferOrderItem) {
 		// Bei OfferOrderItems ist der Special-Preis bereits berechnet und im Product gespeichert
 		return ((offerItem.product.price * offerItem.count) / 100).toFixed(2)
+	}
+
+	async showContextMenu(event: MouseEvent, orderItem: OrderItem) {
+		event.preventDefault()
+
+		// Set the position of the context menu
+		this.contextMenuPositionX = event.pageX
+		this.contextMenuPositionY = event.pageY
+
+		if (this.contextMenuVisible) {
+			this.contextMenuVisible = false
+
+			await new Promise((resolve: Function) => {
+				setTimeout(() => resolve(), 60)
+			})
+		}
+
+		this.contextMenuVisible = true
 	}
 }

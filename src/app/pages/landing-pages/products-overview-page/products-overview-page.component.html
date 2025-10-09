@@ -15,7 +15,11 @@
 							<div class="product-main">
 								<div class="product-title-row">
 									<span class="product-id">#{{ product.id }}</span>
-									<span class="product-name">{{ product.name }}</span>
+									<div class="product-name-center">
+										<span class="product-name">{{
+											product.name
+										}}</span>
+									</div>
 									<span class="product-price">
 										{{
 											product.price
@@ -40,7 +44,7 @@
 											<span>Keine</span>
 										}
 									</span>
-									<span class="product-detail">
+									<span class="product-detail product-takeaway">
 										<b>Außerhaus:</b>
 										{{ product.takeaway ? "Ja" : "Nein" }}
 									</span>

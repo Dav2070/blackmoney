@@ -71,17 +71,39 @@ dav-sidenav {
 }
 
 .product-title-row {
-	display: flex;
-	align-items: baseline;
-	gap: 18px;
-	font-size: 1.18em;
-	font-weight: 500;
+	display: grid;
+	grid-template-columns: 1fr 2fr 1fr;
+	align-items: center;
+	width: 100%;
 	margin-bottom: 4px;
 }
 
-.product-details-row {
+.product-id {
+	justify-self: start;
+}
+
+.product-name-center {
 	display: flex;
-	gap: 32px;
+	justify-content: center;
+}
+
+.product-name {
+	font-size: 1.25em;
+	font-weight: 700;
+	text-align: center;
+}
+
+.product-price {
+	justify-self: end;
+	font-weight: 600;
+	font-size: 1.15em;
+}
+
+.product-details-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	width: 100%;
 	font-size: 0.98em;
 }
 
@@ -89,6 +111,10 @@ dav-sidenav {
 	display: flex;
 	align-items: center;
 	gap: 6px;
+}
+
+.product-takeaway {
+	justify-self: end;
 }
 
 .product-actions {

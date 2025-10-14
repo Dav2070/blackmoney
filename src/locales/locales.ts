@@ -144,6 +144,9 @@ export const de = {
 		},
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"
+		},
+		moveMultipleProductsDialog: {
+			headline: "Mehrere verschieben"
 		}
 	},
 	actions: {
@@ -152,6 +155,7 @@ export const de = {
 		select: "Auswählen",
 		add: "Hinzufügen",
 		next: "Weiter",
+		move: "Verschieben",
 		logout: "Abmelden"
 	},
 	errors: {

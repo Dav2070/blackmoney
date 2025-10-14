@@ -6,14 +6,15 @@ import {
 	faChevronsRight
 } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
+import { ApiService } from "src/app/services/api-service"
+import { DataService } from "src/app/services/data-service"
+import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { OrderItem } from "src/app/models/OrderItem"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
-import { ApiService } from "src/app/services/api-service"
 import { Table } from "src/app/models/Table"
-import { DataService } from "src/app/services/data-service"
-import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
+import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 import { PaymentMethod } from "src/app/types"
 
 @Component({
@@ -29,6 +30,7 @@ export class SeparatePayPageComponent {
 	bills: AllItemHandler[] = [new AllItemHandler()]
 	table: Table = null
 	ordersLoading: boolean = true
+	contextMenuOrderItem: OrderItem = null
 	contextMenuVisible: boolean = false
 	contextMenuPositionX: number = 0
 	contextMenuPositionY: number = 0
@@ -46,6 +48,9 @@ export class SeparatePayPageComponent {
 	tmpReceiver: AllItemHandler
 
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+
+	@ViewChild("moveMultipleProductsDialog")
+	moveMultipleProductsDialog: MoveMultipleProductsDialogComponent
 
 	@ViewChild("contextMenu")
 	contextMenu: ElementRef<ContextMenu>
@@ -87,6 +92,11 @@ export class SeparatePayPageComponent {
 	navigateToBookingPage(event: MouseEvent) {
 		event.preventDefault()
 		this.router.navigate(["dashboard", "tables", this.table.uuid])
+	}
+
+	showMoveMultipleProductsDialog() {
+		this.contextMenuVisible = false
+		this.moveMultipleProductsDialog.show()
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
@@ -387,6 +397,12 @@ export class SeparatePayPageComponent {
 
 	async showContextMenu(event: MouseEvent, orderItem: OrderItem) {
 		event.preventDefault()
+
+		if (orderItem.count <= 1 || orderItem.orderItemVariations.length > 0) {
+			return
+		}
+
+		this.contextMenuOrderItem = orderItem
 
 		// Set the position of the context menu
 		this.contextMenuPositionX = event.pageX

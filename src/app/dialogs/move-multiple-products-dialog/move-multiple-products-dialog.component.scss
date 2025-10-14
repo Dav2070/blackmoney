@@ -1,0 +1,27 @@
+h3 {
+	font-weight: 500;
+	margin-bottom: 12px;
+}
+
+.number-selection-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	box-sizing: border-box;
+	background-color: var(--dav-color-surface);
+	color: var(--dav-color-on-surface);
+	border: 1px solid rgb(var(--dav-color-outline-rgb), 0.15);
+	border-radius: 24px;
+	padding: 6px;
+	transition: 200ms;
+
+	fa-icon {
+		width: 18px;
+		height: 18px;
+	}
+
+	dav-textfield {
+		width: 38px;
+	}
+}

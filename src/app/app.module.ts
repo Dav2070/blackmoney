@@ -54,6 +54,7 @@ import { EditRoomDialogComponent } from "./dialogs/edit-room-dialog/edit-room-di
 import { AddTableDialogComponent } from "./dialogs/add-table-dialog/add-table-dialog.component"
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -119,6 +120,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		AddTableDialogComponent,
 		SelectTableDialogComponent,
 		SelectProductVariationsDialogComponent,
+		MoveMultipleProductsDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

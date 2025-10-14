@@ -1,0 +1,39 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.move"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<h3>{{ orderItem?.product.name }}</h3>
+
+	<div class="number-selection-item">
+		<dav-icon-button
+			size="sm"
+			[disabled]="count <= 1"
+			(click)="decreaseCount()"
+		>
+			<fa-icon [icon]="faMinus"></fa-icon>
+		</dav-icon-button>
+
+		<dav-textfield
+			[value]="count"
+			type="number"
+			min="1"
+			[max]="orderItem?.count"
+			noArrows
+		></dav-textfield>
+
+		<dav-icon-button
+			size="sm"
+			[disabled]="count >= orderItem?.count"
+			(click)="increaseCount()"
+		>
+			<fa-icon [icon]="faPlus"></fa-icon>
+		</dav-icon-button>
+	</div>
+</dav-dialog>

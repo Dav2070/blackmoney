@@ -209,6 +209,11 @@
 	</div>
 </div>
 
+<app-move-multiple-products-dialog
+	#moveMultipleProductsDialog
+	[orderItem]="contextMenuOrderItem"
+></app-move-multiple-products-dialog>
+
 <dav-context-menu
 	#contextMenu
 	[visible]="contextMenuVisible"
@@ -217,6 +222,7 @@
 >
 	<dav-context-menu-item
 		value="Mehrere verschieben"
+		(click)="showMoveMultipleProductsDialog()"
 	>
 		<fa-icon slot="icon" [icon]="faChevronsRight"></fa-icon>
 	</dav-context-menu-item>

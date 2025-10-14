@@ -26,6 +26,7 @@
 			min="1"
 			[max]="orderItem?.count"
 			noArrows
+			(change)="countTextfieldChange($event)"
 		></dav-textfield>
 
 		<dav-icon-button

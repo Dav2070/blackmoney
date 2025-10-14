@@ -395,6 +395,16 @@ export class SeparatePayPageComponent {
 		return ((offerItem.product.price * offerItem.count) / 100).toFixed(2)
 	}
 
+	moveMultipleProductsDialogPrimaryButtonClick(event: { count: number }) {
+		this.moveMultipleProductsDialog.hide()
+		this.tmpAnzahl = event.count
+		this.transferItem(
+			this.contextMenuOrderItem,
+			this.bookedItems,
+			this.activeBill
+		)
+	}
+
 	async showContextMenu(event: MouseEvent, orderItem: OrderItem) {
 		event.preventDefault()
 

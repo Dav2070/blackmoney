@@ -1,4 +1,13 @@
-import { Component, ViewChild, ElementRef, Inject, PLATFORM_ID, Input } from "@angular/core"
+import {
+	Component,
+	ViewChild,
+	ElementRef,
+	Inject,
+	PLATFORM_ID,
+	Input,
+	Output,
+	EventEmitter
+} from "@angular/core"
 import { isPlatformBrowser } from "@angular/common"
 import { faPlus, faMinus } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
@@ -19,6 +28,7 @@ export class MoveMultipleProductsDialogComponent {
 	visible: boolean = false
 	count: number = 1
 	@Input() orderItem: OrderItem = null
+	@Output() primaryButtonClick = new EventEmitter<{ count: number }>()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
 	constructor(
@@ -46,6 +56,10 @@ export class MoveMultipleProductsDialogComponent {
 		this.visible = false
 	}
 
+	countTextfieldChange(event: Event) {
+		this.count = Number((event as CustomEvent).detail.value)
+	}
+
 	decreaseCount() {
 		this.count--
 	}
@@ -54,5 +68,7 @@ export class MoveMultipleProductsDialogComponent {
 		this.count++
 	}
 
-	submit() {}
+	submit() {
+		this.primaryButtonClick.emit({ count: this.count })
+	}
 }

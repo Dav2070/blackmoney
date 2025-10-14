@@ -135,12 +135,7 @@
 			>
 				Tischplan
 			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-			>
-				Tisch
-			</button>
+			<button mat-flat-button class="footerButton">Tisch</button>
 			<button
 				mat-flat-button
 				class="footerButton"
@@ -212,6 +207,7 @@
 <app-move-multiple-products-dialog
 	#moveMultipleProductsDialog
 	[orderItem]="contextMenuOrderItem"
+	(primaryButtonClick)="moveMultipleProductsDialogPrimaryButtonClick($event)"
 ></app-move-multiple-products-dialog>
 
 <dav-context-menu

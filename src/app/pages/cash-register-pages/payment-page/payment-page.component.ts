@@ -18,11 +18,11 @@ import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 import { PaymentMethod } from "src/app/types"
 
 @Component({
-	templateUrl: "./separate-pay-page.component.html",
-	styleUrl: "./separate-pay-page.component.scss",
+	templateUrl: "./payment-page.component.html",
+	styleUrl: "./payment-page.component.scss",
 	standalone: false
 })
-export class SeparatePayPageComponent {
+export class PaymentPageComponent {
 	faPlus = faPlus
 	faMinus = faMinus
 	faChevronsRight = faChevronsRight

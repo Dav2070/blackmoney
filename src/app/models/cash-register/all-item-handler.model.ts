@@ -164,7 +164,7 @@ export class AllItemHandler {
 				total += item.product.price * item.count
 
 			} else if (item.type === 'special') {
-				total += item.product.price 
+				total += ((item.product.price * item.count) + (item.rabatt * item.count))
 			} else {
 				total += item.product.price * item.count
 

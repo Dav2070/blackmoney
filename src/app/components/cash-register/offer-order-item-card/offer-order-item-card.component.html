@@ -31,7 +31,6 @@
 					€
 				</p>
 			</div>
-
 			@for (
 				variation of orderItem.orderItemVariations;
 				track variation.uuid
@@ -61,29 +60,21 @@
 	}
 	
 	<div class="offer-order-item-variations-separator"></div>
-		@for (
-				variation of orderItem.orderItemVariations;
-				track variation.uuid
-			) {
-			@for (
-				variationItem of variation.variationItems;
-				track variationItem.uuid
-			) {
-				<div class="offer-order-item-card-variation-name">
-					<p>- {{ variationItem.name }}</p>
-				</div>
 
-				<div class="offer-order-item-card-variation-unit-price">
-					<p>
-						{{ variation.count }} ×
-						{{
-							(variationItem.additionalCost / 100)
-								.toFixed(2)
-								.replace(".", ",")
-						}}
-						€
-					</p>
-				</div>
-			}
-		}
+	@if (orderItem.rabatt !== undefined) {
+		<div class="offer-order-item-card-variation-name">
+			<p>- Rabatt</p>
+		</div>
+
+		<div class="offer-order-item-card-variation-unit-price">
+			<p> 
+				{{ orderItem.count }} ×
+				{{ 
+					((orderItem.rabatt) / 100).toFixed(2).replace(".", ",") 
+				}}
+				€
+			</p>
+		</div>
+	}
+	
 </li>

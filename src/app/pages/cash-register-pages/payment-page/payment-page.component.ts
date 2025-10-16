@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from "@angular/router"
 import {
 	faPlus,
 	faMinus,
-	faChevronsRight
+	faChevronsRight,
+	faChevronsLeft
 } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 import { ApiService } from "src/app/services/api-service"
@@ -26,6 +27,7 @@ export class PaymentPageComponent {
 	faPlus = faPlus
 	faMinus = faMinus
 	faChevronsRight = faChevronsRight
+	faChevronsLeft = faChevronsLeft
 	bookedItems = new AllItemHandler()
 	bills: AllItemHandler[] = [new AllItemHandler()]
 	table: Table = null
@@ -34,6 +36,7 @@ export class PaymentPageComponent {
 	contextMenuVisible: boolean = false
 	contextMenuPositionX: number = 0
 	contextMenuPositionY: number = 0
+	contextMenuBillsList: boolean = false
 
 	orderUuid: string = ""
 	billUuid: string = ""
@@ -400,12 +403,17 @@ export class PaymentPageComponent {
 		this.tmpAnzahl = event.count
 		this.transferItem(
 			this.contextMenuOrderItem,
-			this.bookedItems,
-			this.activeBill
+			this.contextMenuBillsList ? this.bookedItems : this.activeBill,
+			this.contextMenuBillsList ? this.activeBill : this.bookedItems
 		)
+		this.tmpAnzahl = 1
 	}
 
-	async showContextMenu(event: MouseEvent, orderItem: OrderItem) {
+	async showContextMenu(
+		event: MouseEvent,
+		orderItem: OrderItem,
+		billsList: boolean
+	) {
 		event.preventDefault()
 
 		if (orderItem.count <= 1 || orderItem.orderItemVariations.length > 0) {
@@ -426,6 +434,7 @@ export class PaymentPageComponent {
 			})
 		}
 
+		this.contextMenuBillsList = billsList
 		this.contextMenuVisible = true
 	}
 }

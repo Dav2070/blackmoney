@@ -37,7 +37,7 @@
 					<app-order-item-card
 						[orderItem]="orderItem"
 						(click)="transferItem(orderItem, bookedItems, activeBill)"
-						(contextmenu)="showContextMenu($event, orderItem)"
+						(contextmenu)="showContextMenu($event, orderItem, true)"
 					></app-order-item-card>
 				}
 			</ul>
@@ -98,6 +98,9 @@
 									[orderItem]="orderItem"
 									(click)="
 										transferItem(orderItem, activeBill, bookedItems)
+									"
+									(contextmenu)="
+										showContextMenu($event, orderItem, false)
 									"
 								></app-order-item-card>
 							}
@@ -220,6 +223,9 @@
 		value="Mehrere verschieben"
 		(click)="showMoveMultipleProductsDialog()"
 	>
-		<fa-icon slot="icon" [icon]="faChevronsRight"></fa-icon>
+		<fa-icon
+			slot="icon"
+			[icon]="contextMenuBillsList ? faChevronsRight : faChevronsLeft"
+		></fa-icon>
 	</dav-context-menu-item>
 </dav-context-menu>

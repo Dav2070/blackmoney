@@ -49,6 +49,7 @@ export class MoveMultipleProductsDialogComponent {
 	}
 
 	show() {
+		this.count = this.orderItem?.count || 1
 		this.visible = true
 	}
 

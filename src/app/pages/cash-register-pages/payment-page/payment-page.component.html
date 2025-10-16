@@ -127,35 +127,25 @@
 	</div>
 
 	<div class="footer">
-		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton" [routerLink]="['../']">
-				Tisch {{ table?.name }}
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[routerLink]="['../../../']"
-			>
-				Tischplan
-			</button>
-			<button mat-flat-button class="footerButton">Tisch</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[disabled]="activeBill.isEmpty()"
-				(click)="createBill('CASH')"
-			>
-				Bar
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[disabled]="activeBill.isEmpty()"
-				(click)="createBill('CARD')"
-			>
-				Karte
-			</button>
-		</div>
+		<dav-button
+			color="secondary"
+			text
+			[disabled]="activeBill.isEmpty()"
+			(click)="createBill('CASH')"
+		>
+			<fa-icon [icon]="faMoneyBill1Wave" slot="icon-left"></fa-icon>
+			Bar
+		</dav-button>
+
+		<dav-button
+			color="secondary"
+			text
+			[disabled]="activeBill.isEmpty()"
+			(click)="createBill('CARD')"
+		>
+			<fa-icon [icon]="faCreditCard" slot="icon-left"></fa-icon>
+			Karte
+		</dav-button>
 	</div>
 </div>
 

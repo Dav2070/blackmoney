@@ -4,7 +4,9 @@ import {
 	faPlus,
 	faMinus,
 	faChevronsRight,
-	faChevronsLeft
+	faChevronsLeft,
+	faCreditCard,
+	faMoneyBill1Wave
 } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 import { ApiService } from "src/app/services/api-service"
@@ -28,6 +30,8 @@ export class PaymentPageComponent {
 	faMinus = faMinus
 	faChevronsRight = faChevronsRight
 	faChevronsLeft = faChevronsLeft
+	faCreditCard = faCreditCard
+	faMoneyBill1Wave = faMoneyBill1Wave
 	bookedItems = new AllItemHandler()
 	bills: AllItemHandler[] = [new AllItemHandler()]
 	table: Table = null

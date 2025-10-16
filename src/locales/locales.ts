@@ -86,6 +86,14 @@ export const de = {
 		notes: "Notizen",
 		extras: "Extras"
 	},
+	paymentPage: {
+		tableHeadline: "Tisch {name}",
+		noProductsSelected: "Keine Produkte ausgewählt",
+		billsHeadline: "Rechnungen",
+		cash: "Bar",
+		card: "Karte",
+		moveMultipleProducts: "Mehrere verschieben"
+	},
 	dialogs: {
 		logoutDialog: {
 			headline: "Abmelden",

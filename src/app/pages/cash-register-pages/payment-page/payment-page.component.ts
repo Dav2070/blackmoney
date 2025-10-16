@@ -9,6 +9,7 @@ import {
 	faMoneyBill1Wave
 } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
+import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
@@ -26,6 +27,7 @@ import { PaymentMethod } from "src/app/types"
 	standalone: false
 })
 export class PaymentPageComponent {
+	locale = this.localizationService.locale.paymentPage
 	faPlus = faPlus
 	faMinus = faMinus
 	faChevronsRight = faChevronsRight
@@ -64,6 +66,7 @@ export class PaymentPageComponent {
 
 	constructor(
 		private activatedRoute: ActivatedRoute,
+		private localizationService: LocalizationService,
 		private apiService: ApiService,
 		private dataService: DataService,
 		private router: Router

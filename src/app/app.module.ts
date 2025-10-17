@@ -54,6 +54,7 @@ import { EditRoomDialogComponent } from "./dialogs/edit-room-dialog/edit-room-di
 import { AddTableDialogComponent } from "./dialogs/add-table-dialog/add-table-dialog.component"
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -70,6 +71,8 @@ import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-pag
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
+import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
+import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
@@ -81,8 +84,6 @@ import { DataService } from "./services/data-service"
 import { SettingsService } from "./services/settings-service"
 import { LocalizationService } from "./services/localization-service"
 
-import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
-import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 import { ItemsTableComponent } from "./components/settings/items-table/items-table.component"
@@ -123,6 +124,7 @@ import { CategoryPageComponent } from "./pages/landing-pages/category-page/categ
 		AddTableDialogComponent,
 		SelectTableDialogComponent,
 		SelectProductVariationsDialogComponent,
+		MoveMultipleProductsDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -139,7 +141,7 @@ import { CategoryPageComponent } from "./pages/landing-pages/category-page/categ
 		TableOverviewPageComponent,
 		BookingPageComponent,
 		TransferPageComponent,
-		SeparatePayPageComponent,
+		PaymentPageComponent,
 		ProductPageComponent,
 		ProductsOverviewPageComponent,
 		CategoryPageComponent,

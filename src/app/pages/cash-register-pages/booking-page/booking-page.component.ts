@@ -323,9 +323,9 @@ export class BookingPageComponent {
 		this.selectTableDialog.show()
 	}
 
-	navigateToSeparatePayPage(event: MouseEvent) {
+	navigateToPaymentPage(event: MouseEvent) {
 		event.preventDefault()
-		this.router.navigate(["dashboard", "tables", this.uuid, "separate"])
+		this.router.navigate(["dashboard", "tables", this.uuid, "payment"])
 	}
 
 	selectTableDialogPrimaryButtonClick(event: { uuid: string }) {

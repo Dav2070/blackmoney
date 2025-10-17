@@ -214,8 +214,8 @@
 					color="secondary"
 					text
 					[disabled]="bookedItems.isEmpty()"
-					[href]="'/dashboard/tables/' + uuid + '/separate'"
-					(click)="navigateToSeparatePayPage($event)"
+					[href]="'/dashboard/tables/' + uuid + '/payment'"
+					(click)="navigateToPaymentPage($event)"
 				>
 					<fa-icon [icon]="faCreditCard" slot="icon-left"></fa-icon>
 					{{ locale.pay }}

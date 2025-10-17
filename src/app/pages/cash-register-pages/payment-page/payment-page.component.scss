@@ -96,26 +96,11 @@
 .footer {
 	grid-column: 1 / span 3;
 	grid-row: 3;
-}
-
-#footerButtonsContainer {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-around;
-}
-
-.footerButton {
-	width: 100%;
-	margin: 25px;
-	height: 70px;
-}
-
-.price {
-	bottom: 0;
-}
-
-.items {
-	overflow-y: scroll;
-	flex: 1;
+	gap: 4px;
+	padding: 16px;
 }
 
 .popup-overlay {

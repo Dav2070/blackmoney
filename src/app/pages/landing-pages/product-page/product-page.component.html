@@ -8,7 +8,7 @@
 			<div class="actions-container">
 				<dav-icon-card
 					[text]="locale.category"
-					[href]="'/user/restaurants/' + uuid + '/menu/category'"
+					[href]="'/user/restaurants/' + uuid + '/menu/product/category'"
 					(click)="navigateToCategoryPage($event)"
 				>
 					<fa-icon [icon]="faPen"></fa-icon>
@@ -16,7 +16,7 @@
 
 				<dav-icon-card
 					[text]="locale.variations"
-					[href]="'/user/restaurants/' + uuid + '/menu/offers'"
+					[href]="'/user/restaurants/' + uuid + '/menu/product/variations'"
 					(click)="navigateToVariationsPage($event)"
 				>
 					<fa-icon [icon]="faPen"></fa-icon>

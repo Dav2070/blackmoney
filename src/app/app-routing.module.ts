@@ -29,6 +29,7 @@ import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.com
 import { ProductPageComponent } from "./pages/landing-pages/product-page/product-page.component"
 import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
 import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
+import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
 
 const routes: Routes = [
 	{
@@ -106,6 +107,10 @@ const routes: Routes = [
 			{
 				path: "user/restaurants/:uuid/menu/product/category/:categoryuuid",
 				component: ProductsOverviewPageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu/product/variations",
+				component: VariationsOverviewPageComponent
 			},
 			
 		]

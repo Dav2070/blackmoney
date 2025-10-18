@@ -1,5 +1,9 @@
 import { Component } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
+import {
+	faChevronsRight,
+	faChevronsLeft
+} from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { LocalizationService } from "src/app/services/localization-service"
 import { DataService } from "src/app/services/data-service"
@@ -19,6 +23,8 @@ import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 })
 export class TransferPageComponent {
 	locale = this.localizationService.locale.transferPage
+	faChevronsRight = faChevronsRight
+	faChevronsLeft = faChevronsLeft
 	bookedItemsLeft = new AllItemHandler()
 	bookedItemsRight = new AllItemHandler()
 	tableLeft: Table = null

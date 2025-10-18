@@ -96,7 +96,9 @@ export const de = {
 	},
 	transferPage: {
 		tableHeadline: "Tisch {tableName} – {roomName}",
-		noProductsSelected: "Keine Produkte ausgewählt"
+		noProductsSelected: "Keine Produkte ausgewählt",
+		transferAllItemsToRight: "Alles nach rechts verschieben",
+		transferAllItemsToLeft: "Alles nach links verschieben"
 	},
 	dialogs: {
 		logoutDialog: {

@@ -117,7 +117,25 @@
 		</div>
 	</div>
 
-	<div class="footer"></div>
+	<div class="footer">
+		<dav-button
+			color="secondary"
+			text
+			(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+		>
+			<fa-icon [icon]="faChevronsRight" slot="icon-left"></fa-icon>
+			{{ locale.transferAllItemsToRight }}
+		</dav-button>
+
+		<dav-button
+			color="secondary"
+			text
+			(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+		>
+			<fa-icon [icon]="faChevronsLeft" slot="icon-left"></fa-icon>
+			{{ locale.transferAllItemsToLeft }}
+		</dav-button>
+	</div>
 </div>
 
 <div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">

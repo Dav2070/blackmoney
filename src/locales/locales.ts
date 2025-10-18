@@ -94,6 +94,10 @@ export const de = {
 		card: "Karte",
 		moveMultipleProducts: "Mehrere verschieben"
 	},
+	transferPage: {
+		tableHeadline: "Tisch {tableName} – {roomName}",
+		noProductsSelected: "Keine Produkte ausgewählt"
+	},
 	dialogs: {
 		logoutDialog: {
 			headline: "Abmelden",

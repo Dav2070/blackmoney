@@ -1,4 +1,10 @@
-import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
+import {
+	Component,
+	Inject,
+	PLATFORM_ID,
+	ViewChild,
+	HostListener
+} from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
 import {
@@ -34,6 +40,7 @@ import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { digitKeyRegex, numpadKeyRegex } from "src/app/constants"
 import {
 	calculateTotalPriceOfOrderItem,
 	convertCategoryResourceToCategory,
@@ -295,7 +302,28 @@ export class BookingPageComponent {
 			}
 		}
 
+		this.showTotal()
 		this.productsLoading = false
+	}
+
+	@HostListener("window:keydown", ["$event"])
+	async onKeyDown(event: KeyboardEvent) {
+		if (digitKeyRegex.test(event.code) || numpadKeyRegex.test(event.code)) {
+			const digit = event.code.replace("Digit", "").replace("Numpad", "")
+			this.consoleInput(digit)
+		} else if (event.code === "Comma" || event.code === "NumpadDecimal") {
+			this.consoleInput(",")
+		} else if (event.code === "NumpadAdd") {
+			this.consoleInput("+")
+		} else if (event.code === "NumpadSubtract") {
+			this.consoleInput("-")
+		} else if (event.code === "NumpadMultiply") {
+			this.consoleInput("*")
+		} else if (event.code === "Enter" || event.code === "NumpadEnter") {
+			this.bookById()
+		} else if (event.code === "Escape") {
+			this.showTotal()
+		}
 	}
 
 	// Lade Items zur ausgewählten Kategorie

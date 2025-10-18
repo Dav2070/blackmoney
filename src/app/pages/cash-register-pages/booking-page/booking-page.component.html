@@ -174,8 +174,8 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedItem || !selectedMenuItem"
-					(click)="subtractitem()"
+					[disabled]="!selectedItem"
+					(click)="subtractitem(selectedItem)"
 				>
 					-
 				</dav-button>
@@ -184,10 +184,8 @@
 					color="secondary"
 					text
 					[disabled]="!selectedItem"
-					[disabled]="!selectedMenuItem"
 					(click)="
 						addSelectedItem(selectedItem);
-						addSelectedMenuItem(selectedMenuItem)
 					"
 				>
 					+

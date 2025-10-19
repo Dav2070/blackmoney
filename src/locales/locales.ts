@@ -147,7 +147,8 @@ export const de = {
 			tableNumber: "Tischnummer",
 			seats: "Sitzplätze",
 			numberOfTables: "Anzahl Tische",
-			startTableName: "Anfangstischnummer"
+			startTableName: "Anfangstischnummer",
+			createMultiple: "Mehrere Tische anlegen"
 		},
 		addTableCombinationDialog: {
 			headline: "Tisch Kombination erstellen",

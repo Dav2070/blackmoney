@@ -11,6 +11,13 @@
 	(defaultButtonClick)="hide()"
 >
 	<form>
+		<div class="dialog-formfield-container">
+			<dav-toggle
+				[label]="locale.createMultiple"
+				(change)="toggleBulkMode($event)"
+			></dav-toggle>
+		</div>
+
 		<!-- Table number / Start table number -->
 		<div class="dialog-formfield-container">
 			<dav-textfield
@@ -51,14 +58,5 @@
 				></dav-textfield>
 			</div>
 		}
-
-		<!-- Checkbox unten links -->
-		<div class="dialog-formfield-container">
-			<dav-checkbox
-				[checked]="bulkMode"
-				(change)="toggleBulkMode($event)"
-				label="Mehrere Tische anlegen"
-			></dav-checkbox>
-		</div>
 	</form>
 </dav-dialog>

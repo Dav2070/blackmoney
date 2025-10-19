@@ -38,7 +38,7 @@
 
 						<dav-icon-button
 							size="xs"
-							(click)="showTableItemContextMenu($event)"
+							(click)="showTableItemContextMenu($event, table)"
 						>
 							<fa-icon [icon]="faEllipsis"></fa-icon>
 						</dav-icon-button>
@@ -62,13 +62,22 @@
 	(primaryButtonClick)="addTableDialogPrimaryButtonClick($event)"
 ></app-add-table-dialog>
 
+<app-edit-table-dialog
+	#editTableDialog
+	[name]="editTableDialogName"
+	[seats]="editTableDialogSeats"
+></app-edit-table-dialog>
+
 <dav-context-menu
 	#tableItemContextMenu
 	[visible]="tableItemContextMenuVisible"
 	[posX]="tableItemContextMenuPositionX"
 	[posY]="tableItemContextMenuPositionY"
 >
-	<dav-context-menu-item [value]="actionsLocale.edit">
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="showEditTableDialog()"
+	>
 		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
 	</dav-context-menu-item>
 

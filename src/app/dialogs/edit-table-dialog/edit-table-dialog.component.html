@@ -1,0 +1,26 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline.replace('{name}', name.toString())"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Seats -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="seats"
+				[label]="locale.seats"
+				[disabled]="loading"
+				type="number"
+				min="1"
+				(change)="seatsTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+	</form>
+</dav-dialog>

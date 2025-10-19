@@ -9,6 +9,7 @@ import {
 import { ContextMenu } from "dav-ui-components"
 import { EditRoomDialogComponent } from "src/app/dialogs/edit-room-dialog/edit-room-dialog.component"
 import { AddTableDialogComponent } from "src/app/dialogs/add-table-dialog/add-table-dialog.component"
+import { EditTableDialogComponent } from "src/app/dialogs/edit-table-dialog/edit-table-dialog.component"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -40,6 +41,11 @@ export class RoomPageComponent {
 
 	@ViewChild("addTableDialog") addTableDialog!: AddTableDialogComponent
 
+	@ViewChild("editTableDialog") editTableDialog!: EditTableDialogComponent
+	editTableDialogLoading: boolean = false
+	editTableDialogName: number = 0
+	editTableDialogSeats: number = 0
+
 	@ViewChild("tableItemContextMenu")
 	tableItemContextMenu: ElementRef<ContextMenu>
 	tableItemContextMenuVisible: boolean = false
@@ -48,7 +54,7 @@ export class RoomPageComponent {
 
 	room: Room = null
 	tables: Table[] = []
-	selectedTable: Table | null = null
+	selectedTable: Table = null
 	loading: boolean = true
 	showAllForm = false
 	bulkMode = false
@@ -167,7 +173,19 @@ export class RoomPageComponent {
 		console.log(event)
 	}
 
-	showTableItemContextMenu(event: Event) {
+	showEditTableDialog() {
+		if (this.selectedTable == null) return
+
+		this.tableItemContextMenuVisible = false
+		this.editTableDialogLoading = false
+		this.editTableDialogName = this.selectedTable.name
+		this.editTableDialogSeats = this.selectedTable.seats
+
+		this.editTableDialog.show()
+	}
+
+	showTableItemContextMenu(event: Event, table: Table) {
+		this.selectedTable = table
 		const detail = (event as CustomEvent).detail
 
 		if (this.tableItemContextMenuVisible) {
@@ -178,16 +196,6 @@ export class RoomPageComponent {
 			this.tableItemContextMenuVisible = true
 		}
 	}
-
-	// addTable() {
-	// 	const table: Table = {
-	// 		uuid: "",
-	// 		name: this.line1, // Tischnummer
-	// 		seats: this.line2 // Anzahl Stühle
-	// 	}
-	// 	this.tables.push(table)
-	// 	this.cancelEdit()
-	// }
 
 	// Entfern Einen Tisch
 	removeTable(tableToRemove: Table) {

@@ -45,6 +45,7 @@ export class RoomPageComponent {
 	editTableDialogLoading: boolean = false
 	editTableDialogName: number = 0
 	editTableDialogSeats: number = 0
+	editTableDialogSeatsError: string = ""
 
 	@ViewChild("tableItemContextMenu")
 	tableItemContextMenu: ElementRef<ContextMenu>
@@ -180,8 +181,29 @@ export class RoomPageComponent {
 		this.editTableDialogLoading = false
 		this.editTableDialogName = this.selectedTable.name
 		this.editTableDialogSeats = this.selectedTable.seats
+		this.editTableDialogSeatsError = ""
 
 		this.editTableDialog.show()
+	}
+
+	async editTableDialogPrimaryButtonClick(event: { seats: number }) {
+		if (this.selectedTable == null) return
+
+		this.editTableDialogLoading = true
+
+		const updateTableResponse = await this.apiService.updateTable(`seats`, {
+			uuid: this.selectedTable.uuid,
+			seats: event.seats
+		})
+
+		this.editTableDialogLoading = false
+
+		if (updateTableResponse.data?.updateTable != null) {
+			this.selectedTable.seats = updateTableResponse.data.updateTable.seats
+			this.editTableDialog.hide()
+		} else {
+			this.editTableDialogSeatsError = this.errorsLocale.unexpectedError
+		}
 	}
 
 	showTableItemContextMenu(event: Event, table: Table) {

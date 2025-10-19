@@ -17,6 +17,7 @@
 				[value]="seats"
 				[label]="locale.seats"
 				[disabled]="loading"
+				[errorMessage]="seatsError"
 				type="number"
 				min="1"
 				(change)="seatsTextfieldChange($event)"

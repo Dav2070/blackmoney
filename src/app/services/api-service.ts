@@ -454,6 +454,31 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async updateTable(
+		queryData: string,
+		variables: { uuid: string; seats?: number }
+	): Promise<MutationResult<{ updateTable: TableResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateTable: TableResource }>({
+				mutation: gql`
+					mutation UpdateTable(
+						$uuid: String!
+						$seats: Int
+					) {
+						updateTable(
+							uuid: $uuid
+							seats: $seats
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async listCategories(
 		queryData: string
 	): Promise<ApolloQueryResult<{ listCategories: List<CategoryResource> }>> {

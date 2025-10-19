@@ -64,8 +64,12 @@
 
 <app-edit-table-dialog
 	#editTableDialog
+	[loading]="editTableDialogLoading"
 	[name]="editTableDialogName"
 	[seats]="editTableDialogSeats"
+	[seatsError]="editTableDialogSeatsError"
+	(primaryButtonClick)="editTableDialogPrimaryButtonClick($event)"
+	(clearErrors)="editTableDialogSeatsError = ''"
 ></app-edit-table-dialog>
 
 <dav-context-menu

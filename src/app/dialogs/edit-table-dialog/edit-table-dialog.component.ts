@@ -26,7 +26,11 @@ export class EditTableDialogComponent {
 	@Input() loading: boolean = false
 	@Input() name: number = 0
 	@Input() seats: number = 0
-	@Output() primaryButtonClick = new EventEmitter()
+	@Input() seatsError: string = ""
+
+	@Output() primaryButtonClick = new EventEmitter<{ seats: number }>()
+	@Output() clearErrors = new EventEmitter<void>()
+
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
 	constructor(
@@ -56,9 +60,12 @@ export class EditTableDialogComponent {
 
 	seatsTextfieldChange(event: Event) {
 		this.seats = Number((event as CustomEvent).detail.value)
+		this.clearErrors.emit()
 	}
 
 	submit() {
-		this.primaryButtonClick.emit()
+		this.primaryButtonClick.emit({
+			seats: this.seats
+		})
 	}
 }

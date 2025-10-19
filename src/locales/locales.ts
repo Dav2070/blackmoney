@@ -171,7 +171,9 @@ export const de = {
 		add: "Hinzufügen",
 		next: "Weiter",
 		move: "Verschieben",
-		logout: "Abmelden"
+		logout: "Abmelden",
+		edit: "Bearbeiten",
+		delete: "Löschen"
 	},
 	errors: {
 		printerAlreadyExists:

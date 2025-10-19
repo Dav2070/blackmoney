@@ -34,19 +34,13 @@
 								<strong>Nummer: {{ table.name }}</strong>
 							</p>
 							<p>Sitzplätze: {{ table.seats }}</p>
-							<div class="table-actions-row">
-								<dav-button
-									outline
-									class="test-table-btn"
-									(click)="removeTable(table)"
-									size="sm"
-								>
-									{{ locale.delete }}
-								</dav-button>
-							</div>
 						</div>
-						<dav-icon-button size="xs">
-							<fa-icon [icon]="faPen"></fa-icon>
+
+						<dav-icon-button
+							size="xs"
+							(click)="showTableItemContextMenu($event)"
+						>
+							<fa-icon [icon]="faEllipsis"></fa-icon>
 						</dav-icon-button>
 					</div>
 				</dav-card>
@@ -67,3 +61,18 @@
 	#addTableDialog
 	(primaryButtonClick)="addTableDialogPrimaryButtonClick($event)"
 ></app-add-table-dialog>
+
+<dav-context-menu
+	#tableItemContextMenu
+	[visible]="tableItemContextMenuVisible"
+	[posX]="tableItemContextMenuPositionX"
+	[posY]="tableItemContextMenuPositionY"
+>
+	<dav-context-menu-item [value]="actionsLocale.edit">
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item [value]="actionsLocale.delete">
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

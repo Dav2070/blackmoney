@@ -1,6 +1,12 @@
-import { Component, ViewChild } from "@angular/core"
+import { Component, ElementRef, HostListener, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
-import { faPen, faObjectUnion } from "@fortawesome/pro-regular-svg-icons"
+import {
+	faPen,
+	faObjectUnion,
+	faEllipsis,
+	faTrash
+} from "@fortawesome/pro-regular-svg-icons"
+import { ContextMenu } from "dav-ui-components"
 import { EditRoomDialogComponent } from "src/app/dialogs/edit-room-dialog/edit-room-dialog.component"
 import { AddTableDialogComponent } from "src/app/dialogs/add-table-dialog/add-table-dialog.component"
 import { DataService } from "src/app/services/data-service"
@@ -18,9 +24,12 @@ import * as ErrorCodes from "src/app/errorCodes"
 })
 export class RoomPageComponent {
 	locale = this.localizationService.locale.roomPage
+	actionsLocale = this.localizationService.locale.actions
 	errorsLocale = this.localizationService.locale.errors
 	faPen = faPen
 	faObjectUnion = faObjectUnion
+	faEllipsis = faEllipsis
+	faTrash = faTrash
 	restaurantUuid: string = null
 	roomUuid: string = null
 
@@ -30,6 +39,12 @@ export class RoomPageComponent {
 	editRoomDialogNameError: string = ""
 
 	@ViewChild("addTableDialog") addTableDialog!: AddTableDialogComponent
+
+	@ViewChild("tableItemContextMenu")
+	tableItemContextMenu: ElementRef<ContextMenu>
+	tableItemContextMenuVisible: boolean = false
+	tableItemContextMenuPositionX: number = 0
+	tableItemContextMenuPositionY: number = 0
 
 	room: Room = null
 	tables: Table[] = []
@@ -78,6 +93,15 @@ export class RoomPageComponent {
 
 		for (const table of retrieveRoomResponseData.tables) {
 			this.tables.push(table)
+		}
+	}
+
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		if (
+			!this.tableItemContextMenu.nativeElement.contains(event.target as Node)
+		) {
+			this.tableItemContextMenuVisible = false
 		}
 	}
 
@@ -141,6 +165,18 @@ export class RoomPageComponent {
 		bulkMode: boolean
 	}) {
 		console.log(event)
+	}
+
+	showTableItemContextMenu(event: Event) {
+		const detail = (event as CustomEvent).detail
+
+		if (this.tableItemContextMenuVisible) {
+			this.tableItemContextMenuVisible = false
+		} else {
+			this.tableItemContextMenuPositionX = detail.contextMenuPosition.x
+			this.tableItemContextMenuPositionY = detail.contextMenuPosition.y
+			this.tableItemContextMenuVisible = true
+		}
 	}
 
 	// addTable() {

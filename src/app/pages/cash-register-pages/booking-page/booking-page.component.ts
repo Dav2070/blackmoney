@@ -1477,6 +1477,12 @@ export class BookingPageComponent {
 	}
 
 	checkForPlusaddVariation(variation: TmpVariations) {
+		// Im SpecialVariation Popup für SPECIALS erlaube unendliches Hinzufügen
+		// Aber für MENÜS sollen die Limits weiterhin gelten
+		if (this.currentSpecial) {
+			return false
+		}
+
 		let totalCount = 0
 
 		// Count all variations with the same lastPickedVariation
@@ -1501,11 +1507,9 @@ export class BookingPageComponent {
 				return true // Disable the button
 			}
 		}
-		console.log("Total maxSelections:", this.tmpCurrentMenu.offerItems[this.currentIndex].maxSelections);
 
-		if (this.currentMenu) {
+		if (this.tmpCurrentMenu && this.tmpCurrentMenu.offerItems && this.tmpCurrentMenu.offerItems[this.currentIndex]) {
 			if (totalCount >= this.tmpCurrentMenu.offerItems[this.currentIndex].maxSelections) {
-				console.log("Max selections reached", totalCount, this.tmpCurrentMenu.offerItems[this.currentIndex].maxSelections);
 				return true
 			} else {
 				return false
@@ -1539,6 +1543,23 @@ export class BookingPageComponent {
 	}
 
 	checkForSendVariation() {
+		// Im SpecialVariation Popup für SPECIALS erlaube flexibles Senden
+		// Aber für MENÜS sollen die ursprünglichen Regeln gelten
+		if (this.isSpecialVariationPopupVisible && this.currentSpecial && !this.currentMenu) {
+			// Erlaube Senden wenn mindestens eine Variation ausgewählt wurde
+			let count = 0
+			for (let variationMap of this.tmpPickedVariationResource) {
+				if (variationMap.get(this.tmpCountVariations)) {
+					for (let tmpVariation of variationMap
+						.get(this.tmpCountVariations)
+						.values()) {
+						count += tmpVariation.count
+					}
+				}
+			}
+			return count == 0 // Disable nur wenn gar nichts ausgewählt
+		}
+
 		let count = 0
 		let maxCount = 0
 		let countVariations: TmpVariations[] = []
@@ -1589,17 +1610,20 @@ export class BookingPageComponent {
 	}
 
 	clickSpecial(special: Offer) {
-		this.currentSpecial = special
+		this.currentSpecial = JSON.parse(JSON.stringify(special))
 		this.currentMenu = null
 		this.isMenuePopupVisible = true
 
-		for (let item of special.offerItems) {
-			for (let product of item.products) {
+		this.specialCategories = []
+		for (let offerItem of special.offerItems) {
+			for (let product of offerItem.products) {
 				if (!this.specialCategories.some(cat => cat.uuid === product.category.uuid)) {
 					this.specialCategories.push(product.category)
 				}
 			}
 		}
+
+			this.changeSelectedSpecialInventory(this.specialCategories[0])
 	}
 
 	clickMenu(menu: Offer) {
@@ -1622,8 +1646,18 @@ export class BookingPageComponent {
 		}
 	}
 
-	changeSelectedSpecialInventory(items: Product[]) {
-		this.specialProducts = items
+	changeSelectedSpecialInventory(category: Category) {
+		// Filtere alle Produkte der ausgewählten Kategorie aus allen OfferItems
+		this.specialProducts = []
+		if (this.currentSpecial) {
+			for (let offerItem of this.currentSpecial.offerItems) {
+				for (let product of offerItem.products) {
+					if (product.category.uuid === category.uuid) {
+						this.specialProducts.push(product)
+					}
+				}
+			}
+		}
 	}
 
 	changeSelectedMenuInventory(
@@ -1736,7 +1770,7 @@ export class BookingPageComponent {
 				this.tmpSpecialAllItemsHandler.pushNewItem(newItem, firstIndex)
 			}
 		} else {
-			// Special-Variation-Popup öffnen
+			// Special-Variation-Popup öffnen#
 			this.lastClickedItem = product
 			this.tmpPickedVariationResource = []
 
@@ -1778,7 +1812,7 @@ export class BookingPageComponent {
 	removeMenuItem(item: OrderItem) {
 		// Entferne das Item aus der temporären Liste
 		item.count -= 1
-		if (item.count === 0) {
+		if (item.count === 0 || item.orderItemVariations.length > 0) {
 			this.tmpSpecialAllItemsHandler.deleteItem(item)
 		}
 
@@ -1831,8 +1865,7 @@ export class BookingPageComponent {
 				
 				for (let orderItemVariation of item.orderItemVariations) {
 					for (let existingVariationItem of orderItemVariation.variationItems) {
-						if (existingVariationItem.uuid === variationItem.uuid && 
-							existingVariationItem.name !== "Rabatt") {
+						if (existingVariationItem.uuid === variationItem.uuid) {
 							currentCount = orderItemVariation.count
 							break
 						}
@@ -1857,34 +1890,39 @@ export class BookingPageComponent {
 		}
 
 		let targetCategoryIndex = -1
-		for (let i = 0; i < this.currentMenu.offerItems.length; i++) {
-			const menuItem = this.currentMenu.offerItems[i]
+		
+		if (this.currentMenu) {
+			for (let i = 0; i < this.currentMenu.offerItems.length; i++) {
+				const menuItem = this.currentMenu.offerItems[i]
 
-			let fountCategory = false
+				let fountCategory = false
 
-			for (let product of menuItem.products) {
-				if (product.uuid === item.product.uuid) {
-					fountCategory = true
+				for (let product of menuItem.products) {
+					if (product.uuid === item.product.uuid) {
+						fountCategory = true
+						break
+					}
+				}
+
+				if (fountCategory) {
+					targetCategoryIndex = i
 					break
 				}
 			}
 
-			if (fountCategory) {
-				targetCategoryIndex = i
-				break
+			if (targetCategoryIndex >= 0) {
+				this.currentIndex = targetCategoryIndex
+				this.changeSelectedMenuInventory(
+					this.currentMenu.offerItems[targetCategoryIndex],
+					this.currentMenu.offerItems[targetCategoryIndex].maxSelections,
+					targetCategoryIndex
+				)
 			}
-		}
-
-		// Erhöhe die maxSelections der entsprechenden Kategorie
-		if (targetCategoryIndex >= 0) {
-
-			// Springe zur entsprechenden Kategorie
-			this.currentIndex = targetCategoryIndex
-			this.changeSelectedMenuInventory(
-				this.currentMenu.offerItems[targetCategoryIndex],
-				this.currentMenu.offerItems[targetCategoryIndex].maxSelections,
-				targetCategoryIndex
-			)
+		} else if (this.currentSpecial) {
+			let productCategory = item.product.category
+			if (productCategory) {
+				this.changeSelectedSpecialInventory(productCategory)
+			}
 		}
 
 		this.isSpecialVariationPopupVisible = true

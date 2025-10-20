@@ -1477,8 +1477,6 @@ export class BookingPageComponent {
 	}
 
 	checkForPlusaddVariation(variation: TmpVariations) {
-		// Im SpecialVariation Popup für SPECIALS erlaube unendliches Hinzufügen
-		// Aber für MENÜS sollen die Limits weiterhin gelten
 		if (this.currentSpecial) {
 			return false
 		}
@@ -1543,23 +1541,6 @@ export class BookingPageComponent {
 	}
 
 	checkForSendVariation() {
-		// Im SpecialVariation Popup für SPECIALS erlaube flexibles Senden
-		// Aber für MENÜS sollen die ursprünglichen Regeln gelten
-		if (this.isSpecialVariationPopupVisible && this.currentSpecial && !this.currentMenu) {
-			// Erlaube Senden wenn mindestens eine Variation ausgewählt wurde
-			let count = 0
-			for (let variationMap of this.tmpPickedVariationResource) {
-				if (variationMap.get(this.tmpCountVariations)) {
-					for (let tmpVariation of variationMap
-						.get(this.tmpCountVariations)
-						.values()) {
-						count += tmpVariation.count
-					}
-				}
-			}
-			return count == 0 // Disable nur wenn gar nichts ausgewählt
-		}
-
 		let count = 0
 		let maxCount = 0
 		let countVariations: TmpVariations[] = []

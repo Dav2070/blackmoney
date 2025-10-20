@@ -1,6 +1,11 @@
 import { Component } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
+import {
+	faChevronsRight,
+	faChevronsLeft
+} from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
+import { LocalizationService } from "src/app/services/localization-service"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { Table } from "src/app/models/Table"
@@ -17,7 +22,9 @@ import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 	standalone: false
 })
 export class TransferPageComponent {
-	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+	locale = this.localizationService.locale.transferPage
+	faChevronsRight = faChevronsRight
+	faChevronsLeft = faChevronsLeft
 	bookedItemsLeft = new AllItemHandler()
 	bookedItemsRight = new AllItemHandler()
 	tableLeft: Table = null
@@ -26,8 +33,7 @@ export class TransferPageComponent {
 	tableRightRoom: Room = null
 	tableLeftOrder: Order = null
 	tableRightOrder: Order = null
-	console: string
-	consoleActive: boolean = false
+	ordersLoading: boolean = true
 	isItemPopupVisible: boolean = false
 	lastClickedItem: OrderItem
 	tmpVariations: OrderItem
@@ -39,6 +45,7 @@ export class TransferPageComponent {
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 
 	constructor(
+		private localizationService: LocalizationService,
 		private dataService: DataService,
 		private activatedRoute: ActivatedRoute,
 		private apiService: ApiService,
@@ -85,25 +92,18 @@ export class TransferPageComponent {
 			this.apiService,
 			this.tableRight.uuid
 		)
+
+		this.ordersLoading = false
+	}
+
+	navigateToBookingPage(event: MouseEvent) {
+		event.preventDefault()
+		this.router.navigate(["dashboard", "tables", this.tableLeft.uuid])
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
 	showTotal(bookedItems: AllItemHandler) {
-		// return bookedItems.calculatTotal().toFixed(2) + "€"
-	}
-
-	//Fügt die gedrückte Nummer in die Konsole ein
-	consoleInput(input: string) {
-		if (this.consoleActive == false) {
-			this.consoleActive = true
-			this.console = ""
-		}
-		this.console += input
-	}
-
-	clearInput() {
-		this.console = ""
-		this.consoleActive = false
+		return bookedItems.calculateTotal().toFixed(2).replace(".", ",") + " €"
 	}
 
 	transferItem(

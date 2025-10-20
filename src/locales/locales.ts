@@ -60,8 +60,45 @@ export const de = {
 		testPrintSuccess: "Test-Druck erfolgreich gesendet",
 		testPrintError: "Test-Druck fehlgeschlagen: {errorMessage}"
 	},
+	roomsPage: {
+		headline: "Deine Räume"
+	},
+	roomPage: {
+		delete: "löschen"
+	},
+	tableCombinationPage: {
+		headline: "Deine Tischkombinationen",
+		add: "+",
+		delete: "löschen",
+		roomCombination: "kombinieren"
+	},
 	bookingPage: {
-		tableHeadline: "Tisch {name}"
+		tableHeadline: "Tisch {name}",
+		noProductsSelected: "Keine Produkte ausgewählt",
+		bookedProducts: "Gebuchte Produkte",
+		clear: "Clear",
+		article: "Artikel",
+		sendOrder: "Bestellung abschicken",
+		pay: "Bezahlen",
+		rebook: "Umbuchen",
+		switchTable: "Tisch wechseln",
+		takeAway: "Außer Haus",
+		notes: "Notizen",
+		extras: "Extras"
+	},
+	paymentPage: {
+		tableHeadline: "Tisch {name}",
+		noProductsSelected: "Keine Produkte ausgewählt",
+		billsHeadline: "Rechnungen",
+		cash: "Bar",
+		card: "Karte",
+		moveMultipleProducts: "Mehrere verschieben"
+	},
+	transferPage: {
+		tableHeadline: "Tisch {tableName} – {roomName}",
+		noProductsSelected: "Keine Produkte ausgewählt",
+		transferAllItemsToRight: "Alles nach rechts verschieben",
+		transferAllItemsToLeft: "Alles nach links verschieben"
 	},
 	dialogs: {
 		logoutDialog: {
@@ -96,13 +133,51 @@ export const de = {
 		},
 		selectTableDialog: {
 			headline: "Tisch auswählen"
+		},
+		addRoomDialog: {
+			headline: "Raum hinzufügen",
+			name: "Name"
+		},
+		editRoomDialog: {
+			headline: "Raum bearbeiten",
+			name: "Name"
+		},
+		addTableDialog: {
+			headline: "Tisch hinzufügen",
+			tableNumber: "Tischnummer",
+			seats: "Sitzplätze",
+			numberOfTables: "Anzahl Tische",
+			startTableName: "Anfangstischnummer",
+			createMultiple: "Mehrere Tische anlegen"
+		},
+		editTableDialog: {
+			headline: "Tisch {name} bearbeiten",
+			seats: "Sitzplätze"
+		},
+		addTableCombinationDialog: {
+			headline: "Tisch Kombination erstellen",
+			line1: "Tischnummer",
+			line2: "Sitzplätze",
+			line3: "Anzahl Tische",
+			line4: "Anfangs Tischnummer"
+		},
+		selectProductVariationsDialog: {
+			headline: "Variationen auswählen"
+		},
+		moveMultipleProductsDialog: {
+			headline: "Mehrere verschieben"
 		}
 	},
 	actions: {
 		save: "Speichern",
 		cancel: "Abbrechen",
 		select: "Auswählen",
-		logout: "Abmelden"
+		add: "Hinzufügen",
+		next: "Weiter",
+		move: "Verschieben",
+		logout: "Abmelden",
+		edit: "Bearbeiten",
+		delete: "Löschen"
 	},
 	errors: {
 		printerAlreadyExists:

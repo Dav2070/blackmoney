@@ -53,6 +53,7 @@ export class AllItemHandler {
 								orderItemVariations {
 									total
 									items {
+										uuid
 										count
 										variationItems {
 											total
@@ -178,7 +179,7 @@ export class AllItemHandler {
 			}
 		}
 
-		return total
+		return total / 100
 	}
 
 	//Gib Liste mit jedem Item zurück (normale + Offer Items)

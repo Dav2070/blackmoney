@@ -38,6 +38,7 @@ import { AppComponent } from "./app.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
+import { OrdersHeaderComponent } from "./components/cash-register/orders-header/orders-header.component"
 import { OrderItemCardComponent } from "./components/cash-register/order-item-card/order-item-card.component"
 import { OfferOrderItemCardComponent } from "./components/cash-register/offer-order-item-card/offer-order-item-card.component"
 
@@ -48,7 +49,13 @@ import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-a
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
 import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
+import { AddRoomDialogComponent } from "./dialogs/add-room-dialog/add-room-dialog.component"
+import { EditRoomDialogComponent } from "./dialogs/edit-room-dialog/edit-room-dialog.component"
+import { AddTableDialogComponent } from "./dialogs/add-table-dialog/add-table-dialog.component"
+import { EditTableDialogComponent } from "./dialogs/edit-table-dialog/edit-table-dialog.component"
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
+import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -65,6 +72,11 @@ import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-pag
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
+import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
+import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
+import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
+import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
+import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -73,8 +85,6 @@ import { DataService } from "./services/data-service"
 import { SettingsService } from "./services/settings-service"
 import { LocalizationService } from "./services/localization-service"
 
-import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
-import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 import { ItemsTableComponent } from "./components/settings/items-table/items-table.component"
@@ -96,6 +106,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		AppComponent,
 		SettingsBarComponent,
 		HeaderComponent,
+		OrdersHeaderComponent,
 		OrderItemCardComponent,
 		OfferOrderItemCardComponent,
 		// Dialog
@@ -105,7 +116,13 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		AddEmployeeDialogComponent,
 		AddPrinterDialogComponent,
 		EditPrinterDialogComponent,
+		AddRoomDialogComponent,
+		EditRoomDialogComponent,
+		AddTableDialogComponent,
+		EditTableDialogComponent,
 		SelectTableDialogComponent,
+		SelectProductVariationsDialogComponent,
+		MoveMultipleProductsDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -122,9 +139,12 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		TableOverviewPageComponent,
 		BookingPageComponent,
 		TransferPageComponent,
-		SeparatePayPageComponent,
+		PaymentPageComponent,
 		//Landing-Pages
 		PrintersPageComponent,
+		RoomsPageComponent,
+		RoomPageComponent,
+		TableCombinationsPageComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,

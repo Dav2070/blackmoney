@@ -1,9 +1,26 @@
-import { Component, Inject, PLATFORM_ID, ViewChild } from "@angular/core"
+import {
+	Component,
+	Inject,
+	PLATFORM_ID,
+	ViewChild,
+	HostListener
+} from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
 import {
-	faArrowLeft,
-	faArrowRightArrowLeft
+	faArrowRightArrowLeft,
+	faFileLines,
+	faXmark,
+	faMinus,
+	faPlus,
+	faComma,
+	faCreditCard,
+	faPaperPlaneTop,
+	faArrowTurnDownRight,
+	faCupTogo,
+	faNoteSticky,
+	faStar,
+	faSeat
 } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
@@ -22,6 +39,8 @@ import { OfferItem } from "src/app/models/OfferItem"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
+import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { digitKeyRegex, numpadKeyRegex } from "src/app/constants"
 import {
 	calculateTotalPriceOfOrderItem,
 	convertCategoryResourceToCategory,
@@ -29,7 +48,6 @@ import {
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
-import { PaymentMethod } from "src/app/types"
 
 interface AddProductsInput {
 	uuid: string
@@ -49,13 +67,25 @@ interface AddProductsInputVariation {
 })
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
-	faArrowLeft = faArrowLeft
 	faArrowRightArrowLeft = faArrowRightArrowLeft
+	faFileLines = faFileLines
+	faXmark = faXmark
+	faMinus = faMinus
+	faPlus = faPlus
+	faComma = faComma
+	faCreditCard = faCreditCard
+	faPaperPlaneTop = faPaperPlaneTop
+	faArrowTurnDownRight = faArrowTurnDownRight
+	faCupTogo = faCupTogo
+	faNoteSticky = faNoteSticky
+	faStar = faStar
+	faSeat = faSeat
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 	selectedCategory: string = "menues"
-	loading: boolean = true
+	productsLoading: boolean = true
+	ordersLoading: boolean = true
 
 	menues: Offer[] = []
 	specials: Offer[] = []
@@ -81,7 +111,7 @@ export class BookingPageComponent {
 
 	lastClickedItemSource: "new" | "booked" | null = null
 
-	console: string = "0.00 €"
+	console: string = "0,00 €"
 
 	selectedItemNew: Product = null
 
@@ -124,6 +154,11 @@ export class BookingPageComponent {
 	//#region SelectTableDialog
 	@ViewChild("selectTableDialog")
 	selectTableDialog: SelectTableDialogComponent
+	//#endregion
+
+	//#region SelectProductVariationsDialog
+	@ViewChild("selectProductVariationsDialog")
+	selectProductVariationsDialog: SelectProductVariationsDialogComponent
 	//#endregion
 
 	constructor(
@@ -285,7 +320,28 @@ export class BookingPageComponent {
 			}
 		}
 
-		this.loading = false
+		this.showTotal()
+		this.productsLoading = false
+	}
+
+	@HostListener("window:keydown", ["$event"])
+	async onKeyDown(event: KeyboardEvent) {
+		if (digitKeyRegex.test(event.code) || numpadKeyRegex.test(event.code)) {
+			const digit = event.code.replace("Digit", "").replace("Numpad", "")
+			this.consoleInput(digit)
+		} else if (event.code === "Comma" || event.code === "NumpadDecimal") {
+			this.consoleInput(",")
+		} else if (event.code === "NumpadAdd") {
+			this.consoleInput("+")
+		} else if (event.code === "NumpadSubtract") {
+			this.consoleInput("-")
+		} else if (event.code === "NumpadMultiply") {
+			this.consoleInput("*")
+		} else if (event.code === "Enter" || event.code === "NumpadEnter") {
+			this.bookById()
+		} else if (event.code === "Escape") {
+			this.showTotal()
+		}
 	}
 
 	// Lade Items zur ausgewählten Kategorie
@@ -313,6 +369,11 @@ export class BookingPageComponent {
 		this.selectTableDialog.show()
 	}
 
+	navigateToPaymentPage(event: MouseEvent) {
+		event.preventDefault()
+		this.router.navigate(["dashboard", "tables", this.uuid, "payment"])
+	}
+
 	selectTableDialogPrimaryButtonClick(event: { uuid: string }) {
 		this.selectTableDialog.hide()
 		this.router.navigate(["dashboard", "tables", event.uuid])
@@ -320,7 +381,8 @@ export class BookingPageComponent {
 
 	// Zeige Variations-Popup an
 	toggleItemPopup() {
-		this.isItemPopupVisible = !this.isItemPopupVisible
+		// this.isItemPopupVisible = !this.isItemPopupVisible
+		this.selectProductVariationsDialog.show()
 	}
 
 	closeItemPopup() {
@@ -404,7 +466,8 @@ export class BookingPageComponent {
 				)
 			}
 
-			this.isItemPopupVisible = true
+			// this.isItemPopupVisible = true
+			this.selectProductVariationsDialog.show()
 		}
 	}
 
@@ -806,6 +869,48 @@ export class BookingPageComponent {
 		}
 	}
 
+	selectProductVariationsDialogPrimaryButtonClick(event: {
+		variationTree: { [key: string]: number }[]
+	}) {
+		this.selectProductVariationsDialog.hide()
+
+		const lastVariationTree = event.variationTree.pop()
+		const allVariationItems = this.lastClickedItem.variations
+			.map(v => v.variationItems)
+			.flat()
+
+		const newItem: OrderItem = {
+			uuid: crypto.randomUUID(),
+			count: 1,
+			order: null,
+			product: this.lastClickedItem,
+			orderItemVariations: []
+		}
+
+		for (const key of Object.keys(lastVariationTree)) {
+			const value = lastVariationTree[key]
+			if (value === 0) continue
+
+			const variationItems: VariationItem[] = []
+
+			for (const variationItemUuid of key.split(",")) {
+				const item = allVariationItems.find(
+					vi => vi.uuid === variationItemUuid
+				)
+				if (item) variationItems.push(item)
+			}
+
+			newItem.orderItemVariations.push({
+				uuid: crypto.randomUUID(),
+				count: value,
+				variationItems
+			})
+		}
+
+		newItem.count = newItem.orderItemVariations.length
+		this.stagedItems.pushNewItem(newItem)
+	}
+
 	//Füge item mit Variation zu stagedItems hinzu
 	sendVariation() {
 		if (
@@ -1007,6 +1112,8 @@ export class BookingPageComponent {
 
 	//Aktualisiere Bestellungen aus DB
 	async loadOrders() {
+		this.ordersLoading = true
+
 		let order = await this.apiService.retrieveTable(
 			`
 				orders(paid: $paid) {
@@ -1072,6 +1179,8 @@ export class BookingPageComponent {
 			}
 		)
 
+		this.ordersLoading = false
+
 		if (order.data.retrieveTable.orders.total > 0) {
 			if (this.orderUuid == null) {
 				this.orderUuid = order.data.retrieveTable.orders.items[0].uuid
@@ -1092,11 +1201,9 @@ export class BookingPageComponent {
 	// Aktualisiert den Gesamtpreis
 	async showTotal() {
 		this.console =
-			(
-				(this.bookedItems.calculateTotal() +
-					this.stagedItems.calculateTotal()) /
-				100
-			).toFixed(2) + " €"
+			(this.bookedItems.calculateTotal() + this.stagedItems.calculateTotal())
+				.toFixed(2)
+				.replace(".", ",") + " €"
 
 		this.consoleActive = false
 		this.commaUsed = false
@@ -1348,37 +1455,37 @@ export class BookingPageComponent {
 		}
 	}
 
-	async createBill(payment: PaymentMethod) {
-		// Create a bill if it doesn't exist
-		if (this.billUuid == null) {
-			// TODO: Get the current register client
-			const createBillResponse = await this.apiService.createBill(`uuid`, {
-				registerClientUuid: "eb76aee4-0054-4e56-89b1-0cbefde357a9"
-			})
+	// async createBill(payment: PaymentMethod) {
+	// 	// Create a bill if it doesn't exist
+	// 	if (this.billUuid == null) {
+	// 		// TODO: Get the current register client
+	// 		const createBillResponse = await this.apiService.createBill(`uuid`, {
+	// 			registerClientUuid: "eb76aee4-0054-4e56-89b1-0cbefde357a9"
+	// 		})
 
-			if (createBillResponse.data == null) {
-				return
-			}
+	// 		if (createBillResponse.data == null) {
+	// 			return
+	// 		}
 
-			this.billUuid = createBillResponse.data.createBill.uuid
-		}
+	// 		this.billUuid = createBillResponse.data.createBill.uuid
+	// 	}
 
-		const completeOrderResponse = await this.apiService.completeOrder(
-			"uuid",
-			{
-				uuid: this.orderUuid,
-				billUuid: this.billUuid,
-				paymentMethod: payment
-			}
-		)
+	// 	const completeOrderResponse = await this.apiService.completeOrder(
+	// 		"uuid",
+	// 		{
+	// 			uuid: this.orderUuid,
+	// 			billUuid: this.billUuid,
+	// 			paymentMethod: payment
+	// 		}
+	// 	)
 
-		if (completeOrderResponse.data == null) {
-			// TODO: Error handling
-			return
-		}
+	// 	if (completeOrderResponse.data == null) {
+	// 		// TODO: Error handling
+	// 		return
+	// 	}
 
-		window.location.reload()
-	}
+	// 	window.location.reload()
+	// }
 
 	async openBills() {
 		let listOrdersResult = await this.apiService.listOrders(

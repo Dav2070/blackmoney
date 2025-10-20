@@ -6,29 +6,25 @@
 	<div class="orders-numpad-container">
 		<div class="orders-container">
 			@if (room != null && table != null) {
-				<div class="table-info-container">
-					<dav-icon-button size="sm" href="/dashboard" (click)="navigateToDashboard($event)">
-						<fa-icon [icon]="faArrowLeft"></fa-icon
-					></dav-icon-button>
-
-					<p>
-						{{
-							locale.tableHeadline.replace(
-								"{name}",
-								table.name.toString()
-							)
-						}}
-						— {{ room.name }}
-					</p>
-
+				<app-orders-header
+					[headline]="
+						`${locale.tableHeadline.replace('{name}', table.name.toString())} — ${room.name}`
+					"
+					[showBackButton]="true"
+					(backButtonClick)="navigateToDashboard($event)"
+				>
 					<dav-icon-button size="sm" (click)="selectTableButtonClick()">
 						<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon>
 					</dav-icon-button>
-				</div>
+
+					<dav-icon-button size="sm" (click)="openBills()">
+						<fa-icon [icon]="faFileLines"></fa-icon>
+					</dav-icon-button>
+				</app-orders-header>
 			}
 
 			<ul class="order-items-container">
-				@if (loading) {
+				@if (ordersLoading) {
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
@@ -37,12 +33,15 @@
 				}
 
 				@if (
-					!loading &&
+					!ordersLoading &&
 					stagedItems.getOrderItems().length === 0 &&
 					stagedItems.getOfferOrderItems().length === 0
 				) {
-					<p class="no-products-message">Keine Produkte ausgewählt</p>
-				}				
+					<p class="no-products-message">
+						{{ locale.noProductsSelected }}
+					</p>
+				}
+
 				@for (
 					orderItem of stagedItems.getOrderItems();
 					track orderItem.uuid
@@ -63,9 +62,9 @@
 				}
 			</ul>
 
-			@if (!loading && bookedItems.getOrderItems().length > 0) {
+			@if (!ordersLoading && bookedItems.getOrderItems().length > 0) {
 				<div class="staged-items-separator">
-					<p>Gebuchte Produkte</p>
+					<p>{{ locale.bookedProducts }}</p>
 					<div class="separator"></div>
 				</div>
 			}
@@ -118,7 +117,7 @@
 					"
 					(click)="setAnzahl()"
 				>
-					×
+					<fa-icon [icon]="faXmark"></fa-icon>
 				</dav-button>
 
 				<dav-button color="secondary" tonal (click)="consoleInput('4')">
@@ -134,7 +133,7 @@
 				</dav-button>
 
 				<dav-button color="secondary" text (click)="showTotal()">
-					Clear
+					{{ locale.clear }}
 				</dav-button>
 
 				<dav-button color="secondary" tonal (click)="consoleInput('7')">
@@ -155,7 +154,7 @@
 					[disabled]="!consoleActive || commaUsed || checkArticleNumber()"
 					(click)="bookById()"
 				>
-					Artikel
+					{{ locale.article }}
 				</dav-button>
 
 				<dav-button
@@ -164,7 +163,7 @@
 					[disabled]="commaUsed || !consoleActive || xUsed"
 					(click)="consoleInput(','); commaUsed = true"
 				>
-					,
+					<fa-icon [icon]="faComma"></fa-icon>
 				</dav-button>
 
 				<dav-button color="secondary" tonal (click)="consoleInput('0')">
@@ -177,7 +176,7 @@
 					[disabled]="!selectedItem"
 					(click)="subtractitem(selectedItem)"
 				>
-					-
+					<fa-icon [icon]="faMinus"></fa-icon>
 				</dav-button>
 
 				<dav-button
@@ -188,7 +187,76 @@
 						addSelectedItem(selectedItem);
 					"
 				>
-					+
+					<fa-icon [icon]="faPlus"></fa-icon>
+				</dav-button>
+			</div>
+
+			<div class="separator"></div>
+
+			<div class="numpad-footer">
+				<dav-button color="secondary" text (click)="sendOrder()">
+					<fa-icon [icon]="faPaperPlaneTop" slot="icon-left"></fa-icon>
+					{{ locale.sendOrder }}
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="bookedItems.isEmpty()"
+					[href]="'/dashboard/tables/' + uuid + '/payment'"
+					(click)="navigateToPaymentPage($event)"
+				>
+					<fa-icon [icon]="faCreditCard" slot="icon-left"></fa-icon>
+					{{ locale.pay }}
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="
+						commaUsed ||
+						!consoleActive ||
+						table?.uuid == console ||
+						checkforZero() ||
+						xUsed
+					"
+					(click)="navigateToTransferPage()"
+				>
+					<fa-icon
+						[icon]="faArrowTurnDownRight"
+						slot="icon-left"
+					></fa-icon>
+					{{ locale.rebook }}
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="
+						commaUsed ||
+						!consoleActive ||
+						table?.uuid == console ||
+						checkforZero() ||
+						xUsed
+					"
+				>
+					<fa-icon [icon]="faSeat" slot="icon-left"></fa-icon>
+					{{ locale.switchTable }}
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
+					{{ locale.takeAway }}
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
+					{{ locale.notes }}
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faStar" slot="icon-left"></fa-icon>
+					{{ locale.extras }}
 				</dav-button>
 			</div>
 		</div>
@@ -196,7 +264,7 @@
 
 	<div class="product-selection-container">
 		<div class="product-items">
-			@if (loading) {
+			@if (productsLoading) {
 				<dav-skeleton
 					class="product-item-skeleton"
 					style="width: 145px"
@@ -269,7 +337,7 @@
 
 	<div class="categories-sidenav-container">
 		<dav-sidenav>
-			@if (loading) {
+			@if (productsLoading) {
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
@@ -304,72 +372,6 @@
 				}
 			}
 		</dav-sidenav>
-	</div>
-
-	<div class="footer">
-		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton" (click)="sendOrder()">
-				Bestellung abschicken
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[disabled]="
-					commaUsed ||
-					!consoleActive ||
-					table?.uuid == console ||
-					checkforZero() ||
-					xUsed
-				"
-				(click)="navigateToTransferPage()"
-			>
-				Umbuchen
-			</button>
-			<button mat-flat-button class="footerButton" [routerLink]="['../../']">
-				Tischplan
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[routerLink]="['../' + console]"
-				[disabled]="
-					commaUsed ||
-					!consoleActive ||
-					table?.uuid == console ||
-					checkforZero() ||
-					xUsed
-				"
-			>
-				Tisch
-			</button>
-			<button mat-flat-button class="footerButton" (click)="openBills()">
-				Rechnungen
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				(click)="createBill('CASH')"
-				[disabled]="bookedItems.isEmpty()"
-			>
-				Bar
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				(click)="createBill('CARD')"
-				[disabled]="bookedItems.isEmpty()"
-			>
-				Karte
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[routerLink]="['separate']"
-				[disabled]="bookedItems.isEmpty()"
-			>
-				Getrennt
-			</button>
-		</div>
 	</div>
 </div>
 
@@ -960,3 +962,11 @@
 	[currentTableUuid]="table?.uuid"
 	(primaryButtonClick)="selectTableDialogPrimaryButtonClick($event)"
 ></app-select-table-dialog>
+
+<app-select-product-variations-dialog
+	#selectProductVariationsDialog
+	[product]="lastClickedItem"
+	(primaryButtonClick)="
+		selectProductVariationsDialogPrimaryButtonClick($event)
+	"
+></app-select-product-variations-dialog>

@@ -15,12 +15,15 @@ import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
-import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
+import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
+import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
+import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
+import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 
 const routes: Routes = [
@@ -71,6 +74,18 @@ const routes: Routes = [
 			{
 				path: "user/employees/:uuid",
 				component: EmployeePageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/rooms",
+				component: RoomsPageComponent
+			},
+			{
+				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid",
+				component: RoomPageComponent
+			},
+			{
+				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/combinations",
+				component: TableCombinationsPageComponent
 			}
 		]
 	},
@@ -90,8 +105,8 @@ const routes: Routes = [
 				component: BookingPageComponent
 			},
 			{
-				path: "tables/:uuid/separate",
-				component: SeparatePayPageComponent
+				path: "tables/:uuid/payment",
+				component: PaymentPageComponent
 			},
 			{
 				path: "tables/:uuid1/:uuid2",

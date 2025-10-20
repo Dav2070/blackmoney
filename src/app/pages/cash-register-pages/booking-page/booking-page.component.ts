@@ -881,6 +881,7 @@ export class BookingPageComponent {
 
 		const newItem: OrderItem = {
 			uuid: crypto.randomUUID(),
+			type: "product",
 			count: 1,
 			order: null,
 			product: this.lastClickedItem,

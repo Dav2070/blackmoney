@@ -8,4 +8,5 @@ export class OrderItem {
 	order: Order
 	product: Product
 	orderItemVariations: OrderItemVariation[]
+	note?: string
 }

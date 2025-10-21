@@ -166,6 +166,10 @@ export const de = {
 		},
 		moveMultipleProductsDialog: {
 			headline: "Mehrere verschieben"
+		},
+		addNoteDialog: {
+			headline: "Notiz hinzufügen",
+			note: "Notiz"
 		}
 	},
 	actions: {

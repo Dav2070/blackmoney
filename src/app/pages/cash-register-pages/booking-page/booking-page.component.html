@@ -260,7 +260,12 @@
 					{{ locale.takeAway }}
 				</dav-button>
 
-				<dav-button color="secondary" text>
+				<dav-button 
+					color="secondary" 
+					text
+					[disabled]="!selectedItem || tmpAllItemHandler !== stagedItems"
+					(click)="addNoteButtonClick()"
+				>
 					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
 					{{ locale.notes }}
 				</dav-button>
@@ -962,3 +967,9 @@
 		selectProductVariationsDialogPrimaryButtonClick($event)
 	"
 ></app-select-product-variations-dialog>
+
+<app-add-note-dialog
+	#addNoteDialog
+	[orderItem]="selectedItem"
+	(primaryButtonClick)="addNoteDialogPrimaryButtonClick($event)"
+></app-add-note-dialog>

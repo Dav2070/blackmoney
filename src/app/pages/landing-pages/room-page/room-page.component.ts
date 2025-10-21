@@ -10,6 +10,7 @@ import { ContextMenu } from "dav-ui-components"
 import { EditRoomDialogComponent } from "src/app/dialogs/edit-room-dialog/edit-room-dialog.component"
 import { AddTableDialogComponent } from "src/app/dialogs/add-table-dialog/add-table-dialog.component"
 import { EditTableDialogComponent } from "src/app/dialogs/edit-table-dialog/edit-table-dialog.component"
+import { DeleteTableDialogComponent } from "src/app/dialogs/delete-table-dialog/delete-table-dialog.component"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -46,6 +47,10 @@ export class RoomPageComponent {
 	editTableDialogName: number = 0
 	editTableDialogSeats: number = 0
 	editTableDialogSeatsError: string = ""
+
+	@ViewChild("deleteTableDialog")
+	deleteTableDialog!: DeleteTableDialogComponent
+	deleteTableDialogName: number = 0
 
 	@ViewChild("tableItemContextMenu")
 	tableItemContextMenu: ElementRef<ContextMenu>
@@ -204,6 +209,15 @@ export class RoomPageComponent {
 		} else {
 			this.editTableDialogSeatsError = this.errorsLocale.unexpectedError
 		}
+	}
+
+	showDeleteTableDialog() {
+		if (this.selectedTable == null) return
+
+		this.tableItemContextMenuVisible = false
+		this.deleteTableDialogName = this.selectedTable.name
+
+		this.deleteTableDialog.show()
 	}
 
 	showTableItemContextMenu(event: Event, table: Table) {

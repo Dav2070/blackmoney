@@ -154,6 +154,11 @@ export const de = {
 			headline: "Tisch {name} bearbeiten",
 			seats: "Sitzplätze"
 		},
+		deleteTableDialog: {
+			headline: "Tisch {name} löschen",
+			description:
+				"Bist du dir sicher, dass du diesen Tisch löschen möchtest?"
+		},
 		addTableCombinationDialog: {
 			headline: "Tisch Kombination erstellen",
 			line1: "Tischnummer",

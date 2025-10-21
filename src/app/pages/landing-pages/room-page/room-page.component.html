@@ -72,6 +72,11 @@
 	(clearErrors)="editTableDialogSeatsError = ''"
 ></app-edit-table-dialog>
 
+<app-delete-table-dialog
+	#deleteTableDialog
+	[name]="deleteTableDialogName"
+></app-delete-table-dialog>
+
 <dav-context-menu
 	#tableItemContextMenu
 	[visible]="tableItemContextMenuVisible"
@@ -85,7 +90,10 @@
 		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
 	</dav-context-menu-item>
 
-	<dav-context-menu-item [value]="actionsLocale.delete">
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="showDeleteTableDialog()"
+	>
 		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
 	</dav-context-menu-item>
 </dav-context-menu>

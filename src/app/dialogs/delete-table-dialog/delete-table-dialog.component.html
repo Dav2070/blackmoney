@@ -1,0 +1,15 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline.replace('{name}', name.toString())"
+	[primaryButtonText]="actionsLocale.delete"
+	primaryButtonColor="error"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="340"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<p>{{ locale.description }}</p>
+</dav-dialog>

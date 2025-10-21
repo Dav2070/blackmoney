@@ -7,7 +7,6 @@ import {
 	convertOrderResourceToOrder
 } from "src/app/utils"
 import { Order } from "../Order"
-import { n } from "node_modules/@angular/cdk/overlay-module.d-BvvR6Y05"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
@@ -97,8 +96,8 @@ export class AllItemHandler {
 	pushNewItem(pickedItem: OrderItem, index?: number) {
 		const id = pickedItem.product.id
 
-		const item = this.allPickedItems.find(item => 
-			item.product.id === id && item.uuid === pickedItem.uuid
+		const item = this.allPickedItems.find(
+			item => item.product.id === id && item.uuid === pickedItem.uuid
 		)
 
 		// Prüfen, ob das Item bereits existiert
@@ -159,13 +158,13 @@ export class AllItemHandler {
 	//Berechne Total Preis von items mit der selben ID
 	calculateTotal() {
 		let total = 0
-		
-		for (let item of this.allPickedItems) {
-			if (item.type === 'menu') {
-				total += item.product.price * item.count
 
-			} else if (item.type === 'special') {
-				total += ((item.product.price * item.count) + (item.rabatt * item.count))
+		for (let item of this.allPickedItems) {
+			if (item.type === "menu") {
+				total += item.product.price * item.count
+			} else if (item.type === "special") {
+				total +=
+					item.product.price * item.count + item.discount * item.count
 			} else {
 				total += item.product.price * item.count
 
@@ -281,7 +280,9 @@ export class AllItemHandler {
 
 	getItem(id: number, uuid?: string): OrderItem {
 		if (uuid) {
-			return this.allPickedItems.find(item => item.product.id === id && item.uuid === uuid)
+			return this.allPickedItems.find(
+				item => item.product.id === id && item.uuid === uuid
+			)
 		}
 		return this.allPickedItems.find(item => item.product.id === id)
 	}
@@ -296,7 +297,9 @@ export class AllItemHandler {
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
 	includes(pickedItem: OrderItem): boolean {
 		return this.allPickedItems.some(
-			item => item.product.id === pickedItem.product.id && item.uuid === pickedItem.uuid
+			item =>
+				item.product.id === pickedItem.product.id &&
+				item.uuid === pickedItem.uuid
 		)
 	}
 
@@ -376,33 +379,41 @@ export class AllItemHandler {
 	}
 
 	sameOfferOrderItemExists(item: OrderItem): OrderItem {
-		if (item.type !== 'menu' && item.type !== 'special') {
+		if (item.type !== "menu" && item.type !== "special") {
 			return undefined
 		}
 
 		return this.allPickedItems.find(existingItem => {
 			// Grundlegende Checks
-			if (existingItem.type !== item.type || 
+			if (
+				existingItem.type !== item.type ||
 				existingItem.offer?.uuid !== item.offer?.uuid ||
-				existingItem.orderItems?.length !== item.orderItems?.length) {
+				existingItem.orderItems?.length !== item.orderItems?.length
+			) {
 				return false
 			}
 
 			// Für Specials: Nur prüfen ob die gleichen Produkte vorhanden sind (Count egal)
-			if (item.type === 'special') {
+			if (item.type === "special") {
 				// Bidirektionaler Vergleich: Jedes neue OrderItem muss einen Partner finden
 				const allNewItemsHaveMatch = item.orderItems.every(newOrderItem => {
 					return existingItem.orderItems.some(existingOrderItem => {
-						return existingOrderItem.product.id === newOrderItem.product.id
+						return (
+							existingOrderItem.product.id === newOrderItem.product.id
+						)
 					})
 				})
 
 				// UND: Jedes existierende OrderItem muss auch einen Partner finden
-				const allExistingItemsHaveMatch = existingItem.orderItems.every(existingOrderItem => {
-					return item.orderItems.some(newOrderItem => {
-						return existingOrderItem.product.id === newOrderItem.product.id
-					})
-				})
+				const allExistingItemsHaveMatch = existingItem.orderItems.every(
+					existingOrderItem => {
+						return item.orderItems.some(newOrderItem => {
+							return (
+								existingOrderItem.product.id === newOrderItem.product.id
+							)
+						})
+					}
+				)
 
 				return allNewItemsHaveMatch && allExistingItemsHaveMatch
 			}
@@ -414,36 +425,56 @@ export class AllItemHandler {
 						return false
 					}
 
-					if (existingOrderItem.count / existingItem.count !== newOrderItem.count) {
+					if (
+						existingOrderItem.count / existingItem.count !==
+						newOrderItem.count
+					) {
 						return false
 					}
 
-					const existingVarCount = existingOrderItem.orderItemVariations?.length || 0
+					const existingVarCount =
+						existingOrderItem.orderItemVariations?.length || 0
 					const newVarCount = newOrderItem.orderItemVariations?.length || 0
-					
+
 					if (existingVarCount !== newVarCount) {
 						return false
 					}
 
 					// Alle Variationen müssen passen
-					return newOrderItem.orderItemVariations?.every(newVar => {
-						return existingOrderItem.orderItemVariations.some(existingVar => {
-							if (existingVar.count / existingItem.count !== newVar.count) {
-								return false
-							}
+					return (
+						newOrderItem.orderItemVariations?.every(newVar => {
+							return existingOrderItem.orderItemVariations.some(
+								existingVar => {
+									if (
+										existingVar.count / existingItem.count !==
+										newVar.count
+									) {
+										return false
+									}
 
-							if (existingVar.variationItems.length !== newVar.variationItems.length) {
-								return false
-							}
+									if (
+										existingVar.variationItems.length !==
+										newVar.variationItems.length
+									) {
+										return false
+									}
 
-							return newVar.variationItems.every((newVarItem, index) => {
-								const existingVarItem = existingVar.variationItems[index]
-								return existingVarItem.id === newVarItem.id &&
-									existingVarItem.name === newVarItem.name &&
-									existingVarItem.additionalCost === newVarItem.additionalCost
-							})
-						})
-					}) ?? true
+									return newVar.variationItems.every(
+										(newVarItem, index) => {
+											const existingVarItem =
+												existingVar.variationItems[index]
+											return (
+												existingVarItem.id === newVarItem.id &&
+												existingVarItem.name === newVarItem.name &&
+												existingVarItem.additionalCost ===
+													newVarItem.additionalCost
+											)
+										}
+									)
+								}
+							)
+						}) ?? true
+					)
 				})
 			})
 		})

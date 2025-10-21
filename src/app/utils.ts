@@ -50,7 +50,7 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
 	if (orderItem.type === "menu" || orderItem.type === "special") {
 		let total = 0
 
-		total += orderItem.rabatt * orderItem.count
+		total += orderItem.discount * orderItem.count
 
 		for (let item of orderItem.orderItems) {
 			total += item.product.price * item.count
@@ -65,19 +65,18 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
 		}
 
 		return (total / 100).toFixed(2).replace(".", ",")
-	}else{
+	} else {
+		let total = 0
 
-	let total = 0
-
-	for (let variation of orderItem.orderItemVariations) {
-		for (let variationItem of variation.variationItems) {
-			total += variation.count * variationItem.additionalCost
+		for (let variation of orderItem.orderItemVariations) {
+			for (let variationItem of variation.variationItems) {
+				total += variation.count * variationItem.additionalCost
+			}
 		}
-	}
 
-	return ((total + orderItem.product.price * orderItem.count) / 100)
-		.toFixed(2)
-		.replace(".", ",")
+		return ((total + orderItem.product.price * orderItem.count) / 100)
+			.toFixed(2)
+			.replace(".", ",")
 	}
 }
 

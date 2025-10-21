@@ -12,5 +12,5 @@ export class OrderItem {
 	product: Product
 	orderItems?: OrderItem[]
 	orderItemVariations?: OrderItemVariation[]
-	rabatt?: number
+	discount?: number
 }

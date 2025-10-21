@@ -24,10 +24,7 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 				}
 
-				@if (
-					!ordersLoading &&
-					bookedItems.getOrderItems().length === 0
-				) {
+				@if (!ordersLoading && bookedItems.getOrderItems().length === 0) {
 					<p class="no-products-message">
 						{{ locale.noProductsSelected }}
 					</p>
@@ -83,10 +80,7 @@
 						</button>
 
 						<ul class="order-items-container">
-							@if (
-								!ordersLoading &&
-								bill.getOrderItems().length === 0
-							) {
+							@if (!ordersLoading && bill.getOrderItems().length === 0) {
 								<p class="no-products-message">
 									{{ locale.noProductsSelected }}
 								</p>

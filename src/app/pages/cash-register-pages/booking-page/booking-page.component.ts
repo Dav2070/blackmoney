@@ -890,6 +890,8 @@ export class BookingPageComponent {
 						}
 					}
 
+					// Füge das OrderItem zum tmpSpecialAllItemsHandler hinzu
+					this.tmpSpecialAllItemsHandler.pushNewItem(orderItem, firstIndex)
 					this.isSpecialVariationPopupVisible = false
 				} else {
 					this.stagedItems.pushNewItem(orderItem)
@@ -1615,7 +1617,7 @@ export class BookingPageComponent {
 		return -1
 	}
 
-	closeSpecials() {
+	closeOffer() {
 		// Stelle die ursprünglichen maxSelections wieder her, falls ein Menü aktiv war
 		if (this.currentMenu) {
 			// Gehe durch alle Items im temporären Handler und stelle maxSelections wieder her
@@ -1688,6 +1690,7 @@ export class BookingPageComponent {
 				this.tmpSpecialAllItemsHandler.pushNewItem(newItem, firstIndex)
 			}
 		} else {
+			console.log("Special-Variation-Popup öffnen")
 			// Special-Variation-Popup öffnen
 			this.lastClickedItem = product
 			this.tmpPickedVariationResource = []

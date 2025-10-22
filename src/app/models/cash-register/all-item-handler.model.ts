@@ -7,6 +7,7 @@ import {
 	convertOrderResourceToOrder
 } from "src/app/utils"
 import { Order } from "../Order"
+import { OrderItemType } from "src/app/types"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
@@ -160,9 +161,9 @@ export class AllItemHandler {
 		let total = 0
 
 		for (let item of this.allPickedItems) {
-			if (item.type === "menu") {
+			if (item.type === OrderItemType.Menu) {
 				total += item.product.price * item.count
-			} else if (item.type === "special") {
+			} else if (item.type === OrderItemType.Special) {
 				total +=
 					item.product.price * item.count + item.discount * item.count
 			} else {
@@ -379,7 +380,10 @@ export class AllItemHandler {
 	}
 
 	sameOfferOrderItemExists(item: OrderItem): OrderItem {
-		if (item.type !== "menu" && item.type !== "special") {
+		if (
+			item.type !== OrderItemType.Menu &&
+			item.type !== OrderItemType.Special
+		) {
 			return undefined
 		}
 
@@ -394,7 +398,7 @@ export class AllItemHandler {
 			}
 
 			// Für Specials: Nur prüfen ob die gleichen Produkte vorhanden sind (Count egal)
-			if (item.type === "special") {
+			if (item.type === OrderItemType.Special) {
 				// Bidirektionaler Vergleich: Jedes neue OrderItem muss einen Partner finden
 				const allNewItemsHaveMatch = item.orderItems.every(newOrderItem => {
 					return existingItem.orderItems.some(existingOrderItem => {

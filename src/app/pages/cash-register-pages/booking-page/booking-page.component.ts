@@ -36,6 +36,7 @@ import { VariationItem } from "src/app/models/VariationItem"
 import { Order } from "src/app/models/Order"
 import { Offer } from "src/app/models/Offer"
 import { OfferItem } from "src/app/models/OfferItem"
+import { OrderItemType } from "src/app/types"
 import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
@@ -81,6 +82,7 @@ export class BookingPageComponent {
 	faStar = faStar
 	faSeat = faSeat
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+	OrderItemType = OrderItemType
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 	selectedCategory: string = "menues"
@@ -419,7 +421,7 @@ export class BookingPageComponent {
 
 		let newItem: OrderItem = {
 			uuid: product.uuid,
-			type: "product",
+			type: OrderItemType.Product,
 			count: 0,
 			order: null,
 			product,
@@ -565,7 +567,10 @@ export class BookingPageComponent {
 
 	// Verringert Item um 1 oder Anzahl in Konsole
 	async subtractitem(orderItem: OrderItem) {
-		if (orderItem.type === "menu" || orderItem.type === "special") {
+		if (
+			orderItem.type === OrderItemType.Menu ||
+			orderItem.type === OrderItemType.Special
+		) {
 			if (this.tmpAllItemHandler === this.bookedItems) {
 				if (this.tmpAnzahl > 0) {
 					for (let i = 0; i < orderItem.orderItems.length; i++) {
@@ -901,7 +906,7 @@ export class BookingPageComponent {
 
 		const newItem: OrderItem = {
 			uuid: crypto.randomUUID(),
-			type: "product",
+			type: OrderItemType.Product,
 			count: 1,
 			order: null,
 			product: this.lastClickedItem,
@@ -1047,7 +1052,7 @@ export class BookingPageComponent {
 				// Normaler Modus: Erstelle neues OrderItem
 				let orderItem: OrderItem = {
 					uuid: this.lastClickedItem.uuid,
-					type: "product",
+					type: OrderItemType.Product,
 					order: null,
 					product: this.lastClickedItem,
 					count: 0,
@@ -1443,7 +1448,10 @@ export class BookingPageComponent {
 
 	//Füge selektiertes Item hinzu
 	addSelectedItem(orderItem: OrderItem) {
-		if (orderItem.type === "menu" || orderItem.type === "special") {
+		if (
+			orderItem.type === OrderItemType.Menu ||
+			orderItem.type === OrderItemType.Special
+		) {
 			//Tiefe Kopie des OrderItems erstellen
 			if (this.tmpAnzahl > 0) {
 				for (let i = 0; i < orderItem.orderItems.length; i++) {
@@ -1742,6 +1750,7 @@ export class BookingPageComponent {
 		this.currentSpecial = JSON.parse(JSON.stringify(special))
 		this.currentMenu = null
 		this.isMenuePopupVisible = true
+		this.selectedItem = null
 
 		this.specialCategories = []
 		for (let offerItem of special.offerItems) {
@@ -1764,6 +1773,7 @@ export class BookingPageComponent {
 		this.tmpCurrentMenu = JSON.parse(JSON.stringify(menu))
 		this.currentSpecial = null
 		this.isMenuePopupVisible = true
+		this.selectedItem = null
 		this.changeSelectedMenuInventory(
 			this.currentMenu.offerItems[0],
 			this.currentMenu.offerItems[0].maxSelections,
@@ -1868,7 +1878,7 @@ export class BookingPageComponent {
 
 		let newItem: OrderItem = {
 			uuid: product.uuid,
-			type: "product",
+			type: OrderItemType.Product,
 			count: 0,
 			order: null,
 			product,
@@ -1908,7 +1918,7 @@ export class BookingPageComponent {
 				this.tmpSpecialAllItemsHandler.pushNewItem(newItem, firstIndex)
 			}
 		} else {
-			// Special-Variation-Popup öffnen#
+			// Special-Variation-Popup öffnen
 			this.lastClickedItem = product
 			this.tmpPickedVariationResource = []
 
@@ -2087,7 +2097,7 @@ export class BookingPageComponent {
 
 			let orderItem: OrderItem = {
 				uuid: crypto.randomUUID(),
-				type: "special",
+				type: OrderItemType.Special,
 				count: processedItem.count,
 				order: null,
 				offer: this.currentSpecial,
@@ -2172,7 +2182,7 @@ export class BookingPageComponent {
 
 		let orderItem: OrderItem = {
 			uuid: crypto.randomUUID(),
-			type: "menu",
+			type: OrderItemType.Menu,
 			count: 1,
 			order: null,
 			offer: this.currentMenu,

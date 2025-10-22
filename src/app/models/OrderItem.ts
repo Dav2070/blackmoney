@@ -2,10 +2,11 @@ import { Product } from "./Product"
 import { Order } from "./Order"
 import { OrderItemVariation } from "./OrderItemVariation"
 import { Offer } from "./Offer"
+import { OrderItemType } from "../types"
 
 export class OrderItem {
 	uuid: string
-	type: "product" | "menu" | "special"
+	type: OrderItemType
 	count: number
 	order: Order
 	offer?: Offer

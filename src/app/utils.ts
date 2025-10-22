@@ -42,12 +42,16 @@ import {
 	OfferResource,
 	OfferItemResource,
 	ErrorCode,
-	Theme
+	Theme,
+	OrderItemType
 } from "./types"
 import { darkThemeKey, lightThemeKey } from "./constants"
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
-	if (orderItem.type === "menu" || orderItem.type === "special") {
+	if (
+		orderItem.type === OrderItemType.Menu ||
+		orderItem.type === OrderItemType.Special
+	) {
 		let total = 0
 
 		total += orderItem.discount * orderItem.count

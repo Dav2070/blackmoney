@@ -153,9 +153,9 @@ export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type CategoryType = "FOOD" | "DRINK"
 
 export enum OrderItemType {
-	Product = "product",
-	Menu = "menu",
-	Special = "special"
+	Product = "PRODUCT",
+	Menu = "MENU",
+	Special = "SPECIAL"
 }
 
 export type OfferType = "FIXED_PRICE" | "DISCOUNT"

@@ -1,5 +1,4 @@
 import { OrderItem } from "src/app/models/OrderItem"
-import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { Variation } from "src/app/models/Variation"
 import { ApiService } from "src/app/services/api-service"
 import {
@@ -11,14 +10,9 @@ import { OrderItemType } from "src/app/types"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
-	private allPickedOfferItems: OfferOrderItem[] = []
 
 	getAllPickedItems() {
 		return this.allPickedItems
-	}
-
-	getAllPickedOfferItems() {
-		return this.allPickedOfferItems
 	}
 
 	// Lade alle Items einer Order
@@ -139,18 +133,10 @@ export class AllItemHandler {
 		}
 	}
 
-	//Füge OfferOrderItem hinzu
-	pushNewOfferItem(pickedItem: OfferOrderItem) {
-		this.allPickedOfferItems.push({ ...pickedItem })
-	}
-
 	//Übertrage alle Items aus einer anderen Map in diese
 	transferAllItems(itemHandler: AllItemHandler) {
 		for (let item of itemHandler.getOrderItems()) {
 			this.pushNewItem(item)
-		}
-		for (let offerItem of itemHandler.getOfferOrderItems()) {
-			this.pushNewOfferItem(offerItem)
 		}
 
 		itemHandler.clearItems()
@@ -182,19 +168,9 @@ export class AllItemHandler {
 		return total / 100
 	}
 
-	//Gib Liste mit jedem Item zurück (normale + Offer Items)
-	getItems(): (OrderItem | OfferOrderItem)[] {
-		return [...this.allPickedItems, ...this.allPickedOfferItems]
-	}
-
 	// Nur normale OrderItems
 	getOrderItems() {
 		return this.allPickedItems
-	}
-
-	// Nur OfferOrderItems
-	getOfferOrderItems() {
-		return this.allPickedOfferItems
 	}
 
 	getItemsCountandId() {
@@ -259,18 +235,6 @@ export class AllItemHandler {
 		}
 	}
 
-	//Entferne OfferOrderItem aus der Map
-	deleteOfferItem(pickedItem: OfferOrderItem): void {
-		const index = this.allPickedOfferItems.findIndex(
-			item =>
-				item.product.id === pickedItem.product.id &&
-				item.offer.uuid === pickedItem.offer.uuid
-		)
-		if (index !== -1) {
-			this.allPickedOfferItems.splice(index, 1)
-		}
-	}
-
 	deleteVariation(pickedItem: OrderItem): void {
 		/*
 		this.allPickedItems
@@ -288,28 +252,12 @@ export class AllItemHandler {
 		return this.allPickedItems.find(item => item.product.id === id)
 	}
 
-	// Gibt ein OfferOrderItem zurück, das dem angegebenen ID entspricht
-	getOfferItem(productId: number, offerUuid: string): OfferOrderItem {
-		return this.allPickedOfferItems.find(
-			item => item.product.id === productId && item.offer.uuid === offerUuid
-		)
-	}
-
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
 	includes(pickedItem: OrderItem): boolean {
 		return this.allPickedItems.some(
 			item =>
 				item.product.id === pickedItem.product.id &&
 				item.uuid === pickedItem.uuid
-		)
-	}
-
-	// Prüfen, ob ein bestimmtes OfferOrderItem in der Map enthalten ist, prüft auf die id des Produkts UND des Angebots
-	includesOfferItem(pickedItem: OfferOrderItem): boolean {
-		return this.allPickedOfferItems.some(
-			item =>
-				item.product.id === pickedItem.product.id &&
-				item.offer.uuid === pickedItem.offer.uuid
 		)
 	}
 
@@ -359,24 +307,16 @@ export class AllItemHandler {
 			number += item.count
 		}
 
-		for (let offerItem of this.allPickedOfferItems) {
-			number += offerItem.count
-		}
-
 		return number
 	}
 
 	//Entfernt alle Items aus Map
 	clearItems() {
 		this.allPickedItems = []
-		this.allPickedOfferItems = []
 	}
 
 	isEmpty() {
-		return (
-			this.allPickedItems.length === 0 &&
-			this.allPickedOfferItems.length === 0
-		)
+		return this.allPickedItems.length === 0
 	}
 
 	sameOfferOrderItemExists(item: OrderItem): OrderItem {

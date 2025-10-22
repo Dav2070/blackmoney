@@ -32,11 +32,7 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 				}
 
-				@if (
-					!ordersLoading &&
-					stagedItems.getOrderItems().length === 0 &&
-					stagedItems.getOfferOrderItems().length === 0
-				) {
+				@if (!ordersLoading && stagedItems.getOrderItems().length === 0) {
 					<p class="no-products-message">
 						{{ locale.noProductsSelected }}
 					</p>
@@ -89,7 +85,7 @@
 					) {
 						<app-offer-order-item-card
 							[orderItem]="orderItem"
-							[selectedOrderItemUuid]="selectedMenuItem?.uuid"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
 							(click)="selectItem(orderItem, bookedItems)"
 						></app-offer-order-item-card>
 					}
@@ -871,50 +867,7 @@
 		</div>
 	} @else {
 		<div class="popup-content">
-			@if (
-				selectedMenuItem != null && selectedMenuItem.orderItems.length === 1
-			) {
-				<!-- Minus-Modus für OfferOrderItems -->
-				<h2>
-					{{ lastClickedItem.variations[tmpCountVariations].name }}
-				</h2>
-				@for (
-					variationMap of tmpPickedVariationResource;
-					track variationMap
-				) {
-					@if (variationMap.get(tmpCountVariations)) {
-						@for (
-							variation of variationMap.get(tmpCountVariations).values();
-							track variation.uuid
-						) {
-							@if (tmpCountVariations != 0) {
-								{{ displayVariation(variation) }}
-							}
-
-							<div class="popup-content-dish">
-								<button
-									mat-mini-fab
-									[disabled]="variation.count == 0"
-									(click)="removeVariation(variation)"
-								>
-									<mat-icon>remove</mat-icon>
-								</button>
-								<b>
-									{{ variation.count }}x
-									{{ variation.display }}
-								</b>
-								<button
-									mat-mini-fab
-									[disabled]="checkForPlusaddVariation(variation)"
-									(click)="addVariation(variation)"
-								>
-									<mat-icon>add</mat-icon>
-								</button>
-							</div>
-						}
-					}
-				}
-			} @else if (selectedItem != null) {
+			@if (selectedItem != null) {
 				<!-- Minus-Modus für normale OrderItems -->
 				<h2>
 					{{ selectedItem.product.name }}

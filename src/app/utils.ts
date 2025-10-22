@@ -22,7 +22,6 @@ import { Printer } from "./models/Printer"
 import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
-import { OfferOrderItem } from "./models/OfferOrderItem"
 import {
 	CategoryResource,
 	CompanyResource,
@@ -82,26 +81,6 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
 			.toFixed(2)
 			.replace(".", ",")
 	}
-}
-
-export function calculateTotalPriceOfOfferOrderItem(
-	offerOrderItem: OfferOrderItem
-): string {
-	let total = 0
-
-	for (let item of offerOrderItem.orderItems) {
-		total += item.product.price * item.count
-
-		if (item.orderItemVariations) {
-			for (const variation of item.orderItemVariations) {
-				for (const variationItem of variation.variationItems) {
-					total += variationItem.additionalCost * variation.count
-				}
-			}
-		}
-	}
-
-	return (total / 100).toFixed(2).replace(".", ",")
 }
 
 export function getGraphQLErrorCodes(

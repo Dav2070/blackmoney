@@ -1,5 +1,4 @@
 import { OrderItem } from "src/app/models/OrderItem"
-import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { Variation } from "src/app/models/Variation"
 import { ApiService } from "src/app/services/api-service"
 import {
@@ -7,17 +6,13 @@ import {
 	convertOrderResourceToOrder
 } from "src/app/utils"
 import { Order } from "../Order"
+import { OrderItemType } from "src/app/types"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
-	private allPickedMenuItems: OfferOrderItem[] = []
 
 	getAllPickedItems() {
 		return this.allPickedItems
-	}
-
-	getAllPickedMenuItems() {
-		return this.allPickedMenuItems
 	}
 
 	// Lade alle Items einer Order
@@ -93,10 +88,13 @@ export class AllItemHandler {
 	}
 
 	//Füge neues Item in die Map hinzu
-	pushNewItem(pickedItem: OrderItem) {
+	pushNewItem(pickedItem: OrderItem, index?: number) {
 		const id = pickedItem.product.id
 
-		const item = this.allPickedItems.find(item => item.product.id === id)
+		const item = this.allPickedItems.find(
+			item => item.product.id === id && item.uuid === pickedItem.uuid
+		)
+
 		// Prüfen, ob das Item bereits existiert
 		if (item != undefined) {
 			// Anzahl des bestehenden Items erhöhen
@@ -131,22 +129,14 @@ export class AllItemHandler {
 			}
 		} else {
 			// Neues Item hinzufügen
-			this.allPickedItems.push({ ...pickedItem })
+			this.allPickedItems.splice(index, 0, { ...pickedItem })
 		}
-	}
-
-	//Füge MenuOrderItem hinzu
-	pushNewMenuItem(pickedItem: OfferOrderItem) {
-		this.allPickedMenuItems.push({ ...pickedItem })
 	}
 
 	//Übertrage alle Items aus einer anderen Map in diese
 	transferAllItems(itemHandler: AllItemHandler) {
 		for (let item of itemHandler.getOrderItems()) {
 			this.pushNewItem(item)
-		}
-		for (let menuItem of itemHandler.getMenuOrderItems()) {
-			this.pushNewMenuItem(menuItem)
 		}
 
 		itemHandler.clearItems()
@@ -157,20 +147,12 @@ export class AllItemHandler {
 		let total = 0
 
 		for (let item of this.allPickedItems) {
-			total += item.product.price * item.count
-
-			if (item.orderItemVariations) {
-				for (const variation of item.orderItemVariations) {
-					for (const variationItem of variation.variationItems) {
-						total += variationItem.additionalCost * variation.count
-					}
-				}
-			}
-		}
-
-		// MenuOrderItems
-		for (let menuItem of this.allPickedMenuItems) {
-			for (let item of menuItem.orderItems) {
+			if (item.type === OrderItemType.Menu) {
+				total += item.product.price * item.count
+			} else if (item.type === OrderItemType.Special) {
+				total +=
+					item.product.price * item.count + item.discount * item.count
+			} else {
 				total += item.product.price * item.count
 
 				if (item.orderItemVariations) {
@@ -186,19 +168,9 @@ export class AllItemHandler {
 		return total / 100
 	}
 
-	//Gib Liste mit jedem Item zurück (normale + Menu Items)
-	getItems(): (OrderItem | OfferOrderItem)[] {
-		return [...this.allPickedItems, ...this.allPickedMenuItems]
-	}
-
 	// Nur normale OrderItems
 	getOrderItems() {
 		return this.allPickedItems
-	}
-
-	// Nur MenuOrderItems
-	getMenuOrderItems() {
-		return this.allPickedMenuItems
 	}
 
 	getItemsCountandId() {
@@ -236,7 +208,7 @@ export class AllItemHandler {
 	}
 
 	//Gibt den Preis eines OfferOrderItems aus dem jeweiligen Handler zurück
-	getTotalMenuPrice(pickedItem: OfferOrderItem): number {
+	getTotalMenuPrice(pickedItem: OrderItem): number {
 		let total = 0
 
 		for (let item of pickedItem.orderItems) {
@@ -263,18 +235,6 @@ export class AllItemHandler {
 		}
 	}
 
-	//Entferne OfferOrderItem aus der Map
-	deleteMenuItem(pickedItem: OfferOrderItem): void {
-		const index = this.allPickedMenuItems.findIndex(
-			item =>
-				item.product.id === pickedItem.product.id &&
-				item.offer.uuid === pickedItem.offer.uuid
-		)
-		if (index !== -1) {
-			this.allPickedMenuItems.splice(index, 1)
-		}
-	}
-
 	deleteVariation(pickedItem: OrderItem): void {
 		/*
 		this.allPickedItems
@@ -283,30 +243,21 @@ export class AllItemHandler {
 		*/
 	}
 
-	getItem(id: number): OrderItem {
+	getItem(id: number, uuid?: string): OrderItem {
+		if (uuid) {
+			return this.allPickedItems.find(
+				item => item.product.id === id && item.uuid === uuid
+			)
+		}
 		return this.allPickedItems.find(item => item.product.id === id)
-	}
-
-	// Gibt ein OfferOrderItem zurück, das dem angegebenen ID entspricht
-	getOfferItem(productId: number, offerUuid: string): OfferOrderItem {
-		return this.allPickedMenuItems.find(
-			item => item.product.id === productId && item.offer.uuid === offerUuid
-		)
 	}
 
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
 	includes(pickedItem: OrderItem): boolean {
 		return this.allPickedItems.some(
-			item => item.product.id === pickedItem.product.id
-		)
-	}
-
-	// Prüfen, ob ein bestimmtes OfferOrderItem in der Map enthalten ist, prüft auf die id des Produkts UND des Angebots
-	includesOfferItem(pickedItem: OfferOrderItem): boolean {
-		return this.allPickedMenuItems.some(
 			item =>
 				item.product.id === pickedItem.product.id &&
-				item.offer.uuid === pickedItem.offer.uuid
+				item.uuid === pickedItem.uuid
 		)
 	}
 
@@ -356,23 +307,120 @@ export class AllItemHandler {
 			number += item.count
 		}
 
-		for (let menuItem of this.allPickedMenuItems) {
-			number += menuItem.count
-		}
-
 		return number
 	}
 
 	//Entfernt alle Items aus Map
 	clearItems() {
 		this.allPickedItems = []
-		this.allPickedMenuItems = []
 	}
 
 	isEmpty() {
-		return (
-			this.allPickedItems.length === 0 &&
-			this.allPickedMenuItems.length === 0
-		)
+		return this.allPickedItems.length === 0
+	}
+
+	sameOfferOrderItemExists(item: OrderItem): OrderItem {
+		if (
+			item.type !== OrderItemType.Menu &&
+			item.type !== OrderItemType.Special
+		) {
+			return undefined
+		}
+
+		return this.allPickedItems.find(existingItem => {
+			// Grundlegende Checks
+			if (
+				existingItem.type !== item.type ||
+				existingItem.offer?.uuid !== item.offer?.uuid ||
+				existingItem.orderItems?.length !== item.orderItems?.length
+			) {
+				return false
+			}
+
+			// Für Specials: Nur prüfen ob die gleichen Produkte vorhanden sind (Count egal)
+			if (item.type === OrderItemType.Special) {
+				// Bidirektionaler Vergleich: Jedes neue OrderItem muss einen Partner finden
+				const allNewItemsHaveMatch = item.orderItems.every(newOrderItem => {
+					return existingItem.orderItems.some(existingOrderItem => {
+						return (
+							existingOrderItem.product.id === newOrderItem.product.id
+						)
+					})
+				})
+
+				// UND: Jedes existierende OrderItem muss auch einen Partner finden
+				const allExistingItemsHaveMatch = existingItem.orderItems.every(
+					existingOrderItem => {
+						return item.orderItems.some(newOrderItem => {
+							return (
+								existingOrderItem.product.id === newOrderItem.product.id
+							)
+						})
+					}
+				)
+
+				return allNewItemsHaveMatch && allExistingItemsHaveMatch
+			}
+
+			// Für Menüs: Strenger Vergleich mit Count und Variationen
+			return item.orderItems.every(newOrderItem => {
+				return existingItem.orderItems.some(existingOrderItem => {
+					if (existingOrderItem.product.id !== newOrderItem.product.id) {
+						return false
+					}
+
+					if (
+						existingOrderItem.count / existingItem.count !==
+						newOrderItem.count
+					) {
+						return false
+					}
+
+					const existingVarCount =
+						existingOrderItem.orderItemVariations?.length || 0
+					const newVarCount = newOrderItem.orderItemVariations?.length || 0
+
+					if (existingVarCount !== newVarCount) {
+						return false
+					}
+
+					// Alle Variationen müssen passen
+					return (
+						newOrderItem.orderItemVariations?.every(newVar => {
+							return existingOrderItem.orderItemVariations.some(
+								existingVar => {
+									if (
+										existingVar.count / existingItem.count !==
+										newVar.count
+									) {
+										return false
+									}
+
+									if (
+										existingVar.variationItems.length !==
+										newVar.variationItems.length
+									) {
+										return false
+									}
+
+									return newVar.variationItems.every(
+										(newVarItem, index) => {
+											const existingVarItem =
+												existingVar.variationItems[index]
+											return (
+												existingVarItem.id === newVarItem.id &&
+												existingVarItem.name === newVarItem.name &&
+												existingVarItem.additionalCost ===
+													newVarItem.additionalCost
+											)
+										}
+									)
+								}
+							)
+						}) ?? true
+					)
+				})
+			})
+		})
 	}
 }

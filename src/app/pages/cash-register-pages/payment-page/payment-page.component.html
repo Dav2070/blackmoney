@@ -24,11 +24,7 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 				}
 
-				@if (
-					!ordersLoading &&
-					bookedItems.getOrderItems().length === 0 &&
-					bookedItems.getMenuOrderItems().length === 0
-				) {
+				@if (!ordersLoading && bookedItems.getOrderItems().length === 0) {
 					<p class="no-products-message">
 						{{ locale.noProductsSelected }}
 					</p>
@@ -84,11 +80,7 @@
 						</button>
 
 						<ul class="order-items-container">
-							@if (
-								!ordersLoading &&
-								bill.getOrderItems().length === 0 &&
-								bill.getMenuOrderItems().length === 0
-							) {
+							@if (!ordersLoading && bill.getOrderItems().length === 0) {
 								<p class="no-products-message">
 									{{ locale.noProductsSelected }}
 								</p>
@@ -107,17 +99,6 @@
 										showContextMenu($event, orderItem, false)
 									"
 								></app-order-item-card>
-							}
-						</ul>
-
-						<ul class="order-items-container">
-							@for (
-								menuOrderItem of bill.getMenuOrderItems();
-								track menuOrderItem.uuid
-							) {
-								<app-offer-order-item-card
-									[offerOrderItem]="menuOrderItem"
-								></app-offer-order-item-card>
 							}
 						</ul>
 					</div>

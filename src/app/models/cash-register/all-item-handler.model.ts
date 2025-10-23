@@ -92,10 +92,7 @@ export class AllItemHandler {
 		const id = pickedItem.product.id
 
 		const item = this.allPickedItems.find(
-			item =>
-				item.product.id === id &&
-				item.uuid === pickedItem.uuid &&
-				item.note === pickedItem.note
+			item => item.product.id === id && item.note === pickedItem.note
 		)
 
 		// Prüfen, ob das Item bereits existiert
@@ -231,7 +228,7 @@ export class AllItemHandler {
 	//Entferne Item aus der Map
 	deleteItem(pickedItem: OrderItem): void {
 		const index = this.allPickedItems.findIndex(
-			item => item.product.id === pickedItem.product.id
+			item => item.uuid === pickedItem.uuid
 		)
 		if (index !== -1) {
 			this.allPickedItems.splice(index, 1)
@@ -246,13 +243,10 @@ export class AllItemHandler {
 		*/
 	}
 
-	getItem(id: number, uuid?: string, note?: string): OrderItem {
-		if (uuid) {
+	getItem(id: number, note?: string): OrderItem {
+		if (note !== undefined) {
 			return this.allPickedItems.find(
-				item =>
-					item.product.id === id &&
-					item.uuid === uuid &&
-					item.note === note
+				item => item.product.id === id && item.note === note
 			)
 		}
 		return this.allPickedItems.find(item => item.product.id === id)
@@ -265,15 +259,6 @@ export class AllItemHandler {
 				item.product.id === pickedItem.product.id &&
 				item.uuid === pickedItem.uuid &&
 				item.note === pickedItem.note
-		)
-	}
-
-	// Prüfen, ob ein Item mit gleicher UUID/Produkt ID existiert (unabhängig von der Notiz)
-	includesItemByIdentity(pickedItem: OrderItem): boolean {
-		return this.allPickedItems.some(
-			item =>
-				item.product.id === pickedItem.product.id &&
-				item.uuid === pickedItem.uuid
 		)
 	}
 
@@ -337,12 +322,11 @@ export class AllItemHandler {
 
 	// Fasst Items mit gleicher Notiz zusammen (nach Notiz-Änderung)
 	consolidateItems(changedItem: OrderItem) {
-		// Finde andere Items mit gleichem Produkt, UUID und Notiz
+		// Finde andere Items mit gleichem Produkt und Notiz
 		const itemsToMerge = this.allPickedItems.filter(
 			item =>
 				item !== changedItem &&
 				item.product.id === changedItem.product.id &&
-				item.uuid === changedItem.uuid &&
 				item.note === changedItem.note
 		)
 

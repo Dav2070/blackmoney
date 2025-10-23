@@ -424,29 +424,36 @@ export class BookingPageComponent {
 	}
 
 	// Füge item zu stagedItems hinzu
-	clickItem(product: Product) {
+	clickItem(product: Product, note?: string) {
 		if (product == null) return
 
 		let newItem: OrderItem = {
-			uuid: product.uuid,
+			uuid: crypto.randomUUID(),
 			type: OrderItemType.Product,
 			count: 0,
 			order: null,
 			product,
-			orderItemVariations: []
+			orderItemVariations: [],
+			note: note
 		}
 
 		if (product.variations.length === 0) {
 			if (this.tmpAnzahl > 0) {
 				if (this.stagedItems.includes(newItem)) {
-					let existingItem = this.stagedItems.getItem(newItem.product.id)
+					let existingItem = this.stagedItems.getItem(
+						newItem.product.id,
+						newItem.note
+					)
 					existingItem.count += this.tmpAnzahl
 				} else {
 					newItem.count = this.tmpAnzahl
 					this.stagedItems.pushNewItem(newItem)
 				}
 			} else if (this.stagedItems.includes(newItem)) {
-				let existingItem = this.stagedItems.getItem(newItem.product.id)
+				let existingItem = this.stagedItems.getItem(
+					newItem.product.id,
+					newItem.note
+				)
 				existingItem.count += 1
 			} else {
 				newItem.count = 1
@@ -1220,13 +1227,7 @@ export class BookingPageComponent {
 
 	//Selektiert das Item in der Liste
 	selectItem(pickedItem: OrderItem, AllItemHandler: AllItemHandler) {
-		if (
-			this.stagedItems.getItem(
-				pickedItem.product.id,
-				pickedItem.uuid,
-				pickedItem.note
-			) === this.selectedItem
-		) {
+		if (this.selectedItem === pickedItem) {
 			// Deselect the clicked item
 			this.selectedItem = null
 			this.tmpAllItemHandler = null
@@ -1291,7 +1292,7 @@ export class BookingPageComponent {
 			this.tmpAnzahl = undefined
 			this.showTotal()
 		} else {
-			this.clickItem(orderItem.product)
+			this.clickItem(orderItem.product, orderItem.note)
 		}
 	}
 
@@ -1670,7 +1671,7 @@ export class BookingPageComponent {
 		if (product == null) return
 
 		let newItem: OrderItem = {
-			uuid: product.uuid,
+			uuid: crypto.randomUUID(),
 			type: OrderItemType.Product,
 			count: 0,
 			order: null,
@@ -1703,7 +1704,7 @@ export class BookingPageComponent {
 			if (this.tmpSpecialAllItemsHandler.includes(newItem)) {
 				let existingItem = this.tmpSpecialAllItemsHandler.getItem(
 					newItem.product.id,
-					newItem.uuid
+					newItem.note
 				)
 				existingItem.count += 1
 			} else {
@@ -2072,13 +2073,10 @@ export class BookingPageComponent {
 	}
 
 	addNoteButtonClick() {
-		// Setze tmpAllItemHandler basierend darauf, wo das selectedItem ist
 		if (this.selectedItem != null) {
-			if (this.stagedItems.includesItemByIdentity(this.selectedItem)) {
+			if (this.stagedItems.includes(this.selectedItem)) {
 				this.tmpAllItemHandler = this.stagedItems
-			} else if (
-				this.bookedItems.includesItemByIdentity(this.selectedItem)
-			) {
+			} else if (this.bookedItems.includes(this.selectedItem)) {
 				this.tmpAllItemHandler = this.bookedItems
 			}
 		}
@@ -2100,7 +2098,7 @@ export class BookingPageComponent {
 		this.selectedItem = event.orderItem
 		this.viewNoteDialog.orderItem = event.orderItem
 
-		if (this.stagedItems.includesItemByIdentity(event.orderItem)) {
+		if (this.stagedItems.includes(event.orderItem)) {
 			this.tmpAllItemHandler = this.stagedItems
 			this.viewNoteDialog.showEditButton = true
 			this.viewNoteDialog.show()

@@ -137,6 +137,7 @@ export interface OrderResource {
 export interface OrderItemResource {
 	uuid: string
 	count: number
+	type: OrderItemType
 	order: OrderResource
 	product: ProductResource
 	orderItemVariations: List<OrderItemVariationResource>
@@ -150,6 +151,13 @@ export interface OrderItemVariationResource {
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type CategoryType = "FOOD" | "DRINK"
+
+export enum OrderItemType {
+	Product = "PRODUCT",
+	Menu = "MENU",
+	Special = "SPECIAL"
+}
+
 export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
 export type PaymentMethod = "CASH" | "CARD"

@@ -22,7 +22,6 @@ import { Printer } from "./models/Printer"
 import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
-import { OfferOrderItem } from "./models/OfferOrderItem"
 import {
 	CategoryResource,
 	CompanyResource,
@@ -42,42 +41,46 @@ import {
 	OfferResource,
 	OfferItemResource,
 	ErrorCode,
-	Theme
+	Theme,
+	OrderItemType
 } from "./types"
 import { darkThemeKey, lightThemeKey } from "./constants"
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
-	let total = 0
+	if (
+		orderItem.type === OrderItemType.Menu ||
+		orderItem.type === OrderItemType.Special
+	) {
+		let total = 0
 
-	for (let variation of orderItem.orderItemVariations) {
-		for (let variationItem of variation.variationItems) {
-			total += variation.count * variationItem.additionalCost
-		}
-	}
+		total += orderItem.discount * orderItem.count
 
-	return ((total + orderItem.product.price * orderItem.count) / 100)
-		.toFixed(2)
-		.replace(".", ",")
-}
+		for (let item of orderItem.orderItems) {
+			total += item.product.price * item.count
 
-export function calculateTotalPriceOfOfferOrderItem(
-	offerOrderItem: OfferOrderItem
-): string {
-	let total = 0
-
-	for (let item of offerOrderItem.orderItems) {
-		total += item.product.price * item.count
-
-		if (item.orderItemVariations) {
-			for (const variation of item.orderItemVariations) {
-				for (const variationItem of variation.variationItems) {
-					total += variationItem.additionalCost * variation.count
+			if (item.orderItemVariations) {
+				for (const variation of item.orderItemVariations) {
+					for (const variationItem of variation.variationItems) {
+						total += variationItem.additionalCost * variation.count
+					}
 				}
 			}
 		}
-	}
 
-	return (total / 100).toFixed(2).replace(".", ",")
+		return (total / 100).toFixed(2).replace(".", ",")
+	} else {
+		let total = 0
+
+		for (let variation of orderItem.orderItemVariations) {
+			for (let variationItem of variation.variationItems) {
+				total += variation.count * variationItem.additionalCost
+			}
+		}
+
+		return ((total + orderItem.product.price * orderItem.count) / 100)
+			.toFixed(2)
+			.replace(".", ",")
+	}
 }
 
 export function getGraphQLErrorCodes(
@@ -496,6 +499,7 @@ export function convertOrderItemResourceToOrderItem(
 
 	return {
 		uuid: orderItemResource.uuid,
+		type: orderItemResource.type,
 		count: orderItemResource.count,
 		order: convertOrderResourceToOrder(orderItemResource.order),
 		product: convertProductResourceToProduct(orderItemResource.product),

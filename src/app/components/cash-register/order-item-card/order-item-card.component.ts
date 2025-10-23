@@ -14,6 +14,7 @@ export class OrderItemCardComponent {
 	faNoteSticky = faNoteSticky
 	@Input() orderItem: OrderItem = null
 	@Input() selectedOrderItemUuid: string = null
+	@Input() selectedOrderItemNote: string = null
 	@Output() noteIconClick = new EventEmitter<{
 		orderItem: OrderItem
 	}>()

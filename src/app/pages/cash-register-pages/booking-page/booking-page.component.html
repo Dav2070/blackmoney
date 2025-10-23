@@ -32,11 +32,7 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 				}
 
-				@if (
-					!ordersLoading &&
-					stagedItems.getOrderItems().length === 0 &&
-					stagedItems.getMenuOrderItems().length === 0
-				) {
+				@if (!ordersLoading && stagedItems.getOrderItems().length === 0) {
 					<p class="no-products-message">
 						{{ locale.noProductsSelected }}
 					</p>
@@ -46,25 +42,26 @@
 					orderItem of stagedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					<app-order-item-card
-						[orderItem]="orderItem"
-						[selectedOrderItemUuid]="selectedItem?.uuid"
-						(click)="selectItem(orderItem, stagedItems)"
-						(noteIconClick)="orderItemNoteIconClick($event)"
-					></app-order-item-card>
-				}
-			</ul>
-
-			<ul class="order-items-container">
-				@for (
-					menuOrderItem of stagedItems.getMenuOrderItems();
-					track menuOrderItem.uuid
-				) {
-					<app-offer-order-item-card
-						[offerOrderItem]="menuOrderItem"
-						[selectedOfferOrderItemUuid]="selectedMenuItem?.uuid"
-						(click)="selectMenuItem(menuOrderItem, stagedItems)"
-					></app-offer-order-item-card>
+					@if (orderItem.type === OrderItemType.Product) {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.note"
+							(click)="selectItem(orderItem, stagedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
+						></app-order-item-card>
+					} @else if (
+						orderItem.type === OrderItemType.Menu ||
+						orderItem.type === OrderItemType.Special
+					) {
+						<app-offer-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.note"
+							(click)="selectItem(orderItem, stagedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
+						></app-offer-order-item-card>
+					}
 				}
 			</ul>
 
@@ -80,25 +77,26 @@
 					orderItem of bookedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					<app-order-item-card
-						[orderItem]="orderItem"
-						[selectedOrderItemUuid]="selectedItem?.uuid"
-						(click)="selectItem(orderItem, bookedItems)"
-						(noteIconClick)="orderItemNoteIconClick($event)"
-					></app-order-item-card>
-				}
-			</ul>
-
-			<ul class="order-items-container">
-				@for (
-					menuOrderItem of bookedItems.getMenuOrderItems();
-					track menuOrderItem.uuid
-				) {
-					<app-offer-order-item-card
-						[offerOrderItem]="menuOrderItem"
-						[selectedOfferOrderItemUuid]="selectedMenuItem?.uuid"
-						(click)="selectMenuItem(menuOrderItem, stagedItems)"
-					></app-offer-order-item-card>
+					@if (orderItem.type === OrderItemType.Product) {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.note"
+							(click)="selectItem(orderItem, bookedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
+						></app-order-item-card>
+					} @else if (
+						orderItem.type === OrderItemType.Menu ||
+						orderItem.type === OrderItemType.Special
+					) {
+						<app-offer-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.note"
+							(click)="selectItem(orderItem, bookedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
+						></app-offer-order-item-card>
+					}
 				}
 			</ul>
 		</div>
@@ -185,8 +183,8 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedItem || !selectedMenuItem"
-					(click)="subtractitem()"
+					[disabled]="!selectedItem"
+					(click)="subtractitem(selectedItem)"
 				>
 					<fa-icon [icon]="faMinus"></fa-icon>
 				</dav-button>
@@ -194,11 +192,8 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedItem || !selectedMenuItem"
-					(click)="
-						addSelectedItem(selectedItem);
-						addSelectedMenuItem(selectedMenuItem)
-					"
+					[disabled]="!selectedItem"
+					(click)="addSelectedItem(selectedItem)"
 				>
 					<fa-icon [icon]="faPlus"></fa-icon>
 				</dav-button>
@@ -648,7 +643,6 @@
 								@if (item.orderItemVariations.length > 0) {
 									<span>
 										{{ item.count }}x {{ item.product.name }}
-
 										@for (
 											variation of item.orderItemVariations;
 											track variation.uuid
@@ -660,6 +654,20 @@
 											) {
 												{{ variationItem.name }}
 											}
+											<button
+												mat-mini-fab
+												(click)="editSpecial(item)"
+												color="accent"
+											>
+												<mat-icon>edit</mat-icon>
+											</button>
+											<button
+												mat-mini-fab
+												(click)="removeMenuItem(item)"
+												color="warn"
+											>
+												<mat-icon>X</mat-icon>
+											</button>
 										}
 									</span>
 								} @else {
@@ -668,7 +676,7 @@
 										(click)="removeMenuItem(item)"
 										color="warn"
 									>
-										<mat-icon>remove</mat-icon>
+										<mat-icon>-</mat-icon>
 									</button>
 									<span>
 										{{ item.count }}x {{ item.product.name }}
@@ -685,10 +693,7 @@
 					>
 						✓
 					</button>
-					<button
-						class="special-button close-btn"
-						(click)="closeSpecials()"
-					>
+					<button class="special-button close-btn" (click)="closeOffer()">
 						✕
 					</button>
 				</div>
@@ -702,9 +707,7 @@
 					<div class="category-list">
 						@for (category of specialCategories; track category.uuid) {
 							<button
-								(click)="
-									changeSelectedSpecialInventory(category.products)
-								"
+								(click)="changeSelectedSpecialInventory(category)"
 								mat-flat-button
 							>
 								{{ category.name }}
@@ -745,6 +748,13 @@
 									>
 										<mat-icon>edit</mat-icon>
 									</button>
+									<button
+										mat-mini-fab
+										(click)="removeMenuItem(item)"
+										color="warn"
+									>
+										<mat-icon>X</mat-icon>
+									</button>
 									<span>
 										{{ item.count }}x {{ item.product.name }}
 
@@ -767,7 +777,7 @@
 										(click)="removeSpecial(item)"
 										color="warn"
 									>
-										<mat-icon>remove</mat-icon>
+										<mat-icon>-</mat-icon>
 									</button>
 									<span>
 										{{ item.count }}x {{ item.product.name }}
@@ -777,7 +787,7 @@
 										(click)="addSpecial(item)"
 										color="primary"
 									>
-										<mat-icon>add</mat-icon>
+										<mat-icon>+</mat-icon>
 									</button>
 								}
 							</div>
@@ -791,10 +801,7 @@
 					>
 						✓
 					</button>
-					<button
-						class="special-button close-btn"
-						(click)="closeSpecials()"
-					>
+					<button class="special-button close-btn" (click)="closeOffer()">
 						✕
 					</button>
 				</div>
@@ -836,10 +843,8 @@
 								>
 									<mat-icon>remove</mat-icon>
 								</button>
-								<b>
-									{{ variation.count }}x
-									{{ variation.display }}
-								</b>
+								{{ variation.count }}x
+								{{ variation.display }}
 								<button
 									mat-mini-fab
 									[disabled]="checkForPlusaddVariation(variation)"
@@ -852,7 +857,11 @@
 					}
 				}
 			}
-			<button mat-flat-button (click)="closeSpecialVariationPopup()">
+			<button
+				mat-flat-button
+				[disabled]="checkForSendVariation()"
+				(click)="closeSpecialVariationPopup()"
+			>
 				Schließen
 			</button>
 			<button
@@ -865,50 +874,7 @@
 		</div>
 	} @else {
 		<div class="popup-content">
-			@if (
-				selectedMenuItem != null && selectedMenuItem.orderItems.length === 1
-			) {
-				<!-- Minus-Modus für MenuOrderItems -->
-				<h2>
-					{{ lastClickedItem.variations[tmpCountVariations].name }}
-				</h2>
-				@for (
-					variationMap of tmpPickedVariationResource;
-					track variationMap
-				) {
-					@if (variationMap.get(tmpCountVariations)) {
-						@for (
-							variation of variationMap.get(tmpCountVariations).values();
-							track variation.uuid
-						) {
-							@if (tmpCountVariations != 0) {
-								{{ displayVariation(variation) }}
-							}
-
-							<div class="popup-content-dish">
-								<button
-									mat-mini-fab
-									[disabled]="variation.count == 0"
-									(click)="removeVariation(variation)"
-								>
-									<mat-icon>remove</mat-icon>
-								</button>
-								<b>
-									{{ variation.count }}x
-									{{ variation.display }}
-								</b>
-								<button
-									mat-mini-fab
-									[disabled]="checkForPlusaddVariation(variation)"
-									(click)="addVariation(variation)"
-								>
-									<mat-icon>add</mat-icon>
-								</button>
-							</div>
-						}
-					}
-				}
-			} @else if (selectedItem != null) {
+			@if (selectedItem != null) {
 				<!-- Minus-Modus für normale OrderItems -->
 				<h2>
 					{{ selectedItem.product.name }}

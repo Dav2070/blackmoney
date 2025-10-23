@@ -37,6 +37,32 @@
 
 .offer-order-item-card-variation-name {
 	grid-column: 2;
+	padding-left: 16px;
+}
+
+.offer-order-item-card-product-name {
+	grid-column: 2;
+}
+
+.offer-order-item-card-discount-name {
+	grid-column: 2;
+}
+
+.offer-order-item-card-name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.note-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 16px;
+	transition: transform 200ms;
+
+	&:hover {
+		transform: scale(1.15);
+	}
 }
 
 .offer-order-item-card-variation-unit-price {

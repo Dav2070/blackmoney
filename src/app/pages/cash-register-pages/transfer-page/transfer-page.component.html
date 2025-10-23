@@ -27,9 +27,7 @@
 				}
 
 				@if (
-					!ordersLoading &&
-					bookedItemsLeft.getOrderItems().length === 0 &&
-					bookedItemsLeft.getMenuOrderItems().length === 0
+					!ordersLoading && bookedItemsLeft.getOrderItems().length === 0
 				) {
 					<p class="no-products-message">
 						{{ locale.noProductsSelected }}
@@ -83,9 +81,7 @@
 				}
 
 				@if (
-					!ordersLoading &&
-					bookedItemsRight.getOrderItems().length === 0 &&
-					bookedItemsRight.getMenuOrderItems().length === 0
+					!ordersLoading && bookedItemsRight.getOrderItems().length === 0
 				) {
 					<p class="no-products-message">
 						{{ locale.noProductsSelected }}

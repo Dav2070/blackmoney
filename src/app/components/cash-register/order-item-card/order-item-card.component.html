@@ -1,6 +1,9 @@
 <li
 	class="order-item-card"
-	[class.selected]="selectedOrderItemUuid === orderItem.uuid"
+	[class.selected]="
+		selectedOrderItemUuid === orderItem.uuid &&
+		selectedOrderItemNote === orderItem.note
+	"
 >
 	<div class="order-item-card-id">
 		<p>#{{ orderItem.product.id }}</p>

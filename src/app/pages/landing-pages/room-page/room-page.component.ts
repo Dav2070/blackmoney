@@ -211,6 +211,20 @@ export class RoomPageComponent {
 		}
 	}
 
+	async deleteTableDialogPrimaryButtonClick() {
+		if (this.selectedTable == null) return
+
+		const deleteTableResponse = await this.apiService.deleteTable(`uuid`, {
+			uuid: this.selectedTable.uuid
+		})
+
+		if (deleteTableResponse.data?.deleteTable != null) {
+			this.removeTable(this.selectedTable)
+		}
+
+		this.deleteTableDialog.hide()
+	}
+
 	showDeleteTableDialog() {
 		if (this.selectedTable == null) return
 
@@ -235,13 +249,10 @@ export class RoomPageComponent {
 
 	// Entfern Einen Tisch
 	removeTable(tableToRemove: Table) {
-		// 1) Index des zu entfernenden Tisches ermitteln
-		const idx = this.tables.findIndex(t => t.name === tableToRemove.name)
-		if (idx === -1) return // Tisch nicht gefunden
-		// 2) Nummer des entfernten Tisches sichern
-		const removedNumber = this.tables[idx].name
-		// 3) löschen
-		this.tables.splice(idx, 1)
+		const i = this.tables.findIndex(t => t.uuid === tableToRemove.uuid)
+		if (i === -1) return
+
+		this.tables.splice(i, 1)
 	}
 
 	// Öffnet das Dialogformular zum Bearbeiten

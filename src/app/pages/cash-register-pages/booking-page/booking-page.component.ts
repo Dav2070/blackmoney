@@ -41,6 +41,7 @@ import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
+import { ViewNoteDialogComponent } from "src/app/dialogs/view-note-dialog/view-note-dialog.component"
 import { digitKeyRegex, numpadKeyRegex } from "src/app/constants"
 import {
 	calculateTotalPriceOfOrderItem,
@@ -164,6 +165,11 @@ export class BookingPageComponent {
 	//#region AddNoteDialog
 	@ViewChild("addNoteDialog")
 	addNoteDialog: AddNoteDialogComponent
+	//#endregion
+
+	//#region ViewNoteDialog
+	@ViewChild("viewNoteDialog")
+	viewNoteDialog: ViewNoteDialogComponent
 	//#endregion
 
 	constructor(
@@ -2309,14 +2315,27 @@ export class BookingPageComponent {
 	}
 
 	addNoteButtonClick() {
-		if (this.selectedItem != null && this.tmpAllItemHandler === this.stagedItems) {
-			this.addNoteDialog.show()
-		}
+		this.addNoteDialog.show()
 	}
 
 	addNoteDialogPrimaryButtonClick(event: { note: string }) {
 		if (this.selectedItem != null) {
 			this.selectedItem.note = event.note
+		}
+	}
+
+	orderItemNoteIconClick(event: { orderItem: OrderItem }) {
+		this.selectedItem = event.orderItem
+		this.viewNoteDialog.orderItem = event.orderItem
+
+		if (this.stagedItems.includes(event.orderItem)) {
+			this.tmpAllItemHandler = this.stagedItems
+			this.viewNoteDialog.showEditButton = true
+			this.viewNoteDialog.show()
+		} else {
+			this.tmpAllItemHandler = this.bookedItems
+			this.viewNoteDialog.showEditButton = false
+			this.viewNoteDialog.show()
 		}
 	}
 }

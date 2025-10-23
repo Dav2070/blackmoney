@@ -57,6 +57,7 @@ import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
+import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -125,6 +126,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		SelectProductVariationsDialogComponent,
 		MoveMultipleProductsDialogComponent,
 		AddNoteDialogComponent,
+		ViewNoteDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

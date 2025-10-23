@@ -35,6 +35,23 @@
 	text-align: right;
 }
 
+.order-item-card-name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.note-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 16px;
+	transition: transform 200ms;
+
+	&:hover {
+		transform: scale(1.15);
+	}
+}
+
 .order-item-card-variation-name {
 	grid-column: 2;
 }

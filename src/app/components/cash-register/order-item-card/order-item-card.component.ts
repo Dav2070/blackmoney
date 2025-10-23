@@ -1,6 +1,7 @@
-import { Component, Input } from "@angular/core"
+import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { OrderItem } from "src/app/models/OrderItem"
 import { calculateTotalPriceOfOrderItem } from "src/app/utils"
+import { faNoteSticky } from "@fortawesome/pro-solid-svg-icons"
 
 @Component({
 	selector: "app-order-item-card",
@@ -10,6 +11,17 @@ import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 })
 export class OrderItemCardComponent {
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+	faNoteSticky = faNoteSticky
 	@Input() orderItem: OrderItem = null
 	@Input() selectedOrderItemUuid: string = null
+	@Output() noteIconClick = new EventEmitter<{
+		orderItem: OrderItem
+	}>()
+
+	onNoteIconClick(event: Event) {
+		event.stopPropagation()
+		this.noteIconClick.emit({
+			orderItem: this.orderItem
+		})
+	}
 }

@@ -50,6 +50,7 @@
 						[orderItem]="orderItem"
 						[selectedOrderItemUuid]="selectedItem?.uuid"
 						(click)="selectItem(orderItem, stagedItems)"
+						(noteIconClick)="orderItemNoteIconClick($event)"
 					></app-order-item-card>
 				}
 			</ul>
@@ -83,6 +84,7 @@
 						[orderItem]="orderItem"
 						[selectedOrderItemUuid]="selectedItem?.uuid"
 						(click)="selectItem(orderItem, bookedItems)"
+						(noteIconClick)="orderItemNoteIconClick($event)"
 					></app-order-item-card>
 				}
 			</ul>
@@ -260,10 +262,10 @@
 					{{ locale.takeAway }}
 				</dav-button>
 
-				<dav-button 
-					color="secondary" 
+				<dav-button
+					color="secondary"
 					text
-					[disabled]="!selectedItem || tmpAllItemHandler !== stagedItems"
+					[disabled]="!selectedItem"
 					(click)="addNoteButtonClick()"
 				>
 					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
@@ -973,3 +975,9 @@
 	[orderItem]="selectedItem"
 	(primaryButtonClick)="addNoteDialogPrimaryButtonClick($event)"
 ></app-add-note-dialog>
+
+<app-view-note-dialog
+	#viewNoteDialog
+	[orderItem]="selectedItem"
+	(editButtonClick)="addNoteButtonClick()"
+></app-view-note-dialog>

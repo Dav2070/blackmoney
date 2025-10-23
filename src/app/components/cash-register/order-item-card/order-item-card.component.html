@@ -8,6 +8,13 @@
 
 	<div class="order-item-card-name">
 		<p>{{ orderItem.product.name }}</p>
+		@if (orderItem.note) {
+			<fa-icon
+				[icon]="faNoteSticky"
+				class="note-icon"
+				(click)="onNoteIconClick($event)"
+			></fa-icon>
+		}
 	</div>
 
 	<div class="order-item-card-unit-price">

@@ -170,6 +170,9 @@ export const de = {
 		addNoteDialog: {
 			headline: "Notiz hinzufügen",
 			note: "Notiz"
+		},
+		viewNoteDialog: {
+			headline: "Deine Notiz"
 		}
 	},
 	actions: {
@@ -181,7 +184,9 @@ export const de = {
 		move: "Verschieben",
 		logout: "Abmelden",
 		edit: "Bearbeiten",
-		delete: "Löschen"
+		delete: "Löschen",
+		close: "Schließen",
+		hide: ""
 	},
 	errors: {
 		printerAlreadyExists:

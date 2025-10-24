@@ -22,18 +22,23 @@ export class AddTableDialogComponent {
 	actionsLocale = this.localizationService.locale.actions
 
 	visible: boolean = false
-	tableNumber: number = 1
+	name: number = 1
 	seats: number = 4
 	numberOfTables: number = 1
 	bulkMode: boolean = false
 	multi: boolean = false
 
 	@Input() loading: boolean = false
-	@Input() tableNumberError: string = ""
+	@Input() nameError: string = ""
 	@Input() seatsError: string = ""
 	@Input() numberOfTablesError: string = ""
 	@Output() clearErrors = new EventEmitter()
-	@Output() primaryButtonClick = new EventEmitter()
+	@Output() primaryButtonClick = new EventEmitter<{
+		name: number
+		seats: number
+		numberOfTables: number
+		bulkMode: boolean
+	}>()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
 	constructor(
@@ -61,8 +66,8 @@ export class AddTableDialogComponent {
 		this.visible = false
 	}
 
-	tableNumberTextfieldChange(event: Event) {
-		this.tableNumber = Number((event as CustomEvent).detail.value)
+	nameTextfieldChange(event: Event) {
+		this.name = Number((event as CustomEvent).detail.value)
 		this.clearErrors.emit()
 	}
 
@@ -82,7 +87,7 @@ export class AddTableDialogComponent {
 
 	submit() {
 		this.primaryButtonClick.emit({
-			tableNumber: this.tableNumber,
+			name: this.name,
 			seats: this.seats,
 			numberOfTables: this.bulkMode ? this.numberOfTables : 1,
 			bulkMode: this.bulkMode

@@ -21,13 +21,13 @@
 		<!-- Table number / Start table number -->
 		<div class="dialog-formfield-container">
 			<dav-textfield
-				[value]="tableNumber"
+				[value]="name"
 				[label]="bulkMode ? locale.startTableName : locale.tableNumber"
 				type="number"
 				min="1"
 				[disabled]="loading"
-				[errorMessage]="tableNumberError"
-				(change)="tableNumberTextfieldChange($event)"
+				[errorMessage]="nameError"
+				(change)="nameTextfieldChange($event)"
 			></dav-textfield>
 		</div>
 

@@ -59,7 +59,11 @@
 
 <app-add-table-dialog
 	#addTableDialog
+	[loading]="addTableDialogLoading"
+	[nameError]="addTableDialogNameError"
+	[seatsError]="addTableDialogSeatsError"
 	(primaryButtonClick)="addTableDialogPrimaryButtonClick($event)"
+	(clearErrors)="addTableDialogNameError = ''; addTableDialogSeatsError = ''"
 ></app-add-table-dialog>
 
 <app-edit-table-dialog

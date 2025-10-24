@@ -174,6 +174,7 @@ export type Weekday =
 
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
+	| typeof ErrorCodes.tableAlreadyExists
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword
@@ -186,3 +187,5 @@ export type ErrorCode =
 	| typeof ErrorCodes.line2TooLong
 	| typeof ErrorCodes.postalCodeInvalid
 	| typeof ErrorCodes.ipAddressInvalid
+	| typeof ErrorCodes.tableNameInvalid
+	| typeof ErrorCodes.seatsInvalid

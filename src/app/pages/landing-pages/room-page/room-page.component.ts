@@ -16,7 +16,11 @@ import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
-import { convertRoomResourceToRoom, getGraphQLErrorCodes } from "src/app/utils"
+import {
+	convertRoomResourceToRoom,
+	convertTableResourceToTable,
+	getGraphQLErrorCodes
+} from "src/app/utils"
 import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
@@ -41,6 +45,9 @@ export class RoomPageComponent {
 	editRoomDialogNameError: string = ""
 
 	@ViewChild("addTableDialog") addTableDialog!: AddTableDialogComponent
+	addTableDialogLoading: boolean = false
+	addTableDialogNameError: string = ""
+	addTableDialogSeatsError: string = ""
 
 	@ViewChild("editTableDialog") editTableDialog!: EditTableDialogComponent
 	editTableDialogLoading: boolean = false
@@ -170,13 +177,63 @@ export class RoomPageComponent {
 		this.addTableDialog.show()
 	}
 
-	addTableDialogPrimaryButtonClick(event: {
-		tableNumber: number
+	async addTableDialogPrimaryButtonClick(event: {
+		name: number
 		seats: number
 		numberOfTables: number
 		bulkMode: boolean
 	}) {
-		console.log(event)
+		if (event.bulkMode) {
+			// TODO
+		} else {
+			this.addTableDialogLoading = true
+
+			const createTableResponse = await this.apiService.createTable(
+				`
+					uuid
+					name
+					seats
+				`,
+				{
+					roomUuid: this.roomUuid,
+					name: event.name,
+					seats: event.seats
+				}
+			)
+
+			this.addTableDialogLoading = false
+
+			if (createTableResponse.data?.createTable != null) {
+				const responseData = createTableResponse.data.createTable
+
+				this.tables.push(convertTableResourceToTable(responseData))
+				this.addTableDialog.hide()
+			} else {
+				const errors = getGraphQLErrorCodes(createTableResponse)
+				if (errors == null) return
+
+				for (const errorCode of errors) {
+					switch (errorCode) {
+						case ErrorCodes.tableNameInvalid:
+							this.addTableDialogNameError =
+								this.errorsLocale.tableNameInvalid
+							break
+						case ErrorCodes.seatsInvalid:
+							this.addTableDialogSeatsError =
+								this.errorsLocale.seatsInvalid
+							break
+						case ErrorCodes.tableAlreadyExists:
+							this.addTableDialogNameError =
+								this.errorsLocale.tableAlreadyExists
+							break
+						default:
+							this.addTableDialogNameError =
+								this.errorsLocale.unexpectedError
+							break
+					}
+				}
+			}
+		}
 	}
 
 	showEditTableDialog() {

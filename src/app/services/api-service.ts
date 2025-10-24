@@ -454,6 +454,33 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createTable(
+		queryData: string,
+		variables: { roomUuid: string; name: number; seats: number }
+	): Promise<MutationResult<{ createTable: TableResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createTable: TableResource }>({
+				mutation: gql`
+					mutation CreateTable(
+						$roomUuid: String!
+						$name: Int!
+						$seats: Int!
+					) {
+						createTable(
+							roomUuid: $roomUuid
+							name: $name
+							seats: $seats
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async updateTable(
 		queryData: string,
 		variables: { uuid: string; seats?: number }

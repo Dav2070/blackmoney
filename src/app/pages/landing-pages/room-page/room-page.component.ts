@@ -184,7 +184,34 @@ export class RoomPageComponent {
 		bulkMode: boolean
 	}) {
 		if (event.bulkMode) {
-			// TODO
+			this.addTableDialogLoading = true
+
+			for (let i = event.name; i < event.name + event.numberOfTables; i++) {
+				const createTableResponse = await this.apiService.createTable(
+					`
+						uuid
+						name
+						seats
+					`,
+					{
+						roomUuid: this.roomUuid,
+						name: i,
+						seats: event.seats
+					}
+				)
+
+				if (createTableResponse.data?.createTable != null) {
+					const responseData = createTableResponse.data.createTable
+
+					this.tables.push(convertTableResourceToTable(responseData))
+				}
+			}
+
+			// Sort the tables by name
+			this.tables.sort((a, b) => a.name - b.name)
+
+			this.addTableDialogLoading = false
+			this.addTableDialog.hide()
 		} else {
 			this.addTableDialogLoading = true
 

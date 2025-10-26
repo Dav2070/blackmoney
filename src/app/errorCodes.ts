@@ -1,5 +1,6 @@
 //#region Api errors
 export const printerAlreadyExists = "PRINTER_ALREADY_EXISTS"
+export const tableAlreadyExists = "TABLE_ALREADY_EXISTS"
 //#endregion
 
 //#region Session & authentication
@@ -24,4 +25,6 @@ export const line2TooLong = "LINE2_TOO_LONG"
 //#region Invalid fields
 export const postalCodeInvalid = "POSTAL_CODE_INVALID"
 export const ipAddressInvalid = "IP_ADDRESS_INVALID"
+export const tableNameInvalid = "TABLE_NAME_INVALID"
+export const seatsInvalid = "SEATS_INVALID"
 //#endregion

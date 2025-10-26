@@ -15,7 +15,6 @@ import { DataService } from "src/app/services/data-service"
 import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { OrderItem } from "src/app/models/OrderItem"
-import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { Table } from "src/app/models/Table"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { calculateTotalPriceOfOrderItem } from "src/app/utils"
@@ -398,11 +397,6 @@ export class PaymentPageComponent {
 			paymentMethod: payment
 		})
 		this.deleteBill()
-	}
-
-	calculateTotalPriceOfOfferOrderItem(offerItem: OfferOrderItem) {
-		// Bei OfferOrderItems ist der Special-Preis bereits berechnet und im Product gespeichert
-		return ((offerItem.product.price * offerItem.count) / 100).toFixed(2)
 	}
 
 	moveMultipleProductsDialogPrimaryButtonClick(event: { count: number }) {

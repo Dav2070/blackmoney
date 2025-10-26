@@ -454,6 +454,77 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createTable(
+		queryData: string,
+		variables: { roomUuid: string; name: number; seats: number }
+	): Promise<MutationResult<{ createTable: TableResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createTable: TableResource }>({
+				mutation: gql`
+					mutation CreateTable(
+						$roomUuid: String!
+						$name: Int!
+						$seats: Int!
+					) {
+						createTable(
+							roomUuid: $roomUuid
+							name: $name
+							seats: $seats
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updateTable(
+		queryData: string,
+		variables: { uuid: string; seats?: number }
+	): Promise<MutationResult<{ updateTable: TableResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateTable: TableResource }>({
+				mutation: gql`
+					mutation UpdateTable(
+						$uuid: String!
+						$seats: Int
+					) {
+						updateTable(
+							uuid: $uuid
+							seats: $seats
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async deleteTable(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<MutationResult<{ deleteTable: TableResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ deleteTable: TableResource }>({
+				mutation: gql`
+					mutation DeleteTable($uuid: String!) {
+						deleteTable(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async listCategories(
 		queryData: string
 	): Promise<ApolloQueryResult<{ listCategories: List<CategoryResource> }>> {

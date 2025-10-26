@@ -34,19 +34,13 @@
 								<strong>Nummer: {{ table.name }}</strong>
 							</p>
 							<p>Sitzplätze: {{ table.seats }}</p>
-							<div class="table-actions-row">
-								<dav-button
-									outline
-									class="test-table-btn"
-									(click)="removeTable(table)"
-									size="sm"
-								>
-									{{ locale.delete }}
-								</dav-button>
-							</div>
 						</div>
-						<dav-icon-button size="xs">
-							<fa-icon [icon]="faPen"></fa-icon>
+
+						<dav-icon-button
+							size="xs"
+							(click)="showTableItemContextMenu($event, table)"
+						>
+							<fa-icon [icon]="faEllipsis"></fa-icon>
 						</dav-icon-button>
 					</div>
 				</dav-card>
@@ -65,5 +59,46 @@
 
 <app-add-table-dialog
 	#addTableDialog
+	[loading]="addTableDialogLoading"
+	[nameError]="addTableDialogNameError"
+	[seatsError]="addTableDialogSeatsError"
 	(primaryButtonClick)="addTableDialogPrimaryButtonClick($event)"
+	(clearErrors)="addTableDialogNameError = ''; addTableDialogSeatsError = ''"
 ></app-add-table-dialog>
+
+<app-edit-table-dialog
+	#editTableDialog
+	[loading]="editTableDialogLoading"
+	[name]="editTableDialogName"
+	[seats]="editTableDialogSeats"
+	[seatsError]="editTableDialogSeatsError"
+	(primaryButtonClick)="editTableDialogPrimaryButtonClick($event)"
+	(clearErrors)="editTableDialogSeatsError = ''"
+></app-edit-table-dialog>
+
+<app-delete-table-dialog
+	#deleteTableDialog
+	[name]="deleteTableDialogName"
+	(primaryButtonClick)="deleteTableDialogPrimaryButtonClick()"
+></app-delete-table-dialog>
+
+<dav-context-menu
+	#tableItemContextMenu
+	[visible]="tableItemContextMenuVisible"
+	[posX]="tableItemContextMenuPositionX"
+	[posY]="tableItemContextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="showEditTableDialog()"
+	>
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="showDeleteTableDialog()"
+	>
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

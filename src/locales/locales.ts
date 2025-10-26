@@ -111,6 +111,12 @@ export const de = {
 		card: "Karte",
 		moveMultipleProducts: "Mehrere verschieben"
 	},
+	transferPage: {
+		tableHeadline: "Tisch {tableName} – {roomName}",
+		noProductsSelected: "Keine Produkte ausgewählt",
+		transferAllItemsToRight: "Alles nach rechts verschieben",
+		transferAllItemsToLeft: "Alles nach links verschieben"
+	},
 	dialogs: {
 		logoutDialog: {
 			headline: "Abmelden",
@@ -158,7 +164,17 @@ export const de = {
 			tableNumber: "Tischnummer",
 			seats: "Sitzplätze",
 			numberOfTables: "Anzahl Tische",
-			startTableName: "Anfangstischnummer"
+			startTableName: "Anfangstischnummer",
+			createMultiple: "Mehrere Tische anlegen"
+		},
+		editTableDialog: {
+			headline: "Tisch {name} bearbeiten",
+			seats: "Sitzplätze"
+		},
+		deleteTableDialog: {
+			headline: "Tisch {name} löschen",
+			description:
+				"Bist du dir sicher, dass du diesen Tisch löschen möchtest?"
 		},
 		addTableCombinationDialog: {
 			headline: "Tisch Kombination erstellen",
@@ -181,11 +197,14 @@ export const de = {
 		add: "Hinzufügen",
 		next: "Weiter",
 		move: "Verschieben",
-		logout: "Abmelden"
+		logout: "Abmelden",
+		edit: "Bearbeiten",
+		delete: "Löschen"
 	},
 	errors: {
 		printerAlreadyExists:
 			"Ein Drucker mit dieser IP-Adresse existiert bereits.",
+		tableAlreadyExists: "Ein Tisch mit dieser Nummer existiert bereits.",
 		nameMissing: "Bitte gib einen Namen an.",
 		nameTooShort: "Der Name ist zu kurz.",
 		nameTooLong: "Der Name ist zu lang.",
@@ -197,6 +216,8 @@ export const de = {
 		postalCodeInvalid: "Die Postleitzahl ist ungültig.",
 		ipAddressMissing: "Bitte gib eine IP-Adresse an.",
 		ipAddressInvalid: "Die IP-Adresse ist ungültig.",
+		tableNameInvalid: "Die Tischnummer ist ungültig.",
+		seatsInvalid: "Die Anzahl der Sitzplätze ist ungültig.",
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."

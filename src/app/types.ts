@@ -137,6 +137,7 @@ export interface OrderResource {
 export interface OrderItemResource {
 	uuid: string
 	count: number
+	type: OrderItemType
 	order: OrderResource
 	product: ProductResource
 	orderItemVariations: List<OrderItemVariationResource>
@@ -150,6 +151,13 @@ export interface OrderItemVariationResource {
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type CategoryType = "FOOD" | "DRINK"
+
+export enum OrderItemType {
+	Product = "PRODUCT",
+	Menu = "MENU",
+	Special = "SPECIAL"
+}
+
 export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
 export type PaymentMethod = "CASH" | "CARD"
@@ -166,6 +174,7 @@ export type Weekday =
 
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
+	| typeof ErrorCodes.tableAlreadyExists
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword
@@ -178,3 +187,5 @@ export type ErrorCode =
 	| typeof ErrorCodes.line2TooLong
 	| typeof ErrorCodes.postalCodeInvalid
 	| typeof ErrorCodes.ipAddressInvalid
+	| typeof ErrorCodes.tableNameInvalid
+	| typeof ErrorCodes.seatsInvalid

@@ -1,7 +1,7 @@
 .container {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	grid-template-rows: auto 1fr auto;
+	grid-template-rows: auto 1fr;
 	height: 100vh;
 	background-color: var(--dav-color-surface);
 	padding: 0;
@@ -69,16 +69,6 @@
 		text-align: right;
 		color: var(--dav-color-on-surface);
 	}
-}
-
-.footer {
-	grid-column: 1 / span 3;
-	grid-row: 3;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	gap: 4px;
-	padding: 16px;
 }
 
 .popup-overlay {

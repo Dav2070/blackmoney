@@ -66,6 +66,24 @@
 				>
 					<fa-icon [icon]="faMinus"></fa-icon>
 				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[disabled]="activeBill.isEmpty()"
+					[tooltip]="locale.cash"
+					(click)="createBill('CASH')"
+				>
+					<fa-icon [icon]="faMoneyBill1Wave"></fa-icon>
+				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[disabled]="activeBill.isEmpty()"
+					[tooltip]="locale.card"
+					(click)="createBill('CARD')"
+				>
+					<fa-icon [icon]="faCreditCard"></fa-icon>
+				</dav-icon-button>
 			</app-orders-header>
 
 			<div class="bills-list-container">
@@ -109,28 +127,6 @@
 		<div class="price-container">
 			<p>{{ calculateTotalBills() }}</p>
 		</div>
-	</div>
-
-	<div class="footer">
-		<dav-button
-			color="secondary"
-			text
-			[disabled]="activeBill.isEmpty()"
-			(click)="createBill('CASH')"
-		>
-			<fa-icon [icon]="faMoneyBill1Wave" slot="icon-left"></fa-icon>
-			{{ locale.cash }}
-		</dav-button>
-
-		<dav-button
-			color="secondary"
-			text
-			[disabled]="activeBill.isEmpty()"
-			(click)="createBill('CARD')"
-		>
-			<fa-icon [icon]="faCreditCard" slot="icon-left"></fa-icon>
-			{{ locale.card }}
-		</dav-button>
 	</div>
 </div>
 

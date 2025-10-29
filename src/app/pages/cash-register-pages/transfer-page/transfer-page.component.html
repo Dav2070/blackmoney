@@ -14,7 +14,15 @@
 					"
 					[showBackButton]="true"
 					(backButtonClick)="navigateToBookingPage($event)"
-				></app-orders-header>
+				>
+					<dav-icon-button
+						size="sm"
+						[tooltip]="locale.transferAllItemsToRight"
+						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+					>
+						<fa-icon [icon]="faChevronsRight"></fa-icon>
+					</dav-icon-button>
+				</app-orders-header>
 			}
 
 			<ul class="order-items-container">
@@ -68,7 +76,15 @@
 							.replace('{tableName}', tableRight?.name.toString())
 							.replace('{roomName}', tableRightRoom?.name)
 					"
-				></app-orders-header>
+				>
+					<dav-icon-button
+						size="sm"
+						[tooltip]="locale.transferAllItemsToLeft"
+						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+					>
+						<fa-icon [icon]="faChevronsLeft"></fa-icon>
+					</dav-icon-button>
+				</app-orders-header>
 			}
 
 			<ul class="order-items-container">
@@ -111,26 +127,6 @@
 		<div class="price-container">
 			<p>{{ showTotal(bookedItemsRight) }}</p>
 		</div>
-	</div>
-
-	<div class="footer">
-		<dav-button
-			color="secondary"
-			text
-			(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
-		>
-			<fa-icon [icon]="faChevronsRight" slot="icon-left"></fa-icon>
-			{{ locale.transferAllItemsToRight }}
-		</dav-button>
-
-		<dav-button
-			color="secondary"
-			text
-			(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
-		>
-			<fa-icon [icon]="faChevronsLeft" slot="icon-left"></fa-icon>
-			{{ locale.transferAllItemsToLeft }}
-		</dav-button>
 	</div>
 </div>
 

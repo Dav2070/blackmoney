@@ -73,13 +73,7 @@
 					orderItem of bookedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					@if (orderItem.type === OrderItemType.Product) {
-						<app-order-item-card
-							[orderItem]="orderItem"
-							[selectedOrderItemUuid]="selectedItem?.uuid"
-							(click)="selectItem(orderItem, bookedItems)"
-						></app-order-item-card>
-					} @else if (
+					@if (
 						orderItem.type === OrderItemType.Menu ||
 						orderItem.type === OrderItemType.Special
 					) {
@@ -88,6 +82,12 @@
 							[selectedOrderItemUuid]="selectedItem?.uuid"
 							(click)="selectItem(orderItem, bookedItems)"
 						></app-offer-order-item-card>
+					} @else {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							(click)="selectItem(orderItem, bookedItems)"
+						></app-order-item-card>
 					}
 				}
 			</ul>

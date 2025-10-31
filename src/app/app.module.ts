@@ -25,6 +25,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar"
 import { MatDialogModule } from "@angular/material/dialog"
 import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 import { MatRadioModule } from "@angular/material/radio"
+import { MatButtonToggleModule } from "@angular/material/button-toggle"
 
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
@@ -57,6 +58,7 @@ import { DeleteTableDialogComponent } from "./dialogs/delete-table-dialog/delete
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
+import { AddCategoryDialogComponent } from "./dialogs/add-category-dialog/add-category-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -130,6 +132,7 @@ import { VariationsOverviewPageComponent } from "./pages/landing-pages/variation
 		SelectTableDialogComponent,
 		SelectProductVariationsDialogComponent,
 		MoveMultipleProductsDialogComponent,
+		AddCategoryDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -197,6 +200,7 @@ import { VariationsOverviewPageComponent } from "./pages/landing-pages/variation
 		MatSlideToggleModule,
 		MatRadioModule,
 		MatTooltipModule,
+		MatButtonToggleModule,
 		//ServiceWorker
 		ServiceWorkerModule.register("ngsw-worker.js", {
 			enabled: !isDevMode(),

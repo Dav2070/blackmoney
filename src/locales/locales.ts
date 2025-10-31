@@ -188,6 +188,10 @@ export const de = {
 		},
 		moveMultipleProductsDialog: {
 			headline: "Mehrere verschieben"
+		},
+		addCategoryDialog:{
+			headline: "Kategorie hinzufügen",
+			name: "Name"
 		}
 	},
 	actions: {

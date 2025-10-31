@@ -1,6 +1,7 @@
-import { Component } from "@angular/core"
+import { Component, ViewChild } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { faPen } from "@fortawesome/pro-regular-svg-icons"
+import { AddCategoryDialogComponent } from "src/app/dialogs/add-category-dialog/add-category-dialog.component"
 import { Category } from "src/app/models/Category"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
@@ -13,9 +14,11 @@ import { LocalizationService } from "src/app/services/localization-service"
 	standalone: false
 })
 export class CategoryPageComponent {
-	showAddCategoryDialog() {
-		throw new Error("Method not implemented.")
-	}
+	@ViewChild("addCategoryDialog")
+	addCategoryDialog!: AddCategoryDialogComponent
+	addRoomDialogLoading: boolean = false
+	addRoomDialogNameError: string = ""
+
 	locale = this.localizationService.locale.categoryPage
 	errorsLocale = this.localizationService.locale.errors
 	categories: Category[] = [
@@ -73,5 +76,20 @@ export class CategoryPageComponent {
 			"category",
 			category.uuid
 		])
+	}
+
+	async addCategoryDialogPrimaryButtonClick(event: { name: string }) {
+		this.categories.push({
+			uuid: "",
+			name: event.name,
+			type: "FOOD",
+			products: []
+		})
+
+		this.addCategoryDialog.hide()
+	}
+
+	showAddCategoryDialog() {
+		this.addCategoryDialog.show()
 	}
 }

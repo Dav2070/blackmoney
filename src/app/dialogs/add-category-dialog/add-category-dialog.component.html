@@ -1,0 +1,29 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Name -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="name"
+				[label]="locale.name"
+				[disabled]="loading"
+				[errorMessage]="nameError"
+				(change)="nameTextfieldChange($event)"
+			></dav-textfield>
+			<mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+				<mat-button-toggle value="bold">Essen</mat-button-toggle>
+				<mat-button-toggle value="italic">Getränke</mat-button-toggle>
+			</mat-button-toggle-group>
+		</div>
+	</form>
+</dav-dialog>

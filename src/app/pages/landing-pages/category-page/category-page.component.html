@@ -20,3 +20,11 @@
 		</dav-list>
 	</div>
 </div>
+
+
+<app-add-category-dialog
+	#addCategoryDialog
+	[loading]="addRoomDialogLoading"
+	[nameError]="addRoomDialogNameError"
+	(primaryButtonClick)="addCategoryDialogPrimaryButtonClick($event)"
+></app-add-category-dialog>

@@ -52,6 +52,28 @@
 	}
 }
 
+.takeaway-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 16px;
+}
+
+.course-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background-color: var(--dav-color-secondary-container);
+	color: var(--dav-color-on-secondary-container);
+	padding: 2px 8px;
+	border-radius: 12px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.course-icon {
+	font-size: 12px;
+}
+
 .order-item-card-variation-name {
 	grid-column: 2;
 }

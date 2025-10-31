@@ -15,6 +15,15 @@
 				(click)="onNoteIconClick($event)"
 			></fa-icon>
 		}
+		@if (orderItem.takeAway) {
+			<fa-icon [icon]="faCupTogo" class="takeaway-icon"></fa-icon>
+		}
+		@if (orderItem.course) {
+			<span class="course-badge">
+				<fa-icon [icon]="faUtensils" class="course-icon"></fa-icon>
+				{{ orderItem.course }}
+			</span>
+		}
 	</div>
 
 	<div class="offer-order-item-card-total-price">

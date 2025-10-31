@@ -20,7 +20,8 @@ import {
 	faCupTogo,
 	faNoteSticky,
 	faStar,
-	faSeat
+	faSeat,
+	faUtensils
 } from "@fortawesome/pro-regular-svg-icons"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
@@ -82,6 +83,7 @@ export class BookingPageComponent {
 	faNoteSticky = faNoteSticky
 	faStar = faStar
 	faSeat = faSeat
+	faUtensils = faUtensils
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	OrderItemType = OrderItemType
 	categories: Category[] = []
@@ -2102,6 +2104,22 @@ export class BookingPageComponent {
 			this.tmpAllItemHandler = this.bookedItems
 			this.viewNoteDialog.showEditButton = false
 			this.viewNoteDialog.show()
+		}
+	}
+
+	takeAwayButtonClick() {
+		if (this.selectedItem != null) {
+			this.selectedItem.takeAway = !this.selectedItem.takeAway
+		}
+	}
+
+	setCourseButtonClick() {
+		if (this.selectedItem != null && this.consoleActive) {
+			const courseNumber = parseInt(this.console)
+			if (courseNumber >= 1 && courseNumber <= 9) {
+				this.selectedItem.course = courseNumber
+				this.showTotal()
+			}
 		}
 	}
 }

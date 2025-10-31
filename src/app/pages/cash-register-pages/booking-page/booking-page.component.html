@@ -252,7 +252,12 @@
 					{{ locale.switchTable }}
 				</dav-button>
 
-				<dav-button color="secondary" text>
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="!selectedItem"
+					(click)="takeAwayButtonClick()"
+				>
 					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
 					{{ locale.takeAway }}
 				</dav-button>
@@ -265,6 +270,16 @@
 				>
 					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
 					{{ locale.notes }}
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="!selectedItem || !consoleActive"
+					(click)="setCourseButtonClick()"
+				>
+					<fa-icon [icon]="faUtensils" slot="icon-left"></fa-icon>
+					{{ locale.course }}
 				</dav-button>
 
 				<dav-button color="secondary" text>

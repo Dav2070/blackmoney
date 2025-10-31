@@ -1,7 +1,11 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { OrderItem } from "src/app/models/OrderItem"
 import { calculateTotalPriceOfOrderItem } from "src/app/utils"
-import { faNoteSticky } from "@fortawesome/pro-solid-svg-icons"
+import {
+	faNoteSticky,
+	faCupTogo,
+	faUtensils
+} from "@fortawesome/pro-solid-svg-icons"
 
 @Component({
 	selector: "app-order-item-card",
@@ -12,6 +16,8 @@ import { faNoteSticky } from "@fortawesome/pro-solid-svg-icons"
 export class OrderItemCardComponent {
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	faNoteSticky = faNoteSticky
+	faCupTogo = faCupTogo
+	faUtensils = faUtensils
 	@Input() orderItem: OrderItem = null
 	@Input() selectedOrderItemUuid: string = null
 	@Input() selectedOrderItemNote: string = null

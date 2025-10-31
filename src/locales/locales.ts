@@ -84,6 +84,7 @@ export const de = {
 		switchTable: "Tisch wechseln",
 		takeAway: "Außer Haus",
 		notes: "Notizen",
+		course: "Gang",
 		extras: "Extras"
 	},
 	paymentPage: {

@@ -322,29 +322,17 @@ export class AllItemHandler {
 
 	// Fasst Items mit gleicher Notiz zusammen (nach Notiz-Änderung)
 	consolidateItems(changedItem: OrderItem) {
-		// Finde andere Items mit gleichem Produkt und Notiz
-		const itemsToMerge = this.allPickedItems.filter(
-			item =>
-				item !== changedItem &&
-				item.product.id === changedItem.product.id &&
-				item.note === changedItem.note
-		)
+		const existingItem = this.sameOrderItemExists(changedItem)
 
-		if (itemsToMerge.length === 0) {
-			return // Keine anderen Items zum Zusammenfassen
-		}
+		if (existingItem && existingItem !== changedItem) {
+			existingItem.count += changedItem.count
 
-		// Merge alle gefundenen Items in das geänderte Item
-		for (const itemToMerge of itemsToMerge) {
-			changedItem.count += itemToMerge.count
-
-			// Falls Variationen vorhanden sind, diese auch zusammenfassen
-			if (itemToMerge.orderItemVariations) {
-				for (const variation of itemToMerge.orderItemVariations) {
+			if (changedItem.orderItemVariations) {
+				for (const variation of changedItem.orderItemVariations) {
 					let existingVariation = null
 
-					if (changedItem.orderItemVariations) {
-						existingVariation = changedItem.orderItemVariations.find(
+					if (existingItem.orderItemVariations) {
+						existingVariation = existingItem.orderItemVariations.find(
 							v =>
 								v.variationItems.length ===
 									variation.variationItems.length &&
@@ -359,25 +347,17 @@ export class AllItemHandler {
 					if (existingVariation != null) {
 						existingVariation.count += variation.count
 					} else {
-						changedItem.orderItemVariations.push(variation)
+						existingItem.orderItemVariations.push(variation)
 					}
 				}
 			}
-			// Entferne das zusammengefasste Item
-			this.deleteItem(itemToMerge)
+
+			this.deleteItem(changedItem)
 		}
 	}
 
-	sameOfferOrderItemExists(item: OrderItem): OrderItem {
-		if (
-			item.type !== OrderItemType.Menu &&
-			item.type !== OrderItemType.Special
-		) {
-			return undefined
-		}
-
+	sameOrderItemExists(item: OrderItem): OrderItem {
 		return this.allPickedItems.find(existingItem => {
-			// Grundlegende Checks
 			if (
 				existingItem.type !== item.type ||
 				existingItem.offer?.uuid !== item.offer?.uuid ||
@@ -387,32 +367,111 @@ export class AllItemHandler {
 				return false
 			}
 
-			// Für Specials: Nur prüfen ob die gleichen Produkte vorhanden sind (Count egal)
+			if (item.type === OrderItemType.Product) {
+				if (existingItem.product.id !== item.product.id) {
+					return false
+				}
+
+				const existingVarCount =
+					existingItem.orderItemVariations?.length || 0
+				const newVarCount = item.orderItemVariations?.length || 0
+
+				if (existingVarCount !== newVarCount) {
+					return false
+				}
+
+				return (
+					item.orderItemVariations?.every(newVar => {
+						return existingItem.orderItemVariations.some(existingVar => {
+							if (existingVar.count !== newVar.count) {
+								return false
+							}
+
+							if (
+								existingVar.variationItems.length !==
+								newVar.variationItems.length
+							) {
+								return false
+							}
+
+							return newVar.variationItems.every((newVarItem, index) => {
+								const existingVarItem =
+									existingVar.variationItems[index]
+								return (
+									existingVarItem.id === newVarItem.id &&
+									existingVarItem.name === newVarItem.name &&
+									existingVarItem.additionalCost ===
+										newVarItem.additionalCost
+								)
+							})
+						})
+					}) ?? true
+				)
+			}
+
 			if (item.type === OrderItemType.Special) {
-				// Bidirektionaler Vergleich: Jedes neue OrderItem muss einen Partner finden
-				const allNewItemsHaveMatch = item.orderItems.every(newOrderItem => {
+				return item.orderItems.every(newOrderItem => {
 					return existingItem.orderItems.some(existingOrderItem => {
+						if (
+							existingOrderItem.product.id !== newOrderItem.product.id
+						) {
+							return false
+						}
+
+						if (
+							existingOrderItem.count / existingItem.count !==
+							newOrderItem.count
+						) {
+							return false
+						}
+
+						const existingVarCount =
+							existingOrderItem.orderItemVariations?.length || 0
+						const newVarCount =
+							newOrderItem.orderItemVariations?.length || 0
+
+						if (existingVarCount !== newVarCount) {
+							return false
+						}
+
 						return (
-							existingOrderItem.product.id === newOrderItem.product.id
+							newOrderItem.orderItemVariations?.every(newVar => {
+								return existingOrderItem.orderItemVariations.some(
+									existingVar => {
+										if (
+											existingVar.count / existingItem.count !==
+											newVar.count
+										) {
+											return false
+										}
+
+										if (
+											existingVar.variationItems.length !==
+											newVar.variationItems.length
+										) {
+											return false
+										}
+
+										return newVar.variationItems.every(
+											(newVarItem, index) => {
+												const existingVarItem =
+													existingVar.variationItems[index]
+												return (
+													existingVarItem.id === newVarItem.id &&
+													existingVarItem.name ===
+														newVarItem.name &&
+													existingVarItem.additionalCost ===
+														newVarItem.additionalCost
+												)
+											}
+										)
+									}
+								)
+							}) ?? true
 						)
 					})
 				})
-
-				// UND: Jedes existierende OrderItem muss auch einen Partner finden
-				const allExistingItemsHaveMatch = existingItem.orderItems.every(
-					existingOrderItem => {
-						return item.orderItems.some(newOrderItem => {
-							return (
-								existingOrderItem.product.id === newOrderItem.product.id
-							)
-						})
-					}
-				)
-
-				return allNewItemsHaveMatch && allExistingItemsHaveMatch
 			}
-
-			// Für Menüs: Strenger Vergleich mit Count und Variationen
 			return item.orderItems.every(newOrderItem => {
 				return existingItem.orderItems.some(existingOrderItem => {
 					if (existingOrderItem.product.id !== newOrderItem.product.id) {
@@ -434,7 +493,6 @@ export class AllItemHandler {
 						return false
 					}
 
-					// Alle Variationen müssen passen
 					return (
 						newOrderItem.orderItemVariations?.every(newVar => {
 							return existingOrderItem.orderItemVariations.some(

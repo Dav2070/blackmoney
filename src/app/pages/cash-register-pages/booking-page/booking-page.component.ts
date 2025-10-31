@@ -1284,9 +1284,6 @@ export class BookingPageComponent {
 						existingOrderItem.count / orderItem.count
 				}
 				orderItem.count += 1
-				console.log(
-					`Item ${orderItem.uuid} aktualisiert: ${orderItem.count}`
-				)
 			}
 
 			this.tmpAnzahl = undefined
@@ -1909,8 +1906,7 @@ export class BookingPageComponent {
 				discount: -(originalProductPrice * rabattFaktor)
 			}
 
-			let existingOfferItem =
-				this.stagedItems.sameOfferOrderItemExists(orderItem)
+			let existingOfferItem = this.stagedItems.sameOrderItemExists(orderItem)
 
 			if (existingOfferItem) {
 				existingOfferItem.count += processedItem.count
@@ -1994,8 +1990,7 @@ export class BookingPageComponent {
 		}
 
 		// Prüfe ob ein ähnliches OrderItem bereits existiert und merge, oder füge neu hinzu
-		let existingOfferItem =
-			this.stagedItems.sameOfferOrderItemExists(orderItem)
+		let existingOfferItem = this.stagedItems.sameOrderItemExists(orderItem)
 
 		if (existingOfferItem) {
 			existingOfferItem.count++
@@ -2083,6 +2078,7 @@ export class BookingPageComponent {
 
 		this.addNoteDialog.show()
 	}
+
 	addNoteDialogPrimaryButtonClick(event: { note: string }) {
 		if (this.selectedItem != null) {
 			this.selectedItem.note = event.note

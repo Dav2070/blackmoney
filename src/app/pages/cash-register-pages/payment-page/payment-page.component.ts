@@ -37,11 +37,6 @@ export class PaymentPageComponent {
 	bills: AllItemHandler[] = [new AllItemHandler()]
 	table: Table = null
 	ordersLoading: boolean = true
-	contextMenuOrderItem: OrderItem = null
-	contextMenuVisible: boolean = false
-	contextMenuPositionX: number = 0
-	contextMenuPositionY: number = 0
-	contextMenuBillsList: boolean = false
 
 	orderUuid: string = ""
 	billUuid: string = ""
@@ -60,8 +55,15 @@ export class PaymentPageComponent {
 	@ViewChild("moveMultipleProductsDialog")
 	moveMultipleProductsDialog: MoveMultipleProductsDialogComponent
 
+	//#region ContextMenu variables
 	@ViewChild("contextMenu")
 	contextMenu: ElementRef<ContextMenu>
+	contextMenuOrderItem: OrderItem = null
+	contextMenuVisible: boolean = false
+	contextMenuPositionX: number = 0
+	contextMenuPositionY: number = 0
+	contextMenuBillsList: boolean = false
+	//#endregion
 
 	constructor(
 		private activatedRoute: ActivatedRoute,
@@ -101,6 +103,35 @@ export class PaymentPageComponent {
 	navigateToBookingPage(event: MouseEvent) {
 		event.preventDefault()
 		this.router.navigate(["dashboard", "tables", this.table.uuid])
+	}
+
+	async showContextMenu(
+		event: MouseEvent,
+		orderItem: OrderItem,
+		billsList: boolean
+	) {
+		event.preventDefault()
+
+		if (orderItem.count <= 1 || orderItem.orderItemVariations.length > 0) {
+			return
+		}
+
+		this.contextMenuOrderItem = orderItem
+
+		// Set the position of the context menu
+		this.contextMenuPositionX = event.pageX
+		this.contextMenuPositionY = event.pageY
+
+		if (this.contextMenuVisible) {
+			this.contextMenuVisible = false
+
+			await new Promise((resolve: Function) => {
+				setTimeout(() => resolve(), 60)
+			})
+		}
+
+		this.contextMenuBillsList = billsList
+		this.contextMenuVisible = true
 	}
 
 	showMoveMultipleProductsDialog() {
@@ -408,34 +439,5 @@ export class PaymentPageComponent {
 			this.contextMenuBillsList ? this.activeBill : this.bookedItems
 		)
 		this.tmpAnzahl = 1
-	}
-
-	async showContextMenu(
-		event: MouseEvent,
-		orderItem: OrderItem,
-		billsList: boolean
-	) {
-		event.preventDefault()
-
-		if (orderItem.count <= 1 || orderItem.orderItemVariations.length > 0) {
-			return
-		}
-
-		this.contextMenuOrderItem = orderItem
-
-		// Set the position of the context menu
-		this.contextMenuPositionX = event.pageX
-		this.contextMenuPositionY = event.pageY
-
-		if (this.contextMenuVisible) {
-			this.contextMenuVisible = false
-
-			await new Promise((resolve: Function) => {
-				setTimeout(() => resolve(), 60)
-			})
-		}
-
-		this.contextMenuBillsList = billsList
-		this.contextMenuVisible = true
 	}
 }

@@ -98,7 +98,8 @@ export const de = {
 		tableHeadline: "Tisch {tableName} – {roomName}",
 		noProductsSelected: "Keine Produkte ausgewählt",
 		transferAllItemsToRight: "Alles nach rechts verschieben",
-		transferAllItemsToLeft: "Alles nach links verschieben"
+		transferAllItemsToLeft: "Alles nach links verschieben",
+		moveMultipleProducts: "Mehrere verschieben"
 	},
 	dialogs: {
 		logoutDialog: {

@@ -56,6 +56,7 @@
 									bookedItemsRight
 								)
 							"
+							(contextmenu)="showContextMenu($event, orderItem, true)"
 						></app-order-item-card>
 					}
 				}
@@ -118,6 +119,7 @@
 									bookedItemsLeft
 								)
 							"
+							(contextmenu)="showContextMenu($event, orderItem, true)"
 						></app-order-item-card>
 					}
 				}
@@ -177,3 +179,26 @@
 		</button>
 	</div>
 </div>
+
+<app-move-multiple-products-dialog
+	#moveMultipleProductsDialog
+	[orderItem]="contextMenuOrderItem"
+	(primaryButtonClick)="moveMultipleProductsDialogPrimaryButtonClick($event)"
+></app-move-multiple-products-dialog>
+
+<dav-context-menu
+	#contextMenu
+	[visible]="contextMenuVisible"
+	[posX]="contextMenuPositionX"
+	[posY]="contextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="locale.moveMultipleProducts"
+		(click)="showMoveMultipleProductsDialog()"
+	>
+		<fa-icon
+			slot="icon"
+			[icon]="contextMenuLeftList ? faChevronsRight : faChevronsLeft"
+		></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

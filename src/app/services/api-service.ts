@@ -198,6 +198,29 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async resetPasswordOfUser(
+		queryData: string,
+		variables: {
+			uuid: string
+		}
+	): Promise<MutationResult<{ resetPasswordOfUser: UserResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				resetPasswordOfUser: UserResource
+			}>({
+				mutation: gql`
+					mutation ResetPasswordOfUser($uuid: String!) {
+						resetPasswordOfUser(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveCompany(
 		queryData: string
 	): Promise<ApolloQueryResult<{ retrieveCompany: CompanyResource }>> {

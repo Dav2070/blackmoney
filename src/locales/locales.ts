@@ -49,7 +49,8 @@ export const de = {
 		headline: "Deine Mitarbeiter"
 	},
 	employeePage: {
-		role: "Rolle:"
+		role: "Rolle:",
+		resetPassword: "Passwort zurücksetzen"
 	},
 	printersPage: {
 		headline: "Deine Drucker",
@@ -177,6 +178,11 @@ export const de = {
 			line3: "Anzahl Tische",
 			line4: "Anfangs Tischnummer"
 		},
+		resetPasswordDialog: {
+			headline: "Passwort zurücksetzen",
+			description:
+				"Bist du dir sicher, dass du das Passwort für {name} zurücksetzen möchtest?"
+		},
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"
 		},
@@ -194,7 +200,8 @@ export const de = {
 		move: "Verschieben",
 		logout: "Abmelden",
 		edit: "Bearbeiten",
-		delete: "Löschen"
+		delete: "Löschen",
+		reset: "Zurücksetzen"
 	},
 	errors: {
 		printerAlreadyExists:

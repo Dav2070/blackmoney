@@ -16,6 +16,7 @@
 					[href]="
 						`/user/restaurants/${restaurantUuid}/rooms/${roomUuid}/combinations`
 					"
+					[tooltip]="locale.showTableCombinations"
 					(click)="navigateToTableCombinationsPage($event)"
 				>
 					<fa-icon [icon]="faObjectUnion"></fa-icon>
@@ -38,6 +39,7 @@
 
 						<dav-icon-button
 							size="xs"
+							[tooltip]="locale.options"
 							(click)="showTableItemContextMenu($event, table)"
 						>
 							<fa-icon [icon]="faEllipsis"></fa-icon>

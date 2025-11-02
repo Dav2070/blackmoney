@@ -21,6 +21,7 @@ import { randomNumber } from "src/app/utils"
 })
 export class UserPageComponent {
 	locale = this.localizationService.locale.userPage
+	actionsLocale = this.localizationService.locale.actions
 	faGear = faGear
 	faArrowRightFromBracket = faArrowRightFromBracket
 	faCashRegister = faCashRegister

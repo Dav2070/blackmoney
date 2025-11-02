@@ -25,6 +25,7 @@ export const de = {
 			"Moin {name}!",
 			"Grüezi {name}!"
 		],
+		generalSettings: "Allgemeine Einstellungen",
 		goToDashboard: "Zur Kasse",
 		manageEmployees: "Mitarbeiter verwalten",
 		manageRestaurants: "Restaurants verwalten"
@@ -64,7 +65,8 @@ export const de = {
 		headline: "Deine Räume"
 	},
 	roomPage: {
-		delete: "löschen"
+		showTableCombinations: "Tischkombinationen anzeigen",
+		options: "Weitere Optionen"
 	},
 	tableCombinationPage: {
 		headline: "Deine Tischkombinationen",
@@ -84,14 +86,17 @@ export const de = {
 		switchTable: "Tisch wechseln",
 		takeAway: "Außer Haus",
 		notes: "Notizen",
-		extras: "Extras"
+		extras: "Extras",
+		showBills: "Rechnungen anzeigen"
 	},
 	paymentPage: {
 		tableHeadline: "Tisch {name}",
 		noProductsSelected: "Keine Produkte ausgewählt",
 		billsHeadline: "Rechnungen",
-		cash: "Bar",
-		card: "Karte",
+		addBill: "Rechnung hinzufügen",
+		removeBill: "Rechnung entfernen",
+		payByCash: "Bar bezahlen",
+		payByCard: "Mit Karte bezahlen",
 		moveMultipleProducts: "Mehrere verschieben"
 	},
 	transferPage: {
@@ -179,6 +184,7 @@ export const de = {
 		cancel: "Abbrechen",
 		select: "Auswählen",
 		add: "Hinzufügen",
+		back: "Zurück",
 		next: "Weiter",
 		move: "Verschieben",
 		logout: "Abmelden",

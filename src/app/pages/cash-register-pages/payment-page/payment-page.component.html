@@ -54,6 +54,7 @@
 				<dav-icon-button
 					size="sm"
 					[disabled]="checkMaxBills()"
+					[tooltip]="locale.addBill"
 					(click)="addBill()"
 				>
 					<fa-icon [icon]="faPlus"></fa-icon>
@@ -62,6 +63,7 @@
 				<dav-icon-button
 					size="sm"
 					[disabled]="bills.length <= 1"
+					[tooltip]="locale.removeBill"
 					(click)="deleteBill()"
 				>
 					<fa-icon [icon]="faMinus"></fa-icon>
@@ -70,7 +72,7 @@
 				<dav-icon-button
 					size="sm"
 					[disabled]="activeBill.isEmpty()"
-					[tooltip]="locale.cash"
+					[tooltip]="locale.payByCash"
 					(click)="createBill('CASH')"
 				>
 					<fa-icon [icon]="faMoneyBill1Wave"></fa-icon>
@@ -79,7 +81,7 @@
 				<dav-icon-button
 					size="sm"
 					[disabled]="activeBill.isEmpty()"
-					[tooltip]="locale.card"
+					[tooltip]="locale.payByCard"
 					(click)="createBill('CARD')"
 				>
 					<fa-icon [icon]="faCreditCard"></fa-icon>

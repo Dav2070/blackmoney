@@ -7,12 +7,17 @@
 				<dav-icon-button
 					size="sm"
 					href="/user/settings"
+					[tooltip]="locale.generalSettings"
 					(click)="navigateToGeneralSettingsPage($event)"
 				>
 					<fa-icon [icon]="faGear"></fa-icon>
 				</dav-icon-button>
 
-				<dav-icon-button size="sm" (click)="showLogoutDialog()">
+				<dav-icon-button
+					size="sm"
+					[tooltip]="actionsLocale.logout"
+					(click)="showLogoutDialog()"
+				>
 					<fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
 				</dav-icon-button>
 			</div>

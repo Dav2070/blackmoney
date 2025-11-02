@@ -13,11 +13,19 @@
 					[showBackButton]="true"
 					(backButtonClick)="navigateToDashboard($event)"
 				>
-					<dav-icon-button size="sm" (click)="selectTableButtonClick()">
+					<dav-icon-button
+						size="sm"
+						[tooltip]="locale.switchTable"
+						(click)="selectTableButtonClick()"
+					>
 						<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon>
 					</dav-icon-button>
 
-					<dav-icon-button size="sm" (click)="openBills()">
+					<dav-icon-button
+						size="sm"
+						[tooltip]="locale.showBills"
+						(click)="openBills()"
+					>
 						<fa-icon [icon]="faFileLines"></fa-icon>
 					</dav-icon-button>
 				</app-orders-header>

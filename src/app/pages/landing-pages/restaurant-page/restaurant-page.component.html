@@ -32,7 +32,11 @@
 					}
 				</div>
 
-				<dav-icon-button size="xs" (click)="showEditAddressDialog()">
+				<dav-icon-button
+					size="xs"
+					[tooltip]="actionsLocale.edit"
+					(click)="showEditAddressDialog()"
+				>
 					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-button>
 			</div>

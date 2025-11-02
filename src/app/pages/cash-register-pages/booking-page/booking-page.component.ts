@@ -36,9 +36,14 @@ import { VariationItem } from "src/app/models/VariationItem"
 import { Order } from "src/app/models/Order"
 import { Offer } from "src/app/models/Offer"
 import { OfferItem } from "src/app/models/OfferItem"
-import { OrderItemType } from "src/app/types"
+import {
+	AddProductsInput,
+	AddProductVariationInput,
+	OrderItemType
+} from "src/app/types"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
+import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { digitKeyRegex, numpadKeyRegex } from "src/app/constants"
 import {
@@ -48,17 +53,6 @@ import {
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
-
-interface AddProductsInput {
-	uuid: string
-	count: number
-	variations?: AddProductsInputVariation[]
-}
-
-interface AddProductsInputVariation {
-	variationItemUuids: string[]
-	count: number
-}
 
 @Component({
 	templateUrl: "./booking-page.component.html",
@@ -153,6 +147,11 @@ export class BookingPageComponent {
 	//#region SelectTableDialog
 	@ViewChild("selectTableDialog")
 	selectTableDialog: SelectTableDialogComponent
+	//#endregion
+
+	//#region SelectProductDialog
+	@ViewChild("selectProductDialog")
+	selectProductDialog: SelectProductDialogComponent
 	//#endregion
 
 	//#region SelectProductVariationsDialog
@@ -377,6 +376,12 @@ export class BookingPageComponent {
 		this.selectTableDialog.hide()
 		this.router.navigate(["dashboard", "tables", event.uuid])
 	}
+
+	showSelectProductDialog() {
+		this.selectProductDialog.show()
+	}
+
+	selectProductDialogPrimaryButtonClick() {}
 
 	// Zeige Variations-Popup an
 	toggleItemPopup() {
@@ -1036,7 +1041,7 @@ export class BookingPageComponent {
 			}
 
 			for (let orderItemVariation of values.orderItemVariations) {
-				let variation: AddProductsInputVariation = {
+				let variation: AddProductVariationInput = {
 					count: orderItemVariation.count,
 					variationItemUuids: []
 				}

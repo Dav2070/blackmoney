@@ -14,6 +14,15 @@
 					(backButtonClick)="navigateToDashboard($event)"
 				>
 					<dav-icon-button
+						class="add-product-button"
+						size="sm"
+						[tooltip]="locale.addProduct"
+						(click)="showSelectProductDialog()"
+					>
+						<fa-icon [icon]="faPlus"></fa-icon>
+					</dav-icon-button>
+
+					<dav-icon-button
 						size="sm"
 						[tooltip]="locale.switchTable"
 						(click)="selectTableButtonClick()"
@@ -922,6 +931,11 @@
 	[currentTableUuid]="table?.uuid"
 	(primaryButtonClick)="selectTableDialogPrimaryButtonClick($event)"
 ></app-select-table-dialog>
+
+<app-select-product-dialog
+	#selectProductDialog
+	(primaryButtonClick)="selectProductDialogPrimaryButtonClick()"
+></app-select-product-dialog>
 
 <app-select-product-variations-dialog
 	#selectProductVariationsDialog

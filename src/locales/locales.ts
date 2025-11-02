@@ -88,6 +88,7 @@ export const de = {
 		takeAway: "Außer Haus",
 		notes: "Notizen",
 		extras: "Extras",
+		addProduct: "Produkt hinzufügen",
 		showBills: "Rechnungen anzeigen"
 	},
 	paymentPage: {
@@ -182,6 +183,9 @@ export const de = {
 			headline: "Passwort zurücksetzen",
 			description:
 				"Bist du dir sicher, dass du das Passwort für {name} zurücksetzen möchtest?"
+		},
+		selectProductDialog: {
+			headline: "Produkt hinzufügen"
 		},
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"

@@ -57,6 +57,7 @@ import { EditTableDialogComponent } from "./dialogs/edit-table-dialog/edit-table
 import { DeleteTableDialogComponent } from "./dialogs/delete-table-dialog/delete-table-dialog.component"
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
 import { ResetPasswordDialogComponent } from "./dialogs/reset-password-dialog/reset-password-dialog.component"
+import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 
@@ -127,6 +128,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		DeleteTableDialogComponent,
 		SelectTableDialogComponent,
 		ResetPasswordDialogComponent,
+		SelectProductDialogComponent,
 		SelectProductVariationsDialogComponent,
 		MoveMultipleProductsDialogComponent,
 		// Pages

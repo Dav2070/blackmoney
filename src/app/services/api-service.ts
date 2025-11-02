@@ -14,7 +14,8 @@ import {
 	BillResource,
 	RestaurantResource,
 	UserRole,
-	PrinterResource
+	PrinterResource,
+	AddProductsInput
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -647,14 +648,7 @@ export class ApiService {
 		queryData: string,
 		variables: {
 			uuid: string
-			products: {
-				uuid: string
-				count: number
-				variations?: {
-					variationItemUuids: string[]
-					count: number
-				}[]
-			}[]
+			products: AddProductsInput[]
 		}
 	): Promise<MutationResult<{ addProductsToOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo

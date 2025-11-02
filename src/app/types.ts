@@ -149,6 +149,17 @@ export interface OrderItemVariationResource {
 	variationItems: List<VariationItemResource>
 }
 
+export interface AddProductsInput {
+	uuid: string
+	count: number
+	variations?: AddProductVariationInput[]
+}
+
+export interface AddProductVariationInput {
+	variationItemUuids: string[]
+	count: number
+}
+
 export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type CategoryType = "FOOD" | "DRINK"
 

@@ -3,7 +3,8 @@ import {
 	Inject,
 	PLATFORM_ID,
 	ViewChild,
-	HostListener
+	HostListener,
+	ElementRef
 } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
@@ -22,6 +23,7 @@ import {
 	faStar,
 	faSeat
 } from "@fortawesome/pro-regular-svg-icons"
+import { BottomSheet } from "dav-ui-components"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
@@ -144,19 +146,28 @@ export class BookingPageComponent {
 
 	tmpLastPickedVariation: VariationItem[] = []
 
-	//#region SelectTableDialog
+	//#region SelectTableDialog variables
 	@ViewChild("selectTableDialog")
 	selectTableDialog: SelectTableDialogComponent
 	//#endregion
 
-	//#region SelectProductDialog
+	//#region SelectProductDialog variables
 	@ViewChild("selectProductDialog")
 	selectProductDialog: SelectProductDialogComponent
 	//#endregion
 
-	//#region SelectProductVariationsDialog
+	//#region SelectProductVariationsDialog variables
 	@ViewChild("selectProductVariationsDialog")
 	selectProductVariationsDialog: SelectProductVariationsDialogComponent
+	//#endregion
+
+	//#region BottomSheet variables
+	@ViewChild("bottomSheet", { static: true })
+	bottomSheet: ElementRef<BottomSheet>
+	touchStartY = 0
+	touchDiffY = 0
+	swipeStart = false
+	startPosition = 0
 	//#endregion
 
 	constructor(
@@ -320,6 +331,8 @@ export class BookingPageComponent {
 
 		this.showTotal()
 		this.productsLoading = false
+
+		this.bottomSheet.nativeElement.snap()
 	}
 
 	@HostListener("window:keydown", ["$event"])
@@ -379,6 +392,33 @@ export class BookingPageComponent {
 
 	showSelectProductDialog() {
 		this.selectProductDialog.show()
+	}
+
+	bottomSheetHandleTouch(event: TouchEvent) {
+		if (event.touches.length > 1) return
+
+		if (event.type === "touchstart") {
+			this.touchStartY = event.touches.item(0).screenY
+			this.swipeStart = true
+		} else if (event.type === "touchmove") {
+			event.preventDefault()
+			this.touchDiffY = this.touchStartY - event.touches.item(0).screenY
+
+			if (this.swipeStart) {
+				this.startPosition = this.bottomSheet.nativeElement.position
+				this.swipeStart = false
+			}
+
+			this.bottomSheet.nativeElement.setPosition(
+				this.touchDiffY + this.startPosition
+			)
+		} else if (event.type === "touchend") {
+			this.touchStartY = 0
+			this.touchDiffY = 0
+			this.startPosition = 0
+
+			this.bottomSheet.nativeElement.snap()
+		}
 	}
 
 	// Zeige Variations-Popup an

@@ -1363,13 +1363,14 @@ export class BookingPageComponent {
 			})
 		}
 
-		this.pickedBill = this.bills[0]
-
-		this.isBillPopupVisible = !this.isBillPopupVisible
+		if (this.bills.length > 0) {
+			this.pickedBill = this.bills[0]
+			this.isBillPopupVisible = true
+		}
 	}
 
 	closeBills() {
-		this.isBillPopupVisible = !this.isBillPopupVisible
+		this.isBillPopupVisible = false
 		this.bills = []
 		this.pickedBill = null
 	}

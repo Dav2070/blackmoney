@@ -51,6 +51,7 @@ import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-prin
 import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
 import { AddRoomDialogComponent } from "./dialogs/add-room-dialog/add-room-dialog.component"
 import { EditRoomDialogComponent } from "./dialogs/edit-room-dialog/edit-room-dialog.component"
+import { DeleteRoomDialogComponent } from "./dialogs/delete-room-dialog/delete-room-dialog.component"
 import { AddTableDialogComponent } from "./dialogs/add-table-dialog/add-table-dialog.component"
 import { EditTableDialogComponent } from "./dialogs/edit-table-dialog/edit-table-dialog.component"
 import { DeleteTableDialogComponent } from "./dialogs/delete-table-dialog/delete-table-dialog.component"
@@ -119,6 +120,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		EditPrinterDialogComponent,
 		AddRoomDialogComponent,
 		EditRoomDialogComponent,
+		DeleteRoomDialogComponent,
 		AddTableDialogComponent,
 		EditTableDialogComponent,
 		DeleteTableDialogComponent,

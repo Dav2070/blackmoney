@@ -454,6 +454,25 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async deleteRoom(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<MutationResult<{ deleteRoom: RoomResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ deleteRoom: RoomResource }>({
+				mutation: gql`
+					mutation DeleteRoom($uuid: String!) {
+						deleteRoom(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async createTable(
 		queryData: string,
 		variables: { roomUuid: string; name: number; seats: number }

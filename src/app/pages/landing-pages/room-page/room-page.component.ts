@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 import { EditRoomDialogComponent } from "src/app/dialogs/edit-room-dialog/edit-room-dialog.component"
+import { DeleteRoomDialogComponent } from "src/app/dialogs/delete-room-dialog/delete-room-dialog.component"
 import { AddTableDialogComponent } from "src/app/dialogs/add-table-dialog/add-table-dialog.component"
 import { EditTableDialogComponent } from "src/app/dialogs/edit-table-dialog/edit-table-dialog.component"
 import { DeleteTableDialogComponent } from "src/app/dialogs/delete-table-dialog/delete-table-dialog.component"
@@ -43,6 +44,9 @@ export class RoomPageComponent {
 	editRoomDialogLoading: boolean = false
 	editRoomDialogName: string = ""
 	editRoomDialogNameError: string = ""
+
+	@ViewChild("deleteRoomDialog") deleteRoomDialog!: DeleteRoomDialogComponent
+	deleteRoomDialogLoading: boolean = false
 
 	@ViewChild("addTableDialog") addTableDialog!: AddTableDialogComponent
 	addTableDialogLoading: boolean = false
@@ -131,6 +135,10 @@ export class RoomPageComponent {
 		this.editRoomDialog.show()
 	}
 
+	showDeleteRoomDialog() {
+		this.deleteRoomDialog.show()
+	}
+
 	async editRoomDialogPrimaryButtonClick(event: { name: string }) {
 		const name = event.name.trim()
 
@@ -170,6 +178,25 @@ export class RoomPageComponent {
 						break
 				}
 			}
+		}
+	}
+
+	async deleteRoomDialogPrimaryButtonClick() {
+		this.deleteRoomDialogLoading = true
+
+		const deleteRoomResponse = await this.apiService.deleteRoom(`uuid`, {
+			uuid: this.roomUuid
+		})
+
+		this.deleteRoomDialogLoading = false
+
+		if (deleteRoomResponse.data?.deleteRoom != null) {
+			this.router.navigate([
+				"user",
+				"restaurants",
+				this.restaurantUuid,
+				"rooms"
+			])
 		}
 	}
 

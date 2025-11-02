@@ -4,9 +4,11 @@
 			backButtonVisible
 			addButtonVisible
 			editButtonVisible
+			deleteButtonVisible
 			(backButtonClick)="navigateBack()"
 			(addButtonClick)="showAddTableDialog()"
 			(editButtonClick)="showEditRoomDialog()"
+			(deleteButtonClick)="showDeleteRoomDialog()"
 		>
 			{{ room?.name }}
 
@@ -58,6 +60,13 @@
 	[loading]="editRoomDialogLoading"
 	(primaryButtonClick)="editRoomDialogPrimaryButtonClick($event)"
 ></app-edit-room-dialog>
+
+<app-delete-room-dialog
+	#deleteRoomDialog
+	[name]="room?.name ?? ''"
+	[loading]="deleteRoomDialogLoading"
+	(primaryButtonClick)="deleteRoomDialogPrimaryButtonClick()"
+></app-delete-room-dialog>
 
 <app-add-table-dialog
 	#addTableDialog

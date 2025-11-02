@@ -148,6 +148,11 @@ export const de = {
 			headline: "Raum bearbeiten",
 			name: "Name"
 		},
+		deleteRoomDialog: {
+			headline: "Raum {name} löschen",
+			description:
+				"Bist du dir sicher, dass du diesen Raum löschen möchtest? Alle Tische in diesem Raum werden ebenfalls gelöscht."
+		},
 		addTableDialog: {
 			headline: "Tisch hinzufügen",
 			tableNumber: "Tischnummer",

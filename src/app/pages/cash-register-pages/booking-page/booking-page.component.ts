@@ -381,8 +381,6 @@ export class BookingPageComponent {
 		this.selectProductDialog.show()
 	}
 
-	selectProductDialogPrimaryButtonClick() {}
-
 	// Zeige Variations-Popup an
 	toggleItemPopup() {
 		// this.isItemPopupVisible = !this.isItemPopupVisible

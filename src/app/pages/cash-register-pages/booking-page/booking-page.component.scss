@@ -171,11 +171,6 @@
 	border-radius: 5px;
 	padding: 10px;
 	margin: 5px 0;
-
-	.variation-anzahl {
-		margin-left: auto;
-		font-weight: bold;
-	}
 }
 
 .variationItem-price {
@@ -325,12 +320,6 @@
 	cursor: pointer;
 	border-radius: 5px;
 	text-align: center;
-}
-
-#menues-specials {
-	display: flex;
-	flex-direction: column;
-	background-color: rgb(89, 6, 224);
 }
 
 .Special-popup-content {

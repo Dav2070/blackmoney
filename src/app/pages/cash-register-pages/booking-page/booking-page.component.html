@@ -934,7 +934,13 @@
 
 <app-select-product-dialog
 	#selectProductDialog
-	(primaryButtonClick)="selectProductDialogPrimaryButtonClick()"
+	[menues]="menues"
+	[specials]="specials"
+	[products]="selectedInventory"
+	[categories]="categories"
+	(selectMenue)="selectProductDialog.hide(); clickMenu($event)"
+	(selectSpecial)="selectProductDialog.hide(); clickSpecial($event)"
+	(selectProduct)="selectProductDialog.hide(); clickItem($event)"
 ></app-select-product-dialog>
 
 <app-select-product-variations-dialog

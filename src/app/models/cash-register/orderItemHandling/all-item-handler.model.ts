@@ -119,7 +119,8 @@ export class AllItemHandler {
 
 	// consolidateItems delegiert an dieselbe Merge-Implementierung
 	consolidateItems(changedItem: OrderItem) {
-		const target = this.merger.findMergeTargetConsolidate(changedItem)
+		//const target = this.merger.findMergeTargetConsolidate(changedItem)
+		const target = this.merger.findMergeTarget(changedItem)
 		if (!target || target === changedItem) return
 
 		this.merger.mergeIntoExisting(target, changedItem)

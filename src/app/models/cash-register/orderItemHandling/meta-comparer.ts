@@ -19,7 +19,11 @@ export class MetaComparer {
 		) {
 			const aSubs = existing.orderItems ?? []
 			const bSubs = incoming.orderItems ?? []
-			return this.areOrderItemsArrayEqualForMerge(aSubs, bSubs)
+			return this.areOrderItemsArrayEqualForMerge(
+				aSubs,
+				bSubs,
+				existing.count
+			)
 		}
 
 		return true
@@ -52,7 +56,8 @@ export class MetaComparer {
 	// order-insensitive deep compare for subitems used for strict Menu matching
 	private areOrderItemsArrayEqualForMerge(
 		aSubs: OrderItem[],
-		bSubs: OrderItem[]
+		bSubs: OrderItem[],
+		parentExistingOrderItemCount: number
 	): boolean {
 		if (aSubs.length !== bSubs.length) return false
 
@@ -68,10 +73,14 @@ export class MetaComparer {
 				if (!this.isOrderItemBasicEqual(aItem, bItem)) continue
 
 				// exact count match required for strict merge
-				if ((aItem.count ?? 0) !== (bItem.count ?? 0)) continue
+				if (
+					(aItem.count ?? 0) / parentExistingOrderItemCount !==
+					(bItem.count ?? 0)
+				)
+					continue
 
 				// variations must be exactly equal (counts + variationItems)
-				if (!this.isOrderItemVariationsStrictEqual(aItem, bItem)) continue
+				if (!this.isOrderItemVariationsStrictEqual(aItem, bItem, parentExistingOrderItemCount)) continue
 
 				// nested subitems: lengths must match and must be equal recursively
 				const aNested = aItem.orderItems ?? []
@@ -79,7 +88,11 @@ export class MetaComparer {
 				if (aNested.length !== bNested.length) continue
 				if (
 					aNested.length > 0 &&
-					!this.areOrderItemsArrayEqualForMerge(aNested, bNested)
+					!this.areOrderItemsArrayEqualForMerge(
+						aNested,
+						bNested,
+						parentExistingOrderItemCount
+					)
 				)
 					continue
 
@@ -99,7 +112,8 @@ export class MetaComparer {
 	// - for each variation in a exists a variation in b with identical variationItems (order-insensitive) AND identical count
 	private isOrderItemVariationsStrictEqual(
 		aItem: OrderItem,
-		bItem: OrderItem
+		bItem: OrderItem,
+		parentExistingOrderItemCount: number
 	): boolean {
 		const aVars = aItem.orderItemVariations ?? []
 		const bVars = bItem.orderItemVariations ?? []
@@ -112,7 +126,7 @@ export class MetaComparer {
 			const idx = bCopy.findIndex(
 				bVar =>
 					this.variationComparer.isVariationItemEqual(aVar, bVar) &&
-					(aVar.count ?? 0) === (bVar.count ?? 0)
+					(aVar.count ?? 0) / parentExistingOrderItemCount === (bVar.count ?? 0)
 			)
 			if (idx === -1) return false
 			bCopy.splice(idx, 1)

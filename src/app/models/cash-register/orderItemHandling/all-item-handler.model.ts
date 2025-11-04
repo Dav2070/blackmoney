@@ -16,7 +16,6 @@ export class AllItemHandler {
 		this.merger = new OrderItemMerger(this.allPickedItems)
 	}
 
-	/* Öffentliche API ------------------------------------------------- */
 	getAllPickedItems() {
 		return this.allPickedItems
 	}
@@ -103,12 +102,10 @@ export class AllItemHandler {
 		if (target) {
 			// Match gefunden -> zusammenführen; wenn Merge fehlschlägt -> einfügen
 			const merged = this.merger.mergeIntoExisting(target, incoming)
-			if (!merged) this.insertAtIndex(incoming, index)
-			return
+		} else {
+			// Kein Match -> neues Item einfügen
+			this.insertAtIndex(incoming, index)
 		}
-
-		// Kein Match -> neues Item einfügen
-		this.insertAtIndex(incoming, index)
 	}
 
 	/* Hilfsfunktionen zum Einfügen */
@@ -122,12 +119,12 @@ export class AllItemHandler {
 
 	// consolidateItems delegiert an dieselbe Merge-Implementierung
 	consolidateItems(changedItem: OrderItem) {
-		const target = this.merger.findMergeTarget(changedItem, changedItem)
+		const target = this.merger.findMergeTargetConsolidate(changedItem)
 		if (!target || target === changedItem) return
 
-		const merged = this.merger.mergeIntoExisting(target, changedItem)
+		this.merger.mergeIntoExisting(target, changedItem)
 		// Nur löschen, wenn tatsächlich gemerged wurde
-		if (merged) this.deleteItem(changedItem)
+		this.deleteItem(changedItem)
 	}
 
 	// Nur normale OrderItems

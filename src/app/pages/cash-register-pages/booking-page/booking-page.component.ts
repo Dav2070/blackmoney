@@ -23,8 +23,6 @@ import {
 	faSeat,
 	faUtensils
 } from "@fortawesome/pro-regular-svg-icons"
-import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
-import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Category } from "src/app/models/Category"
@@ -51,6 +49,8 @@ import {
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
+import { AllItemHandler } from "src/app/models/cash-register/orderItemHandling/all-item-handler.model"
+import { ApiService } from "src/app/services/api-service"
 
 interface AddProductsInput {
 	uuid: string
@@ -267,7 +267,7 @@ export class BookingPageComponent {
 												name
 												products {
 													items {
-														id
+													id
 														uuid
 														name
 														price
@@ -1246,47 +1246,55 @@ export class BookingPageComponent {
 			orderItem.type === OrderItemType.Menu ||
 			orderItem.type === OrderItemType.Special
 		) {
-			//Tiefe Kopie des OrderItems erstellen
-			if (this.tmpAnzahl > 0) {
-				for (let i = 0; i < orderItem.orderItems.length; i++) {
-					let existingOrderItem = orderItem.orderItems[i]
+			// Bestimme Ziel-Handler (wenn ausgewählt: tmpAllItemHandler, sonst stagedItems)
+			const handler =
+				this.tmpAllItemHandler === this.bookedItems
+					? this.bookedItems
+					: this.stagedItems
 
-					if (existingOrderItem.orderItemVariations) {
-						for (
-							let j = 0;
-							j < (existingOrderItem.orderItemVariations?.length || 0);
-							j++
-						) {
-							existingOrderItem.orderItemVariations[j].count +=
-								(existingOrderItem.count / orderItem.count) *
-								this.tmpAnzahl
-						}
-					}
+			const delta = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-					existingOrderItem.count +=
-						(existingOrderItem.count / orderItem.count) * this.tmpAnzahl
+			// Erzeuge ein "Per-Unit"-OrderItem, das die Mengen für ein Menü/Special repräsentiert.
+			// Damit kann pushNewItem die bestehende Logik zum Mergen/Einfügen nutzen.
+			const perUnitOrderItems: OrderItem[] = (
+				orderItem.orderItems ?? []
+			).map(sub => {
+				// pro Einheit: sub.count / existing menu.count
+				const baseCount =
+					orderItem.count && orderItem.count > 0
+						? Math.round((sub.count ?? 0) / orderItem.count)
+						: (sub.count ?? 0)
+
+				const clonedSub = JSON.parse(JSON.stringify(sub)) as OrderItem
+				clonedSub.count = baseCount * delta
+
+				if (clonedSub.orderItemVariations) {
+					clonedSub.orderItemVariations =
+						clonedSub.orderItemVariations.map(v => ({
+							...v,
+							count:
+								orderItem.count && orderItem.count > 0
+									? Math.round((v.count ?? 0) / orderItem.count) *
+										delta
+									: (v.count ?? 0) * delta
+						}))
 				}
-				orderItem.count += this.tmpAnzahl
-			} else {
-				for (let i = 0; i < orderItem.orderItems.length; i++) {
-					let existingOrderItem = orderItem.orderItems[i]
 
-					if (existingOrderItem.orderItemVariations) {
-						for (
-							let j = 0;
-							j < (existingOrderItem.orderItemVariations?.length || 0);
-							j++
-						) {
-							existingOrderItem.orderItemVariations[j].count +=
-								existingOrderItem.count / orderItem.count
-						}
-					}
+				return clonedSub
+			})
 
-					existingOrderItem.count +=
-						existingOrderItem.count / orderItem.count
-				}
-				orderItem.count += 1
+			const incoming: OrderItem = {
+				uuid: crypto.randomUUID(),
+				type: orderItem.type,
+				count: delta,
+				order: null,
+				product: orderItem.product,
+				orderItems: perUnitOrderItems,
+				orderItemVariations: []
 			}
+
+			// Delegiere an den AllItemHandler / Merger
+			handler.pushNewItem(incoming)
 
 			this.tmpAnzahl = undefined
 			this.showTotal()
@@ -1700,16 +1708,9 @@ export class BookingPageComponent {
 				}
 			}
 
-			if (this.tmpSpecialAllItemsHandler.includes(newItem)) {
-				let existingItem = this.tmpSpecialAllItemsHandler.getItem(
-					newItem.product.id,
-					newItem.note
-				)
-				existingItem.count += 1
-			} else {
-				newItem.count = 1
-				this.tmpSpecialAllItemsHandler.pushNewItem(newItem, firstIndex)
-			}
+			// Vereinfachung: delegiere das Insert/Merge an tmpSpecialAllItemsHandler
+			newItem.count = 1
+			this.tmpSpecialAllItemsHandler.pushNewItem(newItem, firstIndex)
 		} else {
 			console.log("Special-Variation-Popup öffnen")
 			// Special-Variation-Popup öffnen
@@ -1908,15 +1909,9 @@ export class BookingPageComponent {
 				discount: -(originalProductPrice * rabattFaktor)
 			}
 
-			let existingOfferItem = this.stagedItems.sameOrderItemExists(orderItem)
-
-			if (existingOfferItem) {
-				existingOfferItem.count += processedItem.count
-				let existingOrderItem = existingOfferItem.orderItems[0]
-				existingOrderItem.count += processedItem.count
-			} else {
-				this.stagedItems.pushNewItem(orderItem)
-			}
+			// vorher: manuelles sameOrderItemExists + inkrementieren
+			// ersatz: delegieren an den Handler / Merger
+			this.stagedItems.pushNewItem(orderItem)
 		}
 
 		// Cleanup
@@ -1944,7 +1939,7 @@ export class BookingPageComponent {
 					itemPrice += variation.count * variationItem.additionalCost
 				}
 			}
-			originalTotalPrice += itemPrice
+		 originalTotalPrice += itemPrice
 		}
 		let finalMenuPrice = originalTotalPrice
 		let totalRabattBetrag = 0
@@ -1991,34 +1986,8 @@ export class BookingPageComponent {
 			discount: totalRabattBetrag
 		}
 
-		// Prüfe ob ein ähnliches OrderItem bereits existiert und merge, oder füge neu hinzu
-		let existingOfferItem = this.stagedItems.sameOrderItemExists(orderItem)
-
-		if (existingOfferItem) {
-			existingOfferItem.count++
-
-			for (let i = 0; i < allOrderItems.length; i++) {
-				let newOrderItem = allOrderItems[i]
-				let existingOrderItem = existingOfferItem.orderItems[i]
-
-				// Count des OrderItems erhöhen
-				existingOrderItem.count += newOrderItem.count
-
-				// Variation Counts auch erhöhen (ebenfalls per Index)
-				for (
-					let j = 0;
-					j < (newOrderItem.orderItemVariations?.length || 0);
-					j++
-				) {
-					let newVar = newOrderItem.orderItemVariations[j]
-					let existingVar = existingOrderItem.orderItemVariations[j]
-
-					existingVar.count += newVar.count
-				}
-			}
-		} else {
-			this.stagedItems.pushNewItem(orderItem)
-		}
+		// Delegiere das Mergen / Einfügen an den Handler / Merger
+		this.stagedItems.pushNewItem(orderItem)
 
 		// Cleanup
 		this.isMenuePopupVisible = false

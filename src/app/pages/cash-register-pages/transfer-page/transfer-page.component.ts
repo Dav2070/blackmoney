@@ -4,7 +4,7 @@ import {
 	faChevronsRight,
 	faChevronsLeft
 } from "@fortawesome/pro-regular-svg-icons"
-import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
+import { AllItemHandler } from "src/app/models/cash-register/orderItemHandling/all-item-handler.model"
 import { LocalizationService } from "src/app/services/localization-service"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"

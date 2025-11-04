@@ -1,4 +1,4 @@
-import { AllItemHandler } from "./all-item-handler.model"
+import { AllItemHandler } from "./orderItemHandling/all-item-handler.model"
 
 export class Bill {
 	operator: string

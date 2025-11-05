@@ -1,10 +1,15 @@
-<div class="container">
+<div
+	class="container"
+	(touchstart)="handleTouch($event)"
+	(touchmove)="handleTouch($event)"
+	(touchend)="handleTouch($event)"
+>
 	<div class="header">
 		<app-header [showButton]="false" />
 	</div>
 
 	<div class="orders-numpad-container">
-		<div class="orders-container">
+		<div #ordersContainer class="orders-container">
 			@if (room != null && table != null) {
 				<app-orders-header
 					[headline]="
@@ -954,19 +959,37 @@
 <dav-bottom-sheet
 	#bottomSheet
 	[dismissable]="false"
-	(touchstart)="bottomSheetHandleTouch($event)"
-	(touchmove)="bottomSheetHandleTouch($event)"
-	(touchend)="bottomSheetHandleTouch($event)"
+	(touchstart)="handleTouch($event)"
+	(touchmove)="handleTouch($event)"
+	(touchend)="handleTouch($event)"
 >
 	<div class="bottom-sheet-content-container">
-		<dav-list>
-			<dav-list-item [headline]="locale.sendOrder"></dav-list-item>
-			<dav-list-item [headline]="locale.pay"></dav-list-item>
-			<dav-list-item [headline]="locale.rebook"></dav-list-item>
-			<dav-list-item [headline]="locale.switchTable"></dav-list-item>
-			<dav-list-item [headline]="locale.takeAway"></dav-list-item>
-			<dav-list-item [headline]="locale.notes"></dav-list-item>
-			<dav-list-item [headline]="locale.extras"></dav-list-item>
-		</dav-list>
+		<dav-icon-card [text]="locale.sendOrder">
+			<fa-icon [icon]="faPaperPlaneTop"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.pay">
+			<fa-icon [icon]="faCreditCard"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.rebook">
+			<fa-icon [icon]="faArrowTurnDownRight"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.switchTable">
+			<fa-icon [icon]="faSeat"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.takeAway">
+			<fa-icon [icon]="faCupTogo"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.notes">
+			<fa-icon [icon]="faNoteSticky"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.extras">
+			<fa-icon [icon]="faStar"></fa-icon>
+		</dav-icon-card>
 	</div>
 </dav-bottom-sheet>

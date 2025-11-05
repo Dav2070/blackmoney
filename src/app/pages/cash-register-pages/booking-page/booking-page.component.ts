@@ -146,6 +146,9 @@ export class BookingPageComponent {
 
 	tmpLastPickedVariation: VariationItem[] = []
 
+	@ViewChild("ordersContainer")
+	ordersContainer: ElementRef<HTMLDivElement>
+
 	//#region SelectTableDialog variables
 	@ViewChild("selectTableDialog")
 	selectTableDialog: SelectTableDialogComponent
@@ -394,14 +397,25 @@ export class BookingPageComponent {
 		this.selectProductDialog.show()
 	}
 
-	bottomSheetHandleTouch(event: TouchEvent) {
-		if (event.touches.length > 1) return
+	handleTouch(event: TouchEvent) {
+		if (event.touches.length > 1 || window["visualViewport"].scale > 1.001) {
+			return
+		}
+
+		const ordersContainer = this.ordersContainer.nativeElement
+
+		if (ordersContainer.contains(event.target as Node)) {
+			const scrolledToEnd =
+				ordersContainer.scrollTop + ordersContainer.clientHeight >=
+				ordersContainer.scrollHeight - 1
+
+			if (!scrolledToEnd) return
+		}
 
 		if (event.type === "touchstart") {
 			this.touchStartY = event.touches.item(0).screenY
 			this.swipeStart = true
 		} else if (event.type === "touchmove") {
-			event.preventDefault()
 			this.touchDiffY = this.touchStartY - event.touches.item(0).screenY
 
 			if (this.swipeStart) {

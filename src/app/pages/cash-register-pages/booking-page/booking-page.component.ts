@@ -56,6 +56,8 @@ import {
 	convertOrderResourceToOrder
 } from "src/app/utils"
 
+const mobileBreakpoint = 860
+
 @Component({
 	templateUrl: "./booking-page.component.html",
 	styleUrl: "./booking-page.component.scss",
@@ -399,7 +401,7 @@ export class BookingPageComponent {
 	}
 
 	async hideBottomSheet() {
-		if (window.outerWidth <= 860) {
+		if (window.outerWidth <= mobileBreakpoint) {
 			await this.bottomSheet.nativeElement.snap("bottom")
 		}
 	}

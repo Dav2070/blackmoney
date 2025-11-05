@@ -106,6 +106,8 @@ export const de = {
 		noProductsSelected: "Keine Produkte ausgewählt",
 		transferAllItemsToRight: "Alles nach rechts verschieben",
 		transferAllItemsToLeft: "Alles nach links verschieben",
+		transferAllItemsToBottom: "Alles nach unten verschieben",
+		transferAllItemsToTop: "Alles nach oben verschieben",
 		moveMultipleProducts: "Mehrere verschieben"
 	},
 	dialogs: {

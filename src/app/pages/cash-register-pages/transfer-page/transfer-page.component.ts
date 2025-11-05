@@ -2,7 +2,9 @@ import { Component, ElementRef, HostListener, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
 import {
 	faChevronsRight,
-	faChevronsLeft
+	faChevronsLeft,
+	faChevronsUp,
+	faChevronsDown
 } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
@@ -26,6 +28,8 @@ export class TransferPageComponent {
 	locale = this.localizationService.locale.transferPage
 	faChevronsRight = faChevronsRight
 	faChevronsLeft = faChevronsLeft
+	faChevronsUp = faChevronsUp
+	faChevronsDown = faChevronsDown
 	bookedItemsLeft = new AllItemHandler()
 	bookedItemsRight = new AllItemHandler()
 	tableLeft: Table = null

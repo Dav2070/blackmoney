@@ -383,8 +383,9 @@ export class BookingPageComponent {
 		this.selectTableDialog.show()
 	}
 
-	navigateToPaymentPage(event: MouseEvent) {
+	async navigateToPaymentPage(event: MouseEvent) {
 		event.preventDefault()
+		await this.hideBottomSheet()
 		this.router.navigate(["dashboard", "tables", this.uuid, "payment"])
 	}
 
@@ -395,6 +396,12 @@ export class BookingPageComponent {
 
 	showSelectProductDialog() {
 		this.selectProductDialog.show()
+	}
+
+	async hideBottomSheet() {
+		if (window.outerWidth <= 860) {
+			await this.bottomSheet.nativeElement.snap("bottom")
+		}
 	}
 
 	handleTouch(event: TouchEvent) {
@@ -1082,7 +1089,7 @@ export class BookingPageComponent {
 
 	// Fügt Items der Liste an bestellten Artikeln hinzu
 	async sendOrder() {
-		//this.bookedItems.transferAllItems(this.stagedItems)
+		this.bottomSheet.nativeElement.snap("bottom")
 		let tmpProductArray: AddProductsInput[] = []
 
 		for (let values of this.stagedItems.getAllPickedItems().values()) {
@@ -1432,13 +1439,15 @@ export class BookingPageComponent {
 		this.pickedBill = null
 	}
 
-	navigateToTransferPage() {
+	async navigateToTransferPage() {
 		let selectedTableNumber = Number(this.console)
 		if (isNaN(selectedTableNumber)) return
 
 		// Find the table
 		let table = this.room.tables.find(t => t.name == selectedTableNumber)
 		if (table == null) return
+
+		await this.hideBottomSheet()
 
 		// Navigate to the transfer page with the table UUID
 		this.router.navigate(["dashboard", "tables", this.table.uuid, table.uuid])

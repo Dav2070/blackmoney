@@ -964,31 +964,39 @@
 	(touchend)="handleTouch($event)"
 >
 	<div class="bottom-sheet-content-container">
-		<dav-icon-card [text]="locale.sendOrder">
+		<dav-icon-card [text]="locale.sendOrder" size="sm" (click)="sendOrder()">
 			<fa-icon [icon]="faPaperPlaneTop"></fa-icon>
 		</dav-icon-card>
 
-		<dav-icon-card [text]="locale.pay">
+		<dav-icon-card
+			[text]="locale.pay"
+			size="sm"
+			(click)="navigateToPaymentPage($event)"
+		>
 			<fa-icon [icon]="faCreditCard"></fa-icon>
 		</dav-icon-card>
 
-		<dav-icon-card [text]="locale.rebook">
+		<dav-icon-card
+			[text]="locale.rebook"
+			size="sm"
+			(click)="navigateToTransferPage()"
+		>
 			<fa-icon [icon]="faArrowTurnDownRight"></fa-icon>
 		</dav-icon-card>
 
-		<dav-icon-card [text]="locale.switchTable">
+		<dav-icon-card [text]="locale.switchTable" size="sm">
 			<fa-icon [icon]="faSeat"></fa-icon>
 		</dav-icon-card>
 
-		<dav-icon-card [text]="locale.takeAway">
+		<dav-icon-card [text]="locale.takeAway" size="sm">
 			<fa-icon [icon]="faCupTogo"></fa-icon>
 		</dav-icon-card>
 
-		<dav-icon-card [text]="locale.notes">
+		<dav-icon-card [text]="locale.notes" size="sm">
 			<fa-icon [icon]="faNoteSticky"></fa-icon>
 		</dav-icon-card>
 
-		<dav-icon-card [text]="locale.extras">
+		<dav-icon-card [text]="locale.extras" size="sm">
 			<fa-icon [icon]="faStar"></fa-icon>
 		</dav-icon-card>
 	</div>

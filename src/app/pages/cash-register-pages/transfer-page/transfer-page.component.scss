@@ -116,34 +116,14 @@
 	}
 }
 
-.desktop-hidden {
-	display: none;
-}
-
-.mobile-hidden {
-	display: unset;
-}
-
 @media screen and (max-width: 860px) {
 	.container {
 		grid-template-columns: 1fr;
 		grid-template-rows: auto 1fr 1fr;
 	}
 
-	.left-orders-container {
-		grid-row: 2;
-	}
-
 	.right-orders-container {
 		grid-column: 1;
 		grid-row: 3;
-	}
-
-	.desktop-hidden {
-		display: unset;
-	}
-
-	.mobile-hidden {
-		display: none;
 	}
 }

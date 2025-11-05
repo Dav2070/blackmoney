@@ -477,6 +477,25 @@ dav-header {
 	}
 }
 
+// Utility classes for hiding elements on desktop or mobile
+.desktop-hidden {
+	display: none;
+}
+
+.mobile-hidden {
+	display: unset;
+}
+
+@media screen and (max-width: 860px) {
+	.desktop-hidden {
+		display: unset;
+	}
+
+	.mobile-hidden {
+		display: none;
+	}
+}
+
 // Animation classes
 .slide-up-in {
 	animation:

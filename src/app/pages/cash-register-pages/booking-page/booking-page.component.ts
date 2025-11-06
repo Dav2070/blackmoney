@@ -1245,6 +1245,11 @@ export class BookingPageComponent {
 			for (let existingOrderItem of incoming.orderItems) {
 				existingOrderItem.count =
 					existingOrderItem.count * delta
+				// Variationen anpassen
+				for (let variation of existingOrderItem.orderItemVariations) {
+					variation.count =
+						variation.count  * delta
+				}
 			}
 
 			// Delegiere an den AllItemHandler / Merger

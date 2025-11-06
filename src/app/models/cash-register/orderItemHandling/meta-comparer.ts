@@ -22,7 +22,8 @@ export class MetaComparer {
 			return this.areOrderItemsArrayEqualForMerge(
 				aSubs,
 				bSubs,
-				existing.count
+				existing.count,
+				incoming.count
 			)
 		}
 
@@ -57,32 +58,62 @@ export class MetaComparer {
 	private areOrderItemsArrayEqualForMerge(
 		aSubs: OrderItem[],
 		bSubs: OrderItem[],
-		parentExistingOrderItemCount: number
+		parentExistingOrderItemCount: number,
+		parentIncomingOrderItemCount: number
 	): boolean {
+		// Parent-Counts müssen gesetzt und > 0 sein (sonst Fehler)
+		if (!parentExistingOrderItemCount || !parentIncomingOrderItemCount) {
+			throw new Error(
+				"Parent counts must be > 0 for strict menu matching (existing / incoming)"
+			)
+		}
+
+		// gleiche Anzahl voraussetzen
 		if (aSubs.length !== bSubs.length) return false
 
-		const matchedB = new Array<boolean>(bSubs.length).fill(false)
+		// markiert bereits verwendete Einträge in "aSubs"
+		const used = new Array<boolean>(aSubs.length).fill(false)
 
-		for (const aItem of aSubs) {
-			let foundIndex = -1
-			for (let j = 0; j < bSubs.length; j++) {
-				if (matchedB[j]) continue
-				const bItem = bSubs[j]
+		// für jedes incoming-Element suchen wir ein passendes, noch unbenutztes existing-Element
+		for (const bItem of bSubs) {
+			let matched = false
+			for (let i = 0; i < aSubs.length; i++) {
+				if (used[i]) continue
+				const aItem = aSubs[i]
 
-				// basic meta must match
+				// Basic meta
 				if (!this.isOrderItemBasicEqual(aItem, bItem)) continue
 
-				// exact count match required for strict merge
+				// Sub-Counts müssen gesetzt und > 0 sein
+				const aCount = aItem.count ?? 0
+				const bCount = bItem.count ?? 0
+				if (!aCount || !bCount) {
+					throw new Error(
+						`Subitem counts must be > 0 for strict menu matching (aCount=${aCount}, bCount=${bCount})`
+					)
+				}
+
+				// Proportionale Count-Prüfung mittels Cross-Multiplikation (vermeidet division / float-issues)
+				// Vergleiche: aCount / parentExisting === bCount / parentIncoming  -> aCount * parentIncoming === bCount * parentExisting
 				if (
-					(aItem.count ?? 0) / parentExistingOrderItemCount !==
-					(bItem.count ?? 0)
+					aCount * parentIncomingOrderItemCount !==
+					bCount * parentExistingOrderItemCount
+				) {
+					continue
+				}
+
+				// Variationen strikt vergleichen (inkl. proportionaler counts)
+				if (
+					!this.isOrderItemVariationsStrictEqual(
+						aItem,
+						bItem,
+						parentExistingOrderItemCount,
+						parentIncomingOrderItemCount
+					)
 				)
 					continue
 
-				// variations must be exactly equal (counts + variationItems)
-				if (!this.isOrderItemVariationsStrictEqual(aItem, bItem, parentExistingOrderItemCount)) continue
-
-				// nested subitems: lengths must match and must be equal recursively
+				// Verschachtelte Subitems (rekursiv prüfen)
 				const aNested = aItem.orderItems ?? []
 				const bNested = bItem.orderItems ?? []
 				if (aNested.length !== bNested.length) continue
@@ -91,30 +122,41 @@ export class MetaComparer {
 					!this.areOrderItemsArrayEqualForMerge(
 						aNested,
 						bNested,
-						parentExistingOrderItemCount
+						parentExistingOrderItemCount,
+						parentIncomingOrderItemCount
 					)
 				)
 					continue
 
-				foundIndex = j
+				// Treffer: markiere und gehe zum nächsten incoming-Element
+				used[i] = true
+				matched = true
 				break
 			}
 
-			if (foundIndex === -1) return false
-			matchedB[foundIndex] = true
+			if (!matched) return false
 		}
 
+		// Alle incoming-Elemente fanden ein passendes existing-Element.
 		return true
 	}
 
 	// strict compare of two OrderItem's orderItemVariations arrays:
 	// - same length
-	// - for each variation in a exists a variation in b with identical variationItems (order-insensitive) AND identical count
+	// - for each variation in a exists a variation in b with identical variationItems (order-insensitive) AND identical proportional count
 	private isOrderItemVariationsStrictEqual(
 		aItem: OrderItem,
 		bItem: OrderItem,
-		parentExistingOrderItemCount: number
+		parentExistingOrderItemCount: number,
+		parentIncomingOrderItemCount: number
 	): boolean {
+		// Parent-Counts müssen gesetzt und > 0 sein
+		if (!parentExistingOrderItemCount || !parentIncomingOrderItemCount) {
+			throw new Error(
+				"Parent counts must be > 0 for strict variation matching (existing / incoming)"
+			)
+		}
+
 		const aVars = aItem.orderItemVariations ?? []
 		const bVars = bItem.orderItemVariations ?? []
 		if (aVars.length !== bVars.length) return false
@@ -123,11 +165,33 @@ export class MetaComparer {
 		const bCopy = bVars.map(v => JSON.parse(JSON.stringify(v)))
 
 		for (const aVar of aVars) {
-			const idx = bCopy.findIndex(
-				bVar =>
-					this.variationComparer.isVariationItemEqual(aVar, bVar) &&
-					(aVar.count ?? 0) / parentExistingOrderItemCount === (bVar.count ?? 0)
-			)
+			const aVarCount = aVar.count ?? 0
+			if (!aVarCount) {
+				throw new Error(
+					`Variation count must be > 0 for strict matching (aVarCount=${aVarCount})`
+				)
+			}
+
+			const idx = bCopy.findIndex(bVar => {
+				const bVarCount = bVar.count ?? 0
+				if (!bVarCount) {
+					// Fehler statt silently skippen
+					throw new Error(
+						`Variation count must be > 0 for strict matching (bVarCount=${bVarCount})`
+					)
+				}
+
+				// variation items structurally equal
+				if (!this.variationComparer.isVariationItemEqual(aVar, bVar))
+					return false
+
+				// proportional counts vergleichen: aVar.count / parentExisting === bVar.count / parentIncoming
+				return (
+					aVarCount * parentIncomingOrderItemCount ===
+					bVarCount * parentExistingOrderItemCount
+				)
+			})
+
 			if (idx === -1) return false
 			bCopy.splice(idx, 1)
 		}

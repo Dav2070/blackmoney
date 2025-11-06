@@ -440,27 +440,9 @@ export class BookingPageComponent {
 		}
 
 		if (product.variations.length === 0) {
-			if (this.tmpAnzahl > 0) {
-				if (this.stagedItems.includes(newItem)) {
-					let existingItem = this.stagedItems.getItem(
-						newItem.product.id,
-						newItem.note
-					)
-					existingItem.count += this.tmpAnzahl
-				} else {
-					newItem.count = this.tmpAnzahl
-					this.stagedItems.pushNewItem(newItem)
-				}
-			} else if (this.stagedItems.includes(newItem)) {
-				let existingItem = this.stagedItems.getItem(
-					newItem.product.id,
-					newItem.note
-				)
-				existingItem.count += 1
-			} else {
-				newItem.count = 1
+				newItem.count = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 				this.stagedItems.pushNewItem(newItem)
-			}
+			
 
 			this.showTotal()
 		} else {
@@ -1254,43 +1236,15 @@ export class BookingPageComponent {
 
 			const delta = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-			// Erzeuge ein "Per-Unit"-OrderItem, das die Mengen für ein Menü/Special repräsentiert.
-			// Damit kann pushNewItem die bestehende Logik zum Mergen/Einfügen nutzen.
-			const perUnitOrderItems: OrderItem[] = (
-				orderItem.orderItems ?? []
-			).map(sub => {
-				// pro Einheit: sub.count / existing menu.count
-				const baseCount =
-					orderItem.count && orderItem.count > 0
-						? Math.round((sub.count ?? 0) / orderItem.count)
-						: (sub.count ?? 0)
+			
 
-				const clonedSub = JSON.parse(JSON.stringify(sub)) as OrderItem
-				clonedSub.count = baseCount * delta
-
-				if (clonedSub.orderItemVariations) {
-					clonedSub.orderItemVariations =
-						clonedSub.orderItemVariations.map(v => ({
-							...v,
-							count:
-								orderItem.count && orderItem.count > 0
-									? Math.round((v.count ?? 0) / orderItem.count) *
-										delta
-									: (v.count ?? 0) * delta
-						}))
-				}
-
-				return clonedSub
-			})
-
-			const incoming: OrderItem = {
-				uuid: crypto.randomUUID(),
-				type: orderItem.type,
-				count: delta,
-				order: null,
-				product: orderItem.product,
-				orderItems: perUnitOrderItems,
-				orderItemVariations: []
+			// Erstelle eine Kopie des OrderItems mit der zu addierenden Anzahl
+			const incoming: OrderItem = JSON.parse(JSON.stringify(orderItem))
+			incoming.count = delta
+			
+			for (let existingOrderItem of incoming.orderItems) {
+				existingOrderItem.count =
+					existingOrderItem.count * delta
 			}
 
 			// Delegiere an den AllItemHandler / Merger

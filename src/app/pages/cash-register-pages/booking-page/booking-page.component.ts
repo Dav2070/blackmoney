@@ -440,9 +440,8 @@ export class BookingPageComponent {
 		}
 
 		if (product.variations.length === 0) {
-				newItem.count = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
-				this.stagedItems.pushNewItem(newItem)
-			
+			newItem.count = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
+			this.stagedItems.pushNewItem(newItem)
 
 			this.showTotal()
 		} else {
@@ -1236,19 +1235,24 @@ export class BookingPageComponent {
 
 			const delta = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-			
-
 			// Erstelle eine Kopie des OrderItems mit der zu addierenden Anzahl
 			const incoming: OrderItem = JSON.parse(JSON.stringify(orderItem))
+
+			// Ursprunglicher Parent-Count (falls 0: Fehler vermeiden)
+			const originalParentCount =
+				orderItem.count && orderItem.count > 0 ? orderItem.count : 1
 			incoming.count = delta
-			
-			for (let existingOrderItem of incoming.orderItems) {
-				existingOrderItem.count =
-					existingOrderItem.count * delta
-				// Variationen anpassen
-				for (let variation of existingOrderItem.orderItemVariations) {
-					variation.count =
-						variation.count  * delta
+
+			// Skaliere Subitems und deren Variationen pro Einheit (per-unit), dann mit delta multiplizieren
+			for (const sub of incoming.orderItems ?? []) {
+				const perUnitSubCount = (sub.count ?? 0) / originalParentCount
+				sub.count = Math.round(perUnitSubCount * delta)
+
+				if (sub.orderItemVariations?.length) {
+					for (const v of sub.orderItemVariations) {
+						const perUnitVarCount = (v.count ?? 0) / originalParentCount
+						v.count = Math.round(perUnitVarCount * delta)
+					}
 				}
 			}
 
@@ -1898,7 +1902,7 @@ export class BookingPageComponent {
 					itemPrice += variation.count * variationItem.additionalCost
 				}
 			}
-		 originalTotalPrice += itemPrice
+			originalTotalPrice += itemPrice
 		}
 		let finalMenuPrice = originalTotalPrice
 		let totalRabattBetrag = 0

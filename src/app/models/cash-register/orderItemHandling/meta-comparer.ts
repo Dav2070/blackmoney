@@ -12,6 +12,7 @@ export class MetaComparer {
 		// basic comparison (ignores uuid, count, order and orderItemVariations)
 		if (!this.isOrderItemBasicEqual(existing, incoming)) return false
 
+		// strict check for Specials: only product of subitem must match
 		if (
 			existing.type === OrderItemType.Special &&
 			incoming.type === OrderItemType.Special

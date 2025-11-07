@@ -13,17 +13,21 @@ export class OrderItemsArrayMerger {
 		if (!incoming?.orderItems?.length) return
 		if (!existing.orderItems) existing.orderItems = []
 
+		// Spezialbehandlung für Specials: nur ein Subitem, das gemerged wird
 		if (
 			incoming.type === OrderItemType.Special ||
 			existing.type === OrderItemType.Special
 		) {
 			const orderItemMerger = new OrderItemMerger(existing.orderItems)
 			incoming.orderItems[0]
+			// standard merge vom subitem, muss nicht gesucht werden, da es nur eins geben kann
 			orderItemMerger.mergeIntoExisting(
 				existing.orderItems[0],
 				incoming.orderItems[0]
 			)
-		} else {
+		} 
+		//Wenn OrderItemType === Menu
+		else {
 			for (const incItem of incoming.orderItems) {
 				const match = this.findMergeTarget(existing, incItem)
 				if (match) {

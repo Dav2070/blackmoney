@@ -12,6 +12,17 @@ export class MetaComparer {
 		// basic comparison (ignores uuid, count, order and orderItemVariations)
 		if (!this.isOrderItemBasicEqual(existing, incoming)) return false
 
+		if (
+			existing.type === OrderItemType.Special &&
+			incoming.type === OrderItemType.Special
+		) {
+			if (
+				existing.orderItems[0].product.id !==
+				incoming.orderItems[0].product.id
+			)
+				return false
+		}
+
 		// strict subitem/variation check only for Menu types
 		if (
 			existing.type === OrderItemType.Menu &&

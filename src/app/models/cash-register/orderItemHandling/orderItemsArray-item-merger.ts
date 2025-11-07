@@ -1,6 +1,9 @@
+import { OrderItemType } from "src/app/types"
 import { OrderItem } from "../../OrderItem"
 import { OrderItemVariation } from "../../OrderItemVariation"
 import { VariationComparer } from "./variation-comparer"
+import { OrderItemMerger } from "./order-item-merger"
+import { Order } from "../../Order"
 
 export class OrderItemsArrayMerger {
 	private variationComparer = new VariationComparer()
@@ -10,11 +13,23 @@ export class OrderItemsArrayMerger {
 		if (!incoming?.orderItems?.length) return
 		if (!existing.orderItems) existing.orderItems = []
 
-		for (const incItem of incoming.orderItems) {
-			const match = this.findMergeTarget(existing, incItem)
-			if (match) {
-				// vorhandenes Subitem mergen
-				this.mergeOrderItem(match, incItem)
+		if (
+			incoming.type === OrderItemType.Special ||
+			existing.type === OrderItemType.Special
+		) {
+			const orderItemMerger = new OrderItemMerger(existing.orderItems)
+			incoming.orderItems[0]
+			orderItemMerger.mergeIntoExisting(
+				existing.orderItems[0],
+				incoming.orderItems[0]
+			)
+		} else {
+			for (const incItem of incoming.orderItems) {
+				const match = this.findMergeTarget(existing, incItem)
+				if (match) {
+					// vorhandenes Subitem mergen
+					this.mergeOrderItem(match, incItem)
+				}
 			}
 		}
 	}

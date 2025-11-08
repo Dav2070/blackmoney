@@ -163,7 +163,7 @@ export class PaymentPageComponent {
 		this.activeBill = bill
 	}
 
-	deleteBill() {
+	removeBill() {
 		this.bookedItems.transferAllItems(this.activeBill)
 		let index = this.bills.indexOf(this.activeBill)
 
@@ -387,6 +387,9 @@ export class PaymentPageComponent {
 	}
 
 	async createBill(payment: PaymentMethod) {
+		await this.dataService.registerClientPromiseHolder.AwaitResult()
+
+		// TODO: Error handling
 		await this.apiService.updateOrder("uuid", {
 			uuid: this.orderUuid,
 			orderItems: this.bookedItems.getItemsCountandId()
@@ -416,13 +419,23 @@ export class PaymentPageComponent {
 			})
 		})
 
+		if (this.billUuid == null) {
+			// Create a bill
+			const createBillResponse = await this.apiService.createBill(`uuid`, {
+				registerClientUuid: this.dataService.registerClient.uuid
+			})
+
+			const createBillResponseData = createBillResponse.data.createBill
+			this.billUuid = createBillResponseData.uuid
+		}
+
 		await this.apiService.completeOrder("uuid", {
 			uuid: newOrder.data.createOrder.uuid,
 			billUuid: this.billUuid,
 			paymentMethod: payment
 		})
 
-		this.deleteBill()
+		this.removeBill()
 	}
 
 	moveMultipleProductsDialogPrimaryButtonClick(event: { count: number }) {

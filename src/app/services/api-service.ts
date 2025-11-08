@@ -13,10 +13,11 @@ import {
 	PaymentMethod,
 	BillResource,
 	RestaurantResource,
+	RegisterResource,
+	RegisterClientResource,
 	UserRole,
 	PrinterResource,
-	AddProductsInput,
-	RegisterResource
+	AddProductsInput
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -338,6 +339,31 @@ export class ApiService {
 				query: gql`
 					query RetrieveRegister($uuid: String!) {
 						retrieveRegister(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveRegisterClientBySerialNumber(
+		queryData: string,
+		variables: { serialNumber: string }
+	): Promise<
+		ApolloQueryResult<{
+			retrieveRegisterClientBySerialNumber: RegisterClientResource
+		}>
+	> {
+		return await this.blackmoneyAuthApollo
+			.query<{
+				retrieveRegisterClientBySerialNumber: RegisterClientResource
+			}>({
+				query: gql`
+					query RetrieveRegisterClientBySerialNumber($serialNumber: String!) {
+						retrieveRegisterClientBySerialNumber(serialNumber: $serialNumber) {
 							${queryData}
 						}
 					}

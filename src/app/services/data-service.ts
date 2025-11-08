@@ -9,6 +9,7 @@ import * as DavUIComponents from "dav-ui-components"
 import { User } from "../models/User"
 import { Company } from "../models/Company"
 import { Restaurant } from "../models/Restaurant"
+import { RegisterClient } from "../models/RegisterClient"
 import { SettingsService } from "./settings-service"
 import { environment } from "src/environments/environment"
 import {
@@ -27,9 +28,11 @@ export class DataService {
 	blackmoneyUserPromiseHolder = new PromiseHolder()
 	companyPromiseHolder = new PromiseHolder()
 	restaurantPromiseHolder = new PromiseHolder()
+	registerClientPromiseHolder = new PromiseHolder()
 	user: User = null
 	company: Company = null
 	restaurant: Restaurant = null
+	registerClient: RegisterClient = null
 	isMobile: boolean = false
 	darkTheme: boolean = false
 

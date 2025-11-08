@@ -16,7 +16,8 @@ import {
 	convertCompanyResourceToCompany,
 	convertRestaurantResourceToRestaurant,
 	convertUserResourceToUser,
-	getGraphQLErrorCodes
+	getGraphQLErrorCodes,
+	getSerialNumber
 } from "src/app/utils"
 import {
 	davAuthClientName,
@@ -189,9 +190,35 @@ export class AppComponent {
 			}
 		}
 
+		const retrieveRegisterClientResponse =
+			await this.apiService.retrieveRegisterClientBySerialNumber(
+				`
+				uuid
+				name
+				serialNumber
+			`,
+				{ serialNumber: await getSerialNumber(this.settingsService) }
+			)
+
+		if (
+			getGraphQLErrorCodes(retrieveRegisterClientResponse).includes(
+				"NOT_AUTHENTICATED"
+			)
+		) {
+			// Remove the access token
+			this.authService.removeAccessToken()
+		} else if (
+			retrieveRegisterClientResponse.data
+				.retrieveRegisterClientBySerialNumber != null
+		) {
+			this.dataService.registerClient =
+				retrieveRegisterClientResponse.data.retrieveRegisterClientBySerialNumber
+		}
+
 		this.dataService.companyPromiseHolder.Resolve()
 		this.dataService.restaurantPromiseHolder.Resolve()
 		this.dataService.blackmoneyUserPromiseHolder.Resolve()
+		this.dataService.registerClientPromiseHolder.Resolve()
 	}
 
 	@HostListener("window:resize")

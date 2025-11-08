@@ -3,6 +3,8 @@ import { Router } from "@angular/router"
 import { DropdownOption, DropdownOptionType } from "dav-ui-components"
 import { Company } from "src/app/models/Company"
 import { Restaurant } from "src/app/models/Restaurant"
+import { Register } from "src/app/models/Register"
+import { User } from "src/app/models/User"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
@@ -24,14 +26,14 @@ export class LoginPageComponent {
 	locale = this.localizationService.locale.loginPage
 	company: Company = null
 	selectedRestaurant: Restaurant = null
+	selectedRegister: Register = null
+	selectedUser: User = null
 	registerDropdownOptions: DropdownOption[] = []
 	registerDropdownSelectedKey: string = ""
 	userDropdownOptions: DropdownOption[] = []
 	userDropdownSelectedKey: string = ""
 	restaurantDropdownOptions: DropdownOption[] = []
 	restaurantDropdownSelectedKey: string = ""
-	uuid: string = ""
-	username: string = ""
 	password: string = ""
 	errorMessage: string = ""
 	initialLoad: boolean = true
@@ -102,19 +104,20 @@ export class LoginPageComponent {
 
 		if (defaultRestaurantUuid != null) {
 			// Find the default restaurant
-			let defaultRestaurant = this.dataService.company.restaurants.find(
+			let defaultRestaurant = this.company.restaurants.find(
 				r => r.uuid === defaultRestaurantUuid
 			)
 
 			if (defaultRestaurant != null) {
+				this.selectedRestaurant = defaultRestaurant
 				this.restaurantDropdownSelectedKey = defaultRestaurant.uuid
 			}
 		}
 
 		if (this.restaurantDropdownSelectedKey === "") {
 			// If no default restaurant is set, select the first one
-			this.restaurantDropdownSelectedKey =
-				this.dataService.company.restaurants[0].uuid
+			this.selectedRestaurant = this.company.restaurants[0]
+			this.restaurantDropdownSelectedKey = this.company.restaurants[0].uuid
 		}
 
 		this.loadDropdownOptions()
@@ -123,11 +126,15 @@ export class LoginPageComponent {
 
 	loadDropdownOptions() {
 		this.userDropdownOptions = []
-
-		this.selectedRestaurant = this.company.restaurants.find(
-			r => r.uuid === this.restaurantDropdownSelectedKey
-		)
 		if (this.selectedRestaurant == null) return
+
+		if (this.selectedRestaurant.registers.length > 0) {
+			this.selectedRegister = this.selectedRestaurant.registers[0]
+		}
+
+		if (this.selectedRestaurant.users.length > 0) {
+			this.selectedUser = this.selectedRestaurant.users[0]
+		}
 
 		for (let register of this.selectedRestaurant.registers) {
 			this.registerDropdownOptions.push({
@@ -148,28 +155,28 @@ export class LoginPageComponent {
 
 	restaurantDropdownChange(event: Event) {
 		this.restaurantDropdownSelectedKey = (event as CustomEvent).detail.key
+
+		this.selectedRestaurant = this.company.restaurants.find(
+			r => r.uuid === this.restaurantDropdownSelectedKey
+		)
+
 		this.loadDropdownOptions()
 	}
 
 	registerDropdownChange(event: Event) {
 		this.registerDropdownSelectedKey = (event as CustomEvent).detail.key
+
+		this.selectedRegister = this.selectedRestaurant.registers.find(
+			r => r.uuid === this.registerDropdownSelectedKey
+		)
 	}
 
 	userDropdownChange(event: Event) {
 		this.userDropdownSelectedKey = (event as CustomEvent).detail.key
 
-		const selectedRestaurant = this.company.restaurants.find(
-			r => r.uuid === this.restaurantDropdownSelectedKey
-		)
-
-		let selectedUser = selectedRestaurant.users.find(
+		this.selectedUser = this.selectedRestaurant.users.find(
 			u => u.uuid === this.userDropdownSelectedKey
 		)
-
-		if (selectedUser != null) {
-			this.uuid = selectedUser.uuid
-			this.username = selectedUser.name
-		}
 	}
 
 	passwordChange(event: Event) {
@@ -190,10 +197,10 @@ export class LoginPageComponent {
 				}
 			`,
 			{
-				companyUuid: this.company.uuid,
-				userName: this.username,
+				companyUuid: this.company?.uuid,
+				userName: this.selectedUser?.name,
 				password: this.password,
-				registerUuid: "",
+				registerUuid: this.selectedRegister?.uuid,
 				registerClientSerialNumber: await getSerialNumber(
 					this.settingsService
 				)
@@ -225,9 +232,9 @@ export class LoginPageComponent {
 			if (errors.includes("USER_HAS_NO_PASSWORD")) {
 				this.router.navigate(["login", "set-password"], {
 					queryParams: {
-						uuid: this.uuid,
+						uuid: this.selectedUser.uuid,
 						restaurantUuid: this.restaurantDropdownSelectedKey,
-						name: this.username
+						name: this.selectedUser.name
 					}
 				})
 			} else {

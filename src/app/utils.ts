@@ -1,6 +1,7 @@
 import { Router } from "@angular/router"
 import { ApolloQueryResult } from "@apollo/client"
 import { MutationResult } from "apollo-angular"
+import FingerprintJS from "@fingerprintjs/fingerprintjs"
 import { ApiService } from "./services/api-service"
 import { DataService } from "./services/data-service"
 import { SettingsService } from "./services/settings-service"
@@ -138,6 +139,22 @@ export async function initUserAfterLogin(
 
 	// Redirect to user page
 	router.navigate(["user"])
+}
+
+export async function getSerialNumber(
+	settingsService: SettingsService
+): Promise<string> {
+	let serialNumber = await settingsService.getSerialNumber()
+
+	if (serialNumber == null) {
+		const fingerprintAgent = await FingerprintJS.load()
+		const result = await fingerprintAgent.get()
+
+		serialNumber = result.visitorId
+		await settingsService.setSerialNumber(serialNumber)
+	}
+
+	return serialNumber
 }
 
 //#region Converter functions

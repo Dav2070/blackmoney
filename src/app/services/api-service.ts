@@ -43,6 +43,8 @@ export class ApiService {
 			companyUuid: string
 			userName: string
 			password: string
+			registerUuid: string
+			registerClientSerialNumber: string
 		}
 	): Promise<MutationResult<{ login: SessionResource }>> {
 		return await this.davAuthApollo
@@ -52,11 +54,15 @@ export class ApiService {
 						$companyUuid: String!
 						$userName: String!
 						$password: String!
+						$registerUuid: String!
+						$registerClientSerialNumber: String!
 					) {
 						login(
 							companyUuid: $companyUuid
 							userName: $userName
 							password: $password
+							registerUuid: $registerUuid
+							registerClientSerialNumber: $registerClientSerialNumber
 						) {
 							${queryData}
 						}

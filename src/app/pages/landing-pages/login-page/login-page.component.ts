@@ -10,6 +10,7 @@ import { SettingsService } from "src/app/services/settings-service"
 import {
 	convertCompanyResourceToCompany,
 	getGraphQLErrorCodes,
+	getSerialNumber,
 	initUserAfterLogin
 } from "src/app/utils"
 
@@ -170,7 +171,11 @@ export class LoginPageComponent {
 			{
 				companyUuid: this.company.uuid,
 				userName: this.username,
-				password: this.password
+				password: this.password,
+				registerUuid: "",
+				registerClientSerialNumber: await getSerialNumber(
+					this.settingsService
+				)
 			}
 		)
 

@@ -46,6 +46,14 @@
 
 		<div class="actions-container">
 			<dav-icon-card
+				[text]="locale.manageRegisters"
+				[href]="'/user/restaurants/' + uuid + '/registers'"
+				(click)="navigateToRegistersPage($event)"
+			>
+				<fa-icon [icon]="faCashRegister"></fa-icon>
+			</dav-icon-card>
+
+			<dav-icon-card
 				[text]="locale.managePrinters"
 				[href]="'/user/restaurants/' + uuid + '/printers'"
 				(click)="navigateToPrintersPage($event)"

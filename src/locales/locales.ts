@@ -47,6 +47,9 @@ export const de = {
 		manageRooms: "Räume verwalten",
 		manageRegisters: "Kassen verwalten"
 	},
+	registersPage: {
+		headline: "Deine Kassen"
+	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"
 	},

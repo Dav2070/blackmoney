@@ -7,6 +7,9 @@ import { DataService } from "./services/data-service"
 import { SettingsService } from "./services/settings-service"
 import { AuthService } from "./services/auth-service"
 import { Company } from "./models/Company"
+import { Restaurant } from "./models/Restaurant"
+import { Register } from "./models/Register"
+import { RegisterClient } from "./models/RegisterClient"
 import { User } from "./models/User"
 import { Room } from "./models/Room"
 import { Table } from "./models/Table"
@@ -18,8 +21,6 @@ import { Order } from "./models/Order"
 import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
 import { Bill } from "./models/Bill"
-import { Restaurant } from "./models/Restaurant"
-import { Register } from "./models/Register"
 import { Printer } from "./models/Printer"
 import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
@@ -27,6 +28,9 @@ import { OfferItem } from "./models/OfferItem"
 import {
 	CategoryResource,
 	CompanyResource,
+	RestaurantResource,
+	RegisterResource,
+	RegisterClientResource,
 	ProductResource,
 	RoomResource,
 	TableResource,
@@ -39,8 +43,6 @@ import {
 	OrderItemResource,
 	OrderItemVariationResource,
 	BillResource,
-	RestaurantResource,
-	RegisterResource,
 	OfferResource,
 	OfferItemResource,
 	ErrorCode,
@@ -244,9 +246,34 @@ export function convertRegisterResourceToRegister(
 		return null
 	}
 
+	const registerClients: RegisterClient[] = []
+
+	if (registerResource.registerClients != null) {
+		for (let registerClient of registerResource.registerClients.items) {
+			registerClients.push(
+				convertRegisterClientResourceToRegisterClient(registerClient)
+			)
+		}
+	}
+
 	return {
 		uuid: registerResource.uuid,
-		name: registerResource.name
+		name: registerResource.name,
+		registerClients
+	}
+}
+
+export function convertRegisterClientResourceToRegisterClient(
+	registerClientResource: RegisterClientResource
+): RegisterClient {
+	if (registerClientResource == null) {
+		return null
+	}
+
+	return {
+		uuid: registerClientResource.uuid,
+		name: registerClientResource.name,
+		serialNumber: registerClientResource.serialNumber
 	}
 }
 

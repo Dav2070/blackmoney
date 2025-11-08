@@ -15,7 +15,8 @@ import {
 	RestaurantResource,
 	UserRole,
 	PrinterResource,
-	AddProductsInput
+	AddProductsInput,
+	RegisterResource
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -318,6 +319,25 @@ export class ApiService {
 							line2: $line2
 							postalCode: $postalCode
 						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveRegister(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloQueryResult<{ retrieveRegister: RegisterResource }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveRegister: RegisterResource }>({
+				query: gql`
+					query RetrieveRegister($uuid: String!) {
+						retrieveRegister(uuid: $uuid) {
 							${queryData}
 						}
 					}

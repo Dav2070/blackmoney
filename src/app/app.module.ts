@@ -70,6 +70,7 @@ import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-sett
 import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page/restaurants-page.component"
 import { RestaurantPageComponent } from "./pages/landing-pages/restaurant-page/restaurant-page.component"
 import { RegistersPageComponent } from "./pages/landing-pages/registers-page/registers-page.component"
+import { RegisterPageComponent } from "./pages/landing-pages/register-page/register-page.component"
 import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/employees-page.component"
 import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
@@ -141,6 +142,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		RestaurantsPageComponent,
 		RestaurantPageComponent,
 		RegistersPageComponent,
+		RegisterPageComponent,
 		EmployeesPageComponent,
 		EmployeePageComponent,
 		LoginPageComponent,

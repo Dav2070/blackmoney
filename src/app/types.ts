@@ -41,6 +41,13 @@ export interface RestaurantResource {
 export interface RegisterResource {
 	uuid: string
 	name: string
+	registerClients: List<RegisterClientResource>
+}
+
+export interface RegisterClientResource {
+	uuid: string
+	name: string
+	serialNumber: string
 }
 
 export interface UserResource {

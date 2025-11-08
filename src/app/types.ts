@@ -34,7 +34,13 @@ export interface RestaurantResource {
 	menu: MenuResource
 	users: List<UserResource>
 	rooms: List<RoomResource>
+	registers: List<RegisterResource>
 	printers: List<PrinterResource>
+}
+
+export interface RegisterResource {
+	uuid: string
+	name: string
 }
 
 export interface UserResource {

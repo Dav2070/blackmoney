@@ -2,6 +2,7 @@ import { Component } from "@angular/core"
 import { Router } from "@angular/router"
 import { DropdownOption, DropdownOptionType } from "dav-ui-components"
 import { Company } from "src/app/models/Company"
+import { Restaurant } from "src/app/models/Restaurant"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
@@ -22,6 +23,9 @@ import {
 export class LoginPageComponent {
 	locale = this.localizationService.locale.loginPage
 	company: Company = null
+	selectedRestaurant: Restaurant = null
+	registerDropdownOptions: DropdownOption[] = []
+	registerDropdownSelectedKey: string = ""
 	userDropdownOptions: DropdownOption[] = []
 	userDropdownSelectedKey: string = ""
 	restaurantDropdownOptions: DropdownOption[] = []
@@ -61,6 +65,12 @@ export class LoginPageComponent {
 						uuid
 						name
 						users {
+							items {
+								uuid
+								name
+							}
+						}
+						registers {
 							items {
 								uuid
 								name
@@ -107,31 +117,42 @@ export class LoginPageComponent {
 				this.dataService.company.restaurants[0].uuid
 		}
 
-		this.loadUserDropdownOptions()
+		this.loadDropdownOptions()
 		this.initialLoad = false
 	}
 
-	loadUserDropdownOptions() {
+	loadDropdownOptions() {
 		this.userDropdownOptions = []
 
-		const selectedRestaurant = this.company.restaurants.find(
+		this.selectedRestaurant = this.company.restaurants.find(
 			r => r.uuid === this.restaurantDropdownSelectedKey
 		)
+		if (this.selectedRestaurant == null) return
 
-		if (selectedRestaurant) {
-			for (let user of selectedRestaurant.users) {
-				this.userDropdownOptions.push({
-					key: user.uuid,
-					value: user.name,
-					type: DropdownOptionType.option
-				})
-			}
+		for (let register of this.selectedRestaurant.registers) {
+			this.registerDropdownOptions.push({
+				key: register.uuid,
+				value: register.name,
+				type: DropdownOptionType.option
+			})
+		}
+
+		for (let user of this.selectedRestaurant.users) {
+			this.userDropdownOptions.push({
+				key: user.uuid,
+				value: user.name,
+				type: DropdownOptionType.option
+			})
 		}
 	}
 
 	restaurantDropdownChange(event: Event) {
 		this.restaurantDropdownSelectedKey = (event as CustomEvent).detail.key
-		this.loadUserDropdownOptions()
+		this.loadDropdownOptions()
+	}
+
+	registerDropdownChange(event: Event) {
+		this.registerDropdownSelectedKey = (event as CustomEvent).detail.key
 	}
 
 	userDropdownChange(event: Event) {

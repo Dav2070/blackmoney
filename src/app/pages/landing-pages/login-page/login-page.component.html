@@ -7,9 +7,7 @@
 				<dav-progress-ring size="24"></dav-progress-ring>
 			</div>
 		} @else {
-			@if (
-				dataService.company && dataService.company.restaurants.length > 1
-			) {
+			@if (company && company.restaurants.length > 1) {
 				<dav-dropdown
 					[label]="locale.restaurant"
 					width="230"
@@ -17,6 +15,17 @@
 					[selectedKey]="restaurantDropdownSelectedKey"
 					[disabled]="loading"
 					(change)="restaurantDropdownChange($event)"
+				></dav-dropdown>
+			}
+
+			@if (selectedRestaurant && selectedRestaurant.registers.length > 1) {
+				<dav-dropdown
+					[label]="locale.register"
+					width="230"
+					[options]="registerDropdownOptions"
+					[selectedKey]="registerDropdownSelectedKey"
+					[disabled]="loading"
+					(change)="registerDropdownChange($event)"
 				></dav-dropdown>
 			}
 

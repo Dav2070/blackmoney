@@ -19,6 +19,7 @@ import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
 import { Bill } from "./models/Bill"
 import { Restaurant } from "./models/Restaurant"
+import { Register } from "./models/Register"
 import { Printer } from "./models/Printer"
 import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
@@ -39,6 +40,7 @@ import {
 	OrderItemVariationResource,
 	BillResource,
 	RestaurantResource,
+	RegisterResource,
 	OfferResource,
 	OfferItemResource,
 	ErrorCode,
@@ -203,6 +205,14 @@ export function convertRestaurantResourceToRestaurant(
 		}
 	}
 
+	const registers: Register[] = []
+
+	if (restaurantResource.registers != null) {
+		for (let register of restaurantResource.registers.items) {
+			registers.push(convertRegisterResourceToRegister(register))
+		}
+	}
+
 	const printers: Printer[] = []
 
 	if (restaurantResource.printers != null) {
@@ -221,8 +231,22 @@ export function convertRestaurantResourceToRestaurant(
 		postalCode: restaurantResource.postalCode,
 		users,
 		rooms,
+		registers,
 		printers,
 		menu: convertMenuResourceToMenu(restaurantResource.menu)
+	}
+}
+
+export function convertRegisterResourceToRegister(
+	registerResource: RegisterResource
+): Register {
+	if (registerResource == null) {
+		return null
+	}
+
+	return {
+		uuid: registerResource.uuid,
+		name: registerResource.name
 	}
 }
 

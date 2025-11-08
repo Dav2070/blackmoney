@@ -2,6 +2,7 @@ export const de = {
 	loginPage: {
 		headline: "Anmelden",
 		restaurant: "Restaurant",
+		register: "Kasse",
 		user: "Mitarbeiter",
 		password: "Passwort",
 		login: "Anmelden",

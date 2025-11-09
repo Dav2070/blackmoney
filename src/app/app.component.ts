@@ -105,7 +105,7 @@ export class AppComponent {
 		}
 
 		let retrieveCompanyResponseData =
-			retrieveCompanyResponse.data.retrieveCompany
+			retrieveCompanyResponse.data?.retrieveCompany
 
 		if (retrieveCompanyResponseData != null) {
 			this.dataService.company = convertCompanyResourceToCompany(
@@ -182,7 +182,7 @@ export class AppComponent {
 				) {
 					// Remove the access token
 					this.authService.removeAccessToken()
-				} else if (retrieveOwnUserResponse.data.retrieveOwnUser != null) {
+				} else if (retrieveOwnUserResponse.data?.retrieveOwnUser != null) {
 					this.dataService.user = convertUserResourceToUser(
 						retrieveOwnUserResponse.data.retrieveOwnUser
 					)
@@ -190,29 +190,36 @@ export class AppComponent {
 			}
 		}
 
-		const retrieveRegisterClientResponse =
-			await this.apiService.retrieveRegisterClientBySerialNumber(
-				`
-				uuid
-				name
-				serialNumber
-			`,
-				{ serialNumber: await getSerialNumber(this.settingsService) }
-			)
+		const registerUuid = await this.settingsService.getRegister()
 
-		if (
-			getGraphQLErrorCodes(retrieveRegisterClientResponse).includes(
-				"NOT_AUTHENTICATED"
-			)
-		) {
-			// Remove the access token
-			this.authService.removeAccessToken()
-		} else if (
-			retrieveRegisterClientResponse.data
-				.retrieveRegisterClientBySerialNumber != null
-		) {
-			this.dataService.registerClient =
-				retrieveRegisterClientResponse.data.retrieveRegisterClientBySerialNumber
+		if (registerUuid != null) {
+			const retrieveRegisterClientResponse =
+				await this.apiService.retrieveRegisterClientBySerialNumber(
+					`
+						uuid
+						name
+						serialNumber
+					`,
+					{
+						registerUuid,
+						serialNumber: await getSerialNumber(this.settingsService)
+					}
+				)
+
+			if (
+				getGraphQLErrorCodes(retrieveRegisterClientResponse).includes(
+					"NOT_AUTHENTICATED"
+				)
+			) {
+				// Remove the access token
+				this.authService.removeAccessToken()
+			} else if (
+				retrieveRegisterClientResponse.data
+					?.retrieveRegisterClientBySerialNumber != null
+			) {
+				this.dataService.registerClient =
+					retrieveRegisterClientResponse.data.retrieveRegisterClientBySerialNumber
+			}
 		}
 
 		this.dataService.companyPromiseHolder.Resolve()

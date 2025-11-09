@@ -184,6 +184,8 @@ export class LoginPageComponent {
 	}
 
 	async login() {
+		if (this.selectedRegister == null) return
+
 		this.errorMessage = ""
 		this.loading = true
 
@@ -200,7 +202,7 @@ export class LoginPageComponent {
 				companyUuid: this.company?.uuid,
 				userName: this.selectedUser?.name,
 				password: this.password,
-				registerUuid: this.selectedRegister?.uuid,
+				registerUuid: this.selectedRegister.uuid,
 				registerClientSerialNumber: await getSerialNumber(
 					this.settingsService
 				)
@@ -221,6 +223,11 @@ export class LoginPageComponent {
 				this.settingsService,
 				this.router
 			)
+
+			// Save register uuid in settings
+			await this.settingsService.setRegister(this.selectedRegister.uuid)
+
+			// TODO: Load register client in dataService
 		} else {
 			const errors = getGraphQLErrorCodes(loginResponse)
 

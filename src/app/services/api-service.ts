@@ -351,7 +351,10 @@ export class ApiService {
 
 	async retrieveRegisterClientBySerialNumber(
 		queryData: string,
-		variables: { serialNumber: string }
+		variables: {
+			registerUuid: string
+			serialNumber: string
+		}
 	): Promise<
 		ApolloQueryResult<{
 			retrieveRegisterClientBySerialNumber: RegisterClientResource
@@ -362,8 +365,14 @@ export class ApiService {
 				retrieveRegisterClientBySerialNumber: RegisterClientResource
 			}>({
 				query: gql`
-					query RetrieveRegisterClientBySerialNumber($serialNumber: String!) {
-						retrieveRegisterClientBySerialNumber(serialNumber: $serialNumber) {
+					query RetrieveRegisterClientBySerialNumber(
+						$registerUuid: String!
+						$serialNumber: String!
+					) {
+						retrieveRegisterClientBySerialNumber(
+							registerUuid: $registerUuid
+							serialNumber: $serialNumber
+						) {
 							${queryData}
 						}
 					}

@@ -51,6 +51,47 @@ import {
 } from "./types"
 import { darkThemeKey, lightThemeKey } from "./constants"
 
+export async function loadRegisterClient(
+	settingsService: SettingsService,
+	authService: AuthService,
+	apiService: ApiService,
+	dataService: DataService
+) {
+	const registerUuid = await settingsService.getRegister()
+
+	if (registerUuid != null) {
+		const retrieveRegisterClientResponse =
+			await apiService.retrieveRegisterClientBySerialNumber(
+				`
+						uuid
+						name
+						serialNumber
+					`,
+				{
+					registerUuid,
+					serialNumber: await getSerialNumber(settingsService)
+				}
+			)
+
+		if (
+			getGraphQLErrorCodes(retrieveRegisterClientResponse).includes(
+				"NOT_AUTHENTICATED"
+			)
+		) {
+			// Remove the access token
+			authService.removeAccessToken()
+		} else if (
+			retrieveRegisterClientResponse.data
+				?.retrieveRegisterClientBySerialNumber != null
+		) {
+			dataService.registerClient =
+				retrieveRegisterClientResponse.data.retrieveRegisterClientBySerialNumber
+		}
+	}
+
+	dataService.registerClientPromiseHolder.Resolve()
+}
+
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
 	if (
 		orderItem.type === OrderItemType.Menu ||

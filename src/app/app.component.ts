@@ -1,6 +1,6 @@
 import { Component, HostListener, Inject, PLATFORM_ID } from "@angular/core"
 import { isPlatformBrowser, isPlatformServer } from "@angular/common"
-import { Router, ActivatedRoute } from "@angular/router"
+import { ActivatedRoute } from "@angular/router"
 import { HttpHeaders } from "@angular/common/http"
 import { Apollo } from "apollo-angular"
 import { HttpLink } from "apollo-angular/http"
@@ -17,7 +17,7 @@ import {
 	convertRestaurantResourceToRestaurant,
 	convertUserResourceToUser,
 	getGraphQLErrorCodes,
-	getSerialNumber
+	loadRegisterClient
 } from "src/app/utils"
 import {
 	davAuthClientName,
@@ -190,42 +190,16 @@ export class AppComponent {
 			}
 		}
 
-		const registerUuid = await this.settingsService.getRegister()
-
-		if (registerUuid != null) {
-			const retrieveRegisterClientResponse =
-				await this.apiService.retrieveRegisterClientBySerialNumber(
-					`
-						uuid
-						name
-						serialNumber
-					`,
-					{
-						registerUuid,
-						serialNumber: await getSerialNumber(this.settingsService)
-					}
-				)
-
-			if (
-				getGraphQLErrorCodes(retrieveRegisterClientResponse).includes(
-					"NOT_AUTHENTICATED"
-				)
-			) {
-				// Remove the access token
-				this.authService.removeAccessToken()
-			} else if (
-				retrieveRegisterClientResponse.data
-					?.retrieveRegisterClientBySerialNumber != null
-			) {
-				this.dataService.registerClient =
-					retrieveRegisterClientResponse.data.retrieveRegisterClientBySerialNumber
-			}
-		}
-
 		this.dataService.companyPromiseHolder.Resolve()
 		this.dataService.restaurantPromiseHolder.Resolve()
 		this.dataService.blackmoneyUserPromiseHolder.Resolve()
-		this.dataService.registerClientPromiseHolder.Resolve()
+
+		await loadRegisterClient(
+			this.settingsService,
+			this.authService,
+			this.apiService,
+			this.dataService
+		)
 	}
 
 	@HostListener("window:resize")

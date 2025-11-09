@@ -14,7 +14,8 @@ import {
 	convertCompanyResourceToCompany,
 	getGraphQLErrorCodes,
 	getSerialNumber,
-	initUserAfterLogin
+	initUserAfterLogin,
+	loadRegisterClient
 } from "src/app/utils"
 
 @Component({
@@ -227,7 +228,13 @@ export class LoginPageComponent {
 			// Save register uuid in settings
 			await this.settingsService.setRegister(this.selectedRegister.uuid)
 
-			// TODO: Load register client in dataService
+			// Load register client in dataService
+			await loadRegisterClient(
+				this.settingsService,
+				this.authService,
+				this.apiService,
+				this.dataService
+			)
 		} else {
 			const errors = getGraphQLErrorCodes(loginResponse)
 

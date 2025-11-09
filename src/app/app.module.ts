@@ -44,6 +44,7 @@ import { OfferOrderItemCardComponent } from "./components/cash-register/offer-or
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
+import { EditDeviceNameDialogComponent } from "./dialogs/edit-device-name-dialog/edit-device-name-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
@@ -118,6 +119,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		OfferOrderItemCardComponent,
 		// Dialog
 		LogoutDialogComponent,
+		EditDeviceNameDialogComponent,
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,

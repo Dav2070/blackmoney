@@ -383,6 +383,38 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async updateRegisterClient(
+		queryData: string,
+		variables: {
+			uuid: string
+			name?: string
+		}
+	): Promise<
+		MutationResult<{ updateRegisterClient: RegisterClientResource }>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				updateRegisterClient: RegisterClientResource
+			}>({
+				mutation: gql`
+					mutation UpdateRegisterClient(
+						$uuid: String!
+						$name: String
+					) {
+						updateRegisterClient(
+							uuid: $uuid
+							name: $name
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async createPrinter(
 		queryData: string,
 		variables: {

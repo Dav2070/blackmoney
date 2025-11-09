@@ -128,6 +128,10 @@ export const de = {
 			headline: "Abmelden",
 			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
 		},
+		editDeviceNameDialog: {
+			headline: "Gerätename bearbeiten",
+			name: "Gerätename"
+		},
 		editRestaurantNameDialog: {
 			headline: "Name bearbeiten",
 			name: "Name des Restaurants"

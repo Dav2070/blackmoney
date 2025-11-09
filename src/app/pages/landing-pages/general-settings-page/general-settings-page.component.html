@@ -25,11 +25,17 @@
 
 					<div class="device-name">
 						<p>
-							{{ dataService.registerClient?.name }}
-							<span>{{ locale.noNameGiven }}</span>
+							@if (dataService.registerClient?.name) {
+								{{ dataService.registerClient?.name }}
+							} @else {
+								<span>{{ locale.noNameGiven }}</span>
+							}
 						</p>
 
-						<dav-icon-button size="xs">
+						<dav-icon-button
+							size="xs"
+							(click)="showEditDeviceNameDialog()"
+						>
 							<fa-icon [icon]="faPen"></fa-icon>
 						</dav-icon-button>
 					</div>
@@ -46,3 +52,11 @@
 		</div>
 	</div>
 </div>
+
+<app-edit-device-name-dialog
+	#editDeviceNameDialog
+	[name]="editDeviceNameDialogName"
+	[nameError]="editDeviceNameDialogNameError"
+	[loading]="editDeviceNameDialogLoading"
+	(primaryButtonClick)="editDeviceNameDialogPrimaryButtonClick($event)"
+></app-edit-device-name-dialog>

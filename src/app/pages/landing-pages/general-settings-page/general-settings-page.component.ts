@@ -1,10 +1,12 @@
 import { Component } from "@angular/core"
 import { Router } from "@angular/router"
+import { faPen } from "@fortawesome/pro-regular-svg-icons"
 import { DropdownOption, DropdownOptionType } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { SettingsService } from "src/app/services/settings-service"
 import { systemThemeKey, lightThemeKey, darkThemeKey } from "src/app/constants"
 import { DataService } from "src/app/services/data-service"
+import { getSerialNumber } from "src/app/utils"
 
 @Component({
 	templateUrl: "./general-settings-page.component.html",
@@ -13,6 +15,7 @@ import { DataService } from "src/app/services/data-service"
 })
 export class GeneralSettingsPageComponent {
 	locale = this.localizationService.locale.settingsPage
+	faPen = faPen
 	selectedTheme: string = systemThemeKey
 	themeDropdownOptions: DropdownOption[] = [
 		{
@@ -31,17 +34,18 @@ export class GeneralSettingsPageComponent {
 			type: DropdownOptionType.option
 		}
 	]
+	serialNumber: string = ""
 
 	constructor(
 		private localizationService: LocalizationService,
 		private settingsService: SettingsService,
-		private dataService: DataService,
+		public dataService: DataService,
 		private router: Router
 	) {}
 
 	async ngOnInit() {
-		// Select the correct theme
 		this.selectedTheme = await this.settingsService.getTheme()
+		this.serialNumber = await getSerialNumber(this.settingsService)
 	}
 
 	navigateBack() {

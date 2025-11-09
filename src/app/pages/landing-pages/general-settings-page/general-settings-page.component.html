@@ -15,5 +15,34 @@
 				></dav-dropdown>
 			</dav-setting>
 		</div>
+
+		<div class="setting">
+			<dav-setting [header]="locale.deviceInfo" expandable open>
+				<div class="device-info">
+					<div>
+						<p>{{ locale.deviceName }}</p>
+					</div>
+
+					<div class="device-name">
+						<p>
+							{{ dataService.registerClient?.name }}
+							<span>{{ locale.noNameGiven }}</span>
+						</p>
+
+						<dav-icon-button size="xs">
+							<fa-icon [icon]="faPen"></fa-icon>
+						</dav-icon-button>
+					</div>
+
+					<div>
+						<p>{{ locale.serialNumber }}</p>
+					</div>
+
+					<div>
+						<p>{{ serialNumber }}</p>
+					</div>
+				</div>
+			</dav-setting>
+		</div>
 	</div>
 </div>

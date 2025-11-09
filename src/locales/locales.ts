@@ -36,7 +36,11 @@ export const de = {
 		theme: "App-Design",
 		lightTheme: "Hell",
 		darkTheme: "Dunkel",
-		systemTheme: "System-Standard"
+		systemTheme: "System-Standard",
+		deviceInfo: "Geräteinformationen",
+		deviceName: "Gerätename:",
+		serialNumber: "Seriennummer:",
+		noNameGiven: "Kein Name angegeben"
 	},
 	restaurantsPage: {
 		headline: "Deine Restaurants"

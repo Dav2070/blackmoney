@@ -1,5 +1,5 @@
 <div
-	class="container"
+	class="container slide-up-in"
 	(touchstart)="handleTouch($event)"
 	(touchmove)="handleTouch($event)"
 	(touchend)="handleTouch($event)"
@@ -333,19 +333,22 @@
 				></dav-skeleton>
 			} @else if (selectedCategory === "menues") {
 				@for (menu of menues; track menu.uuid) {
-					<dav-button (click)="clickMenu(menu)">
+					<dav-button class="slide-up-in-light" (click)="clickMenu(menu)">
 						{{ menu.name }}
 					</dav-button>
 				}
 			} @else if (selectedCategory === "specials") {
 				@for (special of specials; track special.uuid) {
-					<dav-button (click)="clickSpecial(special)">
+					<dav-button
+						class="slide-up-in-light"
+						(click)="clickSpecial(special)"
+					>
 						{{ special.name }}
 					</dav-button>
 				}
 			} @else {
 				@for (item of selectedInventory; track item.uuid) {
-					<dav-button (click)="clickItem(item)">
+					<dav-button class="slide-up-in-light" (click)="clickItem(item)">
 						{{ item.name }}
 					</dav-button>
 				}

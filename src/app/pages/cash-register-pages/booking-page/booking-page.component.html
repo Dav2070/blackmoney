@@ -4,10 +4,6 @@
 	(touchmove)="handleTouch($event)"
 	(touchend)="handleTouch($event)"
 >
-	<div class="header">
-		<app-header />
-	</div>
-
 	<div class="orders-numpad-container">
 		<div #ordersContainer class="orders-container">
 			@if (room != null && table != null) {

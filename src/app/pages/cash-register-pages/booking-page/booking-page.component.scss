@@ -1,18 +1,11 @@
 .container {
-	position: fixed;
-	height: 100%;
-	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 1fr auto;
-	grid-template-rows: auto 1fr;
-	height: 100vh;
+	grid-template-rows: 1fr;
+	height: 100%;
+	width: 100%;
 	background-color: var(--dav-color-surface);
 	padding: 0;
-}
-
-.header {
-	grid-column: 1 / span 3;
-	grid-row: 1;
 }
 
 .add-product-button {
@@ -21,7 +14,6 @@
 
 .orders-numpad-container {
 	grid-column: 1;
-	grid-row: 2;
 	display: grid;
 	grid-template-rows: 1fr auto;
 	overflow: hidden;
@@ -60,7 +52,6 @@
 
 .product-selection-container {
 	grid-column: 2;
-	grid-row: 2;
 	padding: 0 12px;
 }
 
@@ -72,7 +63,6 @@
 
 .categories-sidenav-container {
 	grid-column: 3;
-	grid-row: 2;
 	background-color: var(--dav-color-surface);
 	padding: 0 4px;
 }

@@ -80,6 +80,10 @@ export const de = {
 		delete: "löschen",
 		roomCombination: "kombinieren"
 	},
+	tableOverviewPage: {
+		headline: "Tischübersicht",
+		table: "Tisch {name}"
+	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}",
 		noProductsSelected: "Keine Produkte ausgewählt",

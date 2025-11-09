@@ -1,37 +1,51 @@
-<div class="wrapper">
+<div class="container">
 	<div class="header">
 		<app-header />
 	</div>
-	<div class="main">
-		<mat-form-field>
-			<mat-select [(value)]="selected">
+
+	<div class="table-overview-container">
+		<app-orders-header
+			[headline]="locale.headline"
+			[showBackButton]="true"
+			(backButtonClick)="navigateToUserPage()"
+		></app-orders-header>
+
+		@if (selectedRoom != null) {
+			@for (table of selectedRoom.tables; track table.uuid) {
+				<dav-card
+					[headline]="
+						locale.table.replace('{name}', table.name.toString())
+					"
+					[href]="'/dashboard/tables/' + table.uuid"
+					(click)="navigateToTablePage($event, table.uuid)"
+				></dav-card>
+			}
+		}
+	</div>
+
+	<div class="rooms-sidenav-container">
+		<dav-sidenav>
+			@if (roomsLoading) {
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+				<dav-skeleton class="room-item-skeleton"></dav-skeleton>
+			} @else {
 				@for (room of rooms; track room.uuid) {
-					<mat-option [value]="room">{{ room.name }}</mat-option>
-				}
-			</mat-select>
-		</mat-form-field>
-		<div class="tables">
-			@if (selected != null) {
-				@for (table of selected.tables; track table.uuid) {
-					<mat-card class="table">
-						<mat-card-content>{{ table.name }}</mat-card-content>
-						<a
-							[routerLink]="['tables', table.uuid]"
-							class="card-link"
-						></a>
-					</mat-card>
+					<dav-sidenav-item
+						[value]="room.name"
+						[active]="selectedRoom === room"
+						(click)="selectedRoom = room"
+					></dav-sidenav-item>
 				}
 			}
-		</div>
+		</dav-sidenav>
 	</div>
-	<footer class="bottom">
-		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton">Reservierungen</button>
-			<button mat-flat-button class="footerButton">Auszüge</button>
-			<button mat-flat-button class="footerButton">Take-Away</button>
-			<button mat-flat-button class="footerButton">Warenwirtschaft</button>
-			<button mat-flat-button class="footerButton">Mitarbeiter</button>
-			<button mat-flat-button class="footerButton">Rechnungen</button>
-		</div>
-	</footer>
 </div>

@@ -1,44 +1,35 @@
-.wrapper {
-	display: flex;
-	flex-direction: column;
+.container {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: auto 1fr;
 	height: 100vh;
-	background-color: white;
+	background-color: var(--dav-color-surface);
+	padding: 0;
 }
 
 .header {
-	flex: 1;
+	grid-column: 1 / span 2;
+	grid-row: 1;
 }
 
-.main {
-	flex: 15;
-}
-.tables {
-	overflow-y: scroll;
-}
-.table {
-	margin-bottom: 1px;
+.table-overview-container {
+	grid-column: 1;
+	grid-row: 2;
+	margin: 0 16px 16px 16px;
 }
 
-.bottom {
-	flex: 2;
+.rooms-sidenav-container {
+	grid-column: 2;
+	grid-row: 2;
+	background-color: var(--dav-color-surface);
+	padding: 0 4px;
 }
 
-// To stretch the link on top of the card div
-.card-link {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-}
-
-#footerButtonsContainer {
-	display: flex;
-	justify-content: space-around;
-}
-
-.footerButton {
-	width: 100%;
-	margin: 25px;
-	height: 70px;
+.room-item-skeleton {
+	width: 133px;
+	height: 34px;
+	border-radius: 20px;
 }

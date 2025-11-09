@@ -149,6 +149,7 @@ export class AppComponent {
 									items {
 										uuid
 										name
+										seats
 									}
 								}
 							}

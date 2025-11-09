@@ -2,6 +2,7 @@ import { Router } from "@angular/router"
 import { ApolloQueryResult } from "@apollo/client"
 import { MutationResult } from "apollo-angular"
 import FingerprintJS from "@fingerprintjs/fingerprintjs"
+import { Toast } from "dav-ui-components"
 import { ApiService } from "./services/api-service"
 import { DataService } from "./services/data-service"
 import { SettingsService } from "./services/settings-service"
@@ -200,6 +201,14 @@ export async function getSerialNumber(
 	}
 
 	return serialNumber
+}
+
+export async function showToast(text: string, paddingBottom: number = 0) {
+	// Show toast
+	let toast = document.createElement("dav-toast")
+	toast.text = text
+	toast.paddingBottom = paddingBottom
+	Toast.show(toast)
 }
 
 //#region Converter functions

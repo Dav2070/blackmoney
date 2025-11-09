@@ -53,7 +53,8 @@ import {
 	convertCategoryResourceToCategory,
 	convertOfferResourceToOffer,
 	convertOrderItemResourceToOrderItem,
-	convertOrderResourceToOrder
+	convertOrderResourceToOrder,
+	showToast
 } from "src/app/utils"
 
 const mobileBreakpoint = 860
@@ -1181,6 +1182,7 @@ export class BookingPageComponent {
 		this.stagedItems.clearItems()
 
 		this.showTotal()
+		await showToast(this.locale.sendOrderToastText)
 	}
 
 	//Berechnet den Preis der hinzugefügten Items

@@ -102,7 +102,8 @@ export const de = {
 		notes: "Notizen",
 		extras: "Extras",
 		addProduct: "Produkt hinzufügen",
-		showBills: "Rechnungen anzeigen"
+		showBills: "Rechnungen anzeigen",
+		sendOrderToastText: "Bestellung wurde erfolgreich abgeschickt."
 	},
 	paymentPage: {
 		tableHeadline: "Tisch {name}",

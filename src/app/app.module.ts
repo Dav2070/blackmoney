@@ -76,6 +76,7 @@ import { EmployeePageComponent } from "./pages/landing-pages/employee-page/emplo
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
 import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-page/set-password-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
+import { CashRegisterPageComponent } from "./pages/cash-register-pages/cash-register-page/cash-register-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
@@ -148,6 +149,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		LoginPageComponent,
 		SetPasswordPageComponent,
 		OnboardingPageComponent,
+		CashRegisterPageComponent,
 		TableOverviewPageComponent,
 		BookingPageComponent,
 		TransferPageComponent,

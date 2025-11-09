@@ -349,6 +349,36 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createRegister(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			name: string
+		}
+	): Promise<MutationResult<{ createRegister: RegisterResource }>> {
+		return await this.davAuthApollo
+			.mutate<{
+				createRegister: RegisterResource
+			}>({
+				mutation: gql`
+					mutation CreateRegister(
+						$restaurantUuid: String!
+						$name: String!
+					) {
+						createRegister(
+							restaurantUuid: $restaurantUuid
+							name: $name
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveRegisterClientBySerialNumber(
 		queryData: string,
 		variables: {

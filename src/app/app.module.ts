@@ -48,6 +48,7 @@ import { EditDeviceNameDialogComponent } from "./dialogs/edit-device-name-dialog
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
+import { AddRegisterDialogComponent } from "./dialogs/add-register-dialog/add-register-dialog.component"
 import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
 import { AddRoomDialogComponent } from "./dialogs/add-room-dialog/add-room-dialog.component"
@@ -123,6 +124,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,
+		AddRegisterDialogComponent,
 		AddPrinterDialogComponent,
 		EditPrinterDialogComponent,
 		AddRoomDialogComponent,

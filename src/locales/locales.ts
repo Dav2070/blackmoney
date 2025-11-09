@@ -149,6 +149,10 @@ export const de = {
 			name: "Name des Mitarbeiters",
 			assignedRestaurants: "Zugeordnete Restaurants"
 		},
+		addRegisterDialog: {
+			headline: "Kasse hinzufügen",
+			name: "Name"
+		},
 		addPrinterDialog: {
 			headline: "Drucker hinzufügen",
 			name: "Name des Druckers",

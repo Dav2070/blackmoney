@@ -1,6 +1,10 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header backButtonVisible (backButtonClick)="navigateBack()">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddRegisterDialog()">
 			{{ locale.headline }}
 		</dav-header>
 
@@ -19,3 +23,11 @@
 		}
 	</div>
 </div>
+
+<app-add-register-dialog
+	#addRegisterDialog
+	[name]="addRegisterDialogName"
+	[nameError]="addRegisterDialogNameError"
+	[loading]="addRegisterDialogLoading"
+	(primaryButtonClick)="addRegisterDialogPrimaryButtonClick($event)"
+></app-add-register-dialog>

@@ -1,10 +1,16 @@
-import { Component } from "@angular/core"
+import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
+import { AddRegisterDialogComponent } from "src/app/dialogs/add-register-dialog/add-register-dialog.component"
 import { Register } from "src/app/models/Register"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
-import { convertRestaurantResourceToRestaurant } from "src/app/utils"
+import {
+	convertRestaurantResourceToRestaurant,
+	convertRegisterResourceToRegister,
+	getGraphQLErrorCodes
+} from "src/app/utils"
+import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
 	templateUrl: "./registers-page.component.html",
@@ -13,9 +19,16 @@ import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 })
 export class RegistersPageComponent {
 	locale = this.localizationService.locale.registersPage
+	errorsLocale = this.localizationService.locale.errors
 	uuid: string = null
 	loading: boolean = true
 	registers: Register[] = []
+
+	@ViewChild("addRegisterDialog")
+	addRegisterDialog: AddRegisterDialogComponent
+	addRegisterDialogName: string = ""
+	addRegisterDialogNameError: string = ""
+	addRegisterDialogLoading: boolean = false
 
 	constructor(
 		private dataService: DataService,
@@ -71,5 +84,62 @@ export class RegistersPageComponent {
 			"registers",
 			register.uuid
 		])
+	}
+
+	showAddRegisterDialog() {
+		this.addRegisterDialogName = ""
+		this.addRegisterDialogNameError = ""
+		this.addRegisterDialogLoading = false
+		this.addRegisterDialog.show()
+	}
+
+	async addRegisterDialogPrimaryButtonClick(event: { name: string }) {
+		const name = event.name.trim()
+
+		if (name.length === 0) {
+			this.addRegisterDialogNameError = this.errorsLocale.nameMissing
+			return
+		}
+
+		this.addRegisterDialogLoading = true
+
+		const createRegisterResponse = await this.apiService.createRegister(
+			`
+				uuid
+				name
+			`,
+			{
+				restaurantUuid: this.uuid,
+				name
+			}
+		)
+
+		this.addRegisterDialogLoading = false
+
+		if (createRegisterResponse.data?.createRegister != null) {
+			const responseData = createRegisterResponse.data.createRegister
+			this.registers.push(convertRegisterResourceToRegister(responseData))
+			this.addRegisterDialog.hide()
+		} else {
+			const errors = getGraphQLErrorCodes(createRegisterResponse)
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.addRegisterDialogNameError =
+							this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.addRegisterDialogNameError =
+							this.errorsLocale.nameTooLong
+						break
+					default:
+						this.addRegisterDialogNameError =
+							this.errorsLocale.unexpectedError
+						break
+				}
+			}
+		}
 	}
 }

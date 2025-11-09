@@ -2,7 +2,7 @@
 	<div class="left-orders-container">
 		<div class="orders-container">
 			@if (tableLeft != null) {
-				<app-orders-header
+				<app-headline
 					[headline]="
 						locale.tableHeadline
 							.replace('{tableName}', tableLeft?.name.toString())
@@ -28,7 +28,7 @@
 					>
 						<fa-icon [icon]="faChevronsDown"></fa-icon>
 					</dav-icon-button>
-				</app-orders-header>
+				</app-headline>
 			}
 
 			<ul class="order-items-container">
@@ -77,7 +77,7 @@
 	<div class="right-orders-container">
 		<div class="orders-container">
 			@if (tableRight != null) {
-				<app-orders-header
+				<app-headline
 					[headline]="
 						locale.tableHeadline
 							.replace('{tableName}', tableRight?.name.toString())
@@ -101,7 +101,7 @@
 					>
 						<fa-icon [icon]="faChevronsUp"></fa-icon>
 					</dav-icon-button>
-				</app-orders-header>
+				</app-headline>
 			}
 
 			<ul class="order-items-container">

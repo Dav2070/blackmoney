@@ -2,13 +2,13 @@
 	<div class="orders-price-container">
 		<div class="orders-container">
 			@if (table != null) {
-				<app-orders-header
+				<app-headline
 					[headline]="
 						locale.tableHeadline.replace('{name}', table.name.toString())
 					"
 					[showBackButton]="true"
 					(backButtonClick)="navigateToBookingPage($event)"
-				></app-orders-header>
+				></app-headline>
 			}
 
 			<ul class="order-items-container">
@@ -46,7 +46,7 @@
 
 	<div class="bills-price-container">
 		<div class="bills-container">
-			<app-orders-header [headline]="locale.billsHeadline">
+			<app-headline [headline]="locale.billsHeadline">
 				<dav-icon-button
 					size="sm"
 					[disabled]="checkMaxBills()"
@@ -82,7 +82,7 @@
 				>
 					<fa-icon [icon]="faCreditCard"></fa-icon>
 				</dav-icon-button>
-			</app-orders-header>
+			</app-headline>
 
 			<div class="bills-list-container">
 				@for (bill of bills; let index = $index; track index) {

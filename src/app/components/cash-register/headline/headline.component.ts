@@ -3,12 +3,12 @@ import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons"
 import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
-	selector: "app-orders-header",
-	templateUrl: "./orders-header.component.html",
-	styleUrl: "./orders-header.component.scss",
+	selector: "app-headline",
+	templateUrl: "./headline.component.html",
+	styleUrl: "./headline.component.scss",
 	standalone: false
 })
-export class OrdersHeaderComponent {
+export class HeadlineComponent {
 	actionsLocale = this.localizationService.locale.actions
 	faArrowLeft = faArrowLeft
 

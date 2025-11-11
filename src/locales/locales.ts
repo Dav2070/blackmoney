@@ -42,7 +42,9 @@ export const de = {
 	restaurantPage: {
 		addAddress: "Adresse angeben",
 		managePrinters: "Drucker verwalten",
-		manageRooms: "Räume verwalten"
+		manageRooms: "Räume verwalten",
+		manageTime: "Öffnungszeiten verwalten",
+		addPicture: "Bild hinzufügen"
 	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"

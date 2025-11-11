@@ -96,6 +96,9 @@ import { EmployeeManagementComponent } from "./pages/settings-pages/employee-man
 import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
 import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
+import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
+import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
+import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
 
 @NgModule({
 	declarations: [
@@ -117,6 +120,8 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		EditRoomDialogComponent,
 		AddTableDialogComponent,
 		SelectTableDialogComponent,
+		EditOwnerDialogComponent,
+		EditContactInfoDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -139,6 +144,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 		RoomsPageComponent,
 		RoomPageComponent,
 		TableCombinationPageComponent,
+		OpeningTimePageComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,

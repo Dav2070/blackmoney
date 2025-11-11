@@ -25,6 +25,7 @@ import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationPageComponent } from "./pages/landing-pages/table-combination-page/table-combination-page.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
+import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
 
 const routes: Routes = [
 	{
@@ -86,6 +87,10 @@ const routes: Routes = [
 			{
 				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/combinations",
 				component: TableCombinationPageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/openingTime",
+				component: OpeningTimePageComponent
 			}
 		]
 	},

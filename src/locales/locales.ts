@@ -49,7 +49,8 @@ export const de = {
 		addAddress: "Adresse angeben",
 		managePrinters: "Drucker verwalten",
 		manageRooms: "Räume verwalten",
-		manageRegisters: "Kassen verwalten"
+		manageRegisters: "Kassen verwalten",
+		manageMenu: "Speisekarte verwalten"
 	},
 	registersPage: {
 		headline: "Deine Kassen",
@@ -236,7 +237,7 @@ export const de = {
 		moveMultipleProductsDialog: {
 			headline: "Mehrere verschieben"
 		},
-		addCategoryDialog:{
+		addCategoryDialog: {
 			headline: "Kategorie hinzufügen",
 			name: "Name"
 		}

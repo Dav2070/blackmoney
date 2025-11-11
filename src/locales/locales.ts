@@ -49,7 +49,9 @@ export const de = {
 		addAddress: "Adresse angeben",
 		managePrinters: "Drucker verwalten",
 		manageRooms: "Räume verwalten",
-		manageRegisters: "Kassen verwalten"
+		manageRegisters: "Kassen verwalten",
+		manageTime: "Öffnungszeiten verwalten",
+		addPicture: "Bild hinzufügen"
 	},
 	registersPage: {
 		headline: "Deine Kassen",

@@ -16,6 +16,8 @@ export const numpadKeyRegex = new RegExp("^Numpad[0-9]$")
 //#region settings keys
 export const settingsThemeKey = "settings-theme"
 export const settingsRestaurantKey = "settings-restaurant"
+export const settingsRegisterKey = "settings-register"
+export const settingsSerialNumberKey = "settings-serialNumber"
 //#endregion
 
 //#region settings default values

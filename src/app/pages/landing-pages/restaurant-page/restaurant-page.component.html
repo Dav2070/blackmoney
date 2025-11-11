@@ -32,7 +32,11 @@
 					}
 				</div>
 
-				<dav-icon-button size="xs" (click)="showEditAddressDialog()">
+				<dav-icon-button
+					size="xs"
+					[tooltip]="actionsLocale.edit"
+					(click)="showEditAddressDialog()"
+				>
 					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-button>
 			</div>
@@ -41,6 +45,14 @@
 		<div class="separator"></div>
 
 		<div class="actions-container">
+			<dav-icon-card
+				[text]="locale.manageRegisters"
+				[href]="'/user/restaurants/' + uuid + '/registers'"
+				(click)="navigateToRegistersPage($event)"
+			>
+				<fa-icon [icon]="faCashRegister"></fa-icon>
+			</dav-icon-card>
+
 			<dav-icon-card
 				[text]="locale.managePrinters"
 				[href]="'/user/restaurants/' + uuid + '/printers'"

@@ -5,7 +5,11 @@ import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { SettingsService } from "src/app/services/settings-service"
-import { getGraphQLErrorCodes, initUserAfterLogin } from "src/app/utils"
+import {
+	getGraphQLErrorCodes,
+	getSerialNumber,
+	initUserAfterLogin
+} from "src/app/utils"
 
 @Component({
 	templateUrl: "./set-password-page.component.html",
@@ -88,7 +92,11 @@ export class SetPasswordPageComponent {
 				{
 					companyUuid: this.dataService.company.uuid,
 					userName: this.username,
-					password: this.password
+					password: this.password,
+					registerUuid: "", // TODO: Implement register selection
+					registerClientSerialNumber: await getSerialNumber(
+						this.settingsService
+					)
 				}
 			)
 

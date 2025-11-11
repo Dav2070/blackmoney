@@ -25,6 +25,7 @@ import * as ErrorCodes from "src/app/errorCodes"
 export class PrintersPageComponent {
 	locale = this.localizationService.locale.printersPage
 	errorsLocale = this.localizationService.locale.errors
+	actionsLocale = this.localizationService.locale.actions
 	faPen = faPen
 	faPrint = faPrint
 	uuid: string = null

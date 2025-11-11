@@ -26,13 +26,3 @@
 		<p>{{ currentTime }}</p>
 	</div>
 </div>
-
-@if (showButton) {
-	<button
-		mat-mini-fab
-		style="float: right; margin-bottom: 10px; margin-right: 5px"
-		[routerLink]="['settings']"
-	>
-		<mat-icon>settings</mat-icon>
-	</button>
-}

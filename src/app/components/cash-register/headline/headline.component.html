@@ -2,7 +2,7 @@
 	@if (showBackButton) {
 		<dav-icon-button
 			size="sm"
-			href="/dashboard"
+			[tooltip]="actionsLocale.back"
 			(click)="backButtonClick.emit($event)"
 		>
 			<fa-icon [icon]="faArrowLeft"></fa-icon>

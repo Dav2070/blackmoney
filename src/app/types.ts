@@ -34,7 +34,20 @@ export interface RestaurantResource {
 	menu: MenuResource
 	users: List<UserResource>
 	rooms: List<RoomResource>
+	registers: List<RegisterResource>
 	printers: List<PrinterResource>
+}
+
+export interface RegisterResource {
+	uuid: string
+	name: string
+	registerClients: List<RegisterClientResource>
+}
+
+export interface RegisterClientResource {
+	uuid: string
+	name: string
+	serialNumber: string
 }
 
 export interface UserResource {
@@ -147,6 +160,17 @@ export interface OrderItemVariationResource {
 	uuid: string
 	count: number
 	variationItems: List<VariationItemResource>
+}
+
+export interface AddProductsInput {
+	uuid: string
+	count: number
+	variations?: AddProductVariationInput[]
+}
+
+export interface AddProductVariationInput {
+	variationItemUuids: string[]
+	count: number
 }
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"

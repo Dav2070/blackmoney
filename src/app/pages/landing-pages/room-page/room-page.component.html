@@ -4,9 +4,11 @@
 			backButtonVisible
 			addButtonVisible
 			editButtonVisible
+			deleteButtonVisible
 			(backButtonClick)="navigateBack()"
 			(addButtonClick)="showAddTableDialog()"
 			(editButtonClick)="showEditRoomDialog()"
+			(deleteButtonClick)="showDeleteRoomDialog()"
 		>
 			{{ room?.name }}
 
@@ -16,6 +18,7 @@
 					[href]="
 						`/user/restaurants/${restaurantUuid}/rooms/${roomUuid}/combinations`
 					"
+					[tooltip]="locale.showTableCombinations"
 					(click)="navigateToTableCombinationsPage($event)"
 				>
 					<fa-icon [icon]="faObjectUnion"></fa-icon>
@@ -38,6 +41,7 @@
 
 						<dav-icon-button
 							size="xs"
+							[tooltip]="locale.options"
 							(click)="showTableItemContextMenu($event, table)"
 						>
 							<fa-icon [icon]="faEllipsis"></fa-icon>
@@ -56,6 +60,13 @@
 	[loading]="editRoomDialogLoading"
 	(primaryButtonClick)="editRoomDialogPrimaryButtonClick($event)"
 ></app-edit-room-dialog>
+
+<app-delete-room-dialog
+	#deleteRoomDialog
+	[name]="room?.name ?? ''"
+	[loading]="deleteRoomDialogLoading"
+	(primaryButtonClick)="deleteRoomDialogPrimaryButtonClick()"
+></app-delete-room-dialog>
 
 <app-add-table-dialog
 	#addTableDialog

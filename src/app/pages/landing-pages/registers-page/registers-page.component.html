@@ -1,0 +1,33 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddRegisterDialog()">
+			{{ locale.headline }}
+		</dav-header>
+
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			<dav-list>
+				@for (register of registers; track register.uuid) {
+					<dav-list-item
+						[headline]="register.name"
+						[href]="'/user/restaurants/' + uuid + '/registers/' + register.uuid"
+						(click)="navigateToRegisterPage($event, register)"
+					></dav-list-item>
+				}
+			</dav-list>
+		}
+	</div>
+</div>
+
+<app-add-register-dialog
+	#addRegisterDialog
+	[name]="addRegisterDialogName"
+	[nameError]="addRegisterDialogNameError"
+	[loading]="addRegisterDialogLoading"
+	(primaryButtonClick)="addRegisterDialogPrimaryButtonClick($event)"
+></app-add-register-dialog>

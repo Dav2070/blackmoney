@@ -13,8 +13,11 @@ import {
 	PaymentMethod,
 	BillResource,
 	RestaurantResource,
+	RegisterResource,
+	RegisterClientResource,
 	UserRole,
-	PrinterResource
+	PrinterResource,
+	AddProductsInput
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -42,6 +45,8 @@ export class ApiService {
 			companyUuid: string
 			userName: string
 			password: string
+			registerUuid: string
+			registerClientSerialNumber: string
 		}
 	): Promise<MutationResult<{ login: SessionResource }>> {
 		return await this.davAuthApollo
@@ -51,11 +56,15 @@ export class ApiService {
 						$companyUuid: String!
 						$userName: String!
 						$password: String!
+						$registerUuid: String!
+						$registerClientSerialNumber: String!
 					) {
 						login(
 							companyUuid: $companyUuid
 							userName: $userName
 							password: $password
+							registerUuid: $registerUuid
+							registerClientSerialNumber: $registerClientSerialNumber
 						) {
 							${queryData}
 						}
@@ -198,6 +207,29 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async resetPasswordOfUser(
+		queryData: string,
+		variables: {
+			uuid: string
+		}
+	): Promise<MutationResult<{ resetPasswordOfUser: UserResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				resetPasswordOfUser: UserResource
+			}>({
+				mutation: gql`
+					mutation ResetPasswordOfUser($uuid: String!) {
+						resetPasswordOfUser(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveCompany(
 		queryData: string
 	): Promise<ApolloQueryResult<{ retrieveCompany: CompanyResource }>> {
@@ -287,6 +319,121 @@ export class ApiService {
 							line1: $line1
 							line2: $line2
 							postalCode: $postalCode
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveRegister(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloQueryResult<{ retrieveRegister: RegisterResource }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveRegister: RegisterResource }>({
+				query: gql`
+					query RetrieveRegister($uuid: String!) {
+						retrieveRegister(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createRegister(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			name: string
+		}
+	): Promise<MutationResult<{ createRegister: RegisterResource }>> {
+		return await this.davAuthApollo
+			.mutate<{
+				createRegister: RegisterResource
+			}>({
+				mutation: gql`
+					mutation CreateRegister(
+						$restaurantUuid: String!
+						$name: String!
+					) {
+						createRegister(
+							restaurantUuid: $restaurantUuid
+							name: $name
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async retrieveRegisterClientBySerialNumber(
+		queryData: string,
+		variables: {
+			registerUuid: string
+			serialNumber: string
+		}
+	): Promise<
+		ApolloQueryResult<{
+			retrieveRegisterClientBySerialNumber: RegisterClientResource
+		}>
+	> {
+		return await this.blackmoneyAuthApollo
+			.query<{
+				retrieveRegisterClientBySerialNumber: RegisterClientResource
+			}>({
+				query: gql`
+					query RetrieveRegisterClientBySerialNumber(
+						$registerUuid: String!
+						$serialNumber: String!
+					) {
+						retrieveRegisterClientBySerialNumber(
+							registerUuid: $registerUuid
+							serialNumber: $serialNumber
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updateRegisterClient(
+		queryData: string,
+		variables: {
+			uuid: string
+			name?: string
+		}
+	): Promise<
+		MutationResult<{ updateRegisterClient: RegisterClientResource }>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				updateRegisterClient: RegisterClientResource
+			}>({
+				mutation: gql`
+					mutation UpdateRegisterClient(
+						$uuid: String!
+						$name: String
+					) {
+						updateRegisterClient(
+							uuid: $uuid
+							name: $name
 						) {
 							${queryData}
 						}
@@ -454,6 +601,25 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async deleteRoom(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<MutationResult<{ deleteRoom: RoomResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ deleteRoom: RoomResource }>({
+				mutation: gql`
+					mutation DeleteRoom($uuid: String!) {
+						deleteRoom(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async createTable(
 		queryData: string,
 		variables: { roomUuid: string; name: number; seats: number }
@@ -605,14 +771,7 @@ export class ApiService {
 		queryData: string,
 		variables: {
 			uuid: string
-			products: {
-				uuid: string
-				count: number
-				variations?: {
-					variationItemUuids: string[]
-					count: number
-				}[]
-			}[]
+			products: AddProductsInput[]
 		}
 	): Promise<MutationResult<{ addProductsToOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo

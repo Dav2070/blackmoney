@@ -1,18 +1,14 @@
-<div class="container">
-	<div class="header">
-		<app-header [showButton]="false" />
-	</div>
-
+<div class="container slide-up-in">
 	<div class="orders-price-container">
 		<div class="orders-container">
 			@if (table != null) {
-				<app-orders-header
+				<app-headline
 					[headline]="
 						locale.tableHeadline.replace('{name}', table.name.toString())
 					"
 					[showBackButton]="true"
 					(backButtonClick)="navigateToBookingPage($event)"
-				></app-orders-header>
+				></app-headline>
 			}
 
 			<ul class="order-items-container">
@@ -50,10 +46,11 @@
 
 	<div class="bills-price-container">
 		<div class="bills-container">
-			<app-orders-header [headline]="locale.billsHeadline">
+			<app-headline [headline]="locale.billsHeadline">
 				<dav-icon-button
 					size="sm"
 					[disabled]="checkMaxBills()"
+					[tooltip]="locale.addBill"
 					(click)="addBill()"
 				>
 					<fa-icon [icon]="faPlus"></fa-icon>
@@ -62,7 +59,8 @@
 				<dav-icon-button
 					size="sm"
 					[disabled]="bills.length <= 1"
-					(click)="deleteBill()"
+					[tooltip]="locale.removeBill"
+					(click)="removeBill()"
 				>
 					<fa-icon [icon]="faMinus"></fa-icon>
 				</dav-icon-button>
@@ -70,7 +68,7 @@
 				<dav-icon-button
 					size="sm"
 					[disabled]="activeBill.isEmpty()"
-					[tooltip]="locale.cash"
+					[tooltip]="locale.payByCash"
 					(click)="createBill('CASH')"
 				>
 					<fa-icon [icon]="faMoneyBill1Wave"></fa-icon>
@@ -79,12 +77,12 @@
 				<dav-icon-button
 					size="sm"
 					[disabled]="activeBill.isEmpty()"
-					[tooltip]="locale.card"
+					[tooltip]="locale.payByCard"
 					(click)="createBill('CARD')"
 				>
 					<fa-icon [icon]="faCreditCard"></fa-icon>
 				</dav-icon-button>
-			</app-orders-header>
+			</app-headline>
 
 			<div class="bills-list-container">
 				@for (bill of bills; let index = $index; track index) {

@@ -2,6 +2,7 @@ export const de = {
 	loginPage: {
 		headline: "Anmelden",
 		restaurant: "Restaurant",
+		register: "Kasse",
 		user: "Mitarbeiter",
 		password: "Passwort",
 		login: "Anmelden",
@@ -25,6 +26,7 @@ export const de = {
 			"Moin {name}!",
 			"Grüezi {name}!"
 		],
+		generalSettings: "Allgemeine Einstellungen",
 		goToDashboard: "Zur Kasse",
 		manageEmployees: "Mitarbeiter verwalten",
 		manageRestaurants: "Restaurants verwalten"
@@ -34,7 +36,11 @@ export const de = {
 		theme: "App-Design",
 		lightTheme: "Hell",
 		darkTheme: "Dunkel",
-		systemTheme: "System-Standard"
+		systemTheme: "System-Standard",
+		deviceInfo: "Geräteinformationen",
+		deviceName: "Gerätename:",
+		serialNumber: "Seriennummer:",
+		noNameGiven: "Kein Name angegeben"
 	},
 	restaurantsPage: {
 		headline: "Deine Restaurants"
@@ -43,13 +49,18 @@ export const de = {
 		addAddress: "Adresse angeben",
 		managePrinters: "Drucker verwalten",
 		manageRooms: "Räume verwalten",
+		manageRegisters: "Kassen verwalten"
+	},
+	registersPage: {
+		headline: "Deine Kassen",
 		manageMenu: "Speisekarte verwalten"
 	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"
 	},
 	employeePage: {
-		role: "Rolle:"
+		role: "Rolle:",
+		resetPassword: "Passwort zurücksetzen"
 	},
 	printersPage: {
 		headline: "Deine Drucker",
@@ -65,13 +76,18 @@ export const de = {
 		headline: "Deine Räume"
 	},
 	roomPage: {
-		delete: "löschen"
+		showTableCombinations: "Tischkombinationen anzeigen",
+		options: "Weitere Optionen"
 	},
 	tableCombinationPage: {
 		headline: "Deine Tischkombinationen",
 		add: "+",
 		delete: "löschen",
 		roomCombination: "kombinieren"
+	},
+	tableOverviewPage: {
+		headline: "Tischübersicht",
+		table: "Tisch {name}"
 	},
 	menuPage: {
 		headline: "Deine Speisekarte",
@@ -101,26 +117,38 @@ export const de = {
 		switchTable: "Tisch wechseln",
 		takeAway: "Außer Haus",
 		notes: "Notizen",
-		extras: "Extras"
+		extras: "Extras",
+		addProduct: "Produkt hinzufügen",
+		showBills: "Rechnungen anzeigen",
+		sendOrderToastText: "Bestellung wurde erfolgreich abgeschickt."
 	},
 	paymentPage: {
 		tableHeadline: "Tisch {name}",
 		noProductsSelected: "Keine Produkte ausgewählt",
 		billsHeadline: "Rechnungen",
-		cash: "Bar",
-		card: "Karte",
+		addBill: "Rechnung hinzufügen",
+		removeBill: "Rechnung entfernen",
+		payByCash: "Bar bezahlen",
+		payByCard: "Mit Karte bezahlen",
 		moveMultipleProducts: "Mehrere verschieben"
 	},
 	transferPage: {
 		tableHeadline: "Tisch {tableName} – {roomName}",
 		noProductsSelected: "Keine Produkte ausgewählt",
 		transferAllItemsToRight: "Alles nach rechts verschieben",
-		transferAllItemsToLeft: "Alles nach links verschieben"
+		transferAllItemsToLeft: "Alles nach links verschieben",
+		transferAllItemsToBottom: "Alles nach unten verschieben",
+		transferAllItemsToTop: "Alles nach oben verschieben",
+		moveMultipleProducts: "Mehrere verschieben"
 	},
 	dialogs: {
 		logoutDialog: {
 			headline: "Abmelden",
 			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
+		},
+		editDeviceNameDialog: {
+			headline: "Gerätename bearbeiten",
+			name: "Gerätename"
 		},
 		editRestaurantNameDialog: {
 			headline: "Name bearbeiten",
@@ -137,6 +165,10 @@ export const de = {
 			headline: "Mitarbeiter hinzufügen",
 			name: "Name des Mitarbeiters",
 			assignedRestaurants: "Zugeordnete Restaurants"
+		},
+		addRegisterDialog: {
+			headline: "Kasse hinzufügen",
+			name: "Name"
 		},
 		addPrinterDialog: {
 			headline: "Drucker hinzufügen",
@@ -158,6 +190,11 @@ export const de = {
 		editRoomDialog: {
 			headline: "Raum bearbeiten",
 			name: "Name"
+		},
+		deleteRoomDialog: {
+			headline: "Raum {name} löschen",
+			description:
+				"Bist du dir sicher, dass du diesen Raum löschen möchtest? Alle Tische in diesem Raum werden ebenfalls gelöscht."
 		},
 		addTableDialog: {
 			headline: "Tisch hinzufügen",
@@ -183,6 +220,16 @@ export const de = {
 			line3: "Anzahl Tische",
 			line4: "Anfangs Tischnummer"
 		},
+		resetPasswordDialog: {
+			headline: "Passwort zurücksetzen",
+			description:
+				"Bist du dir sicher, dass du das Passwort für {name} zurücksetzen möchtest?"
+		},
+		selectProductDialog: {
+			headline: "Produkt hinzufügen",
+			menues: "Menüs",
+			specials: "Specials"
+		},
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"
 		},
@@ -199,11 +246,13 @@ export const de = {
 		cancel: "Abbrechen",
 		select: "Auswählen",
 		add: "Hinzufügen",
+		back: "Zurück",
 		next: "Weiter",
 		move: "Verschieben",
 		logout: "Abmelden",
 		edit: "Bearbeiten",
-		delete: "Löschen"
+		delete: "Löschen",
+		reset: "Zurücksetzen"
 	},
 	errors: {
 		printerAlreadyExists:

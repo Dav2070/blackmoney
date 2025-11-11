@@ -1,24 +1,24 @@
 <li
-	class="offer-order-item-card"
-	[class.selected]="selectedOfferOrderItemUuid === offerOrderItem.uuid"
+	class="offer-order-item-card slide-up-in-light"
+	[class.selected]="selectedOrderItemUuid === orderItem.uuid"
 >
 	<div class="offer-order-item-card-id">
-		<p>#{{ offerOrderItem.product.id }}</p>
+		<p>#{{ orderItem.product.id }}</p>
 	</div>
 
 	<div class="offer-order-item-card-name">
-		<p>{{ offerOrderItem.product.name }}</p>
+		<p>{{ orderItem.product.name }}</p>
 	</div>
 
 	<div class="offer-order-item-card-total-price">
-		<p>{{ calculateTotalPriceOfOfferOrderItem(offerOrderItem) }} €</p>
+		<p>{{ calculateTotalPriceOfOrderItem(orderItem) }} €</p>
 	</div>
 
-	@if (offerOrderItem.orderItems.length > 0) {
+	@if (orderItem.orderItems.length > 0) {
 		<div class="offer-order-item-variations-separator"></div>
 
-		@for (orderItem of offerOrderItem.orderItems; track orderItem.uuid) {
-			<div class="offer-order-item-card-variation-name">
+		@for (orderItem of orderItem.orderItems; track orderItem.uuid) {
+			<div class="offer-order-item-card-product-name">
 				<p>- {{ orderItem.product.name }}</p>
 			</div>
 
@@ -31,7 +31,6 @@
 					€
 				</p>
 			</div>
-
 			@for (
 				variation of orderItem.orderItemVariations;
 				track variation.uuid
@@ -58,5 +57,21 @@
 				}
 			}
 		}
+	}
+
+	<div class="offer-order-item-variations-separator"></div>
+
+	@if (orderItem.discount) {
+		<div class="offer-order-item-card-discount-name">
+			<p>- Rabatt</p>
+		</div>
+
+		<div class="offer-order-item-card-variation-unit-price">
+			<p>
+				{{ orderItem.count }} ×
+				{{ (orderItem.discount / 100).toFixed(2).replace(".", ",") }}
+				€
+			</p>
+		</div>
 	}
 </li>

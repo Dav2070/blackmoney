@@ -6,6 +6,7 @@ import {
 	Output,
 	ViewChild
 } from "@angular/core"
+import { Router, ActivatedRoute } from "@angular/router"
 import { FormControl } from "@angular/forms"
 import { faPen } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
@@ -13,17 +14,19 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { Table, TableCombination } from "src/app/models/Table"
 
 @Component({
-	templateUrl: "./table-combination-page.component.html",
-	styleUrl: "./table-combination-page.component.scss",
+	templateUrl: "./table-combinations-page.component.html",
+	styleUrl: "./table-combinations-page.component.scss",
 	standalone: false
 })
-export class TableCombinationPageComponent {
+export class TableCombinationsPageComponent {
 	tablesLocale = this.localizationService.locale.tableCombinationPage
 	actionsLocale = this.localizationService.locale.actions
 	locale = this.localizationService.locale.dialogs.addTableCombinationDialog
 
 	faPen = faPen
 
+	restaurantUuid: string = null
+	roomUuid: string = null
 	table: Table[] = [
 		{ uuid: "", name: 1, seats: 4 },
 		{ uuid: "", name: 2, seats: 4 },
@@ -44,7 +47,17 @@ export class TableCombinationPageComponent {
 	visible: boolean = false
 	showAllForm = false
 
-	constructor(private localizationService: LocalizationService) {}
+	constructor(
+		private localizationService: LocalizationService,
+		private router: Router,
+		private activatedRoute: ActivatedRoute
+	) {}
+
+	ngOnInit() {
+		this.restaurantUuid =
+			this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
+		this.roomUuid = this.activatedRoute.snapshot.paramMap.get("roomUuid")
+	}
 
 	chairNumberfieldChange(event: Event) {
 		this.seats = (event as CustomEvent).detail.value
@@ -121,5 +134,15 @@ export class TableCombinationPageComponent {
 		}
 
 		this.cancelEdit()
+	}
+
+	navigateBack() {
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.restaurantUuid,
+			"rooms",
+			this.roomUuid
+		])
 	}
 }

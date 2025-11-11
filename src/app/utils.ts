@@ -1,11 +1,16 @@
 import { Router } from "@angular/router"
 import { ApolloQueryResult } from "@apollo/client"
 import { MutationResult } from "apollo-angular"
+import FingerprintJS from "@fingerprintjs/fingerprintjs"
+import { Toast } from "dav-ui-components"
 import { ApiService } from "./services/api-service"
 import { DataService } from "./services/data-service"
 import { SettingsService } from "./services/settings-service"
 import { AuthService } from "./services/auth-service"
 import { Company } from "./models/Company"
+import { Restaurant } from "./models/Restaurant"
+import { Register } from "./models/Register"
+import { RegisterClient } from "./models/RegisterClient"
 import { User } from "./models/User"
 import { Room } from "./models/Room"
 import { Table } from "./models/Table"
@@ -17,15 +22,16 @@ import { Order } from "./models/Order"
 import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
 import { Bill } from "./models/Bill"
-import { Restaurant } from "./models/Restaurant"
 import { Printer } from "./models/Printer"
 import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
-import { OfferOrderItem } from "./models/OfferOrderItem"
 import {
 	CategoryResource,
 	CompanyResource,
+	RestaurantResource,
+	RegisterResource,
+	RegisterClientResource,
 	ProductResource,
 	RoomResource,
 	TableResource,
@@ -38,46 +44,90 @@ import {
 	OrderItemResource,
 	OrderItemVariationResource,
 	BillResource,
-	RestaurantResource,
 	OfferResource,
 	OfferItemResource,
 	ErrorCode,
-	Theme
+	Theme,
+	OrderItemType
 } from "./types"
 import { darkThemeKey, lightThemeKey } from "./constants"
 
-export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
-	let total = 0
+export async function loadRegisterClient(
+	settingsService: SettingsService,
+	authService: AuthService,
+	apiService: ApiService,
+	dataService: DataService
+) {
+	const registerUuid = await settingsService.getRegister()
 
-	for (let variation of orderItem.orderItemVariations) {
-		for (let variationItem of variation.variationItems) {
-			total += variation.count * variationItem.additionalCost
+	if (registerUuid != null) {
+		const retrieveRegisterClientResponse =
+			await apiService.retrieveRegisterClientBySerialNumber(
+				`
+						uuid
+						name
+						serialNumber
+					`,
+				{
+					registerUuid,
+					serialNumber: await getSerialNumber(settingsService)
+				}
+			)
+
+		if (
+			getGraphQLErrorCodes(retrieveRegisterClientResponse).includes(
+				"NOT_AUTHENTICATED"
+			)
+		) {
+			// Remove the access token
+			authService.removeAccessToken()
+		} else if (
+			retrieveRegisterClientResponse.data
+				?.retrieveRegisterClientBySerialNumber != null
+		) {
+			dataService.registerClient =
+				retrieveRegisterClientResponse.data.retrieveRegisterClientBySerialNumber
 		}
 	}
 
-	return ((total + orderItem.product.price * orderItem.count) / 100)
-		.toFixed(2)
-		.replace(".", ",")
+	dataService.registerClientPromiseHolder.Resolve()
 }
 
-export function calculateTotalPriceOfOfferOrderItem(
-	offerOrderItem: OfferOrderItem
-): string {
-	let total = 0
+export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
+	if (
+		orderItem.type === OrderItemType.Menu ||
+		orderItem.type === OrderItemType.Special
+	) {
+		let total = 0
 
-	for (let item of offerOrderItem.orderItems) {
-		total += item.product.price * item.count
+		total += orderItem.discount * orderItem.count
 
-		if (item.orderItemVariations) {
-			for (const variation of item.orderItemVariations) {
-				for (const variationItem of variation.variationItems) {
-					total += variationItem.additionalCost * variation.count
+		for (let item of orderItem.orderItems) {
+			total += item.product.price * item.count
+
+			if (item.orderItemVariations) {
+				for (const variation of item.orderItemVariations) {
+					for (const variationItem of variation.variationItems) {
+						total += variationItem.additionalCost * variation.count
+					}
 				}
 			}
 		}
-	}
 
-	return (total / 100).toFixed(2).replace(".", ",")
+		return (total / 100).toFixed(2).replace(".", ",")
+	} else {
+		let total = 0
+
+		for (let variation of orderItem.orderItemVariations) {
+			for (let variationItem of variation.variationItems) {
+				total += variation.count * variationItem.additionalCost
+			}
+		}
+
+		return ((total + orderItem.product.price * orderItem.count) / 100)
+			.toFixed(2)
+			.replace(".", ",")
+	}
 }
 
 export function getGraphQLErrorCodes(
@@ -137,6 +187,30 @@ export async function initUserAfterLogin(
 	router.navigate(["user"])
 }
 
+export async function getSerialNumber(
+	settingsService: SettingsService
+): Promise<string> {
+	let serialNumber = await settingsService.getSerialNumber()
+
+	if (serialNumber == null) {
+		const fingerprintAgent = await FingerprintJS.load()
+		const result = await fingerprintAgent.get()
+
+		serialNumber = result.visitorId
+		await settingsService.setSerialNumber(serialNumber)
+	}
+
+	return serialNumber
+}
+
+export async function showToast(text: string, paddingBottom: number = 0) {
+	// Show toast
+	let toast = document.createElement("dav-toast")
+	toast.text = text
+	toast.paddingBottom = paddingBottom
+	Toast.show(toast)
+}
+
 //#region Converter functions
 export function convertCompanyResourceToCompany(
 	companyResource: CompanyResource
@@ -183,6 +257,14 @@ export function convertRestaurantResourceToRestaurant(
 		}
 	}
 
+	const registers: Register[] = []
+
+	if (restaurantResource.registers != null) {
+		for (let register of restaurantResource.registers.items) {
+			registers.push(convertRegisterResourceToRegister(register))
+		}
+	}
+
 	const printers: Printer[] = []
 
 	if (restaurantResource.printers != null) {
@@ -201,8 +283,47 @@ export function convertRestaurantResourceToRestaurant(
 		postalCode: restaurantResource.postalCode,
 		users,
 		rooms,
+		registers,
 		printers,
 		menu: convertMenuResourceToMenu(restaurantResource.menu)
+	}
+}
+
+export function convertRegisterResourceToRegister(
+	registerResource: RegisterResource
+): Register {
+	if (registerResource == null) {
+		return null
+	}
+
+	const registerClients: RegisterClient[] = []
+
+	if (registerResource.registerClients != null) {
+		for (let registerClient of registerResource.registerClients.items) {
+			registerClients.push(
+				convertRegisterClientResourceToRegisterClient(registerClient)
+			)
+		}
+	}
+
+	return {
+		uuid: registerResource.uuid,
+		name: registerResource.name,
+		registerClients
+	}
+}
+
+export function convertRegisterClientResourceToRegisterClient(
+	registerClientResource: RegisterClientResource
+): RegisterClient {
+	if (registerClientResource == null) {
+		return null
+	}
+
+	return {
+		uuid: registerClientResource.uuid,
+		name: registerClientResource.name,
+		serialNumber: registerClientResource.serialNumber
 	}
 }
 
@@ -496,6 +617,7 @@ export function convertOrderItemResourceToOrderItem(
 
 	return {
 		uuid: orderItemResource.uuid,
+		type: orderItemResource.type,
 		count: orderItemResource.count,
 		order: convertOrderResourceToOrder(orderItemResource.order),
 		product: convertProductResourceToProduct(orderItemResource.product),

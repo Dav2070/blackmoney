@@ -1,32 +1,44 @@
-<div class="container">
-	<div class="header">
-		<app-header [showButton]="false" />
-	</div>
-
+<div
+	class="container slide-up-in"
+	(touchstart)="handleTouch($event)"
+	(touchmove)="handleTouch($event)"
+	(touchend)="handleTouch($event)"
+>
 	<div class="orders-numpad-container">
-		<div class="orders-container">
+		<div #ordersContainer class="orders-container">
 			@if (room != null && table != null) {
-				<app-orders-header
-					[headline]="`${locale.tableHeadline.replace('{name}', table.name.toString())} — ${room.name}`"
+				<app-headline
+					[headline]="
+						`${locale.tableHeadline.replace('{name}', table.name.toString())} — ${room.name}`
+					"
 					[showBackButton]="true"
 					(backButtonClick)="navigateToDashboard($event)"
 				>
-					<dav-icon-button size="sm" (click)="selectTableButtonClick()">
-						<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon>
-					</dav-icon-button>
-
-					<dav-icon-button size="sm" (click)="sendOrder()">
-						<fa-icon [icon]="faPaperPlaneTop"></fa-icon>
+					<dav-icon-button
+						class="add-product-button"
+						size="sm"
+						[tooltip]="locale.addProduct"
+						(click)="showSelectProductDialog()"
+					>
+						<fa-icon [icon]="faPlus"></fa-icon>
 					</dav-icon-button>
 
 					<dav-icon-button
 						size="sm"
-						[href]="'/dashboard/tables/' + uuid + '/separate'"
-						(click)="navigateToSeparatePayPage($event)"
+						[tooltip]="locale.switchTable"
+						(click)="selectTableButtonClick()"
 					>
-						<fa-icon [icon]="faCreditCard"></fa-icon>
+						<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon>
 					</dav-icon-button>
-				</app-orders-header>
+
+					<dav-icon-button
+						size="sm"
+						[tooltip]="locale.showBills"
+						(click)="openBills()"
+					>
+						<fa-icon [icon]="faFileLines"></fa-icon>
+					</dav-icon-button>
+				</app-headline>
 			}
 
 			<ul class="order-items-container">
@@ -38,42 +50,38 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 				}
 
-				@if (
-					!ordersLoading &&
-					stagedItems.getOrderItems().length === 0 &&
-					stagedItems.getMenuOrderItems().length === 0
-				) {
-					<p class="no-products-message">Keine Produkte ausgewählt</p>
+				@if (!ordersLoading && stagedItems.getOrderItems().length === 0) {
+					<p class="no-products-message">
+						{{ locale.noProductsSelected }}
+					</p>
 				}
 
 				@for (
 					orderItem of stagedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					<app-order-item-card
-						[orderItem]="orderItem"
-						[selectedOrderItemUuid]="selectedItem?.uuid"
-						(click)="selectItem(orderItem, stagedItems)"
-					></app-order-item-card>
-				}
-			</ul>
-
-			<ul class="order-items-container">
-				@for (
-					menuOrderItem of stagedItems.getMenuOrderItems();
-					track menuOrderItem.uuid
-				) {
-					<app-offer-order-item-card
-						[offerOrderItem]="menuOrderItem"
-						[selectedOfferOrderItemUuid]="selectedMenuItem?.uuid"
-						(click)="selectMenuItem(menuOrderItem, stagedItems)"
-					></app-offer-order-item-card>
+					@if (orderItem.type === OrderItemType.Product) {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							(click)="selectItem(orderItem, stagedItems)"
+						></app-order-item-card>
+					} @else if (
+						orderItem.type === OrderItemType.Menu ||
+						orderItem.type === OrderItemType.Special
+					) {
+						<app-offer-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							(click)="selectItem(orderItem, stagedItems)"
+						></app-offer-order-item-card>
+					}
 				}
 			</ul>
 
 			@if (!ordersLoading && bookedItems.getOrderItems().length > 0) {
 				<div class="staged-items-separator">
-					<p>Gebuchte Produkte</p>
+					<p>{{ locale.bookedProducts }}</p>
 					<div class="separator"></div>
 				</div>
 			}
@@ -83,24 +91,22 @@
 					orderItem of bookedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					<app-order-item-card
-						[orderItem]="orderItem"
-						[selectedOrderItemUuid]="selectedItem?.uuid"
-						(click)="selectItem(orderItem, bookedItems)"
-					></app-order-item-card>
-				}
-			</ul>
-
-			<ul class="order-items-container">
-				@for (
-					menuOrderItem of bookedItems.getMenuOrderItems();
-					track menuOrderItem.uuid
-				) {
-					<app-offer-order-item-card
-						[offerOrderItem]="menuOrderItem"
-						[selectedOfferOrderItemUuid]="selectedMenuItem?.uuid"
-						(click)="selectMenuItem(menuOrderItem, stagedItems)"
-					></app-offer-order-item-card>
+					@if (
+						orderItem.type === OrderItemType.Menu ||
+						orderItem.type === OrderItemType.Special
+					) {
+						<app-offer-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							(click)="selectItem(orderItem, bookedItems)"
+						></app-offer-order-item-card>
+					} @else {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							(click)="selectItem(orderItem, bookedItems)"
+						></app-order-item-card>
+					}
 				}
 			</ul>
 		</div>
@@ -131,7 +137,7 @@
 					"
 					(click)="setAnzahl()"
 				>
-					×
+					<fa-icon [icon]="faXmark"></fa-icon>
 				</dav-button>
 
 				<dav-button color="secondary" tonal (click)="consoleInput('4')">
@@ -147,7 +153,7 @@
 				</dav-button>
 
 				<dav-button color="secondary" text (click)="showTotal()">
-					Clear
+					{{ locale.clear }}
 				</dav-button>
 
 				<dav-button color="secondary" tonal (click)="consoleInput('7')">
@@ -168,7 +174,7 @@
 					[disabled]="!consoleActive || commaUsed || checkArticleNumber()"
 					(click)="bookById()"
 				>
-					Artikel
+					{{ locale.article }}
 				</dav-button>
 
 				<dav-button
@@ -177,7 +183,7 @@
 					[disabled]="commaUsed || !consoleActive || xUsed"
 					(click)="consoleInput(','); commaUsed = true"
 				>
-					,
+					<fa-icon [icon]="faComma"></fa-icon>
 				</dav-button>
 
 				<dav-button color="secondary" tonal (click)="consoleInput('0')">
@@ -187,23 +193,88 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedItem || !selectedMenuItem"
-					(click)="subtractitem()"
+					[disabled]="!selectedItem"
+					(click)="subtractitem(selectedItem)"
 				>
-					-
+					<fa-icon [icon]="faMinus"></fa-icon>
 				</dav-button>
 
 				<dav-button
 					color="secondary"
 					text
 					[disabled]="!selectedItem"
-					[disabled]="!selectedMenuItem"
-					(click)="
-						addSelectedItem(selectedItem);
-						addSelectedMenuItem(selectedMenuItem)
+					(click)="addSelectedItem(selectedItem)"
+				>
+					<fa-icon [icon]="faPlus"></fa-icon>
+				</dav-button>
+			</div>
+
+			<div class="numpad-footer-separator separator"></div>
+
+			<div class="numpad-footer">
+				<dav-button color="secondary" text (click)="sendOrder()">
+					<fa-icon [icon]="faPaperPlaneTop" slot="icon-left"></fa-icon>
+					{{ locale.sendOrder }}
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="bookedItems.isEmpty()"
+					[href]="'/dashboard/tables/' + uuid + '/payment'"
+					(click)="navigateToPaymentPage($event)"
+				>
+					<fa-icon [icon]="faCreditCard" slot="icon-left"></fa-icon>
+					{{ locale.pay }}
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="
+						commaUsed ||
+						!consoleActive ||
+						table?.uuid == console ||
+						checkforZero() ||
+						xUsed
+					"
+					(click)="navigateToTransferPage()"
+				>
+					<fa-icon
+						[icon]="faArrowTurnDownRight"
+						slot="icon-left"
+					></fa-icon>
+					{{ locale.rebook }}
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="
+						commaUsed ||
+						!consoleActive ||
+						table?.uuid == console ||
+						checkforZero() ||
+						xUsed
 					"
 				>
-					+
+					<fa-icon [icon]="faSeat" slot="icon-left"></fa-icon>
+					{{ locale.switchTable }}
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
+					{{ locale.takeAway }}
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
+					{{ locale.notes }}
+				</dav-button>
+
+				<dav-button color="secondary" text>
+					<fa-icon [icon]="faStar" slot="icon-left"></fa-icon>
+					{{ locale.extras }}
 				</dav-button>
 			</div>
 		</div>
@@ -262,19 +333,22 @@
 				></dav-skeleton>
 			} @else if (selectedCategory === "menues") {
 				@for (menu of menues; track menu.uuid) {
-					<dav-button (click)="clickMenu(menu)">
+					<dav-button class="slide-up-in-light" (click)="clickMenu(menu)">
 						{{ menu.name }}
 					</dav-button>
 				}
 			} @else if (selectedCategory === "specials") {
 				@for (special of specials; track special.uuid) {
-					<dav-button (click)="clickSpecial(special)">
+					<dav-button
+						class="slide-up-in-light"
+						(click)="clickSpecial(special)"
+					>
 						{{ special.name }}
 					</dav-button>
 				}
 			} @else {
 				@for (item of selectedInventory; track item.uuid) {
-					<dav-button (click)="clickItem(item)">
+					<dav-button class="slide-up-in-light" (click)="clickItem(item)">
 						{{ item.name }}
 					</dav-button>
 				}
@@ -319,72 +393,6 @@
 				}
 			}
 		</dav-sidenav>
-	</div>
-
-	<div class="footer">
-		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton" (click)="sendOrder()">
-				Bestellung abschicken
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[disabled]="
-					commaUsed ||
-					!consoleActive ||
-					table?.uuid == console ||
-					checkforZero() ||
-					xUsed
-				"
-				(click)="navigateToTransferPage()"
-			>
-				Umbuchen
-			</button>
-			<button mat-flat-button class="footerButton" [routerLink]="['../../']">
-				Tischplan
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[routerLink]="['../' + console]"
-				[disabled]="
-					commaUsed ||
-					!consoleActive ||
-					table?.uuid == console ||
-					checkforZero() ||
-					xUsed
-				"
-			>
-				Tisch
-			</button>
-			<button mat-flat-button class="footerButton" (click)="openBills()">
-				Rechnungen
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				(click)="createBill('CASH')"
-				[disabled]="bookedItems.isEmpty()"
-			>
-				Bar
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				(click)="createBill('CARD')"
-				[disabled]="bookedItems.isEmpty()"
-			>
-				Karte
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[routerLink]="['separate']"
-				[disabled]="bookedItems.isEmpty()"
-			>
-				Getrennt
-			</button>
-		</div>
 	</div>
 </div>
 
@@ -643,7 +651,6 @@
 								@if (item.orderItemVariations.length > 0) {
 									<span>
 										{{ item.count }}x {{ item.product.name }}
-
 										@for (
 											variation of item.orderItemVariations;
 											track variation.uuid
@@ -655,6 +662,20 @@
 											) {
 												{{ variationItem.name }}
 											}
+											<button
+												mat-mini-fab
+												(click)="editSpecial(item)"
+												color="accent"
+											>
+												<mat-icon>edit</mat-icon>
+											</button>
+											<button
+												mat-mini-fab
+												(click)="removeMenuItem(item)"
+												color="warn"
+											>
+												<mat-icon>X</mat-icon>
+											</button>
 										}
 									</span>
 								} @else {
@@ -663,7 +684,7 @@
 										(click)="removeMenuItem(item)"
 										color="warn"
 									>
-										<mat-icon>remove</mat-icon>
+										<mat-icon>-</mat-icon>
 									</button>
 									<span>
 										{{ item.count }}x {{ item.product.name }}
@@ -680,10 +701,7 @@
 					>
 						✓
 					</button>
-					<button
-						class="special-button close-btn"
-						(click)="closeSpecials()"
-					>
+					<button class="special-button close-btn" (click)="closeOffer()">
 						✕
 					</button>
 				</div>
@@ -697,9 +715,7 @@
 					<div class="category-list">
 						@for (category of specialCategories; track category.uuid) {
 							<button
-								(click)="
-									changeSelectedSpecialInventory(category.products)
-								"
+								(click)="changeSelectedSpecialInventory(category)"
 								mat-flat-button
 							>
 								{{ category.name }}
@@ -740,6 +756,13 @@
 									>
 										<mat-icon>edit</mat-icon>
 									</button>
+									<button
+										mat-mini-fab
+										(click)="removeMenuItem(item)"
+										color="warn"
+									>
+										<mat-icon>X</mat-icon>
+									</button>
 									<span>
 										{{ item.count }}x {{ item.product.name }}
 
@@ -762,7 +785,7 @@
 										(click)="removeSpecial(item)"
 										color="warn"
 									>
-										<mat-icon>remove</mat-icon>
+										<mat-icon>-</mat-icon>
 									</button>
 									<span>
 										{{ item.count }}x {{ item.product.name }}
@@ -772,7 +795,7 @@
 										(click)="addSpecial(item)"
 										color="primary"
 									>
-										<mat-icon>add</mat-icon>
+										<mat-icon>+</mat-icon>
 									</button>
 								}
 							</div>
@@ -786,10 +809,7 @@
 					>
 						✓
 					</button>
-					<button
-						class="special-button close-btn"
-						(click)="closeSpecials()"
-					>
+					<button class="special-button close-btn" (click)="closeOffer()">
 						✕
 					</button>
 				</div>
@@ -831,10 +851,8 @@
 								>
 									<mat-icon>remove</mat-icon>
 								</button>
-								<b>
-									{{ variation.count }}x
-									{{ variation.display }}
-								</b>
+								{{ variation.count }}x
+								{{ variation.display }}
 								<button
 									mat-mini-fab
 									[disabled]="checkForPlusaddVariation(variation)"
@@ -847,7 +865,11 @@
 					}
 				}
 			}
-			<button mat-flat-button (click)="closeSpecialVariationPopup()">
+			<button
+				mat-flat-button
+				[disabled]="checkForSendVariation()"
+				(click)="closeSpecialVariationPopup()"
+			>
 				Schließen
 			</button>
 			<button
@@ -860,50 +882,7 @@
 		</div>
 	} @else {
 		<div class="popup-content">
-			@if (
-				selectedMenuItem != null && selectedMenuItem.orderItems.length === 1
-			) {
-				<!-- Minus-Modus für MenuOrderItems -->
-				<h2>
-					{{ lastClickedItem.variations[tmpCountVariations].name }}
-				</h2>
-				@for (
-					variationMap of tmpPickedVariationResource;
-					track variationMap
-				) {
-					@if (variationMap.get(tmpCountVariations)) {
-						@for (
-							variation of variationMap.get(tmpCountVariations).values();
-							track variation.uuid
-						) {
-							@if (tmpCountVariations != 0) {
-								{{ displayVariation(variation) }}
-							}
-
-							<div class="popup-content-dish">
-								<button
-									mat-mini-fab
-									[disabled]="variation.count == 0"
-									(click)="removeVariation(variation)"
-								>
-									<mat-icon>remove</mat-icon>
-								</button>
-								<b>
-									{{ variation.count }}x
-									{{ variation.display }}
-								</b>
-								<button
-									mat-mini-fab
-									[disabled]="checkForPlusaddVariation(variation)"
-									(click)="addVariation(variation)"
-								>
-									<mat-icon>add</mat-icon>
-								</button>
-							</div>
-						}
-					}
-				}
-			} @else if (selectedItem != null) {
+			@if (selectedItem != null) {
 				<!-- Minus-Modus für normale OrderItems -->
 				<h2>
 					{{ selectedItem.product.name }}
@@ -956,3 +935,68 @@
 	[currentTableUuid]="table?.uuid"
 	(primaryButtonClick)="selectTableDialogPrimaryButtonClick($event)"
 ></app-select-table-dialog>
+
+<app-select-product-dialog
+	#selectProductDialog
+	[menues]="menues"
+	[specials]="specials"
+	[products]="selectedInventory"
+	[categories]="categories"
+	(selectMenue)="selectProductDialog.hide(); clickMenu($event)"
+	(selectSpecial)="selectProductDialog.hide(); clickSpecial($event)"
+	(selectProduct)="selectProductDialog.hide(); clickItem($event)"
+></app-select-product-dialog>
+
+<app-select-product-variations-dialog
+	#selectProductVariationsDialog
+	[product]="lastClickedItem"
+	(primaryButtonClick)="
+		selectProductVariationsDialogPrimaryButtonClick($event)
+	"
+></app-select-product-variations-dialog>
+
+<dav-bottom-sheet
+	#bottomSheet
+	[dismissable]="false"
+	(touchstart)="handleTouch($event)"
+	(touchmove)="handleTouch($event)"
+	(touchend)="handleTouch($event)"
+>
+	<div class="bottom-sheet-content-container">
+		<dav-icon-card [text]="locale.sendOrder" size="sm" (click)="sendOrder()">
+			<fa-icon [icon]="faPaperPlaneTop"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card
+			[text]="locale.pay"
+			size="sm"
+			(click)="navigateToPaymentPage($event)"
+		>
+			<fa-icon [icon]="faCreditCard"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card
+			[text]="locale.rebook"
+			size="sm"
+			(click)="navigateToTransferPage()"
+		>
+			<fa-icon [icon]="faArrowTurnDownRight"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.switchTable" size="sm">
+			<fa-icon [icon]="faSeat"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.takeAway" size="sm">
+			<fa-icon [icon]="faCupTogo"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.notes" size="sm">
+			<fa-icon [icon]="faNoteSticky"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.extras" size="sm">
+			<fa-icon [icon]="faStar"></fa-icon>
+		</dav-icon-card>
+	</div>
+</dav-bottom-sheet>

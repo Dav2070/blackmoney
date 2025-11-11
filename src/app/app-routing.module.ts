@@ -7,15 +7,18 @@ import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.com
 import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-settings-page/general-settings-page.component"
 import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page/restaurants-page.component"
 import { RestaurantPageComponent } from "./pages/landing-pages/restaurant-page/restaurant-page.component"
+import { RegistersPageComponent } from "./pages/landing-pages/registers-page/registers-page.component"
+import { RegisterPageComponent } from "./pages/landing-pages/register-page/register-page.component"
 import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/employees-page.component"
 import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
 import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-page/set-password-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
+import { CashRegisterPageComponent } from "./pages/cash-register-pages/cash-register-page/cash-register-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
-import { SeparatePayPageComponent } from "./pages/cash-register-pages/separate-pay-page/separate-pay-page.component"
+import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
 import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
@@ -23,7 +26,7 @@ import { RoomManagementComponent } from "./pages/settings-pages/room-management/
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
-import { TableCombinationPageComponent } from "./pages/landing-pages/table-combination-page/table-combination-page.component"
+import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
 
@@ -69,6 +72,14 @@ const routes: Routes = [
 				component: PrintersPageComponent
 			},
 			{
+				path: "user/restaurants/:uuid/registers",
+				component: RegistersPageComponent
+			},
+			{
+				path: "user/restaurants/:restaurantUuid/registers/:registerUuid",
+				component: RegisterPageComponent
+			},
+			{
 				path: "user/employees",
 				component: EmployeesPageComponent
 			},
@@ -86,7 +97,7 @@ const routes: Routes = [
 			},
 			{
 				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/combinations",
-				component: TableCombinationPageComponent
+				component: TableCombinationsPageComponent
 			},
 			{
 				path: "user/restaurants/:uuid/openingTime",
@@ -100,6 +111,7 @@ const routes: Routes = [
 	},
 	{
 		path: "dashboard",
+		component: CashRegisterPageComponent,
 		children: [
 			{
 				path: "",
@@ -110,8 +122,8 @@ const routes: Routes = [
 				component: BookingPageComponent
 			},
 			{
-				path: "tables/:uuid/separate",
-				component: SeparatePayPageComponent
+				path: "tables/:uuid/payment",
+				component: PaymentPageComponent
 			},
 			{
 				path: "tables/:uuid1/:uuid2",

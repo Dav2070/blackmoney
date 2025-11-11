@@ -1,16 +1,14 @@
-<div class="container">
-	<div class="header">
-		<app-header [showButton]="false" />
-	</div>
-
+<div class="container slide-up-in">
 	<div class="orders-price-container">
 		<div class="orders-container">
 			@if (table != null) {
-				<app-orders-header
-					[headline]="'Tisch ' + table.name.toString()"
+				<app-headline
+					[headline]="
+						locale.tableHeadline.replace('{name}', table.name.toString())
+					"
 					[showBackButton]="true"
 					(backButtonClick)="navigateToBookingPage($event)"
-				></app-orders-header>
+				></app-headline>
 			}
 
 			<ul class="order-items-container">
@@ -22,12 +20,10 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 				}
 
-				@if (
-					!ordersLoading &&
-					bookedItems.getOrderItems().length === 0 &&
-					bookedItems.getMenuOrderItems().length === 0
-				) {
-					<p class="no-products-message">Keine Produkte ausgewählt</p>
+				@if (!ordersLoading && bookedItems.getOrderItems().length === 0) {
+					<p class="no-products-message">
+						{{ locale.noProductsSelected }}
+					</p>
 				}
 
 				@for (
@@ -37,6 +33,7 @@
 					<app-order-item-card
 						[orderItem]="orderItem"
 						(click)="transferItem(orderItem, bookedItems, activeBill)"
+						(contextmenu)="showContextMenu($event, orderItem, true)"
 					></app-order-item-card>
 				}
 			</ul>
@@ -47,62 +44,45 @@
 		</div>
 	</div>
 
-	<div class="actions-container">
-		<div id="top">
-			<button
-				mat-flat-button
-				[disabled]="checkMaxBills()"
-				(click)="addBill()"
-			>
-				Rechnung hinzufügen
-			</button>
-			<button
-				[disabled]="bills.length === 1"
-				(click)="deleteBill()"
-				mat-flat-button
-			>
-				Rechnung entfernen
-			</button>
-		</div>
-		<div id="bottom">
-			<mat-card style="width: 30%; margin-bottom: 2px">
-				<mat-card-content> {{ console }} </mat-card-content>
-			</mat-card>
-			<div>
-				@for (number of numberpad; track number) {
-					<button
-						mat-flat-button
-						(click)="consoleInput(number.toString())"
-					>
-						{{ number }}
-					</button>
-					@if (number == 3) {
-						<br />
-					}
-					@if (number == 6) {
-						<br />
-					}
-					@if (number == 9) {
-						<br />
-					}
-				}
-			</div>
-			<div>
-				<button mat-flat-button (click)="clearInput()">clear</button>
-				<button
-					mat-flat-button
-					[disabled]="!consoleActive"
-					(click)="consoleInput('0')"
-				>
-					0
-				</button>
-			</div>
-		</div>
-	</div>
-
 	<div class="bills-price-container">
 		<div class="bills-container">
-			<app-orders-header headline="Rechnungen"></app-orders-header>
+			<app-headline [headline]="locale.billsHeadline">
+				<dav-icon-button
+					size="sm"
+					[disabled]="checkMaxBills()"
+					[tooltip]="locale.addBill"
+					(click)="addBill()"
+				>
+					<fa-icon [icon]="faPlus"></fa-icon>
+				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[disabled]="bills.length <= 1"
+					[tooltip]="locale.removeBill"
+					(click)="removeBill()"
+				>
+					<fa-icon [icon]="faMinus"></fa-icon>
+				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[disabled]="activeBill.isEmpty()"
+					[tooltip]="locale.payByCash"
+					(click)="createBill('CASH')"
+				>
+					<fa-icon [icon]="faMoneyBill1Wave"></fa-icon>
+				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[disabled]="activeBill.isEmpty()"
+					[tooltip]="locale.payByCard"
+					(click)="createBill('CARD')"
+				>
+					<fa-icon [icon]="faCreditCard"></fa-icon>
+				</dav-icon-button>
+			</app-headline>
 
 			<div class="bills-list-container">
 				@for (bill of bills; let index = $index; track index) {
@@ -116,13 +96,9 @@
 						</button>
 
 						<ul class="order-items-container">
-							@if (
-								!ordersLoading &&
-								bill.getOrderItems().length === 0 &&
-								bill.getMenuOrderItems().length === 0
-							) {
+							@if (!ordersLoading && bill.getOrderItems().length === 0) {
 								<p class="no-products-message">
-									Keine Produkte ausgewählt
+									{{ locale.noProductsSelected }}
 								</p>
 							}
 
@@ -135,18 +111,10 @@
 									(click)="
 										transferItem(orderItem, activeBill, bookedItems)
 									"
+									(contextmenu)="
+										showContextMenu($event, orderItem, false)
+									"
 								></app-order-item-card>
-							}
-						</ul>
-
-						<ul class="order-items-container">
-							@for (
-								menuOrderItem of bill.getMenuOrderItems();
-								track menuOrderItem.uuid
-							) {
-								<app-offer-order-item-card
-									[offerOrderItem]="menuOrderItem"
-								></app-offer-order-item-card>
 							}
 						</ul>
 					</div>
@@ -156,45 +124,6 @@
 
 		<div class="price-container">
 			<p>{{ calculateTotalBills() }}</p>
-		</div>
-	</div>
-
-	<div class="footer">
-		<div id="footerButtonsContainer">
-			<button mat-flat-button class="footerButton" [routerLink]="['../']">
-				Tisch {{ table?.name }}
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[routerLink]="['../../../']"
-			>
-				Tischplan
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[disabled]="!consoleActive"
-				[routerLink]="['../../' + console]"
-			>
-				Tisch
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[disabled]="activeBill.isEmpty()"
-				(click)="createBill('CASH')"
-			>
-				Bar
-			</button>
-			<button
-				mat-flat-button
-				class="footerButton"
-				[disabled]="activeBill.isEmpty()"
-				(click)="createBill('CARD')"
-			>
-				Karte
-			</button>
 		</div>
 	</div>
 </div>
@@ -246,3 +175,26 @@
 		</button>
 	</div>
 </div>
+
+<app-move-multiple-products-dialog
+	#moveMultipleProductsDialog
+	[orderItem]="contextMenuOrderItem"
+	(primaryButtonClick)="moveMultipleProductsDialogPrimaryButtonClick($event)"
+></app-move-multiple-products-dialog>
+
+<dav-context-menu
+	#contextMenu
+	[visible]="contextMenuVisible"
+	[posX]="contextMenuPositionX"
+	[posY]="contextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="locale.moveMultipleProducts"
+		(click)="showMoveMultipleProductsDialog()"
+	>
+		<fa-icon
+			slot="icon"
+			[icon]="contextMenuBillsList ? faChevronsRight : faChevronsLeft"
+		></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

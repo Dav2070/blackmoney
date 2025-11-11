@@ -34,7 +34,20 @@ export interface RestaurantResource {
 	menu: MenuResource
 	users: List<UserResource>
 	rooms: List<RoomResource>
+	registers: List<RegisterResource>
 	printers: List<PrinterResource>
+}
+
+export interface RegisterResource {
+	uuid: string
+	name: string
+	registerClients: List<RegisterClientResource>
+}
+
+export interface RegisterClientResource {
+	uuid: string
+	name: string
+	serialNumber: string
 }
 
 export interface UserResource {
@@ -137,6 +150,7 @@ export interface OrderResource {
 export interface OrderItemResource {
 	uuid: string
 	count: number
+	type: OrderItemType
 	order: OrderResource
 	product: ProductResource
 	orderItemVariations: List<OrderItemVariationResource>
@@ -148,8 +162,26 @@ export interface OrderItemVariationResource {
 	variationItems: List<VariationItemResource>
 }
 
+export interface AddProductsInput {
+	uuid: string
+	count: number
+	variations?: AddProductVariationInput[]
+}
+
+export interface AddProductVariationInput {
+	variationItemUuids: string[]
+	count: number
+}
+
 export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type CategoryType = "FOOD" | "DRINK"
+
+export enum OrderItemType {
+	Product = "PRODUCT",
+	Menu = "MENU",
+	Special = "SPECIAL"
+}
+
 export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
 export type PaymentMethod = "CASH" | "CARD"
@@ -166,6 +198,7 @@ export type Weekday =
 
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
+	| typeof ErrorCodes.tableAlreadyExists
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword
@@ -178,3 +211,5 @@ export type ErrorCode =
 	| typeof ErrorCodes.line2TooLong
 	| typeof ErrorCodes.postalCodeInvalid
 	| typeof ErrorCodes.ipAddressInvalid
+	| typeof ErrorCodes.tableNameInvalid
+	| typeof ErrorCodes.seatsInvalid

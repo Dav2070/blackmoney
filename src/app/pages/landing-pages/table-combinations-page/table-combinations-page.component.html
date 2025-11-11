@@ -36,7 +36,12 @@
 
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header addButtonVisible (addButtonClick)="show()">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="show()"
+		>
 			{{ tablesLocale.headline }}
 		</dav-header>
 

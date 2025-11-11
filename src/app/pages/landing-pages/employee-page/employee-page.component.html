@@ -5,5 +5,18 @@
 		</dav-header>
 
 		<p>{{ locale.role }} {{ role }}</p>
+
+		<div class="actions">
+			<dav-button size="sm" (click)="showResetPasswordDialog()">
+				{{ locale.resetPassword }}
+			</dav-button>
+		</div>
 	</div>
 </div>
+
+<app-reset-password-dialog
+	#resetPasswordDialog
+	[name]="name"
+	[loading]="resetPasswordDialogLoading"
+	(primaryButtonClick)="resetPasswordDialogPrimaryButtonClick()"
+></app-reset-password-dialog>

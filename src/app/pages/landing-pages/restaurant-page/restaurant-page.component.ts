@@ -6,7 +6,8 @@ import {
 	faLocationDot,
 	faPen,
 	faPrint,
-	faSeat
+	faSeat,
+	faCashRegister
 } from "@fortawesome/pro-regular-svg-icons"
 import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
@@ -14,8 +15,6 @@ import { LocalizationService } from "src/app/services/localization-service"
 import * as ErrorCodes from "src/app/errorCodes"
 import { EditOwnerDialogComponent } from "src/app/dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "src/app/dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
-
-
 
 @Component({
 	templateUrl: "./restaurant-page.component.html",
@@ -25,10 +24,12 @@ import { EditContactInfoDialogComponent } from "src/app/dialogs/edit-contact-inf
 export class RestaurantPageComponent {
 	locale = this.localizationService.locale.restaurantPage
 	errorsLocale = this.localizationService.locale.errors
+	actionsLocale = this.localizationService.locale.actions
 	faLocationDot = faLocationDot
 	faPen = faPen
 	faPrint = faPrint
 	faSeat = faSeat
+	faCashRegister = faCashRegister
 	uuid: string = null
 	name: string = ""
 	nameError: string = ""
@@ -82,7 +83,6 @@ export class RestaurantPageComponent {
 		private localizationService: LocalizationService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute
-		
 	) {}
 
 	async ngOnInit() {
@@ -116,6 +116,12 @@ export class RestaurantPageComponent {
 
 	navigateBack() {
 		this.router.navigate(["user", "restaurants"])
+	}
+
+	navigateToRegistersPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "restaurants", this.uuid, "registers"])
 	}
 
 	navigateToPrintersPage(event: MouseEvent) {
@@ -173,10 +179,9 @@ export class RestaurantPageComponent {
 	}
 
 	showRoomAdministrationDialog() {
-		const currentUrl = this.router.url;
-		this.router.navigateByUrl(`${currentUrl}/rooms`);
+		const currentUrl = this.router.url
+		this.router.navigateByUrl(`${currentUrl}/rooms`)
 	}
-
 
 	async editRestaurantNameDialogPrimaryButtonClick(event: { name: string }) {
 		this.editRestaurantNameDialogLoading = true

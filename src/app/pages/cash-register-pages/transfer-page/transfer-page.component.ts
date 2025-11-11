@@ -1,11 +1,19 @@
-import { Component } from "@angular/core"
+import { Component, ElementRef, HostListener, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
+import {
+	faChevronsRight,
+	faChevronsLeft,
+	faChevronsUp,
+	faChevronsDown
+} from "@fortawesome/pro-regular-svg-icons"
+import { ContextMenu } from "dav-ui-components"
+import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
+import { LocalizationService } from "src/app/services/localization-service"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { Table } from "src/app/models/Table"
 import { OrderItem } from "src/app/models/OrderItem"
-import { OfferOrderItem } from "src/app/models/OfferOrderItem"
 import { Room } from "src/app/models/Room"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { Order } from "src/app/models/Order"
@@ -17,7 +25,11 @@ import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 	standalone: false
 })
 export class TransferPageComponent {
-	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+	locale = this.localizationService.locale.transferPage
+	faChevronsRight = faChevronsRight
+	faChevronsLeft = faChevronsLeft
+	faChevronsUp = faChevronsUp
+	faChevronsDown = faChevronsDown
 	bookedItemsLeft = new AllItemHandler()
 	bookedItemsRight = new AllItemHandler()
 	tableLeft: Table = null
@@ -26,8 +38,7 @@ export class TransferPageComponent {
 	tableRightRoom: Room = null
 	tableLeftOrder: Order = null
 	tableRightOrder: Order = null
-	console: string
-	consoleActive: boolean = false
+	ordersLoading: boolean = true
 	isItemPopupVisible: boolean = false
 	lastClickedItem: OrderItem
 	tmpVariations: OrderItem
@@ -38,7 +49,23 @@ export class TransferPageComponent {
 
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 
+	//#region MuveMultipleProductsDialog variables
+	@ViewChild("moveMultipleProductsDialog")
+	moveMultipleProductsDialog: MoveMultipleProductsDialogComponent
+	//#endregion
+
+	//#region ContextMenu variables
+	@ViewChild("contextMenu")
+	contextMenu: ElementRef<ContextMenu>
+	contextMenuOrderItem: OrderItem = null
+	contextMenuVisible: boolean = false
+	contextMenuPositionX: number = 0
+	contextMenuPositionY: number = 0
+	contextMenuLeftList: boolean = false
+	//#endregion
+
 	constructor(
+		private localizationService: LocalizationService,
 		private dataService: DataService,
 		private activatedRoute: ActivatedRoute,
 		private apiService: ApiService,
@@ -85,25 +112,59 @@ export class TransferPageComponent {
 			this.apiService,
 			this.tableRight.uuid
 		)
+
+		this.ordersLoading = false
+	}
+
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		if (!this.contextMenu.nativeElement.contains(event.target as Node)) {
+			this.contextMenuVisible = false
+		}
+	}
+
+	navigateToBookingPage(event: MouseEvent) {
+		event.preventDefault()
+		this.router.navigate(["dashboard", "tables", this.tableLeft.uuid])
+	}
+
+	async showContextMenu(
+		event: MouseEvent,
+		orderItem: OrderItem,
+		leftList: boolean
+	) {
+		event.preventDefault()
+
+		if (orderItem.count <= 1 || orderItem.orderItemVariations.length > 0) {
+			return
+		}
+
+		this.contextMenuOrderItem = orderItem
+
+		// Set the position of the context menu
+		this.contextMenuPositionX = event.pageX
+		this.contextMenuPositionY = event.pageY
+
+		if (this.contextMenuVisible) {
+			this.contextMenuVisible = false
+
+			await new Promise((resolve: Function) => {
+				setTimeout(() => resolve(), 60)
+			})
+		}
+
+		this.contextMenuLeftList = leftList
+		this.contextMenuVisible = true
+	}
+
+	showMoveMultipleProductsDialog() {
+		this.contextMenuVisible = false
+		this.moveMultipleProductsDialog.show()
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
 	showTotal(bookedItems: AllItemHandler) {
-		// return bookedItems.calculatTotal().toFixed(2) + "€"
-	}
-
-	//Fügt die gedrückte Nummer in die Konsole ein
-	consoleInput(input: string) {
-		if (this.consoleActive == false) {
-			this.consoleActive = true
-			this.console = ""
-		}
-		this.console += input
-	}
-
-	clearInput() {
-		this.console = ""
-		this.consoleActive = false
+		return bookedItems.calculateTotal().toFixed(2).replace(".", ",") + " €"
 	}
 
 	transferItem(
@@ -356,8 +417,16 @@ export class TransferPageComponent {
 		return picked
 	}
 
-	calculateTotalPriceOfOfferOrderItem(offerItem: OfferOrderItem) {
-		// Bei OfferOrderItems ist der Special-Preis bereits berechnet und im Product gespeichert
-		return ((offerItem.product.price * offerItem.count) / 100).toFixed(2)
+	moveMultipleProductsDialogPrimaryButtonClick(event: { count: number }) {
+		this.moveMultipleProductsDialog.hide()
+		this.tmpAnzahl = event.count
+		this.transferItem(
+			this.contextMenuOrderItem,
+			this.contextMenuLeftList
+				? this.bookedItemsLeft
+				: this.bookedItemsRight,
+			this.contextMenuLeftList ? this.bookedItemsRight : this.bookedItemsLeft
+		)
+		this.tmpAnzahl = 1
 	}
 }

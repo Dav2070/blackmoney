@@ -1,27 +1,41 @@
-import { Component } from "@angular/core"
+import { Component, HostListener, ViewChild, ElementRef } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
+import {
+	faPlus,
+	faMinus,
+	faChevronsRight,
+	faChevronsLeft,
+	faCreditCard,
+	faMoneyBill1Wave
+} from "@fortawesome/pro-regular-svg-icons"
+import { ContextMenu } from "dav-ui-components"
+import { LocalizationService } from "src/app/services/localization-service"
+import { ApiService } from "src/app/services/api-service"
+import { DataService } from "src/app/services/data-service"
+import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
 import { OrderItem } from "src/app/models/OrderItem"
-import { OfferOrderItem } from "src/app/models/OfferOrderItem"
-import { ApiService } from "src/app/services/api-service"
 import { Table } from "src/app/models/Table"
-import { DataService } from "src/app/services/data-service"
-import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
-import { PaymentMethod } from "src/app/types"
+import { calculateTotalPriceOfOrderItem } from "src/app/utils"
+import { AddProductVariationInput, PaymentMethod } from "src/app/types"
 
 @Component({
-	templateUrl: "./separate-pay-page.component.html",
-	styleUrl: "./separate-pay-page.component.scss",
+	templateUrl: "./payment-page.component.html",
+	styleUrl: "./payment-page.component.scss",
 	standalone: false
 })
-export class SeparatePayPageComponent {
-	numberpad: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+export class PaymentPageComponent {
+	locale = this.localizationService.locale.paymentPage
+	faPlus = faPlus
+	faMinus = faMinus
+	faChevronsRight = faChevronsRight
+	faChevronsLeft = faChevronsLeft
+	faCreditCard = faCreditCard
+	faMoneyBill1Wave = faMoneyBill1Wave
 	bookedItems = new AllItemHandler()
 	bills: AllItemHandler[] = [new AllItemHandler()]
 	table: Table = null
-	console: string
-	consoleActive: boolean = false
 	ordersLoading: boolean = true
 
 	orderUuid: string = ""
@@ -38,8 +52,22 @@ export class SeparatePayPageComponent {
 
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 
+	@ViewChild("moveMultipleProductsDialog")
+	moveMultipleProductsDialog: MoveMultipleProductsDialogComponent
+
+	//#region ContextMenu variables
+	@ViewChild("contextMenu")
+	contextMenu: ElementRef<ContextMenu>
+	contextMenuOrderItem: OrderItem = null
+	contextMenuVisible: boolean = false
+	contextMenuPositionX: number = 0
+	contextMenuPositionY: number = 0
+	contextMenuBillsList: boolean = false
+	//#endregion
+
 	constructor(
 		private activatedRoute: ActivatedRoute,
+		private localizationService: LocalizationService,
 		private apiService: ApiService,
 		private dataService: DataService,
 		private router: Router
@@ -65,28 +93,55 @@ export class SeparatePayPageComponent {
 		this.ordersLoading = false
 	}
 
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		if (!this.contextMenu.nativeElement.contains(event.target as Node)) {
+			this.contextMenuVisible = false
+		}
+	}
+
 	navigateToBookingPage(event: MouseEvent) {
 		event.preventDefault()
 		this.router.navigate(["dashboard", "tables", this.table.uuid])
 	}
 
+	async showContextMenu(
+		event: MouseEvent,
+		orderItem: OrderItem,
+		billsList: boolean
+	) {
+		event.preventDefault()
+
+		if (orderItem.count <= 1 || orderItem.orderItemVariations.length > 0) {
+			return
+		}
+
+		this.contextMenuOrderItem = orderItem
+
+		// Set the position of the context menu
+		this.contextMenuPositionX = event.pageX
+		this.contextMenuPositionY = event.pageY
+
+		if (this.contextMenuVisible) {
+			this.contextMenuVisible = false
+
+			await new Promise((resolve: Function) => {
+				setTimeout(() => resolve(), 60)
+			})
+		}
+
+		this.contextMenuBillsList = billsList
+		this.contextMenuVisible = true
+	}
+
+	showMoveMultipleProductsDialog() {
+		this.contextMenuVisible = false
+		this.moveMultipleProductsDialog.show()
+	}
+
 	//Berechnet den Preis aller Items eines Tisches
 	showTotal(bookedItems: AllItemHandler) {
 		return bookedItems.calculateTotal().toFixed(2).replace(".", ",") + " €"
-	}
-
-	//Fügt die gedrückte Nummer in die Konsole ein
-	consoleInput(input: string) {
-		if (this.consoleActive == false) {
-			this.consoleActive = true
-			this.console = ""
-		}
-		this.console += input
-	}
-
-	clearInput() {
-		this.console = ""
-		this.consoleActive = false
 	}
 
 	addBill() {
@@ -108,11 +163,12 @@ export class SeparatePayPageComponent {
 		this.activeBill = bill
 	}
 
-	deleteBill() {
+	removeBill() {
 		this.bookedItems.transferAllItems(this.activeBill)
 		let index = this.bills.indexOf(this.activeBill)
 
 		this.bills.splice(index, 1)
+
 		//Setze die nächste aktive Rechnung
 		if (this.bills.length > 0) {
 			if (index === this.bills.length) {
@@ -331,52 +387,65 @@ export class SeparatePayPageComponent {
 	}
 
 	async createBill(payment: PaymentMethod) {
-		interface AddProductsInput {
-			uuid: string
-			count: number
-			variations?: AddProductsInputVariation[]
-		}
-		interface AddProductsInputVariation {
-			variationItemUuids: string[]
-			count: number
-		}
-		/*await this.apiService.completeOrder("uuid", { uuid: this.orderUuid, paymentMethod: payment })
-		window.location.reload()*/
-		console.log(this.activeBill, payment)
+		await this.dataService.registerClientPromiseHolder.AwaitResult()
+
+		// TODO: Error handling
 		await this.apiService.updateOrder("uuid", {
 			uuid: this.orderUuid,
 			orderItems: this.bookedItems.getItemsCountandId()
 		})
+
 		let newOrder = await this.apiService.createOrder("uuid", {
 			tableUuid: this.table.uuid
 		})
+
 		await this.apiService.addProductsToOrder("uuid", {
 			uuid: newOrder.data.createOrder.uuid,
 			products: this.activeBill.getAllPickedItems().map(item => {
-				let variations: AddProductsInputVariation[] = []
+				let variations: AddProductVariationInput[] = []
+
 				if (item.orderItemVariations.length > 0) {
 					variations = item.orderItemVariations.map(variation => ({
 						variationItemUuids: variation.variationItems.map(v => v.uuid),
 						count: variation.count
 					}))
 				}
+
 				return {
 					uuid: item.product.uuid,
 					count: item.count,
 					variations
-				} as AddProductsInput
+				}
 			})
 		})
+
+		if (this.billUuid == null) {
+			// Create a bill
+			const createBillResponse = await this.apiService.createBill(`uuid`, {
+				registerClientUuid: this.dataService.registerClient.uuid
+			})
+
+			const createBillResponseData = createBillResponse.data.createBill
+			this.billUuid = createBillResponseData.uuid
+		}
+
 		await this.apiService.completeOrder("uuid", {
 			uuid: newOrder.data.createOrder.uuid,
 			billUuid: this.billUuid,
 			paymentMethod: payment
 		})
-		this.deleteBill()
+
+		this.removeBill()
 	}
 
-	calculateTotalPriceOfOfferOrderItem(offerItem: OfferOrderItem) {
-		// Bei OfferOrderItems ist der Special-Preis bereits berechnet und im Product gespeichert
-		return ((offerItem.product.price * offerItem.count) / 100).toFixed(2)
+	moveMultipleProductsDialogPrimaryButtonClick(event: { count: number }) {
+		this.moveMultipleProductsDialog.hide()
+		this.tmpAnzahl = event.count
+		this.transferItem(
+			this.contextMenuOrderItem,
+			this.contextMenuBillsList ? this.bookedItems : this.activeBill,
+			this.contextMenuBillsList ? this.activeBill : this.bookedItems
+		)
+		this.tmpAnzahl = 1
 	}
 }

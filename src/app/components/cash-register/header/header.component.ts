@@ -1,4 +1,4 @@
-import { Component, Input, NgZone } from "@angular/core"
+import { Component, NgZone } from "@angular/core"
 import { DataService } from "src/app/services/data-service"
 
 @Component({
@@ -8,12 +8,9 @@ import { DataService } from "src/app/services/data-service"
 	standalone: false
 })
 export class HeaderComponent {
-	@Input()
-	showButton: boolean = true
 	timer: any
 	currentDate: string = ""
 	currentTime: string = ""
-	bediener: string = ""
 
 	constructor(
 		public dataService: DataService,

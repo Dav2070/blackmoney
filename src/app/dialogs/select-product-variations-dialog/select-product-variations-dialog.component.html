@@ -1,0 +1,97 @@
+@let allCurrentTreeVariationItemCount = getAllCurrentTreeVariationItemCount();
+@let allPreviousTreeVariationItemCount = getAllPreviousTreeVariationItemCount();
+
+<dav-dialog
+	#dialog
+	[headline]="product?.variations?.[currentVariation]?.name ?? ''"
+	[primaryButtonText]="
+		currentVariation >= product?.variations?.length - 1
+			? actionsLocale.add
+			: actionsLocale.next
+	"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[primaryButtonDisabled]="
+		currentVariation > 0
+			? allCurrentTreeVariationItemCount !==
+				allPreviousTreeVariationItemCount
+			: allCurrentTreeVariationItemCount === 0
+	"
+	(dismiss)="currentVariation === 0 ? hide() : null"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	@if (product != null) {
+		<div class="container">
+			<div class="variation-container">
+				@let groupedVariations =
+					getGroupedVariations(variationTree[currentVariation] ?? {});
+
+				@for (key of Object.keys(groupedVariations); track key) {
+					@let currentTreeVariationItemCount =
+						getCurrentTreeVariationItemCount(key);
+					@let previousTreeVariationItemCount =
+						getPreviousTreeVariationItemCount(key);
+
+					@if (
+						currentVariation === 0 || previousTreeVariationItemCount > 0
+					) {
+						<div class="variation-group">
+							@if (key) {
+								<h3>{{ getHeadlineForKey(key) }}</h3>
+							}
+
+							<div class="variation-group-item">
+								@for (
+									value of Object.keys(groupedVariations[key] ?? {});
+									track value
+								) {
+									@let currentVariationKey =
+										(key ? key + "," : "") + value;
+
+									<div class="variation-selection-container">
+										<dav-icon-button
+											size="sm"
+											[disabled]="
+												variationTree[currentVariation]?.[
+													currentVariationKey
+												] === 0
+											"
+											(click)="removeButtonClick(key, value)"
+										>
+											<fa-icon [icon]="faMinus"></fa-icon>
+										</dav-icon-button>
+
+										<p>
+											{{
+												variationTree[currentVariation]?.[
+													currentVariationKey
+												] ?? 0
+											}}
+											×
+											{{ getHeadlineForKey(value) }}
+										</p>
+
+										<dav-icon-button
+											size="sm"
+											[disabled]="
+												currentVariation > 0
+													? currentTreeVariationItemCount >=
+														previousTreeVariationItemCount
+													: false
+											"
+											(click)="addButtonClick(key, value)"
+										>
+											<fa-icon [icon]="faPlus"></fa-icon>
+										</dav-icon-button>
+									</div>
+								}
+							</div>
+						</div>
+					}
+				}
+			</div>
+		</div>
+	}
+</dav-dialog>

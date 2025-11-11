@@ -3,6 +3,8 @@ import * as localforage from "localforage"
 import {
 	settingsThemeKey,
 	settingsRestaurantKey,
+	settingsRegisterKey,
+	settingsSerialNumberKey,
 	settingsThemeDefault
 } from "../constants"
 
@@ -31,6 +33,28 @@ export class SettingsService {
 
 	async getRestaurant(): Promise<string> {
 		return this.getSetting<string>(settingsRestaurantKey, null)
+	}
+	//#endregion
+
+	//#region Register
+	async setRegister(value: string) {
+		await localforage.setItem(settingsRegisterKey, value)
+		this.cache[settingsRegisterKey] = value
+	}
+
+	async getRegister(): Promise<string> {
+		return this.getSetting<string>(settingsRegisterKey, null)
+	}
+	//#endregion
+
+	//#region serialNumber
+	async setSerialNumber(value: string) {
+		await localforage.setItem(settingsSerialNumberKey, value)
+		this.cache[settingsSerialNumberKey] = value
+	}
+
+	async getSerialNumber(): Promise<string> {
+		return this.getSetting<string>(settingsSerialNumberKey, null)
 	}
 	//#endregion
 

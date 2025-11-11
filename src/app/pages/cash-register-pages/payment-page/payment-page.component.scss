@@ -1,20 +1,15 @@
 .container {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	grid-template-rows: auto 1fr auto;
-	height: 100vh;
+	grid-template-rows: 1fr;
+	height: 100%;
+	width: 100%;
 	background-color: var(--dav-color-surface);
 	padding: 0;
 }
 
-.header {
-	grid-column: 1 / span 3;
-	grid-row: 1;
-}
-
 .orders-price-container {
 	grid-column: 1;
-	grid-row: 2;
 	display: grid;
 	grid-template-rows: 1fr auto;
 	overflow: hidden;
@@ -64,7 +59,6 @@
 
 .bills-price-container {
 	grid-column: 2;
-	grid-row: 2;
 	display: grid;
 	grid-template-rows: 1fr auto;
 	overflow: hidden;
@@ -91,16 +85,6 @@
 
 .bill-select-button.active {
 	text-decoration: underline;
-}
-
-.footer {
-	grid-column: 1 / span 3;
-	grid-row: 3;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	gap: 4px;
-	padding: 16px;
 }
 
 .popup-overlay {
@@ -152,4 +136,16 @@
 .total-price {
 	float: inline-end;
 	font-weight: bold;
+}
+
+@media screen and (max-width: 860px) {
+	.container {
+		grid-template-columns: 1fr;
+		grid-template-rows: 1fr 1fr;
+	}
+
+	.bills-price-container {
+		grid-column: 1;
+		grid-row: 2;
+	}
 }

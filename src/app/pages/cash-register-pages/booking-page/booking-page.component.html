@@ -1,26 +1,44 @@
-<div class="container">
-	<div class="header">
-		<app-header [showButton]="false" />
-	</div>
-
+<div
+	class="container slide-up-in"
+	(touchstart)="handleTouch($event)"
+	(touchmove)="handleTouch($event)"
+	(touchend)="handleTouch($event)"
+>
 	<div class="orders-numpad-container">
-		<div class="orders-container">
+		<div #ordersContainer class="orders-container">
 			@if (room != null && table != null) {
-				<app-orders-header
+				<app-headline
 					[headline]="
 						`${locale.tableHeadline.replace('{name}', table.name.toString())} — ${room.name}`
 					"
 					[showBackButton]="true"
 					(backButtonClick)="navigateToDashboard($event)"
 				>
-					<dav-icon-button size="sm" (click)="selectTableButtonClick()">
+					<dav-icon-button
+						class="add-product-button"
+						size="sm"
+						[tooltip]="locale.addProduct"
+						(click)="showSelectProductDialog()"
+					>
+						<fa-icon [icon]="faPlus"></fa-icon>
+					</dav-icon-button>
+
+					<dav-icon-button
+						size="sm"
+						[tooltip]="locale.switchTable"
+						(click)="selectTableButtonClick()"
+					>
 						<fa-icon [icon]="faArrowRightArrowLeft"></fa-icon>
 					</dav-icon-button>
 
-					<dav-icon-button size="sm" (click)="openBills()">
+					<dav-icon-button
+						size="sm"
+						[tooltip]="locale.showBills"
+						(click)="openBills()"
+					>
 						<fa-icon [icon]="faFileLines"></fa-icon>
 					</dav-icon-button>
-				</app-orders-header>
+				</app-headline>
 			}
 
 			<ul class="order-items-container">
@@ -96,6 +114,12 @@
 							(click)="selectItem(orderItem, bookedItems)"
 							(noteIconClick)="orderItemNoteIconClick($event)"
 						></app-offer-order-item-card>
+					} @else {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							(click)="selectItem(orderItem, bookedItems)"
+						></app-order-item-card>
 					}
 				}
 			</ul>
@@ -199,7 +223,7 @@
 				</dav-button>
 			</div>
 
-			<div class="separator"></div>
+			<div class="numpad-footer-separator separator"></div>
 
 			<div class="numpad-footer">
 				<dav-button color="secondary" text (click)="sendOrder()">
@@ -343,19 +367,22 @@
 				></dav-skeleton>
 			} @else if (selectedCategory === "menues") {
 				@for (menu of menues; track menu.uuid) {
-					<dav-button (click)="clickMenu(menu)">
+					<dav-button class="slide-up-in-light" (click)="clickMenu(menu)">
 						{{ menu.name }}
 					</dav-button>
 				}
 			} @else if (selectedCategory === "specials") {
 				@for (special of specials; track special.uuid) {
-					<dav-button (click)="clickSpecial(special)">
+					<dav-button
+						class="slide-up-in-light"
+						(click)="clickSpecial(special)"
+					>
 						{{ special.name }}
 					</dav-button>
 				}
 			} @else {
 				@for (item of selectedInventory; track item.uuid) {
-					<dav-button (click)="clickItem(item)">
+					<dav-button class="slide-up-in-light" (click)="clickItem(item)">
 						{{ item.name }}
 					</dav-button>
 				}
@@ -943,6 +970,17 @@
 	(primaryButtonClick)="selectTableDialogPrimaryButtonClick($event)"
 ></app-select-table-dialog>
 
+<app-select-product-dialog
+	#selectProductDialog
+	[menues]="menues"
+	[specials]="specials"
+	[products]="selectedInventory"
+	[categories]="categories"
+	(selectMenue)="selectProductDialog.hide(); clickMenu($event)"
+	(selectSpecial)="selectProductDialog.hide(); clickSpecial($event)"
+	(selectProduct)="selectProductDialog.hide(); clickItem($event)"
+></app-select-product-dialog>
+
 <app-select-product-variations-dialog
 	#selectProductVariationsDialog
 	[product]="lastClickedItem"
@@ -962,3 +1000,49 @@
 	[orderItem]="selectedItem"
 	(editButtonClick)="addNoteButtonClick()"
 ></app-view-note-dialog>
+
+<dav-bottom-sheet
+	#bottomSheet
+	[dismissable]="false"
+	(touchstart)="handleTouch($event)"
+	(touchmove)="handleTouch($event)"
+	(touchend)="handleTouch($event)"
+>
+	<div class="bottom-sheet-content-container">
+		<dav-icon-card [text]="locale.sendOrder" size="sm" (click)="sendOrder()">
+			<fa-icon [icon]="faPaperPlaneTop"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card
+			[text]="locale.pay"
+			size="sm"
+			(click)="navigateToPaymentPage($event)"
+		>
+			<fa-icon [icon]="faCreditCard"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card
+			[text]="locale.rebook"
+			size="sm"
+			(click)="navigateToTransferPage()"
+		>
+			<fa-icon [icon]="faArrowTurnDownRight"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.switchTable" size="sm">
+			<fa-icon [icon]="faSeat"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.takeAway" size="sm">
+			<fa-icon [icon]="faCupTogo"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.notes" size="sm">
+			<fa-icon [icon]="faNoteSticky"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card [text]="locale.extras" size="sm">
+			<fa-icon [icon]="faStar"></fa-icon>
+		</dav-icon-card>
+	</div>
+</dav-bottom-sheet>

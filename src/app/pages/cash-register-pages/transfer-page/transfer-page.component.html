@@ -1,12 +1,8 @@
-<div class="container">
-	<div class="header">
-		<app-header [showButton]="false" />
-	</div>
-
+<div class="container slide-up-in">
 	<div class="left-orders-container">
 		<div class="orders-container">
 			@if (tableLeft != null) {
-				<app-orders-header
+				<app-headline
 					[headline]="
 						locale.tableHeadline
 							.replace('{tableName}', tableLeft?.name.toString())
@@ -14,7 +10,25 @@
 					"
 					[showBackButton]="true"
 					(backButtonClick)="navigateToBookingPage($event)"
-				></app-orders-header>
+				>
+					<dav-icon-button
+						class="mobile-hidden"
+						size="sm"
+						[tooltip]="locale.transferAllItemsToRight"
+						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+					>
+						<fa-icon [icon]="faChevronsRight"></fa-icon>
+					</dav-icon-button>
+
+					<dav-icon-button
+						class="desktop-hidden"
+						size="sm"
+						[tooltip]="locale.transferAllItemsToBottom"
+						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+					>
+						<fa-icon [icon]="faChevronsDown"></fa-icon>
+					</dav-icon-button>
+				</app-headline>
 			}
 
 			<ul class="order-items-container">
@@ -22,8 +36,8 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+					<dav-skeleton class="order-item-card-skeleton mobile-hidden"></dav-skeleton>
+					<dav-skeleton class="order-item-card-skeleton mobile-hidden"></dav-skeleton>
 				}
 
 				@if (
@@ -48,6 +62,7 @@
 									bookedItemsRight
 								)
 							"
+							(contextmenu)="showContextMenu($event, orderItem, true)"
 						></app-order-item-card>
 					}
 				}
@@ -62,13 +77,31 @@
 	<div class="right-orders-container">
 		<div class="orders-container">
 			@if (tableRight != null) {
-				<app-orders-header
+				<app-headline
 					[headline]="
 						locale.tableHeadline
 							.replace('{tableName}', tableRight?.name.toString())
 							.replace('{roomName}', tableRightRoom?.name)
 					"
-				></app-orders-header>
+				>
+					<dav-icon-button
+						class="mobile-hidden"
+						size="sm"
+						[tooltip]="locale.transferAllItemsToLeft"
+						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+					>
+						<fa-icon [icon]="faChevronsLeft"></fa-icon>
+					</dav-icon-button>
+
+					<dav-icon-button
+						class="desktop-hidden"
+						size="sm"
+						[tooltip]="locale.transferAllItemsToTop"
+						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+					>
+						<fa-icon [icon]="faChevronsUp"></fa-icon>
+					</dav-icon-button>
+				</app-headline>
 			}
 
 			<ul class="order-items-container">
@@ -76,8 +109,8 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
+					<dav-skeleton class="order-item-card-skeleton mobile-hidden"></dav-skeleton>
+					<dav-skeleton class="order-item-card-skeleton mobile-hidden"></dav-skeleton>
 				}
 
 				@if (
@@ -102,6 +135,7 @@
 									bookedItemsLeft
 								)
 							"
+							(contextmenu)="showContextMenu($event, orderItem, true)"
 						></app-order-item-card>
 					}
 				}
@@ -111,26 +145,6 @@
 		<div class="price-container">
 			<p>{{ showTotal(bookedItemsRight) }}</p>
 		</div>
-	</div>
-
-	<div class="footer">
-		<dav-button
-			color="secondary"
-			text
-			(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
-		>
-			<fa-icon [icon]="faChevronsRight" slot="icon-left"></fa-icon>
-			{{ locale.transferAllItemsToRight }}
-		</dav-button>
-
-		<dav-button
-			color="secondary"
-			text
-			(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
-		>
-			<fa-icon [icon]="faChevronsLeft" slot="icon-left"></fa-icon>
-			{{ locale.transferAllItemsToLeft }}
-		</dav-button>
 	</div>
 </div>
 
@@ -181,3 +195,26 @@
 		</button>
 	</div>
 </div>
+
+<app-move-multiple-products-dialog
+	#moveMultipleProductsDialog
+	[orderItem]="contextMenuOrderItem"
+	(primaryButtonClick)="moveMultipleProductsDialogPrimaryButtonClick($event)"
+></app-move-multiple-products-dialog>
+
+<dav-context-menu
+	#contextMenu
+	[visible]="contextMenuVisible"
+	[posX]="contextMenuPositionX"
+	[posY]="contextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="locale.moveMultipleProducts"
+		(click)="showMoveMultipleProductsDialog()"
+	>
+		<fa-icon
+			slot="icon"
+			[icon]="contextMenuLeftList ? faChevronsRight : faChevronsLeft"
+		></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

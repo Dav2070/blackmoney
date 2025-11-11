@@ -18,7 +18,6 @@ import { convertRoomResourceToRoom } from "src/app/utils"
 @Component({
 	selector: "app-select-table-dialog",
 	templateUrl: "./select-table-dialog.component.html",
-	styleUrl: "./select-table-dialog.component.scss",
 	standalone: false
 })
 export class SelectTableDialogComponent {

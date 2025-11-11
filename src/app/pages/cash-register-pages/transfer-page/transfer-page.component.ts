@@ -1,9 +1,13 @@
-import { Component } from "@angular/core"
+import { Component, ElementRef, HostListener, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
 import {
 	faChevronsRight,
-	faChevronsLeft
+	faChevronsLeft,
+	faChevronsUp,
+	faChevronsDown
 } from "@fortawesome/pro-regular-svg-icons"
+import { ContextMenu } from "dav-ui-components"
+import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AllItemHandler } from "src/app/models/cash-register/orderItemHandling/all-item-handler.model"
 import { LocalizationService } from "src/app/services/localization-service"
 import { DataService } from "src/app/services/data-service"
@@ -24,6 +28,8 @@ export class TransferPageComponent {
 	locale = this.localizationService.locale.transferPage
 	faChevronsRight = faChevronsRight
 	faChevronsLeft = faChevronsLeft
+	faChevronsUp = faChevronsUp
+	faChevronsDown = faChevronsDown
 	bookedItemsLeft = new AllItemHandler()
 	bookedItemsRight = new AllItemHandler()
 	tableLeft: Table = null
@@ -42,6 +48,21 @@ export class TransferPageComponent {
 	tmpReceiver: AllItemHandler
 
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+
+	//#region MuveMultipleProductsDialog variables
+	@ViewChild("moveMultipleProductsDialog")
+	moveMultipleProductsDialog: MoveMultipleProductsDialogComponent
+	//#endregion
+
+	//#region ContextMenu variables
+	@ViewChild("contextMenu")
+	contextMenu: ElementRef<ContextMenu>
+	contextMenuOrderItem: OrderItem = null
+	contextMenuVisible: boolean = false
+	contextMenuPositionX: number = 0
+	contextMenuPositionY: number = 0
+	contextMenuLeftList: boolean = false
+	//#endregion
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -95,9 +116,50 @@ export class TransferPageComponent {
 		this.ordersLoading = false
 	}
 
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		if (!this.contextMenu.nativeElement.contains(event.target as Node)) {
+			this.contextMenuVisible = false
+		}
+	}
+
 	navigateToBookingPage(event: MouseEvent) {
 		event.preventDefault()
 		this.router.navigate(["dashboard", "tables", this.tableLeft.uuid])
+	}
+
+	async showContextMenu(
+		event: MouseEvent,
+		orderItem: OrderItem,
+		leftList: boolean
+	) {
+		event.preventDefault()
+
+		if (orderItem.count <= 1 || orderItem.orderItemVariations.length > 0) {
+			return
+		}
+
+		this.contextMenuOrderItem = orderItem
+
+		// Set the position of the context menu
+		this.contextMenuPositionX = event.pageX
+		this.contextMenuPositionY = event.pageY
+
+		if (this.contextMenuVisible) {
+			this.contextMenuVisible = false
+
+			await new Promise((resolve: Function) => {
+				setTimeout(() => resolve(), 60)
+			})
+		}
+
+		this.contextMenuLeftList = leftList
+		this.contextMenuVisible = true
+	}
+
+	showMoveMultipleProductsDialog() {
+		this.contextMenuVisible = false
+		this.moveMultipleProductsDialog.show()
 	}
 
 	//Berechnet den Preis aller Items eines Tisches
@@ -353,5 +415,18 @@ export class TransferPageComponent {
 			}
 		}
 		return picked
+	}
+
+	moveMultipleProductsDialogPrimaryButtonClick(event: { count: number }) {
+		this.moveMultipleProductsDialog.hide()
+		this.tmpAnzahl = event.count
+		this.transferItem(
+			this.contextMenuOrderItem,
+			this.contextMenuLeftList
+				? this.bookedItemsLeft
+				: this.bookedItemsRight,
+			this.contextMenuLeftList ? this.bookedItemsRight : this.bookedItemsLeft
+		)
+		this.tmpAnzahl = 1
 	}
 }

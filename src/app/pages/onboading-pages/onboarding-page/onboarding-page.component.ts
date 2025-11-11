@@ -3,7 +3,8 @@ import { Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
-import { convertUserResourceToUser } from "src/app/utils"
+import { SettingsService } from "src/app/services/settings-service"
+import { convertUserResourceToUser, getSerialNumber } from "src/app/utils"
 
 @Component({
 	templateUrl: "./onboarding-page.component.html",
@@ -24,6 +25,7 @@ export class OnboardingPageComponent {
 		public dataService: DataService,
 		private apiService: ApiService,
 		private authService: AuthService,
+		private settingsService: SettingsService,
 		private router: Router
 	) {}
 
@@ -109,7 +111,11 @@ export class OnboardingPageComponent {
 					{
 						companyUuid: this.companyUuid,
 						userName: this.ownerName,
-						password: this.ownerPassword
+						password: this.ownerPassword,
+						registerUuid: "", // TODO: Implement register selection
+						registerClientSerialNumber: await getSerialNumber(
+							this.settingsService
+						)
 					}
 				)
 

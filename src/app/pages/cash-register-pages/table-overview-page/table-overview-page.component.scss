@@ -1,44 +1,27 @@
-.wrapper {
-	display: flex;
-	flex-direction: column;
-	height: 100vh;
-	background-color: white;
-}
-
-.header {
-	flex: 1;
-}
-
-.main {
-	flex: 15;
-}
-.tables {
-	overflow-y: scroll;
-}
-.table {
-	margin-bottom: 1px;
-}
-
-.bottom {
-	flex: 2;
-}
-
-// To stretch the link on top of the card div
-.card-link {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
+.container {
+	position: fixed;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: 1fr;
+	height: 100%;
 	width: 100%;
+	background-color: var(--dav-color-surface);
+	padding: 0;
 }
 
-#footerButtonsContainer {
-	display: flex;
-	justify-content: space-around;
+.table-overview-container {
+	grid-column: 1;
+	margin: 0 16px 16px 16px;
 }
 
-.footerButton {
-	width: 100%;
-	margin: 25px;
-	height: 70px;
+.rooms-sidenav-container {
+	grid-column: 2;
+	background-color: var(--dav-color-surface);
+	padding: 0 4px;
+}
+
+.room-item-skeleton {
+	width: 133px;
+	height: 34px;
+	border-radius: 20px;
 }

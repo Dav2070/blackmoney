@@ -3,7 +3,8 @@ import {
 	Inject,
 	PLATFORM_ID,
 	ViewChild,
-	HostListener
+	HostListener,
+	ElementRef
 } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router, ActivatedRoute, ParamMap } from "@angular/router"
@@ -23,6 +24,7 @@ import {
 	faSeat,
 	faUtensils
 } from "@fortawesome/pro-regular-svg-icons"
+import { BottomSheet } from "dav-ui-components"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Category } from "src/app/models/Category"
@@ -35,9 +37,14 @@ import { VariationItem } from "src/app/models/VariationItem"
 import { Order } from "src/app/models/Order"
 import { Offer } from "src/app/models/Offer"
 import { OfferItem } from "src/app/models/OfferItem"
-import { OrderItemType } from "src/app/types"
+import {
+	AddProductsInput,
+	AddProductVariationInput,
+	OrderItemType
+} from "src/app/types"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
+import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "src/app/dialogs/view-note-dialog/view-note-dialog.component"
@@ -47,21 +54,13 @@ import {
 	convertCategoryResourceToCategory,
 	convertOfferResourceToOffer,
 	convertOrderItemResourceToOrderItem,
-	convertOrderResourceToOrder
+	convertOrderResourceToOrder,
+	showToast
 } from "src/app/utils"
 import { AllItemHandler } from "src/app/models/cash-register/orderItemHandling/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
 
-interface AddProductsInput {
-	uuid: string
-	count: number
-	variations?: AddProductsInputVariation[]
-}
-
-interface AddProductsInputVariation {
-	variationItemUuids: string[]
-	count: number
-}
+const mobileBreakpoint = 860
 
 @Component({
 	templateUrl: "./booking-page.component.html",
@@ -154,14 +153,31 @@ export class BookingPageComponent {
 
 	tmpLastPickedVariation: VariationItem[] = []
 
-	//#region SelectTableDialog
+	@ViewChild("ordersContainer")
+	ordersContainer: ElementRef<HTMLDivElement>
+
+	//#region SelectTableDialog variables
 	@ViewChild("selectTableDialog")
 	selectTableDialog: SelectTableDialogComponent
 	//#endregion
 
-	//#region SelectProductVariationsDialog
+	//#region SelectProductDialog variables
+	@ViewChild("selectProductDialog")
+	selectProductDialog: SelectProductDialogComponent
+	//#endregion
+
+	//#region SelectProductVariationsDialog variables
 	@ViewChild("selectProductVariationsDialog")
 	selectProductVariationsDialog: SelectProductVariationsDialogComponent
+	//#endregion
+
+	//#region BottomSheet variables
+	@ViewChild("bottomSheet", { static: true })
+	bottomSheet: ElementRef<BottomSheet>
+	touchStartY = 0
+	touchDiffY = 0
+	swipeStart = false
+	startPosition = 0
 	//#endregion
 
 	//#region AddNoteDialog
@@ -335,6 +351,8 @@ export class BookingPageComponent {
 
 		this.showTotal()
 		this.productsLoading = false
+
+		this.bottomSheet.nativeElement.snap()
 	}
 
 	@HostListener("window:keydown", ["$event"])
@@ -382,14 +400,63 @@ export class BookingPageComponent {
 		this.selectTableDialog.show()
 	}
 
-	navigateToPaymentPage(event: MouseEvent) {
+	async navigateToPaymentPage(event: MouseEvent) {
 		event.preventDefault()
+		await this.hideBottomSheet()
 		this.router.navigate(["dashboard", "tables", this.uuid, "payment"])
 	}
 
 	selectTableDialogPrimaryButtonClick(event: { uuid: string }) {
 		this.selectTableDialog.hide()
 		this.router.navigate(["dashboard", "tables", event.uuid])
+	}
+
+	showSelectProductDialog() {
+		this.selectProductDialog.show()
+	}
+
+	async hideBottomSheet() {
+		if (window.outerWidth <= mobileBreakpoint) {
+			await this.bottomSheet.nativeElement.snap("bottom")
+		}
+	}
+
+	handleTouch(event: TouchEvent) {
+		if (event.touches.length > 1 || window["visualViewport"].scale > 1.001) {
+			return
+		}
+
+		const ordersContainer = this.ordersContainer.nativeElement
+
+		if (ordersContainer.contains(event.target as Node)) {
+			const scrolledToEnd =
+				ordersContainer.scrollTop + ordersContainer.clientHeight >=
+				ordersContainer.scrollHeight - 1
+
+			if (!scrolledToEnd) return
+		}
+
+		if (event.type === "touchstart") {
+			this.touchStartY = event.touches.item(0).screenY
+			this.swipeStart = true
+		} else if (event.type === "touchmove") {
+			this.touchDiffY = this.touchStartY - event.touches.item(0).screenY
+
+			if (this.swipeStart) {
+				this.startPosition = this.bottomSheet.nativeElement.position
+				this.swipeStart = false
+			}
+
+			this.bottomSheet.nativeElement.setPosition(
+				this.touchDiffY + this.startPosition
+			)
+		} else if (event.type === "touchend") {
+			this.touchStartY = 0
+			this.touchDiffY = 0
+			this.startPosition = 0
+
+			this.bottomSheet.nativeElement.snap()
+		}
 	}
 
 	// Zeige Variations-Popup an
@@ -1027,7 +1094,7 @@ export class BookingPageComponent {
 
 	// Fügt Items der Liste an bestellten Artikeln hinzu
 	async sendOrder() {
-		//this.bookedItems.transferAllItems(this.stagedItems)
+		this.bottomSheet.nativeElement.snap("bottom")
 		let tmpProductArray: AddProductsInput[] = []
 
 		for (let values of this.stagedItems.getAllPickedItems().values()) {
@@ -1038,7 +1105,7 @@ export class BookingPageComponent {
 			}
 
 			for (let orderItemVariation of values.orderItemVariations) {
-				let variation: AddProductsInputVariation = {
+				let variation: AddProductVariationInput = {
 					count: orderItemVariation.count,
 					variationItemUuids: []
 				}
@@ -1117,6 +1184,7 @@ export class BookingPageComponent {
 		this.stagedItems.clearItems()
 
 		this.showTotal()
+		await showToast(this.locale.sendOrderToastText)
 	}
 
 	//Berechnet den Preis der hinzugefügten Items
@@ -1355,24 +1423,27 @@ export class BookingPageComponent {
 			})
 		}
 
-		this.pickedBill = this.bills[0]
-
-		this.isBillPopupVisible = !this.isBillPopupVisible
+		if (this.bills.length > 0) {
+			this.pickedBill = this.bills[0]
+			this.isBillPopupVisible = true
+		}
 	}
 
 	closeBills() {
-		this.isBillPopupVisible = !this.isBillPopupVisible
+		this.isBillPopupVisible = false
 		this.bills = []
 		this.pickedBill = null
 	}
 
-	navigateToTransferPage() {
+	async navigateToTransferPage() {
 		let selectedTableNumber = Number(this.console)
 		if (isNaN(selectedTableNumber)) return
 
 		// Find the table
 		let table = this.room.tables.find(t => t.name == selectedTableNumber)
 		if (table == null) return
+
+		await this.hideBottomSheet()
 
 		// Navigate to the transfer page with the table UUID
 		this.router.navigate(["dashboard", "tables", this.table.uuid, table.uuid])

@@ -2,6 +2,9 @@ import { Component } from "@angular/core"
 import { Router } from "@angular/router"
 import { DropdownOption, DropdownOptionType } from "dav-ui-components"
 import { Company } from "src/app/models/Company"
+import { Restaurant } from "src/app/models/Restaurant"
+import { Register } from "src/app/models/Register"
+import { User } from "src/app/models/User"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
@@ -10,7 +13,9 @@ import { SettingsService } from "src/app/services/settings-service"
 import {
 	convertCompanyResourceToCompany,
 	getGraphQLErrorCodes,
-	initUserAfterLogin
+	getSerialNumber,
+	initUserAfterLogin,
+	loadRegisterClient
 } from "src/app/utils"
 
 @Component({
@@ -21,12 +26,15 @@ import {
 export class LoginPageComponent {
 	locale = this.localizationService.locale.loginPage
 	company: Company = null
+	selectedRestaurant: Restaurant = null
+	selectedRegister: Register = null
+	selectedUser: User = null
+	registerDropdownOptions: DropdownOption[] = []
+	registerDropdownSelectedKey: string = ""
 	userDropdownOptions: DropdownOption[] = []
 	userDropdownSelectedKey: string = ""
 	restaurantDropdownOptions: DropdownOption[] = []
 	restaurantDropdownSelectedKey: string = ""
-	uuid: string = ""
-	username: string = ""
 	password: string = ""
 	errorMessage: string = ""
 	initialLoad: boolean = true
@@ -65,6 +73,12 @@ export class LoginPageComponent {
 								name
 							}
 						}
+						registers {
+							items {
+								uuid
+								name
+							}
+						}
 					}
 				}
 			`
@@ -91,63 +105,79 @@ export class LoginPageComponent {
 
 		if (defaultRestaurantUuid != null) {
 			// Find the default restaurant
-			let defaultRestaurant = this.dataService.company.restaurants.find(
+			let defaultRestaurant = this.company.restaurants.find(
 				r => r.uuid === defaultRestaurantUuid
 			)
 
 			if (defaultRestaurant != null) {
+				this.selectedRestaurant = defaultRestaurant
 				this.restaurantDropdownSelectedKey = defaultRestaurant.uuid
 			}
 		}
 
 		if (this.restaurantDropdownSelectedKey === "") {
 			// If no default restaurant is set, select the first one
-			this.restaurantDropdownSelectedKey =
-				this.dataService.company.restaurants[0].uuid
+			this.selectedRestaurant = this.company.restaurants[0]
+			this.restaurantDropdownSelectedKey = this.company.restaurants[0].uuid
 		}
 
-		this.loadUserDropdownOptions()
+		this.loadDropdownOptions()
 		this.initialLoad = false
 	}
 
-	loadUserDropdownOptions() {
+	loadDropdownOptions() {
 		this.userDropdownOptions = []
+		if (this.selectedRestaurant == null) return
 
-		const selectedRestaurant = this.company.restaurants.find(
-			r => r.uuid === this.restaurantDropdownSelectedKey
-		)
+		if (this.selectedRestaurant.registers.length > 0) {
+			this.selectedRegister = this.selectedRestaurant.registers[0]
+		}
 
-		if (selectedRestaurant) {
-			for (let user of selectedRestaurant.users) {
-				this.userDropdownOptions.push({
-					key: user.uuid,
-					value: user.name,
-					type: DropdownOptionType.option
-				})
-			}
+		if (this.selectedRestaurant.users.length > 0) {
+			this.selectedUser = this.selectedRestaurant.users[0]
+		}
+
+		for (let register of this.selectedRestaurant.registers) {
+			this.registerDropdownOptions.push({
+				key: register.uuid,
+				value: register.name,
+				type: DropdownOptionType.option
+			})
+		}
+
+		for (let user of this.selectedRestaurant.users) {
+			this.userDropdownOptions.push({
+				key: user.uuid,
+				value: user.name,
+				type: DropdownOptionType.option
+			})
 		}
 	}
 
 	restaurantDropdownChange(event: Event) {
 		this.restaurantDropdownSelectedKey = (event as CustomEvent).detail.key
-		this.loadUserDropdownOptions()
+
+		this.selectedRestaurant = this.company.restaurants.find(
+			r => r.uuid === this.restaurantDropdownSelectedKey
+		)
+
+		this.loadDropdownOptions()
+	}
+
+	registerDropdownChange(event: Event) {
+		this.registerDropdownSelectedKey = (event as CustomEvent).detail.key
+
+		this.selectedRegister = this.selectedRestaurant.registers.find(
+			r => r.uuid === this.registerDropdownSelectedKey
+		)
 	}
 
 	userDropdownChange(event: Event) {
 		this.userDropdownSelectedKey = (event as CustomEvent).detail.key
 
-		const selectedRestaurant = this.company.restaurants.find(
-			r => r.uuid === this.restaurantDropdownSelectedKey
-		)
-
-		let selectedUser = selectedRestaurant.users.find(
+		this.selectedUser = this.selectedRestaurant.users.find(
 			u => u.uuid === this.userDropdownSelectedKey
 		)
-
-		if (selectedUser != null) {
-			this.uuid = selectedUser.uuid
-			this.username = selectedUser.name
-		}
 	}
 
 	passwordChange(event: Event) {
@@ -155,6 +185,8 @@ export class LoginPageComponent {
 	}
 
 	async login() {
+		if (this.selectedRegister == null) return
+
 		this.errorMessage = ""
 		this.loading = true
 
@@ -168,9 +200,13 @@ export class LoginPageComponent {
 				}
 			`,
 			{
-				companyUuid: this.company.uuid,
-				userName: this.username,
-				password: this.password
+				companyUuid: this.company?.uuid,
+				userName: this.selectedUser?.name,
+				password: this.password,
+				registerUuid: this.selectedRegister.uuid,
+				registerClientSerialNumber: await getSerialNumber(
+					this.settingsService
+				)
 			}
 		)
 
@@ -188,6 +224,17 @@ export class LoginPageComponent {
 				this.settingsService,
 				this.router
 			)
+
+			// Save register uuid in settings
+			await this.settingsService.setRegister(this.selectedRegister.uuid)
+
+			// Load register client in dataService
+			await loadRegisterClient(
+				this.settingsService,
+				this.authService,
+				this.apiService,
+				this.dataService
+			)
 		} else {
 			const errors = getGraphQLErrorCodes(loginResponse)
 
@@ -199,9 +246,9 @@ export class LoginPageComponent {
 			if (errors.includes("USER_HAS_NO_PASSWORD")) {
 				this.router.navigate(["login", "set-password"], {
 					queryParams: {
-						uuid: this.uuid,
+						uuid: this.selectedUser.uuid,
 						restaurantUuid: this.restaurantDropdownSelectedKey,
-						name: this.username
+						name: this.selectedUser.name
 					}
 				})
 			} else {

@@ -1,6 +1,6 @@
 import { Component, HostListener, Inject, PLATFORM_ID } from "@angular/core"
 import { isPlatformBrowser, isPlatformServer } from "@angular/common"
-import { Router, ActivatedRoute } from "@angular/router"
+import { ActivatedRoute } from "@angular/router"
 import { HttpHeaders } from "@angular/common/http"
 import { Apollo } from "apollo-angular"
 import { HttpLink } from "apollo-angular/http"
@@ -16,7 +16,8 @@ import {
 	convertCompanyResourceToCompany,
 	convertRestaurantResourceToRestaurant,
 	convertUserResourceToUser,
-	getGraphQLErrorCodes
+	getGraphQLErrorCodes,
+	loadRegisterClient
 } from "src/app/utils"
 import {
 	davAuthClientName,
@@ -104,7 +105,7 @@ export class AppComponent {
 		}
 
 		let retrieveCompanyResponseData =
-			retrieveCompanyResponse.data.retrieveCompany
+			retrieveCompanyResponse.data?.retrieveCompany
 
 		if (retrieveCompanyResponseData != null) {
 			this.dataService.company = convertCompanyResourceToCompany(
@@ -148,6 +149,7 @@ export class AppComponent {
 									items {
 										uuid
 										name
+										seats
 									}
 								}
 							}
@@ -181,7 +183,7 @@ export class AppComponent {
 				) {
 					// Remove the access token
 					this.authService.removeAccessToken()
-				} else if (retrieveOwnUserResponse.data.retrieveOwnUser != null) {
+				} else if (retrieveOwnUserResponse.data?.retrieveOwnUser != null) {
 					this.dataService.user = convertUserResourceToUser(
 						retrieveOwnUserResponse.data.retrieveOwnUser
 					)
@@ -192,6 +194,13 @@ export class AppComponent {
 		this.dataService.companyPromiseHolder.Resolve()
 		this.dataService.restaurantPromiseHolder.Resolve()
 		this.dataService.blackmoneyUserPromiseHolder.Resolve()
+
+		await loadRegisterClient(
+			this.settingsService,
+			this.authService,
+			this.apiService,
+			this.dataService
+		)
 	}
 
 	@HostListener("window:resize")

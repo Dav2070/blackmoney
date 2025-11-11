@@ -1,5 +1,6 @@
-import { Component } from "@angular/core"
+import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
+import { ResetPasswordDialogComponent } from "src/app/dialogs/reset-password-dialog/reset-password-dialog.component"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -15,6 +16,10 @@ export class EmployeePageComponent {
 	uuid: string = null
 	name: string = ""
 	role: UserRole = "USER"
+
+	@ViewChild("resetPasswordDialog")
+	resetPasswordDialog: ResetPasswordDialogComponent
+	resetPasswordDialogLoading: boolean = false
 
 	constructor(
 		private dataService: DataService,
@@ -47,5 +52,18 @@ export class EmployeePageComponent {
 
 	navigateBack() {
 		this.router.navigate(["user", "employees"])
+	}
+
+	showResetPasswordDialog() {
+		this.resetPasswordDialogLoading = false
+		this.resetPasswordDialog.show()
+	}
+
+	async resetPasswordDialogPrimaryButtonClick() {
+		this.resetPasswordDialogLoading = true
+
+		await this.apiService.resetPasswordOfUser(`uuid`, { uuid: this.uuid })
+
+		this.resetPasswordDialog.hide()
 	}
 }

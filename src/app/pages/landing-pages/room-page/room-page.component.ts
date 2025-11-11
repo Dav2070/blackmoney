@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 import { EditRoomDialogComponent } from "src/app/dialogs/edit-room-dialog/edit-room-dialog.component"
+import { DeleteRoomDialogComponent } from "src/app/dialogs/delete-room-dialog/delete-room-dialog.component"
 import { AddTableDialogComponent } from "src/app/dialogs/add-table-dialog/add-table-dialog.component"
 import { EditTableDialogComponent } from "src/app/dialogs/edit-table-dialog/edit-table-dialog.component"
 import { DeleteTableDialogComponent } from "src/app/dialogs/delete-table-dialog/delete-table-dialog.component"
@@ -16,7 +17,11 @@ import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
-import { convertRoomResourceToRoom, getGraphQLErrorCodes } from "src/app/utils"
+import {
+	convertRoomResourceToRoom,
+	convertTableResourceToTable,
+	getGraphQLErrorCodes
+} from "src/app/utils"
 import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
@@ -40,7 +45,13 @@ export class RoomPageComponent {
 	editRoomDialogName: string = ""
 	editRoomDialogNameError: string = ""
 
+	@ViewChild("deleteRoomDialog") deleteRoomDialog!: DeleteRoomDialogComponent
+	deleteRoomDialogLoading: boolean = false
+
 	@ViewChild("addTableDialog") addTableDialog!: AddTableDialogComponent
+	addTableDialogLoading: boolean = false
+	addTableDialogNameError: string = ""
+	addTableDialogSeatsError: string = ""
 
 	@ViewChild("editTableDialog") editTableDialog!: EditTableDialogComponent
 	editTableDialogLoading: boolean = false
@@ -124,6 +135,10 @@ export class RoomPageComponent {
 		this.editRoomDialog.show()
 	}
 
+	showDeleteRoomDialog() {
+		this.deleteRoomDialog.show()
+	}
+
 	async editRoomDialogPrimaryButtonClick(event: { name: string }) {
 		const name = event.name.trim()
 
@@ -166,17 +181,113 @@ export class RoomPageComponent {
 		}
 	}
 
+	async deleteRoomDialogPrimaryButtonClick() {
+		this.deleteRoomDialogLoading = true
+
+		const deleteRoomResponse = await this.apiService.deleteRoom(`uuid`, {
+			uuid: this.roomUuid
+		})
+
+		this.deleteRoomDialogLoading = false
+
+		if (deleteRoomResponse.data?.deleteRoom != null) {
+			this.router.navigate([
+				"user",
+				"restaurants",
+				this.restaurantUuid,
+				"rooms"
+			])
+		}
+	}
+
 	showAddTableDialog() {
 		this.addTableDialog.show()
 	}
 
-	addTableDialogPrimaryButtonClick(event: {
-		tableNumber: number
+	async addTableDialogPrimaryButtonClick(event: {
+		name: number
 		seats: number
 		numberOfTables: number
 		bulkMode: boolean
 	}) {
-		console.log(event)
+		if (event.bulkMode) {
+			this.addTableDialogLoading = true
+
+			for (let i = event.name; i < event.name + event.numberOfTables; i++) {
+				const createTableResponse = await this.apiService.createTable(
+					`
+						uuid
+						name
+						seats
+					`,
+					{
+						roomUuid: this.roomUuid,
+						name: i,
+						seats: event.seats
+					}
+				)
+
+				if (createTableResponse.data?.createTable != null) {
+					const responseData = createTableResponse.data.createTable
+
+					this.tables.push(convertTableResourceToTable(responseData))
+				}
+			}
+
+			// Sort the tables by name
+			this.tables.sort((a, b) => a.name - b.name)
+
+			this.addTableDialogLoading = false
+			this.addTableDialog.hide()
+		} else {
+			this.addTableDialogLoading = true
+
+			const createTableResponse = await this.apiService.createTable(
+				`
+					uuid
+					name
+					seats
+				`,
+				{
+					roomUuid: this.roomUuid,
+					name: event.name,
+					seats: event.seats
+				}
+			)
+
+			this.addTableDialogLoading = false
+
+			if (createTableResponse.data?.createTable != null) {
+				const responseData = createTableResponse.data.createTable
+
+				this.tables.push(convertTableResourceToTable(responseData))
+				this.addTableDialog.hide()
+			} else {
+				const errors = getGraphQLErrorCodes(createTableResponse)
+				if (errors == null) return
+
+				for (const errorCode of errors) {
+					switch (errorCode) {
+						case ErrorCodes.tableNameInvalid:
+							this.addTableDialogNameError =
+								this.errorsLocale.tableNameInvalid
+							break
+						case ErrorCodes.seatsInvalid:
+							this.addTableDialogSeatsError =
+								this.errorsLocale.seatsInvalid
+							break
+						case ErrorCodes.tableAlreadyExists:
+							this.addTableDialogNameError =
+								this.errorsLocale.tableAlreadyExists
+							break
+						default:
+							this.addTableDialogNameError =
+								this.errorsLocale.unexpectedError
+							break
+					}
+				}
+			}
+		}
 	}
 
 	showEditTableDialog() {
@@ -211,6 +322,20 @@ export class RoomPageComponent {
 		}
 	}
 
+	async deleteTableDialogPrimaryButtonClick() {
+		if (this.selectedTable == null) return
+
+		const deleteTableResponse = await this.apiService.deleteTable(`uuid`, {
+			uuid: this.selectedTable.uuid
+		})
+
+		if (deleteTableResponse.data?.deleteTable != null) {
+			this.removeTable(this.selectedTable)
+		}
+
+		this.deleteTableDialog.hide()
+	}
+
 	showDeleteTableDialog() {
 		if (this.selectedTable == null) return
 
@@ -235,13 +360,10 @@ export class RoomPageComponent {
 
 	// Entfern Einen Tisch
 	removeTable(tableToRemove: Table) {
-		// 1) Index des zu entfernenden Tisches ermitteln
-		const idx = this.tables.findIndex(t => t.name === tableToRemove.name)
-		if (idx === -1) return // Tisch nicht gefunden
-		// 2) Nummer des entfernten Tisches sichern
-		const removedNumber = this.tables[idx].name
-		// 3) löschen
-		this.tables.splice(idx, 1)
+		const i = this.tables.findIndex(t => t.uuid === tableToRemove.uuid)
+		if (i === -1) return
+
+		this.tables.splice(i, 1)
 	}
 
 	// Öffnet das Dialogformular zum Bearbeiten

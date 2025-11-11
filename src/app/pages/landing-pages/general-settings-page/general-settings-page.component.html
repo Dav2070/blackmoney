@@ -15,5 +15,48 @@
 				></dav-dropdown>
 			</dav-setting>
 		</div>
+
+		<div class="setting">
+			<dav-setting [header]="locale.deviceInfo" expandable open>
+				<div class="device-info">
+					<div>
+						<p>{{ locale.deviceName }}</p>
+					</div>
+
+					<div class="device-name">
+						<p>
+							@if (dataService.registerClient?.name) {
+								{{ dataService.registerClient?.name }}
+							} @else {
+								<span>{{ locale.noNameGiven }}</span>
+							}
+						</p>
+
+						<dav-icon-button
+							size="xs"
+							(click)="showEditDeviceNameDialog()"
+						>
+							<fa-icon [icon]="faPen"></fa-icon>
+						</dav-icon-button>
+					</div>
+
+					<div>
+						<p>{{ locale.serialNumber }}</p>
+					</div>
+
+					<div>
+						<p>{{ serialNumber }}</p>
+					</div>
+				</div>
+			</dav-setting>
+		</div>
 	</div>
 </div>
+
+<app-edit-device-name-dialog
+	#editDeviceNameDialog
+	[name]="editDeviceNameDialogName"
+	[nameError]="editDeviceNameDialogNameError"
+	[loading]="editDeviceNameDialogLoading"
+	(primaryButtonClick)="editDeviceNameDialogPrimaryButtonClick($event)"
+></app-edit-device-name-dialog>

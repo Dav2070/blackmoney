@@ -1,1 +1,7 @@
-<h1>Hello World</h1>
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header backButtonVisible (backButtonClick)="navigateBack()">
+			{{ registerClient?.name ?? registerClient?.serialNumber }}
+		</dav-header>
+	</div>
+</div>

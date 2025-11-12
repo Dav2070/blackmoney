@@ -379,6 +379,27 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async retrieveRegisterClient(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<
+		ApolloQueryResult<{ retrieveRegisterClient: RegisterClientResource }>
+	> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveRegisterClient: RegisterClientResource }>({
+				query: gql`
+					query RetrieveRegisterClient($uuid: String!) {
+						retrieveRegisterClient(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveRegisterClientBySerialNumber(
 		queryData: string,
 		variables: {

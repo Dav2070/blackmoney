@@ -52,8 +52,8 @@ export class RestaurantPageComponent {
 	mail: string = "testmail@mail.de"
 	mailError: string = ""
 
-	imageDataUrl: string | null = null;
-	maxFileSizeBytes = 1080 * 960;
+	imageDataUrl: string | null = null
+	maxFileSizeBytes = 1080 * 960
 
 	//#region EditRestaurantNameDialog
 	@ViewChild("editRestaurantNameDialog")
@@ -154,15 +154,15 @@ export class RestaurantPageComponent {
 
 	showEditOwnerDialog() {
 		this.editOwnerDialogLoading = false
-		this.editOwnerDialog.line1Name = 'Inhaber'
-		this.editOwnerDialog.line2Name = 'Steuernummer'
+		this.editOwnerDialog.line1Name = "Inhaber"
+		this.editOwnerDialog.line2Name = "Steuernummer"
 		this.editOwnerDialog.show()
 	}
 
 	showEditContactInfoDialog() {
 		this.editContactInfoDialogLoading = false
-		this.editContactInfoDialog.line1Name = 'E-Mail'
-		this.editContactInfoDialog.line2Name = 'Telefon'
+		this.editContactInfoDialog.line1Name = "E-Mail"
+		this.editContactInfoDialog.line2Name = "Telefon"
 		this.editContactInfoDialog.show()
 	}
 
@@ -286,31 +286,32 @@ export class RestaurantPageComponent {
 			}
 		}
 	}
-// Imput Picture
+
+	// Input Picture
 	triggerFileInput(fileInput: HTMLInputElement) {
-		fileInput.click();
+		fileInput.click()
 	}
 
 	onFileSelected(event: Event) {
-		const input = event.target as HTMLInputElement;
+		const input = event.target as HTMLInputElement
 		if (!input.files || input.files.length === 0) {
-			return;
+			return
 		}
-		const file = input.files[0];
+		const file = input.files[0]
 
 		// optional: einfache Validierung
-		if (!file.type.startsWith('image/')) {
-			return;
+		if (!file.type.startsWith("image/")) {
+			return
 		}
 		if (file.size > this.maxFileSizeBytes) {
-			// Datei zu groß 
-			return;
+			// Datei zu groß
+			return
 		}
 
-		const reader = new FileReader();
+		const reader = new FileReader()
 		reader.onload = () => {
-			this.imageDataUrl = reader.result as string;
-		};
-		reader.readAsDataURL(file);
+			this.imageDataUrl = reader.result as string
+		}
+		reader.readAsDataURL(file)
 	}
 }

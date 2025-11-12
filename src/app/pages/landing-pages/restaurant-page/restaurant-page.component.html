@@ -54,7 +54,7 @@
 						@if (taxNumber) {
 							<p>{{ taxNumber }}</p>
 						}
-					} 
+					}
 				</div>
 
 				<dav-icon-button size="xs" (click)="showEditOwnerDialog()">
@@ -75,7 +75,7 @@
 						@if (phoneNumber) {
 							<p>{{ phoneNumber }}</p>
 						}
-					} 
+					}
 				</div>
 
 				<dav-icon-button size="xs" (click)="showEditContactInfoDialog()">
@@ -84,12 +84,9 @@
 			</div>
 		</dav-card>
 
-	
-
 		<div class="separator"></div>
 
 		<div class="actions-container">
-
 			<dav-icon-card
 				[text]="locale.manageTime"
 				[href]="'/user/restaurants/' + uuid + '/openingTime'"
@@ -124,26 +121,20 @@
 
 			<!--Image for Restaurant-->
 			<dav-icon-card
-			[text]="locale.addPicture"
-			(click)="triggerFileInput(fileInput)"
+				[text]="locale.addPicture"
+				(click)="triggerFileInput(fileInput)"
 			>
-
-			<input
-				#fileInput
-				type="file"
-				accept="image/*"
-				(change)="onFileSelected($event)"
-				hidden
-			/>
-
+				<input
+					#fileInput
+					type="file"
+					accept="image/*"
+					(change)="onFileSelected($event)"
+					hidden
+				/>
 			</dav-icon-card>
 			<div class="image-preview" *ngIf="imageDataUrl">
-				<img [src]="imageDataUrl"/>
+				<img [src]="imageDataUrl" />
 			</div>
-			
-			
-
-
 		</div>
 	</div>
 </div>
@@ -182,9 +173,7 @@
 	[taxNumber]="taxNumber"
 	[taxNumberError]="taxNumberError"
 	(primaryButtonClick)="editOwnerDialogPrimaryButtonClick($event)"
-	(clearErrors)="
-		ownerError = ''; taxNumberError = ''
-	"
+	(clearErrors)="ownerError = ''; taxNumberError = ''"
 ></app-edit-owner-dialog>
 
 <app-edit-contact-info-dialog
@@ -195,7 +184,5 @@
 	[phoneNumber]="phoneNumber"
 	[phoneNumberError]="phoneNumberError"
 	(primaryButtonClick)="editContactInfoDialogPrimaryButtonClick($event)"
-	(clearErrors)="
-		mailError = ''; phoneNumberError = ''
-	"
+	(clearErrors)="mailError = ''; phoneNumberError = ''"
 ></app-edit-contact-info-dialog>

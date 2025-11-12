@@ -42,9 +42,62 @@
 			</div>
 		</dav-card>
 
+		<dav-card>
+			<div class="address-card-container">
+				<fa-icon [icon]="faLocationDot"></fa-icon>
+
+				<div class="address-card-content">
+					@if (owner || taxNumber) {
+						@if (owner) {
+							<p>{{ owner }}</p>
+						}
+						@if (taxNumber) {
+							<p>{{ taxNumber }}</p>
+						}
+					} 
+				</div>
+
+				<dav-icon-button size="xs" (click)="showEditOwnerDialog()">
+					<fa-icon [icon]="faPen"></fa-icon>
+				</dav-icon-button>
+			</div>
+		</dav-card>
+
+		<dav-card>
+			<div class="address-card-container">
+				<fa-icon [icon]="faLocationDot"></fa-icon>
+
+				<div class="address-card-content">
+					@if (mail || phoneNumber) {
+						@if (mail) {
+							<p>{{ mail }}</p>
+						}
+						@if (phoneNumber) {
+							<p>{{ phoneNumber }}</p>
+						}
+					} 
+				</div>
+
+				<dav-icon-button size="xs" (click)="showEditContactInfoDialog()">
+					<fa-icon [icon]="faPen"></fa-icon>
+				</dav-icon-button>
+			</div>
+		</dav-card>
+
+	
+
 		<div class="separator"></div>
 
 		<div class="actions-container">
+
+			<dav-icon-card
+				[text]="locale.manageTime"
+				[href]="'/user/restaurants/' + uuid + '/openingTime'"
+				(click)="navigateToTimePage($event)"
+			>
+				<fa-icon [icon]="faPrint"></fa-icon>
+			</dav-icon-card>
+
 			<dav-icon-card
 				[text]="locale.manageRegisters"
 				[href]="'/user/restaurants/' + uuid + '/registers'"
@@ -68,6 +121,29 @@
 			>
 				<fa-icon [icon]="faSeat"></fa-icon>
 			</dav-icon-card>
+
+			<!--Image for Restaurant-->
+			<dav-icon-card
+			[text]="locale.addPicture"
+			(click)="triggerFileInput(fileInput)"
+			>
+
+			<input
+				#fileInput
+				type="file"
+				accept="image/*"
+				(change)="onFileSelected($event)"
+				hidden
+			/>
+
+			</dav-icon-card>
+			<div class="image-preview" *ngIf="imageDataUrl">
+				<img [src]="imageDataUrl"/>
+			</div>
+			
+			
+
+
 		</div>
 	</div>
 </div>
@@ -97,3 +173,29 @@
 		cityError = ''; line1Error = ''; line2Error = ''; postalCodeError = ''
 	"
 ></app-edit-address-dialog>
+
+<app-edit-owner-dialog
+	#editOwnerDialog
+	[loading]="editOwnerDialogLoading"
+	[owner]="owner"
+	[ownerError]="ownerError"
+	[taxNumber]="taxNumber"
+	[taxNumberError]="taxNumberError"
+	(primaryButtonClick)="editOwnerDialogPrimaryButtonClick($event)"
+	(clearErrors)="
+		ownerError = ''; taxNumberError = ''
+	"
+></app-edit-owner-dialog>
+
+<app-edit-contact-info-dialog
+	#editContactInfoDialog
+	[loading]="editContactInfoDialogLoading"
+	[mail]="mail"
+	[mailError]="mailError"
+	[phoneNumber]="phoneNumber"
+	[phoneNumberError]="phoneNumberError"
+	(primaryButtonClick)="editContactInfoDialogPrimaryButtonClick($event)"
+	(clearErrors)="
+		mailError = ''; phoneNumberError = ''
+	"
+></app-edit-contact-info-dialog>

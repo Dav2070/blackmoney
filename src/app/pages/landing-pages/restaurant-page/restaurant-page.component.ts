@@ -13,6 +13,8 @@ import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaura
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
 import * as ErrorCodes from "src/app/errorCodes"
+import { EditOwnerDialogComponent } from "src/app/dialogs/edit-owner-dialog/edit-owner-dialog.component"
+import { EditContactInfoDialogComponent } from "src/app/dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
 
 @Component({
 	templateUrl: "./restaurant-page.component.html",
@@ -41,6 +43,18 @@ export class RestaurantPageComponent {
 	postalCode: string = ""
 	postalCodeError: string = ""
 
+	owner: string = "TestOwner"
+	ownerError: string = ""
+	taxNumber: string = "TestTaxNumber"
+	taxNumberError: string = ""
+	phoneNumber: string = "0179123456789"
+	phoneNumberError: string = ""
+	mail: string = "testmail@mail.de"
+	mailError: string = ""
+
+	imageDataUrl: string | null = null;
+	maxFileSizeBytes = 1080 * 960;
+
 	//#region EditRestaurantNameDialog
 	@ViewChild("editRestaurantNameDialog")
 	editRestaurantNameDialog: EditRestaurantNameDialogComponent
@@ -51,6 +65,16 @@ export class RestaurantPageComponent {
 	@ViewChild("editAddressDialog")
 	editAddressDialog: EditAddressDialogComponent
 	editAddressDialogLoading: boolean = false
+
+	//#region EditOwnderDialog
+	@ViewChild("editOwnerDialog")
+	editOwnerDialog: EditOwnerDialogComponent
+	editOwnerDialogLoading: boolean = false
+
+	//#region EditOwnderDialog
+	@ViewChild("editContactInfoDialog")
+	editContactInfoDialog: EditContactInfoDialogComponent
+	editContactInfoDialogLoading: boolean = false
 	//#endregion
 
 	constructor(
@@ -112,6 +136,12 @@ export class RestaurantPageComponent {
 		this.router.navigate(["user", "restaurants", this.uuid, "rooms"])
 	}
 
+	navigateToTimePage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "restaurants", this.uuid, "openingTime"])
+	}
+
 	showEditRestaurantNameDialog() {
 		this.editRestaurantNameDialogLoading = false
 		this.editRestaurantNameDialog.show()
@@ -120,6 +150,32 @@ export class RestaurantPageComponent {
 	showEditAddressDialog() {
 		this.editAddressDialogLoading = false
 		this.editAddressDialog.show()
+	}
+
+	showEditOwnerDialog() {
+		this.editOwnerDialogLoading = false
+		this.editOwnerDialog.line1Name = 'Inhaber'
+		this.editOwnerDialog.line2Name = 'Steuernummer'
+		this.editOwnerDialog.show()
+	}
+
+	showEditContactInfoDialog() {
+		this.editContactInfoDialogLoading = false
+		this.editContactInfoDialog.line1Name = 'E-Mail'
+		this.editContactInfoDialog.line2Name = 'Telefon'
+		this.editContactInfoDialog.show()
+	}
+
+	editOwnerDialogPrimaryButtonClick(event: { name: string }) {
+		this.owner = this.editOwnerDialog.line1
+		this.taxNumber = this.editOwnerDialog.line2
+		this.editOwnerDialog.hide()
+	}
+
+	editContactInfoDialogPrimaryButtonClick(event: { name: string }) {
+		this.mail = this.editContactInfoDialog.line1
+		this.phoneNumber = this.editContactInfoDialog.line2
+		this.editContactInfoDialog.hide()
 	}
 
 	showRoomAdministrationDialog() {
@@ -229,5 +285,32 @@ export class RestaurantPageComponent {
 				}
 			}
 		}
+	}
+// Imput Picture
+	triggerFileInput(fileInput: HTMLInputElement) {
+		fileInput.click();
+	}
+
+	onFileSelected(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (!input.files || input.files.length === 0) {
+			return;
+		}
+		const file = input.files[0];
+
+		// optional: einfache Validierung
+		if (!file.type.startsWith('image/')) {
+			return;
+		}
+		if (file.size > this.maxFileSizeBytes) {
+			// Datei zu groß 
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			this.imageDataUrl = reader.result as string;
+		};
+		reader.readAsDataURL(file);
 	}
 }

@@ -49,10 +49,14 @@ export const de = {
 		addAddress: "Adresse angeben",
 		managePrinters: "Drucker verwalten",
 		manageRooms: "Räume verwalten",
-		manageRegisters: "Kassen verwalten"
+		manageRegisters: "Kassen verwalten",
+		manageTime: "Öffnungszeiten verwalten",
+		addPicture: "Bild hinzufügen"
 	},
 	registersPage: {
-		headline: "Deine Kassen"
+		headline: "Deine Kassen",
+		manageTime: "Öffnungszeiten verwalten",
+		addPicture: "Bild hinzufügen"
 	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"

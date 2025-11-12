@@ -9,92 +9,86 @@
 			{{ name }}
 		</dav-header>
 
-		<dav-card>
-			<div class="address-card-container">
-				<fa-icon [icon]="faLocationDot"></fa-icon>
+		<div class="cards-container">
+			<dav-card>
+				<div class="address-card-container">
+					<fa-icon [icon]="faLocationDot"></fa-icon>
 
-				<div class="address-card-content">
-					@if (city || country || line1 || line2 || postalCode) {
-						@if (line1) {
-							<p>{{ line1 }}</p>
+					<div class="address-card-content">
+						@if (city || country || line1 || line2 || postalCode) {
+							@if (line1) {
+								<p>{{ line1 }}</p>
+							}
+							@if (line2) {
+								<p>{{ line2 }}</p>
+							}
+							@if (postalCode || city) {
+								<p>{{ postalCode }} {{ city }}</p>
+							}
+							@if (country) {
+								<p>{{ country === "DE" ? "Deutschland" : "" }}</p>
+							}
+						} @else {
+							<p class="no-address">{{ locale.addAddress }}</p>
 						}
-						@if (line2) {
-							<p>{{ line2 }}</p>
-						}
-						@if (postalCode || city) {
-							<p>{{ postalCode }} {{ city }}</p>
-						}
-						@if (country) {
-							<p>{{ country === "DE" ? "Deutschland" : "" }}</p>
-						}
-					} @else {
-						<p class="no-address">{{ locale.addAddress }}</p>
-					}
+					</div>
+
+					<dav-icon-button
+						size="xs"
+						[tooltip]="actionsLocale.edit"
+						(click)="showEditAddressDialog()"
+					>
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
 				</div>
+			</dav-card>
 
-				<dav-icon-button
-					size="xs"
-					[tooltip]="actionsLocale.edit"
-					(click)="showEditAddressDialog()"
-				>
-					<fa-icon [icon]="faPen"></fa-icon>
-				</dav-icon-button>
-			</div>
-		</dav-card>
+			<dav-card>
+				<div class="address-card-container">
+					<fa-icon [icon]="faShop"></fa-icon>
 
-		<dav-card>
-			<div class="address-card-container">
-				<fa-icon [icon]="faLocationDot"></fa-icon>
-
-				<div class="address-card-content">
-					@if (owner || taxNumber) {
-						@if (owner) {
-							<p>{{ owner }}</p>
+					<div class="address-card-content">
+						@if (owner || taxNumber) {
+							@if (owner) {
+								<p>{{ owner }}</p>
+							}
+							@if (taxNumber) {
+								<p>{{ taxNumber }}</p>
+							}
 						}
-						@if (taxNumber) {
-							<p>{{ taxNumber }}</p>
-						}
-					}
+					</div>
+
+					<dav-icon-button size="xs" (click)="showEditOwnerDialog()">
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
 				</div>
+			</dav-card>
 
-				<dav-icon-button size="xs" (click)="showEditOwnerDialog()">
-					<fa-icon [icon]="faPen"></fa-icon>
-				</dav-icon-button>
-			</div>
-		</dav-card>
+			<dav-card>
+				<div class="address-card-container">
+					<fa-icon [icon]="faAddressCard"></fa-icon>
 
-		<dav-card>
-			<div class="address-card-container">
-				<fa-icon [icon]="faLocationDot"></fa-icon>
-
-				<div class="address-card-content">
-					@if (mail || phoneNumber) {
-						@if (mail) {
-							<p>{{ mail }}</p>
+					<div class="address-card-content">
+						@if (mail || phoneNumber) {
+							@if (mail) {
+								<p>{{ mail }}</p>
+							}
+							@if (phoneNumber) {
+								<p>{{ phoneNumber }}</p>
+							}
 						}
-						@if (phoneNumber) {
-							<p>{{ phoneNumber }}</p>
-						}
-					}
+					</div>
+
+					<dav-icon-button size="xs" (click)="showEditContactInfoDialog()">
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
 				</div>
-
-				<dav-icon-button size="xs" (click)="showEditContactInfoDialog()">
-					<fa-icon [icon]="faPen"></fa-icon>
-				</dav-icon-button>
-			</div>
-		</dav-card>
+			</dav-card>
+		</div>
 
 		<div class="separator"></div>
 
 		<div class="actions-container">
-			<dav-icon-card
-				[text]="locale.manageTime"
-				[href]="'/user/restaurants/' + uuid + '/openingTime'"
-				(click)="navigateToTimePage($event)"
-			>
-				<fa-icon [icon]="faPrint"></fa-icon>
-			</dav-icon-card>
-
 			<dav-icon-card
 				[text]="locale.manageRegisters"
 				[href]="'/user/restaurants/' + uuid + '/registers'"
@@ -119,8 +113,16 @@
 				<fa-icon [icon]="faSeat"></fa-icon>
 			</dav-icon-card>
 
-			<!--Image for Restaurant-->
 			<dav-icon-card
+				[text]="locale.manageTime"
+				[href]="'/user/restaurants/' + uuid + '/openingTime'"
+				(click)="navigateToTimePage($event)"
+			>
+				<fa-icon [icon]="faClock"></fa-icon>
+			</dav-icon-card>
+
+			<!--Image for Restaurant-->
+			<!-- <dav-icon-card
 				[text]="locale.addPicture"
 				(click)="triggerFileInput(fileInput)"
 			>
@@ -132,9 +134,10 @@
 					hidden
 				/>
 			</dav-icon-card>
+
 			<div class="image-preview" *ngIf="imageDataUrl">
 				<img [src]="imageDataUrl" />
-			</div>
+			</div> -->
 		</div>
 	</div>
 </div>

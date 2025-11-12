@@ -7,7 +7,10 @@ import {
 	faPen,
 	faPrint,
 	faSeat,
-	faCashRegister
+	faCashRegister,
+	faShop,
+	faAddressCard,
+	faClock
 } from "@fortawesome/pro-regular-svg-icons"
 import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
@@ -30,6 +33,9 @@ export class RestaurantPageComponent {
 	faPrint = faPrint
 	faSeat = faSeat
 	faCashRegister = faCashRegister
+	faShop = faShop
+	faAddressCard = faAddressCard
+	faClock = faClock
 	uuid: string = null
 	name: string = ""
 	nameError: string = ""

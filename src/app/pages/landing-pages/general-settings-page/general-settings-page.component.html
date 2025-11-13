@@ -34,7 +34,7 @@
 
 						<dav-icon-button
 							size="xs"
-							(click)="showEditDeviceNameDialog()"
+							(click)="showEditRegisterClientNameDialog()"
 						>
 							<fa-icon [icon]="faPen"></fa-icon>
 						</dav-icon-button>
@@ -53,10 +53,10 @@
 	</div>
 </div>
 
-<app-edit-device-name-dialog
-	#editDeviceNameDialog
-	[name]="editDeviceNameDialogName"
-	[nameError]="editDeviceNameDialogNameError"
-	[loading]="editDeviceNameDialogLoading"
-	(primaryButtonClick)="editDeviceNameDialogPrimaryButtonClick($event)"
-></app-edit-device-name-dialog>
+<app-edit-register-client-name-dialog
+	#editRegisterClientNameDialog
+	[name]="editRegisterClientNameDialogName"
+	[nameError]="editRegisterClientNameDialogNameError"
+	[loading]="editRegisterClientNameDialogLoading"
+	(primaryButtonClick)="editRegisterClientNameDialogPrimaryButtonClick($event)"
+></app-edit-register-client-name-dialog>

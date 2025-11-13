@@ -44,7 +44,7 @@ import { OfferOrderItemCardComponent } from "./components/cash-register/offer-or
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
-import { EditDeviceNameDialogComponent } from "./dialogs/edit-device-name-dialog/edit-device-name-dialog.component"
+import { EditRegisterClientNameDialogComponent } from "./dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
@@ -124,7 +124,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		OfferOrderItemCardComponent,
 		// Dialog
 		LogoutDialogComponent,
-		EditDeviceNameDialogComponent,
+		EditRegisterClientNameDialogComponent,
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,

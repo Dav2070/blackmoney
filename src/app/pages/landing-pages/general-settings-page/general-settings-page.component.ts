@@ -2,7 +2,7 @@ import { Component, ViewChild } from "@angular/core"
 import { Router } from "@angular/router"
 import { faPen } from "@fortawesome/pro-regular-svg-icons"
 import { DropdownOption, DropdownOptionType } from "dav-ui-components"
-import { EditDeviceNameDialogComponent } from "src/app/dialogs/edit-device-name-dialog/edit-device-name-dialog.component"
+import { EditRegisterClientNameDialogComponent } from "src/app/dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
 import { SettingsService } from "src/app/services/settings-service"
 import { ApiService } from "src/app/services/api-service"
@@ -44,11 +44,11 @@ export class GeneralSettingsPageComponent {
 	]
 	serialNumber: string = ""
 
-	@ViewChild("editDeviceNameDialog")
-	editDeviceNameDialog: EditDeviceNameDialogComponent
-	editDeviceNameDialogName: string = ""
-	editDeviceNameDialogNameError: string = ""
-	editDeviceNameDialogLoading: boolean = false
+	@ViewChild("editRegisterClientNameDialog")
+	editRegisterClientNameDialog: EditRegisterClientNameDialogComponent
+	editRegisterClientNameDialogName: string = ""
+	editRegisterClientNameDialogNameError: string = ""
+	editRegisterClientNameDialogLoading: boolean = false
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -75,22 +75,25 @@ export class GeneralSettingsPageComponent {
 		this.dataService.loadTheme(selectedKey)
 	}
 
-	showEditDeviceNameDialog() {
-		this.editDeviceNameDialogName =
+	showEditRegisterClientNameDialog() {
+		this.editRegisterClientNameDialogName =
 			this.dataService.registerClient?.name ?? ""
-		this.editDeviceNameDialogNameError = ""
-		this.editDeviceNameDialog.show()
+		this.editRegisterClientNameDialogNameError = ""
+		this.editRegisterClientNameDialog.show()
 	}
 
-	async editDeviceNameDialogPrimaryButtonClick(event: { name: string }) {
+	async editRegisterClientNameDialogPrimaryButtonClick(event: {
+		name: string
+	}) {
 		const name = event.name.trim()
 
 		if (name.length === 0) {
-			this.editDeviceNameDialogNameError = this.errorsLocale.nameMissing
+			this.editRegisterClientNameDialogNameError =
+				this.errorsLocale.nameMissing
 			return
 		}
 
-		this.editDeviceNameDialogLoading = true
+		this.editRegisterClientNameDialogLoading = true
 
 		const updateRegisterClientResponse =
 			await this.apiService.updateRegisterClient(
@@ -105,14 +108,14 @@ export class GeneralSettingsPageComponent {
 				}
 			)
 
-		this.editDeviceNameDialogLoading = false
+		this.editRegisterClientNameDialogLoading = false
 
 		if (updateRegisterClientResponse.data?.updateRegisterClient != null) {
 			const responseData =
 				updateRegisterClientResponse.data.updateRegisterClient
 			this.dataService.registerClient =
 				convertRegisterClientResourceToRegisterClient(responseData)
-			this.editDeviceNameDialog.hide()
+			this.editRegisterClientNameDialog.hide()
 		} else {
 			const errors = getGraphQLErrorCodes(updateRegisterClientResponse)
 			if (errors == null) return
@@ -120,15 +123,15 @@ export class GeneralSettingsPageComponent {
 			for (const errorCode of errors) {
 				switch (errorCode) {
 					case ErrorCodes.nameTooShort:
-						this.editDeviceNameDialogNameError =
+						this.editRegisterClientNameDialogNameError =
 							this.errorsLocale.nameTooShort
 						break
 					case ErrorCodes.nameTooLong:
-						this.editDeviceNameDialogNameError =
+						this.editRegisterClientNameDialogNameError =
 							this.errorsLocale.nameTooLong
 						break
 					default:
-						this.editDeviceNameDialogNameError =
+						this.editRegisterClientNameDialogNameError =
 							this.errorsLocale.unexpectedError
 						break
 				}

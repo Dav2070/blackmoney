@@ -13,12 +13,12 @@ import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
-	selector: "app-edit-device-name-dialog",
-	templateUrl: "./edit-device-name-dialog.component.html",
+	selector: "app-edit-register-client-name-dialog",
+	templateUrl: "./edit-register-client-name-dialog.component.html",
 	standalone: false
 })
-export class EditDeviceNameDialogComponent {
-	locale = this.localizationService.locale.dialogs.editDeviceNameDialog
+export class EditRegisterClientNameDialogComponent {
+	locale = this.localizationService.locale.dialogs.editRegisterClientNameDialog
 	actionsLocale = this.localizationService.locale.actions
 
 	visible: boolean = false

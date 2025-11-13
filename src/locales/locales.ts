@@ -133,7 +133,7 @@ export const de = {
 			headline: "Abmelden",
 			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
 		},
-		editDeviceNameDialog: {
+		editRegisterClientNameDialog: {
 			headline: "Gerätename bearbeiten",
 			name: "Gerätename"
 		},

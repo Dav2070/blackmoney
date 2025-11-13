@@ -34,6 +34,7 @@ export class RegisterPageComponent {
 
 		const retrieveRegisterResponse = await this.apiService.retrieveRegister(
 			`
+				uuid
 				name
 				registerClients {
 					items {

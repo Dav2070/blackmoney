@@ -1,7 +1,20 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header backButtonVisible (backButtonClick)="navigateBack()">
+		<dav-header
+			backButtonVisible
+			editButtonVisible
+			(backButtonClick)="navigateBack()"
+			(editButtonClick)="showEditRegisterClientNameDialog()"
+		>
 			{{ registerClient?.name ?? registerClient?.serialNumber }}
 		</dav-header>
 	</div>
 </div>
+
+<app-edit-register-client-name-dialog
+	#editRegisterClientNameDialog
+	[name]="editRegisterClientNameDialogName"
+	[nameError]="editRegisterClientNameDialogNameError"
+	[loading]="editRegisterClientNameDialogLoading"
+	(primaryButtonClick)="editRegisterClientNameDialogPrimaryButtonClick($event)"
+></app-edit-register-client-name-dialog>

@@ -1309,64 +1309,72 @@ export class BookingPageComponent {
 
 	//Füge selektiertes Item hinzu
 	addSelectedItem(orderItem: OrderItem) {
-		if (orderItem.type === OrderItemType.Menu) {
-			// Bestimme Ziel-Handler (wenn ausgewählt: tmpAllItemHandler, sonst stagedItems)
-			const handler =
-				this.tmpAllItemHandler === this.bookedItems
-					? this.bookedItems
-					: this.stagedItems
+		if (
+			orderItem.type === OrderItemType.Menu ||
+			orderItem.type === OrderItemType.Special
+		) {
+			if (
+				orderItem.type === OrderItemType.Special &&
+				orderItem.orderItems[0].product.variations.length > 0
+			) {
+				this.lastClickedItem = orderItem.orderItems[0].product
 
-			const delta = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
+				for (let variationItem of this.lastClickedItem.variations[
+					this.tmpCountVariations
+				].variationItems) {
+					this.tmpPickedVariationResource.push(
+						new Map<number, TmpVariations[]>().set(0, [
+							{
+								uuid: variationItem.uuid,
+								count: 0,
+								max: undefined,
+								lastPickedVariation: undefined,
+								combination: variationItem.name,
+								display: variationItem.name,
+								pickedVariation: [variationItem]
+							}
+						])
+					)
+				}
 
-			// Erstelle eine Kopie des OrderItems mit der zu addierenden Anzahl
-			const incoming: OrderItem = JSON.parse(JSON.stringify(orderItem))
+				this.selectProductVariationsDialog.show()
+			} else {
+				// Bestimme Ziel-Handler (wenn ausgewählt: tmpAllItemHandler, sonst stagedItems)
+				const handler =
+					this.tmpAllItemHandler === this.bookedItems
+						? this.bookedItems
+						: this.stagedItems
 
-			// Ursprunglicher Parent-Count (falls 0: Fehler vermeiden)
-			const originalParentCount =
-				orderItem.count && orderItem.count > 0 ? orderItem.count : 1
-			incoming.count = delta
+				const delta = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-			// Skaliere Subitems und deren Variationen pro Einheit (per-unit), dann mit delta multiplizieren
-			for (const sub of incoming.orderItems ?? []) {
-				const perUnitSubCount = (sub.count ?? 0) / originalParentCount
-				sub.count = Math.round(perUnitSubCount * delta)
+				// Erstelle eine Kopie des OrderItems mit der zu addierenden Anzahl
+				const incoming: OrderItem = JSON.parse(JSON.stringify(orderItem))
 
-				if (sub.orderItemVariations?.length) {
-					for (const v of sub.orderItemVariations) {
-						const perUnitVarCount = (v.count ?? 0) / originalParentCount
-						v.count = Math.round(perUnitVarCount * delta)
+				// Ursprunglicher Parent-Count (falls 0: Fehler vermeiden)
+				const originalParentCount =
+					orderItem.count && orderItem.count > 0 ? orderItem.count : 1
+				incoming.count = delta
+
+				// Skaliere Subitems und deren Variationen pro Einheit (per-unit), dann mit delta multiplizieren
+				for (const sub of incoming.orderItems ?? []) {
+					const perUnitSubCount = (sub.count ?? 0) / originalParentCount
+					sub.count = Math.round(perUnitSubCount * delta)
+
+					if (sub.orderItemVariations?.length) {
+						for (const v of sub.orderItemVariations) {
+							const perUnitVarCount =
+								(v.count ?? 0) / originalParentCount
+							v.count = Math.round(perUnitVarCount * delta)
+						}
 					}
 				}
+
+				// Delegiere an den AllItemHandler / Merger
+				handler.pushNewItem(incoming)
+
+				this.tmpAnzahl = undefined
+				this.showTotal()
 			}
-
-			// Delegiere an den AllItemHandler / Merger
-			handler.pushNewItem(incoming)
-
-			this.tmpAnzahl = undefined
-			this.showTotal()
-		} else if (orderItem.type === OrderItemType.Special) {
-			console.log("Special clicked")
-			this.lastClickedItem = orderItem.orderItems[0].product
-
-			for (let variationItem of this.lastClickedItem.variations[
-				this.tmpCountVariations
-			].variationItems) {
-				this.tmpPickedVariationResource.push(
-					new Map<number, TmpVariations[]>().set(0, [
-						{
-							uuid: variationItem.uuid,
-							count: 0,
-							max: undefined,
-							lastPickedVariation: undefined,
-							combination: variationItem.name,
-							display: variationItem.name,
-							pickedVariation: [variationItem]
-						}
-					])
-				)
-			}
-
-			this.selectProductVariationsDialog.show()
 		} else {
 			this.clickItem(orderItem.product, orderItem.note)
 		}

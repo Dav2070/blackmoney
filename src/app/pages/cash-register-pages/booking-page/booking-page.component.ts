@@ -510,6 +510,7 @@ export class BookingPageComponent {
 		if (product.variations.length === 0) {
 			newItem.count = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
+			this.stagedItems.pushNewItem(newItem)
 			this.showTotal()
 		} else {
 			// Öffnet Popup für Variationen

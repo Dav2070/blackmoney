@@ -495,6 +495,7 @@ export class BookingPageComponent {
 	// Füge item zu stagedItems hinzu
 	clickItem(product: Product, note?: string) {
 		if (product == null) return
+		this.selectedItem = undefined
 
 		let newItem: OrderItem = {
 			uuid: crypto.randomUUID(),
@@ -508,7 +509,6 @@ export class BookingPageComponent {
 
 		if (product.variations.length === 0) {
 			newItem.count = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
-			this.stagedItems.pushNewItem(newItem)
 
 			this.showTotal()
 		} else {
@@ -667,25 +667,30 @@ export class BookingPageComponent {
 					this.minusUsed = true
 					this.isItemPopupVisible = true
 				}
-			} else if (this.selectedItem.orderItemVariations.length > 0) {
-				//Wenn Item Variationen enthält
-				this.tmpSelectedItem = JSON.parse(JSON.stringify(this.selectedItem))
-				this.minusUsed = true
-				this.isItemPopupVisible = true
-			} else if (this.tmpAnzahl > 0) {
-				//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
-				if (this.selectedItem.count >= this.tmpAnzahl) {
-					this.selectedItem.count -= this.tmpAnzahl
-				} else {
-					window.alert("Anzahl ist zu hoch")
-				}
-
-				this.removeEmptyItem(this.stagedItems)
-				this.showTotal()
 			} else {
-				this.selectedItem.count -= 1
-				this.removeEmptyItem(this.stagedItems)
-				this.showTotal()
+				if (this.selectedItem.orderItemVariations.length > 0) {
+					//Wenn Item Variationen enthält
+					this.tmpSelectedItem = JSON.parse(
+						JSON.stringify(this.selectedItem)
+					)
+					this.minusUsed = true
+					this.isItemPopupVisible = true
+					this.removeEmptyItem(this.stagedItems)
+				} else if (this.tmpAnzahl > 0) {
+					//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+					if (this.selectedItem.count >= this.tmpAnzahl) {
+						this.selectedItem.count -= this.tmpAnzahl
+					} else {
+						window.alert("Anzahl ist zu hoch")
+					}
+
+					this.removeEmptyItem(this.stagedItems)
+					this.showTotal()
+				} else {
+					this.selectedItem.count -= 1
+					this.removeEmptyItem(this.stagedItems)
+					this.showTotal()
+				}
 			}
 		}
 	}
@@ -787,9 +792,21 @@ export class BookingPageComponent {
 				variationItems
 			})
 		}
+		if (this.selectedItem?.type === OrderItemType.Special) {
+			let incoming = JSON.parse(JSON.stringify(this.selectedItem))
 
-		newItem.count = newItem.orderItemVariations.length
-		this.stagedItems.pushNewItem(newItem)
+			newItem.count = 0
+			for (let variation of newItem.orderItemVariations) {
+				newItem.count += variation.count
+			}
+			incoming.orderItems = [newItem]
+			incoming.count = newItem.count
+			console.log(incoming)
+			this.stagedItems.pushNewItem(incoming)
+		} else {
+			newItem.count = newItem.orderItemVariations.length
+			this.stagedItems.pushNewItem(newItem)
+		}
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu
@@ -1291,10 +1308,7 @@ export class BookingPageComponent {
 
 	//Füge selektiertes Item hinzu
 	addSelectedItem(orderItem: OrderItem) {
-		if (
-			orderItem.type === OrderItemType.Menu ||
-			orderItem.type === OrderItemType.Special
-		) {
+		if (orderItem.type === OrderItemType.Menu) {
 			// Bestimme Ziel-Handler (wenn ausgewählt: tmpAllItemHandler, sonst stagedItems)
 			const handler =
 				this.tmpAllItemHandler === this.bookedItems
@@ -1329,6 +1343,29 @@ export class BookingPageComponent {
 
 			this.tmpAnzahl = undefined
 			this.showTotal()
+		} else if (orderItem.type === OrderItemType.Special) {
+			console.log("Special clicked")
+			this.lastClickedItem = orderItem.orderItems[0].product
+
+			for (let variationItem of this.lastClickedItem.variations[
+				this.tmpCountVariations
+			].variationItems) {
+				this.tmpPickedVariationResource.push(
+					new Map<number, TmpVariations[]>().set(0, [
+						{
+							uuid: variationItem.uuid,
+							count: 0,
+							max: undefined,
+							lastPickedVariation: undefined,
+							combination: variationItem.name,
+							display: variationItem.name,
+							pickedVariation: [variationItem]
+						}
+					])
+				)
+			}
+
+			this.selectProductVariationsDialog.show()
 		} else {
 			this.clickItem(orderItem.product, orderItem.note)
 		}

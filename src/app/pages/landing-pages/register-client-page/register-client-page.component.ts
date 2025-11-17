@@ -1,6 +1,7 @@
 import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
 import { EditRegisterClientNameDialogComponent } from "src/app/dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
+import { AddPrintRuleDialogComponent } from "src/app/dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
 import { RegisterClient } from "src/app/models/RegisterClient"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
@@ -16,6 +17,7 @@ import * as ErrorCodes from "src/app/errorCodes"
 	standalone: false
 })
 export class RegisterClientPageComponent {
+	locale = this.localizationService.locale.registerClientPage
 	errorsLocale = this.localizationService.locale.errors
 	restaurantUuid: string = null
 	registerUuid: string = null
@@ -27,6 +29,10 @@ export class RegisterClientPageComponent {
 	editRegisterClientNameDialogName: string = ""
 	editRegisterClientNameDialogNameError: string = ""
 	editRegisterClientNameDialogLoading: boolean = false
+
+	@ViewChild("addPrintRuleDialog")
+	addPrintRuleDialog: AddPrintRuleDialogComponent
+	addPrintRuleDialogLoading: boolean = false
 
 	constructor(
 		private dataService: DataService,
@@ -81,6 +87,10 @@ export class RegisterClientPageComponent {
 		this.editRegisterClientNameDialogName = this.registerClient.name
 		this.editRegisterClientNameDialogNameError = ""
 		this.editRegisterClientNameDialog.show()
+	}
+
+	showAddPrintRuleDialog() {
+		this.addPrintRuleDialog.show()
 	}
 
 	async editRegisterClientNameDialogPrimaryButtonClick(event: {
@@ -139,4 +149,6 @@ export class RegisterClientPageComponent {
 			}
 		}
 	}
+
+	async addPrintRuleDialogPrimaryButtonClick(event: {}) {}
 }

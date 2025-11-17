@@ -58,6 +58,9 @@ export const de = {
 		manageTime: "Öffnungszeiten verwalten",
 		addPicture: "Bild hinzufügen"
 	},
+	registerClientPage: {
+		printRulesHeadline: "Druckregeln"
+	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"
 	},
@@ -206,6 +209,9 @@ export const de = {
 			line2: "Sitzplätze",
 			line3: "Anzahl Tische",
 			line4: "Anfangs Tischnummer"
+		},
+		addPrintRuleDialog: {
+			headline: "Druckregel hinzufügen"
 		},
 		resetPasswordDialog: {
 			headline: "Passwort zurücksetzen",

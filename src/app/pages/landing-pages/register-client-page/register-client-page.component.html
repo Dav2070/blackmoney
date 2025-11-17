@@ -8,6 +8,16 @@
 		>
 			{{ registerClient?.name ?? registerClient?.serialNumber }}
 		</dav-header>
+
+		<div>
+			<dav-header
+				size="sm"
+				addButtonVisible
+				(addButtonClick)="showAddPrintRuleDialog()"
+			>
+				{{ locale.printRulesHeadline }}
+			</dav-header>
+		</div>
 	</div>
 </div>
 
@@ -18,3 +28,9 @@
 	[loading]="editRegisterClientNameDialogLoading"
 	(primaryButtonClick)="editRegisterClientNameDialogPrimaryButtonClick($event)"
 ></app-edit-register-client-name-dialog>
+
+<app-add-print-rule-dialog
+	#addPrintRuleDialog
+	[loading]="addPrintRuleDialogLoading"
+	(primaryButtonClick)="addPrintRuleDialogPrimaryButtonClick($event)"
+></app-add-print-rule-dialog>

@@ -61,7 +61,7 @@ export class OrderItemsArrayMerger {
 		if (a.discount !== b.discount) return false
 		if (a.takeAway !== b.takeAway) return false
 		if (a.course !== b.course) return false
-		if (a.offer.id !== b.offer.id) return false
+		if (a.offer?.id !== b.offer?.id) return false
 		if (a.product.id !== b.product.id) return false
 
 		// Variations: Struktur (variationItems) muss gleich sein (counts dürfen abweichen)

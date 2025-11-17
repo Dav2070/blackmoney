@@ -109,6 +109,7 @@ export class AllItemHandler {
 		}
 	}
 
+	// TODO: In eigene Datei auslagern
 	// Bereinigt alle Items im Handler von Elementen mit count 0
 	removeEmptyItems() {
 		// Durchlaufe alle Items und bereinige sie
@@ -125,6 +126,7 @@ export class AllItemHandler {
 		}
 	}
 
+	// TODO: In eigene Datei auslagern
 	removeEmptyOrderItems(orderItem: OrderItem) {
 		if (orderItem.orderItems) {
 			for (let i = orderItem.orderItems.length - 1; i >= 0; i--) {
@@ -140,6 +142,7 @@ export class AllItemHandler {
 		}
 	}
 
+	// TODO: In eigene Datei auslagern
 	removeEmptyOrderItemVariations(orderItemVariation: OrderItemVariation[]) {
 		if (orderItemVariation) {
 			for (let i = orderItemVariation.length - 1; i >= 0; i--) {
@@ -162,7 +165,6 @@ export class AllItemHandler {
 
 	// consolidateItems delegiert an dieselbe Merge-Implementierung
 	consolidateItems(changedItem: OrderItem) {
-		//const target = this.merger.findMergeTargetConsolidate(changedItem)
 		const target = this.merger.findMergeTarget(changedItem)
 		if (!target || target === changedItem) return
 
@@ -198,19 +200,6 @@ export class AllItemHandler {
 		})
 	}
 
-	// Gibt den Gesamtpreis der Variationen zurück
-	getTotalVariationPrice(pickedVariation: Variation[]): number {
-		let total = 0
-
-		for (let variation of pickedVariation) {
-			for (let variationItem of variation.variationItems) {
-				//total += variationItem.price * variationItem.count
-			}
-		}
-
-		return total
-	}
-
 	// Gibt den Preis eines OfferOrderItems aus dem jeweiligen Handler zurück
 	getTotalMenuPrice(pickedItem: OrderItem): number {
 		let total = 0
@@ -239,10 +228,6 @@ export class AllItemHandler {
 		}
 	}
 
-	deleteVariation(pickedItem: OrderItem): void {
-		/* placeholder */
-	}
-
 	getItem(id: number, note?: string): OrderItem {
 		if (note !== undefined) {
 			return this.allPickedItems.find(
@@ -254,12 +239,7 @@ export class AllItemHandler {
 
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
 	includes(pickedItem: OrderItem): boolean {
-		return this.allPickedItems.some(
-			item =>
-				item.product.id === pickedItem.product.id &&
-				item.uuid === pickedItem.uuid &&
-				item.note === pickedItem.note
-		)
+		return this.merger.findMergeTarget(pickedItem) != undefined
 	}
 
 	// Reduziere Item oder Lösche es wenn Item = 0

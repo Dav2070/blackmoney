@@ -25,7 +25,7 @@ export class OrderItemsArrayMerger {
 				existing.orderItems[0],
 				incoming.orderItems[0]
 			)
-		} 
+		}
 		//Wenn OrderItemType === Menu
 		else {
 			for (const incItem of incoming.orderItems) {
@@ -57,20 +57,12 @@ export class OrderItemsArrayMerger {
 		if (!a || !b) return false
 
 		if (a.type !== b.type) return false
-		if ((a.note ?? "") !== (b.note ?? "")) return false
-		if ((a.discount ?? 0) !== (b.discount ?? 0)) return false
-		if ((a.takeAway ?? false) !== (b.takeAway ?? false)) return false
-		if ((a.course ?? 0) !== (b.course ?? 0)) return false
-
-		const aOfferId = (a.offer as any)?.uuid ?? (a.offer as any)?.id ?? null
-		const bOfferId = (b.offer as any)?.uuid ?? (b.offer as any)?.id ?? null
-		if (aOfferId !== bOfferId) return false
-
-		const aProductId =
-			(a.product as any)?.id ?? (a.product as any)?.uuid ?? null
-		const bProductId =
-			(b.product as any)?.id ?? (b.product as any)?.uuid ?? null
-		if (aProductId !== bProductId) return false
+		if (a.note !== b.note) return false
+		if (a.discount !== b.discount) return false
+		if (a.takeAway !== b.takeAway) return false
+		if (a.course !== b.course) return false
+		if (a.offer.id !== b.offer.id) return false
+		if (a.product.id !== b.product.id) return false
 
 		// Variations: Struktur (variationItems) muss gleich sein (counts dürfen abweichen)
 		if (

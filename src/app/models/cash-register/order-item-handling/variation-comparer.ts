@@ -39,12 +39,8 @@ export class VariationComparer {
 	// Two OrderItemVariation are considered equal if their variationItems arrays
 	// contain the same item ids/uuids (count and variation/variation-uuid ignored).
 	isVariationItemEqual(a: OrderItemVariation, b: OrderItemVariation): boolean {
-		const aItems = (a?.variationItems ?? []).map(
-			vi => (vi as any)?.id ?? (vi as any)?.uuid ?? String(vi)
-		)
-		const bItems = (b?.variationItems ?? []).map(
-			vi => (vi as any)?.id ?? (vi as any)?.uuid ?? String(vi)
-		)
+		const aItems = (a?.variationItems ?? []).map(vi => vi.id)
+		const bItems = (b?.variationItems ?? []).map(vi => vi.id)
 
 		if (aItems.length !== bItems.length) return false
 

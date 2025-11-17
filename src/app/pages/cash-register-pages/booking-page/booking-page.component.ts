@@ -57,7 +57,7 @@ import {
 	convertOrderResourceToOrder,
 	showToast
 } from "src/app/utils"
-import { AllItemHandler } from "src/app/models/cash-register/orderItemHandling/all-item-handler.model"
+import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
 
 const mobileBreakpoint = 860

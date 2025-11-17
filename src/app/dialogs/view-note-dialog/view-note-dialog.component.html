@@ -1,9 +1,7 @@
 <dav-dialog
 	#dialog
 	[headline]="locale.headline"
-	[primaryButtonText]="
-		showEditButton ? actionsLocale.edit : actionsLocale.hide
-	"
+	[primaryButtonText]="showEditButton ? actionsLocale.edit : ''"
 	[defaultButtonText]="actionsLocale.close"
 	[visible]="visible"
 	maxWidth="450"

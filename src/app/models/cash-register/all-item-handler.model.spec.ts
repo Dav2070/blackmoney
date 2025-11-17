@@ -1,4 +1,4 @@
-import { AllItemHandler } from "./orderItemHandling/all-item-handler.model"
+import { AllItemHandler } from "./order-item-handling/all-item-handler.model"
 
 describe("ItemHandler", () => {
 	it("should create an instance", () => {

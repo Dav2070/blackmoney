@@ -244,7 +244,6 @@ export const de = {
 		edit: "Bearbeiten",
 		delete: "Löschen",
 		close: "Schließen",
-		hide: "",
 		reset: "Zurücksetzen"
 	},
 	errors: {

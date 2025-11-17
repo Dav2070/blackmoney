@@ -1,4 +1,5 @@
 import { OrderItem } from "src/app/models/OrderItem"
+import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { Variation } from "src/app/models/Variation"
 import { ApiService } from "src/app/services/api-service"
 import {
@@ -105,6 +106,48 @@ export class AllItemHandler {
 		} else {
 			// Kein Match -> neues Item einfügen
 			this.insertAtIndex(incoming, index)
+		}
+	}
+
+	// Bereinigt alle Items im Handler von Elementen mit count 0
+	removeEmptyItems() {
+		// Durchlaufe alle Items und bereinige sie
+		for (let i = this.allPickedItems.length - 1; i >= 0; i--) {
+			const item = this.allPickedItems[i]
+
+			// Prüfe Haupt-Item count
+			if (item.count <= 0) {
+				this.allPickedItems.splice(i, 1)
+				continue
+			}
+			this.removeEmptyOrderItemVariations(item.orderItemVariations)
+			this.removeEmptyOrderItems(item)
+		}
+	}
+
+	removeEmptyOrderItems(orderItem: OrderItem) {
+		if (orderItem.orderItems) {
+			for (let i = orderItem.orderItems.length - 1; i >= 0; i--) {
+				const subItem = orderItem.orderItems[i]
+				// Prüfe Sub-Item count
+				if (subItem.count <= 0) {
+					orderItem.orderItems.splice(i, 1)
+					continue
+				}
+				this.removeEmptyOrderItemVariations(subItem.orderItemVariations)
+				this.removeEmptyOrderItems(subItem)
+			}
+		}
+	}
+
+	removeEmptyOrderItemVariations(orderItemVariation: OrderItemVariation[]) {
+		if (orderItemVariation) {
+			for (let i = orderItemVariation.length - 1; i >= 0; i--) {
+				const variation = orderItemVariation[i]
+				if (variation.count <= 0) {
+					orderItemVariation.splice(i, 1)
+				}
+			}
 		}
 	}
 

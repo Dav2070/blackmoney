@@ -541,10 +541,7 @@ export class BookingPageComponent {
 
 	// Verringert Item um 1 oder Anzahl in Konsole
 	async subtractitem(orderItem: OrderItem) {
-		if (
-			orderItem.type === OrderItemType.Menu ||
-			orderItem.type === OrderItemType.Special
-		) {
+		if (orderItem.type === OrderItemType.Menu) {
 			if (this.tmpAllItemHandler === this.bookedItems) {
 				if (this.tmpAnzahl > 0) {
 					for (let i = 0; i < orderItem.orderItems.length; i++) {
@@ -591,7 +588,7 @@ export class BookingPageComponent {
 				}
 
 				this.tmpAnzahl = undefined
-				this.removeEmptyItem(this.bookedItems)
+				this.bookedItems.removeEmptyItems()
 				this.showTotal()
 			} else {
 				if (this.tmpAnzahl > 0) {
@@ -639,9 +636,15 @@ export class BookingPageComponent {
 				}
 
 				this.tmpAnzahl = undefined
-				this.removeEmptyItem(this.stagedItems)
+				this.stagedItems.removeEmptyItems()
 				this.showTotal()
 			}
+		} else if (orderItem.type === OrderItemType.Special) {
+			this.tmpSelectedItem = JSON.parse(
+				JSON.stringify(this.selectedItem.orderItems[0])
+			)
+			this.minusUsed = true
+			this.isItemPopupVisible = true
 		} else {
 			// Bestehende OrderItem Logik
 			if (this.tmpAllItemHandler === this.bookedItems) {
@@ -657,7 +660,7 @@ export class BookingPageComponent {
 					}
 
 					this.sendOrderItem(this.selectedItem)
-					this.removeEmptyItem(this.bookedItems)
+					this.bookedItems.removeEmptyItems()
 
 					this.showTotal()
 				} else {
@@ -676,7 +679,6 @@ export class BookingPageComponent {
 					)
 					this.minusUsed = true
 					this.isItemPopupVisible = true
-					this.removeEmptyItem(this.stagedItems)
 				} else if (this.tmpAnzahl > 0) {
 					//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
 					if (this.selectedItem.count >= this.tmpAnzahl) {
@@ -685,11 +687,11 @@ export class BookingPageComponent {
 						window.alert("Anzahl ist zu hoch")
 					}
 
-					this.removeEmptyItem(this.stagedItems)
+					this.stagedItems.removeEmptyItems()
 					this.showTotal()
 				} else {
 					this.selectedItem.count -= 1
-					this.removeEmptyItem(this.stagedItems)
+					this.stagedItems.removeEmptyItems()
 					this.showTotal()
 				}
 			}
@@ -719,9 +721,9 @@ export class BookingPageComponent {
 
 		this.tmpVariations = []
 
-		if (this.selectedItem != null) {
-			this.selectedItem.count = this.tmpSelectedItem.count
-			this.selectedItem.orderItemVariations =
+		if (orderItem != null) {
+			orderItem.count = this.tmpSelectedItem.count
+			orderItem.orderItemVariations =
 				this.tmpSelectedItem.orderItemVariations
 
 			if (this.tmpAllItemHandler === this.bookedItems) {
@@ -737,9 +739,9 @@ export class BookingPageComponent {
 
 		// Je nach Modus den richtigen ItemHandler verwenden
 		if (this.isSpecialVariationMode) {
-			this.removeEmptyItem(this.tmpSpecialAllItemsHandler)
+			this.tmpSpecialAllItemsHandler.removeEmptyItems()
 		} else {
-			this.removeEmptyItem(this.tmpAllItemHandler)
+			this.tmpAllItemHandler.removeEmptyItems()
 		}
 	}
 

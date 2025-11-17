@@ -617,7 +617,16 @@
 				}
 			}
 			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
-			<button mat-flat-button (click)="sendDeleteVariation(tmpSelectedItem)">
+			<button
+				mat-flat-button
+				(click)="
+					sendDeleteVariation(
+						selectedItem.type === OrderItemType.Special
+							? selectedItem.orderItems[0]
+							: tmpSelectedItem
+					)
+				"
+			>
 				Auswählen
 			</button>
 		</div>
@@ -955,7 +964,16 @@
 			<button mat-flat-button (click)="closeSpecialVariationPopup()">
 				Schließen
 			</button>
-			<button mat-flat-button (click)="sendDeleteVariation(tmpSelectedItem)">
+			<button
+				mat-flat-button
+				(click)="
+					sendDeleteVariation(
+						selectedItem.type === OrderItemType.Special
+							? selectedItem.orderItems[0]
+							: tmpSelectedItem
+					)
+				"
+			>
 				Auswählen
 			</button>
 		</div>

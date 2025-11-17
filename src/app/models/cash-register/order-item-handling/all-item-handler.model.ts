@@ -228,15 +228,6 @@ export class AllItemHandler {
 		}
 	}
 
-	getItem(id: number, note?: string): OrderItem {
-		if (note !== undefined) {
-			return this.allPickedItems.find(
-				item => item.product.id === id && item.note === note
-			)
-		}
-		return this.allPickedItems.find(item => item.product.id === id)
-	}
-
 	// Prüfen, ob ein bestimmtes Item in der Map enthalten ist
 	includes(pickedItem: OrderItem): boolean {
 		return this.merger.findMergeTarget(pickedItem) != undefined
@@ -270,6 +261,7 @@ export class AllItemHandler {
 		return this.allPickedItems.length === 0
 	}
 
+	// TODO: Funktionalität implementieren
 	calculateTotal() {
 		return 0.1
 	}
@@ -281,6 +273,7 @@ export class AllItemHandler {
 		this.clearItems()
 	}
 
+	// TODO: in eigene Klasse auslagern
 	// Erhöht den count eines Composite-Items (Menu/Special) und passt enthaltene Subitems proportional an.
 	incrementCompositeCount(item: OrderItem, delta = 1) {
 		item.count += delta
@@ -297,6 +290,7 @@ export class AllItemHandler {
 		}
 	}
 
+	// TODO: in eigene Klasse auslagern
 	// Verringert den count eines Composite-Items und passt enthaltene Subitems proportional an.
 	decrementCompositeCount(item: OrderItem, delta = 1) {
 		item.count = Math.max(0, item.count - delta)

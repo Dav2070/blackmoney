@@ -89,8 +89,8 @@ export class MetaComparer {
 				if (!this.isOrderItemBasicEqual(aItem, bItem)) continue
 
 				// Sub-Counts müssen gesetzt und > 0 sein
-				const aCount = aItem.count ?? 0
-				const bCount = bItem.count ?? 0
+				const aCount = aItem.count
+				const bCount = bItem.count
 				if (!aCount || !bCount) {
 					continue
 				}

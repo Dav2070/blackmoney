@@ -75,6 +75,13 @@ export interface PrinterResource {
 	ipAddress: string
 }
 
+export interface CategoryTypePrintRuleResource {
+	uuid: string
+	categoryType?: CategoryType
+	registerClient: RegisterClientResource
+	printers: List<PrinterResource>
+}
+
 export interface MenuResource {
 	uuid: string
 	categories: List<CategoryResource>

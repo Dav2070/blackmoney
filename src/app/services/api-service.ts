@@ -17,7 +17,9 @@ import {
 	RegisterClientResource,
 	UserRole,
 	PrinterResource,
-	AddProductsInput
+	AddProductsInput,
+	CategoryType,
+	CategoryTypePrintRuleResource
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -547,6 +549,43 @@ export class ApiService {
 							uuid: $uuid
 							name: $name
 							ipAddress: $ipAddress
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createCategoryTypePrintRule(
+		queryData: string,
+		variables: {
+			registerClientUuid: string
+			categoryType?: CategoryType
+			printerUuids: string[]
+		}
+	): Promise<
+		MutationResult<{
+			createCategoryTypePrintRule: CategoryTypePrintRuleResource
+		}>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				createCategoryTypePrintRule: CategoryTypePrintRuleResource
+			}>({
+				mutation: gql`
+					mutation CreateCategoryTypePrintRule(
+						$registerClientUuid: String!
+						$categoryType: CategoryType
+						$printerUuids: [String!]!
+					) {
+						createCategoryTypePrintRule(
+							registerClientUuid: $registerClientUuid
+							categoryType: $categoryType
+							printerUuids: $printerUuids
 						) {
 							${queryData}
 						}

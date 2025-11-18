@@ -10,6 +10,7 @@ import {
 	getGraphQLErrorCodes,
 	convertRegisterClientResourceToRegisterClient
 } from "src/app/utils"
+import { CategoryType, PrintRuleType } from "src/app/types"
 import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
@@ -150,5 +151,36 @@ export class RegisterClientPageComponent {
 		}
 	}
 
-	async addPrintRuleDialogPrimaryButtonClick(event: {}) {}
+	async addPrintRuleDialogPrimaryButtonClick(event: {
+		printerUuids: string[]
+		printRuleType: PrintRuleType
+	}) {
+		let categoryType: CategoryType = null
+
+		switch (event.printRuleType) {
+			case "allDrinks":
+				categoryType = "DRINK"
+				break
+			case "allFood":
+				categoryType = "FOOD"
+				break
+		}
+
+		this.addPrintRuleDialogLoading = true
+
+		const createCategoryTypePrintRuleResponse =
+			await this.apiService.createCategoryTypePrintRule(
+				`
+					uuid
+				`,
+				{
+					registerClientUuid: this.registerClientUuid,
+					categoryType,
+					printerUuids: event.printerUuids
+				}
+			)
+
+		this.addPrintRuleDialogLoading = false
+		this.addPrintRuleDialog.hide()
+	}
 }

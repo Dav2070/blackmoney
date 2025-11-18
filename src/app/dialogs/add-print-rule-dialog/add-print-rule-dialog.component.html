@@ -5,6 +5,7 @@
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
 	[loading]="loading"
+	[primaryButtonDisabled]="selectedPrinters.length === 0"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"
@@ -26,11 +27,27 @@
 			</div>
 		</div>
 
-		<dav-radio-group>
-			<dav-radio-button [label]="locale.bills" checked></dav-radio-button>
-			<dav-radio-button [label]="locale.allFoodAndDrinks"></dav-radio-button>
-			<dav-radio-button [label]="locale.allDrinks"></dav-radio-button>
-			<dav-radio-button [label]="locale.allFood"></dav-radio-button>
+		<dav-radio-group (change)="radioGroupChange($event)">
+			<dav-radio-button
+				[label]="locale.bills"
+				value="bills"
+				checked
+			></dav-radio-button>
+
+			<dav-radio-button
+				[label]="locale.allFoodAndDrinks"
+				value="allFoodAndDrinks"
+			></dav-radio-button>
+
+			<dav-radio-button
+				[label]="locale.allDrinks"
+				value="allDrinks"
+			></dav-radio-button>
+
+			<dav-radio-button
+				[label]="locale.allFood"
+				value="allFood"
+			></dav-radio-button>
 		</dav-radio-group>
 	</div>
 </dav-dialog>

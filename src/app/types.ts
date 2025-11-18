@@ -196,6 +196,12 @@ export type Weekday =
 	| "SATURDAY"
 	| "SUNDAY"
 
+export type PrintRuleType =
+	| "bills"
+	| "allFoodAndDrinks"
+	| "allDrinks"
+	| "allFood"
+
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
 	| typeof ErrorCodes.tableAlreadyExists

@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
-import { AllItemHandler } from "src/app/models/cash-register/all-item-handler.model"
+import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { LocalizationService } from "src/app/services/localization-service"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"

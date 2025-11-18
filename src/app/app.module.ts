@@ -62,6 +62,8 @@ import { ResetPasswordDialogComponent } from "./dialogs/reset-password-dialog/re
 import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
+import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
+import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -141,6 +143,8 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		SelectProductDialogComponent,
 		SelectProductVariationsDialogComponent,
 		MoveMultipleProductsDialogComponent,
+		AddNoteDialogComponent,
+		ViewNoteDialogComponent,
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
 		// Pages

@@ -104,6 +104,7 @@ export const de = {
 		switchTable: "Tisch wechseln",
 		takeAway: "Außer Haus",
 		notes: "Notizen",
+		course: "Gang",
 		extras: "Extras",
 		addProduct: "Produkt hinzufügen",
 		showBills: "Rechnungen anzeigen",
@@ -222,6 +223,13 @@ export const de = {
 		},
 		moveMultipleProductsDialog: {
 			headline: "Mehrere verschieben"
+		},
+		addNoteDialog: {
+			headline: "Notiz hinzufügen",
+			note: "Notiz"
+		},
+		viewNoteDialog: {
+			headline: "Deine Notiz"
 		}
 	},
 	actions: {
@@ -235,6 +243,7 @@ export const de = {
 		logout: "Abmelden",
 		edit: "Bearbeiten",
 		delete: "Löschen",
+		close: "Schließen",
 		reset: "Zurücksetzen"
 	},
 	errors: {

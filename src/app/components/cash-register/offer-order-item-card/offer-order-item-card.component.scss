@@ -48,6 +48,39 @@
 	grid-column: 2;
 }
 
+.offer-order-item-card-name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.note-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 16px;
+	transition: transform 200ms;
+
+	&:hover {
+		transform: scale(1.15);
+	}
+}
+
+.takeaway-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 16px;
+}
+
+.course-badge {
+	gap: 2px;
+	color: var(--dav-color-primary);
+	font-size: 16px;
+}
+
+.course-icon {
+	font-size: 16px;
+}
+
 .offer-order-item-card-variation-unit-price {
 	grid-column: 3;
 	text-align: center;

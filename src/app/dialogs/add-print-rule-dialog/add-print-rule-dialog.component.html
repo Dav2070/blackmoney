@@ -18,8 +18,10 @@
 			></dav-search-textfield>
 
 			<div class="selected-printers-container">
-				@for (printer of selectedPrinters; track printer) {
-					<dav-badge>{{ printer }}</dav-badge>
+				@for (printer of selectedPrinters; track printer.key) {
+					<dav-badge (click)="removeSelectedPrinter(printer.key)">
+						{{ printer.value }}
+					</dav-badge>
 				}
 			</div>
 		</div>

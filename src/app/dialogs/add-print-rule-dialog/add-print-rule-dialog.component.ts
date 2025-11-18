@@ -13,6 +13,7 @@ import { Dialog } from "dav-ui-components"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
+import { PrinterResource } from "src/app/types"
 
 @Component({
 	selector: "app-add-print-rule-dialog",
@@ -26,11 +27,20 @@ export class AddPrintRuleDialogComponent {
 
 	@Input() loading: boolean = false
 	@Input() restaurantUuid: string = ""
-	@Input() printers: string[] = []
-	@Output() primaryButtonClick = new EventEmitter()
+	@Output() primaryButtonClick = new EventEmitter<{
+		selectedPrinterUuids: string[]
+	}>()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
-	selectedPrinters: string[] = []
+
+	printers: {
+		key: string
+		value: string
+	}[] = []
+	selectedPrinters: {
+		key: string
+		value: string
+	}[] = []
 
 	constructor(
 		private dataService: DataService,
@@ -62,7 +72,10 @@ export class AddPrintRuleDialogComponent {
 
 		if (searchPrintersResponse.data.searchPrinters != null) {
 			this.printers = searchPrintersResponse.data.searchPrinters.items.map(
-				(printer: any) => printer.name
+				(printer: PrinterResource) => ({
+					key: printer.uuid,
+					value: printer.name
+				})
 			)
 		}
 	}
@@ -74,8 +87,13 @@ export class AddPrintRuleDialogComponent {
 	}
 
 	printersSearchTextfieldSelect(event: Event) {
-		const value = (event as CustomEvent).detail.result
-		this.selectedPrinters.push(value)
+		const result = (event as CustomEvent).detail.result
+		this.selectedPrinters.push(result)
+	}
+
+	removeSelectedPrinter(uuid: string) {
+		const i = this.selectedPrinters.findIndex(p => p.key === uuid)
+		if (i !== -1) this.selectedPrinters.splice(i, 1)
 	}
 
 	show() {
@@ -87,6 +105,8 @@ export class AddPrintRuleDialogComponent {
 	}
 
 	submit() {
-		this.primaryButtonClick.emit()
+		this.primaryButtonClick.emit({
+			selectedPrinterUuids: this.selectedPrinters.map(p => p.key)
+		})
 	}
 }

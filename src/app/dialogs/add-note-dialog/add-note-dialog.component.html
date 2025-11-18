@@ -1,0 +1,22 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="400px"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<div class="dialog-formfield-container">
+			<dav-textarea
+				[value]="note"
+				[label]="locale.note"
+				[resize]="'none'"
+				(change)="noteTextareaChange($event)"
+			></dav-textarea>
+		</div>
+	</form>
+</dav-dialog>

@@ -4,11 +4,31 @@
 	[primaryButtonText]="actionsLocale.add"
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
-	maxWidth="450"
 	[loading]="loading"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"
 >
-	
+	<div class="container">
+		<div class="printer-search-container">
+			<dav-search-textfield
+				[label]="locale.selectPrinters"
+				[searchResults]="printers"
+				(select)="printersSearchTextfieldSelect($event)"
+			></dav-search-textfield>
+
+			<div class="selected-printers-container">
+				@for (printer of selectedPrinters; track printer) {
+					<dav-badge>{{ printer }}</dav-badge>
+				}
+			</div>
+		</div>
+
+		<dav-radio-group>
+			<dav-radio-button [label]="locale.bills" checked></dav-radio-button>
+			<dav-radio-button [label]="locale.allFoodAndDrinks"></dav-radio-button>
+			<dav-radio-button [label]="locale.allDrinks"></dav-radio-button>
+			<dav-radio-button [label]="locale.allFood"></dav-radio-button>
+		</dav-radio-group>
+	</div>
 </dav-dialog>

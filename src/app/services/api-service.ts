@@ -466,6 +466,34 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async searchPrinters(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			query: string
+		}
+	): Promise<ApolloQueryResult<{ searchPrinters: List<PrinterResource> }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ searchPrinters: List<PrinterResource> }>({
+				query: gql`
+					query SearchPrinters(
+						$restaurantUuid: String!
+						$query: String!
+					) {
+						searchPrinters(
+							restaurantUuid: $restaurantUuid
+							query: $query
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async createPrinter(
 		queryData: string,
 		variables: {

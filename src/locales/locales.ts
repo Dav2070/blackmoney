@@ -211,7 +211,12 @@ export const de = {
 			line4: "Anfangs Tischnummer"
 		},
 		addPrintRuleDialog: {
-			headline: "Druckregel hinzufügen"
+			headline: "Druckregel hinzufügen",
+			selectPrinters: "Drucker auswählen",
+			bills: "Rechnungen",
+			allFoodAndDrinks: "Alle Getränke & Speisen",
+			allDrinks: "Alle Getränke",
+			allFood: "Alle Speisen"
 		},
 		resetPasswordDialog: {
 			headline: "Passwort zurücksetzen",

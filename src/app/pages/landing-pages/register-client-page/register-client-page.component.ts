@@ -1,7 +1,10 @@
 import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
 import { EditRegisterClientNameDialogComponent } from "src/app/dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
-import { AddPrintRuleDialogComponent } from "src/app/dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
+import {
+	AddPrintRuleDialogComponent,
+	SelectedPrintRuleType
+} from "src/app/dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
 import { RegisterClient } from "src/app/models/RegisterClient"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
@@ -153,32 +156,35 @@ export class RegisterClientPageComponent {
 
 	async addPrintRuleDialogPrimaryButtonClick(event: {
 		printerUuids: string[]
-		printRuleType: PrintRuleType
+		printRuleType: SelectedPrintRuleType
 	}) {
+		let printRuleType: PrintRuleType = "BILLS"
 		let categoryType: CategoryType = null
 
 		switch (event.printRuleType) {
 			case "allDrinks":
+				printRuleType = "CATEGORY_TYPE"
 				categoryType = "DRINK"
 				break
 			case "allFood":
+				printRuleType = "CATEGORY_TYPE"
 				categoryType = "FOOD"
 				break
 		}
 
 		this.addPrintRuleDialogLoading = true
 
-		const createCategoryTypePrintRuleResponse =
-			await this.apiService.createCategoryTypePrintRule(
-				`
-					uuid
-				`,
-				{
-					registerClientUuid: this.registerClientUuid,
-					categoryType,
-					printerUuids: event.printerUuids
-				}
-			)
+		const createPrintRuleResponse = await this.apiService.createPrintRule(
+			`
+				uuid
+			`,
+			{
+				registerClientUuid: this.registerClientUuid,
+				type: printRuleType,
+				categoryType,
+				printerUuids: event.printerUuids
+			}
+		)
 
 		this.addPrintRuleDialogLoading = false
 		this.addPrintRuleDialog.hide()

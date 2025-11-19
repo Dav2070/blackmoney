@@ -13,7 +13,13 @@ import { Dialog } from "dav-ui-components"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
-import { PrinterResource, PrintRuleType } from "src/app/types"
+import { PrinterResource } from "src/app/types"
+
+export type SelectedPrintRuleType =
+	| "bills"
+	| "allFoodAndDrinks"
+	| "allDrinks"
+	| "allFood"
 
 @Component({
 	selector: "app-add-print-rule-dialog",
@@ -29,11 +35,11 @@ export class AddPrintRuleDialogComponent {
 	@Input() restaurantUuid: string = ""
 	@Output() primaryButtonClick = new EventEmitter<{
 		printerUuids: string[]
-		printRuleType: PrintRuleType
+		printRuleType: SelectedPrintRuleType
 	}>()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
-	selectedPrintRuleType: PrintRuleType = "bills"
+	selectedPrintRuleType: SelectedPrintRuleType = "bills"
 
 	printers: {
 		key: string
@@ -100,7 +106,7 @@ export class AddPrintRuleDialogComponent {
 
 	radioGroupChange(event: Event) {
 		this.selectedPrintRuleType = (event as CustomEvent).detail
-			.checked as PrintRuleType
+			.checked as SelectedPrintRuleType
 	}
 
 	show() {

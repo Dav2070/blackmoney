@@ -75,11 +75,13 @@ export interface PrinterResource {
 	ipAddress: string
 }
 
-export interface CategoryTypePrintRuleResource {
+export interface PrintRuleResource {
 	uuid: string
+	type: PrintRuleType
 	categoryType?: CategoryType
-	registerClient: RegisterClientResource
 	printers: List<PrinterResource>
+	categories: List<CategoryResource>
+	products: List<ProductResource>
 }
 
 export interface MenuResource {
@@ -182,6 +184,11 @@ export interface AddProductVariationInput {
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type CategoryType = "FOOD" | "DRINK"
+export type PrintRuleType =
+	| "BILLS"
+	| "CATEGORY_TYPE"
+	| "CATEGORIES"
+	| "PRODUCTS"
 
 export enum OrderItemType {
 	Product = "PRODUCT",
@@ -202,12 +209,6 @@ export type Weekday =
 	| "FRIDAY"
 	| "SATURDAY"
 	| "SUNDAY"
-
-export type PrintRuleType =
-	| "bills"
-	| "allFoodAndDrinks"
-	| "allDrinks"
-	| "allFood"
 
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists

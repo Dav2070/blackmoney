@@ -15,11 +15,12 @@ import {
 	RestaurantResource,
 	RegisterResource,
 	RegisterClientResource,
+	PrintRuleResource,
 	UserRole,
 	PrinterResource,
 	AddProductsInput,
 	CategoryType,
-	CategoryTypePrintRuleResource
+	PrintRuleType
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -560,32 +561,41 @@ export class ApiService {
 			.toPromise()
 	}
 
-	async createCategoryTypePrintRule(
+	async createPrintRule(
 		queryData: string,
 		variables: {
 			registerClientUuid: string
+			type: PrintRuleType
 			categoryType?: CategoryType
 			printerUuids: string[]
+			categoryUuids?: string[]
+			productUuids?: string[]
 		}
 	): Promise<
 		MutationResult<{
-			createCategoryTypePrintRule: CategoryTypePrintRuleResource
+			createPrintRule: PrintRuleResource
 		}>
 	> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{
-				createCategoryTypePrintRule: CategoryTypePrintRuleResource
+				createPrintRule: PrintRuleResource
 			}>({
 				mutation: gql`
-					mutation CreateCategoryTypePrintRule(
+					mutation CreatePrintRule(
 						$registerClientUuid: String!
+						$type: PrintRuleType!
 						$categoryType: CategoryType
 						$printerUuids: [String!]!
+						$categoryUuids: [String!]
+						$productUuids: [String!]
 					) {
-						createCategoryTypePrintRule(
+						createPrintRule(
 							registerClientUuid: $registerClientUuid
+							type: $type
 							categoryType: $categoryType
 							printerUuids: $printerUuids
+							categoryUuids: $categoryUuids
+							productUuids: $productUuids
 						) {
 							${queryData}
 						}

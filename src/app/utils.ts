@@ -66,10 +66,10 @@ export async function loadRegisterClient(
 		const retrieveRegisterClientResponse =
 			await apiService.retrieveRegisterClientBySerialNumber(
 				`
-						uuid
-						name
-						serialNumber
-					`,
+					uuid
+					name
+					serialNumber
+				`,
 				{
 					registerUuid,
 					serialNumber: await getSerialNumber(settingsService)
@@ -226,10 +226,8 @@ export function convertCompanyResourceToCompany(
 
 	const restaurants: Restaurant[] = []
 
-	if (companyResource.restaurants != null) {
-		for (let restaurant of companyResource.restaurants.items) {
-			restaurants.push(convertRestaurantResourceToRestaurant(restaurant))
-		}
+	for (const restaurant of companyResource.restaurants?.items ?? []) {
+		restaurants.push(convertRestaurantResourceToRestaurant(restaurant))
 	}
 
 	return {
@@ -248,34 +246,26 @@ export function convertRestaurantResourceToRestaurant(
 
 	const users: User[] = []
 
-	if (restaurantResource.users != null) {
-		for (let user of restaurantResource.users.items) {
-			users.push(convertUserResourceToUser(user))
-		}
+	for (const user of restaurantResource.users?.items ?? []) {
+		users.push(convertUserResourceToUser(user))
 	}
 
 	const rooms: Room[] = []
 
-	if (restaurantResource.rooms != null) {
-		for (let room of restaurantResource.rooms.items) {
-			rooms.push(convertRoomResourceToRoom(room))
-		}
+	for (const room of restaurantResource.rooms?.items ?? []) {
+		rooms.push(convertRoomResourceToRoom(room))
 	}
 
 	const registers: Register[] = []
 
-	if (restaurantResource.registers != null) {
-		for (let register of restaurantResource.registers.items) {
-			registers.push(convertRegisterResourceToRegister(register))
-		}
+	for (const register of restaurantResource.registers?.items ?? []) {
+		registers.push(convertRegisterResourceToRegister(register))
 	}
 
 	const printers: Printer[] = []
 
-	if (restaurantResource.printers != null) {
-		for (let printer of restaurantResource.printers.items) {
-			printers.push(convertPrinterResourceToPrinter(printer))
-		}
+	for (const printer of restaurantResource.printers?.items ?? []) {
+		printers.push(convertPrinterResourceToPrinter(printer))
 	}
 
 	return {
@@ -303,12 +293,10 @@ export function convertRegisterResourceToRegister(
 
 	const registerClients: RegisterClient[] = []
 
-	if (registerResource.registerClients != null) {
-		for (let registerClient of registerResource.registerClients.items) {
-			registerClients.push(
-				convertRegisterClientResourceToRegisterClient(registerClient)
-			)
-		}
+	for (const registerClient of registerResource.registerClients?.items ?? []) {
+		registerClients.push(
+			convertRegisterClientResourceToRegisterClient(registerClient)
+		)
 	}
 
 	return {
@@ -327,10 +315,8 @@ export function convertRegisterClientResourceToRegisterClient(
 
 	const printRules: PrintRule[] = []
 
-	if (registerClientResource.printRules != null) {
-		for (let printRule of registerClientResource.printRules.items) {
-			printRules.push(convertPrintRuleResourceToPrintRule(printRule))
-		}
+	for (const printRule of registerClientResource.printRules?.items ?? []) {
+		printRules.push(convertPrintRuleResourceToPrintRule(printRule))
 	}
 
 	return {
@@ -360,10 +346,8 @@ export function convertRoomResourceToRoom(roomResource: RoomResource): Room {
 
 	const tables: Table[] = []
 
-	if (roomResource.tables != null) {
-		for (let table of roomResource.tables.items) {
-			tables.push(convertTableResourceToTable(table))
-		}
+	for (const table of roomResource.tables?.items ?? []) {
+		tables.push(convertTableResourceToTable(table))
 	}
 
 	return {
@@ -410,26 +394,20 @@ export function convertPrintRuleResourceToPrintRule(
 
 	const printers: Printer[] = []
 
-	if (printRuleResource.printers != null) {
-		for (let printer of printRuleResource.printers.items) {
-			printers.push(convertPrinterResourceToPrinter(printer))
-		}
+	for (const printer of printRuleResource.printers?.items ?? []) {
+		printers.push(convertPrinterResourceToPrinter(printer))
 	}
 
 	const categories: Category[] = []
 
-	if (printRuleResource.categories != null) {
-		for (let category of printRuleResource.categories.items) {
-			categories.push(convertCategoryResourceToCategory(category))
-		}
+	for (const category of printRuleResource.categories?.items ?? []) {
+		categories.push(convertCategoryResourceToCategory(category))
 	}
 
 	const products: Product[] = []
 
-	if (printRuleResource.products != null) {
-		for (let product of printRuleResource.products.items) {
-			products.push(convertProductResourceToProduct(product))
-		}
+	for (const product of printRuleResource.products?.items ?? []) {
+		products.push(convertProductResourceToProduct(product))
 	}
 
 	return {
@@ -449,18 +427,14 @@ export function convertMenuResourceToMenu(menuResource: MenuResource): Menu {
 
 	const categories: Category[] = []
 
-	if (menuResource.categories != null) {
-		for (let category of menuResource.categories.items) {
-			categories.push(convertCategoryResourceToCategory(category))
-		}
+	for (const category of menuResource.categories?.items ?? []) {
+		categories.push(convertCategoryResourceToCategory(category))
 	}
 
 	const offers: Offer[] = []
 
-	if (menuResource.offers != null) {
-		for (let offer of menuResource.offers.items) {
-			offers.push(convertOfferResourceToOffer(offer))
-		}
+	for (const offer of menuResource.offers?.items ?? []) {
+		offers.push(convertOfferResourceToOffer(offer))
 	}
 
 	return {
@@ -479,10 +453,8 @@ export function convertOfferResourceToOffer(
 
 	const offerItems: OfferItem[] = []
 
-	if (offerResource.offerItems != null) {
-		for (let offerItem of offerResource.offerItems.items) {
-			offerItems.push(convertOfferItemResourceToOfferItem(offerItem))
-		}
+	for (const offerItem of offerResource.offerItems?.items ?? []) {
+		offerItems.push(convertOfferItemResourceToOfferItem(offerItem))
 	}
 
 	return {
@@ -514,10 +486,8 @@ export function convertOfferItemResourceToOfferItem(
 
 	const products: Product[] = []
 
-	if (offerItemResource.products != null) {
-		for (let product of offerItemResource.products.items) {
-			products.push(convertProductResourceToProduct(product))
-		}
+	for (const product of offerItemResource.products?.items ?? []) {
+		products.push(convertProductResourceToProduct(product))
 	}
 
 	return {
@@ -537,10 +507,8 @@ export function convertProductResourceToProduct(
 
 	const variations: Variation[] = []
 
-	if (productResource.variations != null) {
-		for (let variation of productResource.variations.items) {
-			variations.push(convertVariationResourceToVariation(variation))
-		}
+	for (const variation of productResource.variations?.items ?? []) {
+		variations.push(convertVariationResourceToVariation(variation))
 	}
 
 	return {
@@ -562,10 +530,8 @@ export function convertCategoryResourceToCategory(
 
 	const products: Product[] = []
 
-	if (categoryResource.products != null) {
-		for (let product of categoryResource.products.items) {
-			products.push(convertProductResourceToProduct(product))
-		}
+	for (const product of categoryResource.products?.items ?? []) {
+		products.push(convertProductResourceToProduct(product))
 	}
 
 	return {
@@ -585,12 +551,10 @@ export function convertVariationResourceToVariation(
 
 	const variationItems: VariationItem[] = []
 
-	if (variationResource.variationItems != null) {
-		for (let variationItem of variationResource.variationItems.items) {
-			variationItems.push(
-				convertVariationItemResourceToVariationItem(variationItem)
-			)
-		}
+	for (const variationItem of variationResource.variationItems?.items ?? []) {
+		variationItems.push(
+			convertVariationItemResourceToVariationItem(variationItem)
+		)
 	}
 
 	return {
@@ -619,6 +583,7 @@ export function convertBillResourceToBill(billResource: BillResource): Bill {
 	if (billResource == null) {
 		return null
 	}
+
 	return {
 		uuid: billResource.uuid
 	}
@@ -633,10 +598,8 @@ export function convertOrderResourceToOrder(
 
 	const orderItems: OrderItem[] = []
 
-	if (orderResource.orderItems != null) {
-		for (let orderItem of orderResource.orderItems.items) {
-			orderItems.push(convertOrderItemResourceToOrderItem(orderItem))
-		}
+	for (const orderItem of orderResource.orderItems?.items ?? []) {
+		orderItems.push(convertOrderItemResourceToOrderItem(orderItem))
 	}
 
 	return {
@@ -659,15 +622,13 @@ export function convertOrderItemResourceToOrderItem(
 
 	const orderItemVariations: OrderItemVariation[] = []
 
-	if (orderItemResource.orderItemVariations != null) {
-		for (let orderItemVariation of orderItemResource.orderItemVariations
-			.items) {
-			orderItemVariations.push(
-				convertOrderItemVariationResourceToOrderItemVariation(
-					orderItemVariation
-				)
+	for (const orderItemVariation of orderItemResource.orderItemVariations
+		?.items ?? []) {
+		orderItemVariations.push(
+			convertOrderItemVariationResourceToOrderItemVariation(
+				orderItemVariation
 			)
-		}
+		)
 	}
 
 	return {
@@ -689,13 +650,11 @@ export function convertOrderItemVariationResourceToOrderItemVariation(
 
 	const variationItems: VariationItem[] = []
 
-	if (orderItemVariationResource.variationItems != null) {
-		for (let variationItem of orderItemVariationResource.variationItems
-			.items) {
-			variationItems.push(
-				convertVariationItemResourceToVariationItem(variationItem)
-			)
-		}
+	for (const variationItem of orderItemVariationResource.variationItems
+		?.items ?? []) {
+		variationItems.push(
+			convertVariationItemResourceToVariationItem(variationItem)
+		)
 	}
 
 	return {

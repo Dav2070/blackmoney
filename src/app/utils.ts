@@ -11,6 +11,8 @@ import { Company } from "./models/Company"
 import { Restaurant } from "./models/Restaurant"
 import { Register } from "./models/Register"
 import { RegisterClient } from "./models/RegisterClient"
+import { Printer } from "./models/Printer"
+import { PrintRule } from "./models/PrintRule"
 import { User } from "./models/User"
 import { Room } from "./models/Room"
 import { Table } from "./models/Table"
@@ -22,7 +24,6 @@ import { Order } from "./models/Order"
 import { OrderItem } from "./models/OrderItem"
 import { OrderItemVariation } from "./models/OrderItemVariation"
 import { Bill } from "./models/Bill"
-import { Printer } from "./models/Printer"
 import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
@@ -32,6 +33,7 @@ import {
 	RestaurantResource,
 	RegisterResource,
 	RegisterClientResource,
+	PrintRuleResource,
 	ProductResource,
 	RoomResource,
 	TableResource,
@@ -86,7 +88,10 @@ export async function loadRegisterClient(
 				?.retrieveRegisterClientBySerialNumber != null
 		) {
 			dataService.registerClient =
-				retrieveRegisterClientResponse.data.retrieveRegisterClientBySerialNumber
+				convertRegisterClientResourceToRegisterClient(
+					retrieveRegisterClientResponse.data
+						.retrieveRegisterClientBySerialNumber
+				)
 		}
 	}
 
@@ -320,10 +325,19 @@ export function convertRegisterClientResourceToRegisterClient(
 		return null
 	}
 
+	const printRules: PrintRule[] = []
+
+	if (registerClientResource.printRules != null) {
+		for (let printRule of registerClientResource.printRules.items) {
+			printRules.push(convertPrintRuleResourceToPrintRule(printRule))
+		}
+	}
+
 	return {
 		uuid: registerClientResource.uuid,
 		name: registerClientResource.name,
-		serialNumber: registerClientResource.serialNumber
+		serialNumber: registerClientResource.serialNumber,
+		printRules
 	}
 }
 
@@ -384,6 +398,47 @@ export function convertPrinterResourceToPrinter(
 		uuid: printerResource.uuid,
 		name: printerResource.name,
 		ipAddress: printerResource.ipAddress
+	}
+}
+
+export function convertPrintRuleResourceToPrintRule(
+	printRuleResource: PrintRuleResource
+): PrintRule {
+	if (printRuleResource == null) {
+		return null
+	}
+
+	const printers: Printer[] = []
+
+	if (printRuleResource.printers != null) {
+		for (let printer of printRuleResource.printers.items) {
+			printers.push(convertPrinterResourceToPrinter(printer))
+		}
+	}
+
+	const categories: Category[] = []
+
+	if (printRuleResource.categories != null) {
+		for (let category of printRuleResource.categories.items) {
+			categories.push(convertCategoryResourceToCategory(category))
+		}
+	}
+
+	const products: Product[] = []
+
+	if (printRuleResource.products != null) {
+		for (let product of printRuleResource.products.items) {
+			products.push(convertProductResourceToProduct(product))
+		}
+	}
+
+	return {
+		uuid: printRuleResource.uuid,
+		type: printRuleResource.type,
+		categoryType: printRuleResource.categoryType,
+		printers,
+		categories,
+		products
 	}
 }
 

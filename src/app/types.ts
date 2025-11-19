@@ -48,6 +48,7 @@ export interface RegisterClientResource {
 	uuid: string
 	name: string
 	serialNumber: string
+	printRules: List<PrintRuleResource>
 }
 
 export interface UserResource {

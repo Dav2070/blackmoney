@@ -59,7 +59,14 @@ export const de = {
 		addPicture: "Bild hinzufügen"
 	},
 	registerClientPage: {
-		printRulesHeadline: "Druckregeln"
+		printRulesHeadline: "Druckregeln",
+		printRuleText:
+			"<strong>{type}</strong> wird an folgende Drucker gesendet:",
+		bills: "Rechnungen",
+		drinks: "Getränke",
+		food: "Speisen",
+		foodAndDrinks: "Speisen und Getränke",
+		options: "Weitere Optionen"
 	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"

@@ -1,11 +1,13 @@
 import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
+import { faEllipsis } from "@fortawesome/pro-regular-svg-icons"
 import { EditRegisterClientNameDialogComponent } from "src/app/dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import {
 	AddPrintRuleDialogComponent,
 	SelectedPrintRuleType
 } from "src/app/dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
 import { RegisterClient } from "src/app/models/RegisterClient"
+import { PrintRule } from "src/app/models/PrintRule"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -18,11 +20,13 @@ import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
 	templateUrl: "./register-client-page.component.html",
+	styleUrl: "./register-client-page.component.scss",
 	standalone: false
 })
 export class RegisterClientPageComponent {
 	locale = this.localizationService.locale.registerClientPage
 	errorsLocale = this.localizationService.locale.errors
+	faEllipsis = faEllipsis
 	restaurantUuid: string = null
 	registerUuid: string = null
 	registerClientUuid: string = null
@@ -56,12 +60,38 @@ export class RegisterClientPageComponent {
 
 		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
 
+		// Load the register client & print rules
 		const retrieveRegisterClientResponse =
 			await this.apiService.retrieveRegisterClient(
 				`
 					uuid
 					name
 					serialNumber
+					printRules {
+						items {
+							uuid
+							type
+							categoryType
+							printers {
+								items {
+									uuid
+									name
+								}
+							}
+							categories {
+								items {
+									uuid
+									name
+								}
+							}
+							products {
+								items {
+									uuid
+									name
+								}
+							}
+						}
+					}
 				`,
 				{ uuid: this.registerClientUuid }
 			)
@@ -188,5 +218,25 @@ export class RegisterClientPageComponent {
 
 		this.addPrintRuleDialogLoading = false
 		this.addPrintRuleDialog.hide()
+	}
+
+	getTextForPrintRule(printRule: PrintRule) {
+		let type = this.locale.bills
+
+		if (
+			printRule.type === "CATEGORY_TYPE" &&
+			printRule.categoryType == "DRINK"
+		) {
+			type = this.locale.drinks
+		} else if (
+			printRule.type === "CATEGORY_TYPE" &&
+			printRule.categoryType == "FOOD"
+		) {
+			type = this.locale.food
+		} else if (printRule.type === "CATEGORY_TYPE") {
+			type = this.locale.foodAndDrinks
+		}
+
+		return this.locale.printRuleText.replace("{type}", type)
 	}
 }

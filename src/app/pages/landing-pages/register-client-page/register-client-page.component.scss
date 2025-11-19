@@ -1,14 +1,16 @@
-.table-card-container {
+.print-rule-card-container {
 	display: flex;
 	align-items: start;
 	margin: 0;
 	gap: 12px;
+	max-width: 300px;
 }
 
-.table-card-content {
+.print-rule-card-content {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start; // Texte linksbündig
+	align-items: flex-start;
+	gap: 12px;
 	margin-top: 4px;
 	line-height: 20px;
 

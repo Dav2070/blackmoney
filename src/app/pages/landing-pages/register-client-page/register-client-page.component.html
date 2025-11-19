@@ -17,6 +17,36 @@
 			>
 				{{ locale.printRulesHeadline }}
 			</dav-header>
+
+			@if (registerClient?.printRules != null) {
+				<div>
+					@for (
+						printRule of registerClient.printRules;
+						track printRule.uuid
+					) {
+						<dav-card>
+							<div class="print-rule-card-container">
+								<div class="print-rule-card-content">
+									<p [innerHTML]="getTextForPrintRule(printRule)"></p>
+
+									<div>
+										@for (
+											printer of printRule.printers;
+											track printer.uuid
+										) {
+											<dav-badge>{{ printer.name }}</dav-badge>
+										}
+									</div>
+								</div>
+
+								<dav-icon-button size="xs" [tooltip]="locale.options">
+									<fa-icon [icon]="faEllipsis"></fa-icon>
+								</dav-icon-button>
+							</div>
+						</dav-card>
+					}
+				</div>
+			}
 		</div>
 	</div>
 </div>

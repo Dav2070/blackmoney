@@ -64,7 +64,9 @@
 						<app-order-item-card
 							[orderItem]="orderItem"
 							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.note"
 							(click)="selectItem(orderItem, stagedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
 						></app-order-item-card>
 					} @else if (
 						orderItem.type === OrderItemType.Menu ||
@@ -73,7 +75,9 @@
 						<app-offer-order-item-card
 							[orderItem]="orderItem"
 							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.note"
 							(click)="selectItem(orderItem, stagedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
 						></app-offer-order-item-card>
 					}
 				}
@@ -91,14 +95,24 @@
 					orderItem of bookedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					@if (
+					@if (orderItem.type === OrderItemType.Product) {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.note"
+							(click)="selectItem(orderItem, bookedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
+						></app-order-item-card>
+					} @else if (
 						orderItem.type === OrderItemType.Menu ||
 						orderItem.type === OrderItemType.Special
 					) {
 						<app-offer-order-item-card
 							[orderItem]="orderItem"
 							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.note"
 							(click)="selectItem(orderItem, bookedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
 						></app-offer-order-item-card>
 					} @else {
 						<app-order-item-card
@@ -262,14 +276,34 @@
 					{{ locale.switchTable }}
 				</dav-button>
 
-				<dav-button color="secondary" text>
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="!selectedItem"
+					(click)="takeAwayButtonClick()"
+				>
 					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
 					{{ locale.takeAway }}
 				</dav-button>
 
-				<dav-button color="secondary" text>
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="!selectedItem"
+					(click)="addNoteButtonClick()"
+				>
 					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
 					{{ locale.notes }}
+				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="!selectedItem || !consoleActive"
+					(click)="setCourseButtonClick()"
+				>
+					<fa-icon [icon]="faUtensils" slot="icon-left"></fa-icon>
+					{{ locale.course }}
 				</dav-button>
 
 				<dav-button color="secondary" text>
@@ -583,7 +617,16 @@
 				}
 			}
 			<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
-			<button mat-flat-button (click)="sendDeleteVariation(tmpSelectedItem)">
+			<button
+				mat-flat-button
+				(click)="
+					sendDeleteVariation(
+						selectedItem.type === OrderItemType.Special
+							? selectedItem.orderItems[0]
+							: tmpSelectedItem
+					)
+				"
+			>
 				Auswählen
 			</button>
 		</div>
@@ -921,7 +964,16 @@
 			<button mat-flat-button (click)="closeSpecialVariationPopup()">
 				Schließen
 			</button>
-			<button mat-flat-button (click)="sendDeleteVariation(tmpSelectedItem)">
+			<button
+				mat-flat-button
+				(click)="
+					sendDeleteVariation(
+						selectedItem.type === OrderItemType.Special
+							? selectedItem.orderItems[0]
+							: tmpSelectedItem
+					)
+				"
+			>
 				Auswählen
 			</button>
 		</div>
@@ -954,6 +1006,18 @@
 		selectProductVariationsDialogPrimaryButtonClick($event)
 	"
 ></app-select-product-variations-dialog>
+
+<app-add-note-dialog
+	#addNoteDialog
+	[orderItem]="selectedItem"
+	(primaryButtonClick)="addNoteDialogPrimaryButtonClick($event)"
+></app-add-note-dialog>
+
+<app-view-note-dialog
+	#viewNoteDialog
+	[orderItem]="selectedItem"
+	(editButtonClick)="addNoteButtonClick()"
+></app-view-note-dialog>
 
 <dav-bottom-sheet
 	#bottomSheet

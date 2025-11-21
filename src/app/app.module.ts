@@ -63,6 +63,8 @@ import { ResetPasswordDialogComponent } from "./dialogs/reset-password-dialog/re
 import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
+import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
+import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
 import { AddCategoryDialogComponent } from "./dialogs/add-category-dialog/add-category-dialog.component"
 
 // Pages
@@ -110,6 +112,9 @@ import { EmployeeManagementComponent } from "./pages/settings-pages/employee-man
 import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
 import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
+import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
+import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
+import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { ProductPageComponent } from "./pages/landing-pages/product-page/product-page.component"
 import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
@@ -145,6 +150,10 @@ import { VariationsOverviewPageComponent } from "./pages/landing-pages/variation
 		SelectProductDialogComponent,
 		SelectProductVariationsDialogComponent,
 		MoveMultipleProductsDialogComponent,
+		AddNoteDialogComponent,
+		ViewNoteDialogComponent,
+		EditOwnerDialogComponent,
+		EditContactInfoDialogComponent,
 		AddCategoryDialogComponent,
 		// Pages
 		LandingPageComponent,
@@ -174,6 +183,7 @@ import { VariationsOverviewPageComponent } from "./pages/landing-pages/variation
 		RoomsPageComponent,
 		RoomPageComponent,
 		TableCombinationsPageComponent,
+		OpeningTimePageComponent,
 		MenuPageComponent,
 		VariationsOverviewPageComponent,
 		//Settings-Pages

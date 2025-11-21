@@ -1,6 +1,9 @@
 <li
 	class="order-item-card slide-up-in-light"
-	[class.selected]="selectedOrderItemUuid === orderItem.uuid"
+	[class.selected]="
+		selectedOrderItemUuid === orderItem.uuid &&
+		selectedOrderItemNote === orderItem.note
+	"
 >
 	<div class="order-item-card-id">
 		<p>#{{ orderItem.product.id }}</p>
@@ -8,6 +11,22 @@
 
 	<div class="order-item-card-name">
 		<p>{{ orderItem.product.name }}</p>
+		@if (orderItem.note) {
+			<fa-icon
+				[icon]="faNoteSticky"
+				class="note-icon"
+				(click)="onNoteIconClick($event)"
+			></fa-icon>
+		}
+		@if (orderItem.takeAway) {
+			<fa-icon [icon]="faCupTogo" class="takeaway-icon"></fa-icon>
+		}
+		@if (orderItem.course) {
+			<span class="course-badge">
+				<fa-icon [icon]="faUtensils" class="course-icon"></fa-icon>
+				{{ orderItem.course }}
+			</span>
+		}
 	</div>
 
 	<div class="order-item-card-unit-price">

@@ -1,0 +1,15 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="showEditButton ? actionsLocale.edit : ''"
+	[defaultButtonText]="actionsLocale.close"
+	[visible]="visible"
+	maxWidth="450"
+	(dismiss)="hide()"
+	(primaryButtonClick)="edit()"
+	(defaultButtonClick)="hide()"
+>
+	<div class="dialog-content">
+		<p class="note-text">{{ note }}</p>
+	</div>
+</dav-dialog>

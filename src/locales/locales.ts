@@ -50,10 +50,14 @@ export const de = {
 		managePrinters: "Drucker verwalten",
 		manageRooms: "Räume verwalten",
 		manageRegisters: "Kassen verwalten",
+		manageTime: "Öffnungszeiten verwalten",
+		addPicture: "Bild hinzufügen",
 		manageMenu: "Speisekarte verwalten"
 	},
 	registersPage: {
 		headline: "Deine Kassen",
+		manageTime: "Öffnungszeiten verwalten",
+		addPicture: "Bild hinzufügen",
 		manageMenu: "Speisekarte verwalten"
 	},
 	employeesPage: {
@@ -118,6 +122,7 @@ export const de = {
 		switchTable: "Tisch wechseln",
 		takeAway: "Außer Haus",
 		notes: "Notizen",
+		course: "Gang",
 		extras: "Extras",
 		addProduct: "Produkt hinzufügen",
 		showBills: "Rechnungen anzeigen",
@@ -237,6 +242,13 @@ export const de = {
 		moveMultipleProductsDialog: {
 			headline: "Mehrere verschieben"
 		},
+		addNoteDialog: {
+			headline: "Notiz hinzufügen",
+			note: "Notiz"
+		},
+		viewNoteDialog: {
+			headline: "Deine Notiz"
+		},
 		addCategoryDialog: {
 			headline: "Kategorie hinzufügen",
 			name: "Name"
@@ -253,6 +265,7 @@ export const de = {
 		logout: "Abmelden",
 		edit: "Bearbeiten",
 		delete: "Löschen",
+		close: "Schließen",
 		reset: "Zurücksetzen"
 	},
 	errors: {

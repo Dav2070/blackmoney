@@ -61,7 +61,7 @@ export const de = {
 	registerClientPage: {
 		printRulesHeadline: "Druckregeln",
 		printRuleText:
-			"<strong>{type}</strong> wird an folgende Drucker gesendet:",
+			"<strong>{type}</strong> werden an folgende Drucker gesendet:",
 		bills: "Rechnungen",
 		drinks: "Getränke",
 		food: "Speisen",

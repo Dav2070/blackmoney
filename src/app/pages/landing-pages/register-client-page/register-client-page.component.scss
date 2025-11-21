@@ -1,18 +1,15 @@
-.print-rule-card-container {
+.print-rules-list {
 	display: flex;
-	align-items: start;
+	flex-direction: column;
+	align-items: center;
+}
+
+.print-rule-card-container {
+	display: grid;
+	grid-template-columns: 1fr auto;
 	margin: 0;
 	gap: 12px;
 	max-width: 300px;
-}
-
-.print-rule-card-content {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 12px;
-	margin-top: 4px;
-	line-height: 20px;
 
 	p {
 		margin: 0;

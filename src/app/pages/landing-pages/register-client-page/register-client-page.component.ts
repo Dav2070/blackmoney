@@ -13,10 +13,35 @@ import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import {
 	getGraphQLErrorCodes,
-	convertRegisterClientResourceToRegisterClient
+	convertRegisterClientResourceToRegisterClient,
+	convertPrintRuleResourceToPrintRule
 } from "src/app/utils"
 import { CategoryType, PrintRuleType } from "src/app/types"
 import * as ErrorCodes from "src/app/errorCodes"
+
+const printRuleQueryData = `
+	uuid
+	type
+	categoryType
+	printers {
+		items {
+			uuid
+			name
+		}
+	}
+	categories {
+		items {
+			uuid
+			name
+		}
+	}
+	products {
+		items {
+			uuid
+			name
+		}
+	}
+`
 
 @Component({
 	templateUrl: "./register-client-page.component.html",
@@ -31,6 +56,7 @@ export class RegisterClientPageComponent {
 	registerUuid: string = null
 	registerClientUuid: string = null
 	registerClient: RegisterClient = null
+	printRules: PrintRule[] = []
 
 	@ViewChild("editRegisterClientNameDialog")
 	editRegisterClientNameDialog: EditRegisterClientNameDialogComponent
@@ -69,27 +95,7 @@ export class RegisterClientPageComponent {
 					serialNumber
 					printRules {
 						items {
-							uuid
-							type
-							categoryType
-							printers {
-								items {
-									uuid
-									name
-								}
-							}
-							categories {
-								items {
-									uuid
-									name
-								}
-							}
-							products {
-								items {
-									uuid
-									name
-								}
-							}
+							${printRuleQueryData}
 						}
 					}
 				`,
@@ -103,6 +109,12 @@ export class RegisterClientPageComponent {
 
 		if (retrieveRegisterClientResponseData == null) return
 		this.registerClient = retrieveRegisterClientResponseData
+
+		this.printRules = []
+
+		for (const printRule of this.registerClient.printRules) {
+			this.printRules.push(printRule)
+		}
 	}
 
 	navigateBack() {
@@ -200,14 +212,15 @@ export class RegisterClientPageComponent {
 				printRuleType = "CATEGORY_TYPE"
 				categoryType = "FOOD"
 				break
+			case "allFoodAndDrinks":
+				printRuleType = "CATEGORY_TYPE"
+				break
 		}
 
 		this.addPrintRuleDialogLoading = true
 
 		const createPrintRuleResponse = await this.apiService.createPrintRule(
-			`
-				uuid
-			`,
+			printRuleQueryData,
 			{
 				registerClientUuid: this.registerClientUuid,
 				type: printRuleType,
@@ -217,6 +230,15 @@ export class RegisterClientPageComponent {
 		)
 
 		this.addPrintRuleDialogLoading = false
+
+		if (createPrintRuleResponse.data?.createPrintRule != null) {
+			const responseData = convertPrintRuleResourceToPrintRule(
+				createPrintRuleResponse.data.createPrintRule
+			)
+
+			this.printRules.push(responseData)
+		}
+
 		this.addPrintRuleDialog.hide()
 	}
 

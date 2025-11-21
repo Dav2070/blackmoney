@@ -226,6 +226,11 @@ export const de = {
 			allDrinks: "Alle Getränke",
 			allFood: "Alle Speisen"
 		},
+		deletePrintRuleDialog: {
+			headline: "Druckregel löschen",
+			description:
+				"Bist du dir sicher, dass du diese Druckregel löschen möchtest?"
+		},
 		resetPasswordDialog: {
 			headline: "Passwort zurücksetzen",
 			description:

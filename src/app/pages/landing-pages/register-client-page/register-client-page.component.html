@@ -70,6 +70,12 @@
 	(primaryButtonClick)="addPrintRuleDialogPrimaryButtonClick($event)"
 ></app-add-print-rule-dialog>
 
+<app-delete-print-rule-dialog
+	#deletePrintRuleDialog
+	[loading]="deletePrintRuleDialogLoading"
+	(primaryButtonClick)="deletePrintRuleDialogPrimaryButtonClick()"
+></app-delete-print-rule-dialog>
+
 <dav-context-menu
 	#printRuleItemContextMenu
 	[visible]="printRuleItemContextMenuVisible"

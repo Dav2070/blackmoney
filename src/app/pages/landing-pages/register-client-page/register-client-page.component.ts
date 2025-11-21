@@ -7,6 +7,7 @@ import {
 	AddPrintRuleDialogComponent,
 	SelectedPrintRuleType
 } from "src/app/dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
+import { DeletePrintRuleDialogComponent } from "src/app/dialogs/delete-print-rule-dialog/delete-print-rule-dialog.component"
 import { RegisterClient } from "src/app/models/RegisterClient"
 import { PrintRule } from "src/app/models/PrintRule"
 import { DataService } from "src/app/services/data-service"
@@ -71,6 +72,10 @@ export class RegisterClientPageComponent {
 	@ViewChild("addPrintRuleDialog")
 	addPrintRuleDialog: AddPrintRuleDialogComponent
 	addPrintRuleDialogLoading: boolean = false
+
+	@ViewChild("deletePrintRuleDialog")
+	deletePrintRuleDialog: DeletePrintRuleDialogComponent
+	deletePrintRuleDialogLoading: boolean = false
 
 	@ViewChild("printRuleItemContextMenu")
 	printRuleItemContextMenu: ElementRef<ContextMenu>
@@ -174,9 +179,14 @@ export class RegisterClientPageComponent {
 		this.addPrintRuleDialog.show()
 	}
 
-	showEditPrintRuleDialog() {}
+	showEditPrintRuleDialog() {
+		this.printRuleItemContextMenuVisible = false
+	}
 
-	showDeletePrintRuleDialog() {}
+	showDeletePrintRuleDialog() {
+		this.printRuleItemContextMenuVisible = false
+		this.deletePrintRuleDialog.show()
+	}
 
 	async editRegisterClientNameDialogPrimaryButtonClick(event: {
 		name: string
@@ -279,6 +289,33 @@ export class RegisterClientPageComponent {
 		}
 
 		this.addPrintRuleDialog.hide()
+	}
+
+	async deletePrintRuleDialogPrimaryButtonClick() {
+		if (this.printRuleItemContextMenuPrintRule == null) return
+		this.deletePrintRuleDialogLoading = true
+
+		const deletePrintRuleResponse = await this.apiService.deletePrintRule(
+			`uuid`,
+			{
+				uuid: this.printRuleItemContextMenuPrintRule.uuid
+			}
+		)
+
+		this.deletePrintRuleDialogLoading = false
+
+		if (deletePrintRuleResponse.data?.deletePrintRule != null) {
+			const index = this.printRules.findIndex(
+				printRule =>
+					printRule.uuid === this.printRuleItemContextMenuPrintRule.uuid
+			)
+
+			if (index !== -1) {
+				this.printRules.splice(index, 1)
+			}
+		}
+
+		this.deletePrintRuleDialog.hide()
 	}
 
 	getTextForPrintRule(printRule: PrintRule) {

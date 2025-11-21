@@ -607,6 +607,25 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async deletePrintRule(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<MutationResult<{ deletePrintRule: PrintRuleResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ deletePrintRule: PrintRuleResource }>({
+				mutation: gql`
+					mutation DeletePrintRule($uuid: String!) {
+						deletePrintRule(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveRoom(
 		queryData: string,
 		variables: {

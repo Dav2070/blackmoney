@@ -59,6 +59,7 @@ import { EditTableDialogComponent } from "./dialogs/edit-table-dialog/edit-table
 import { DeleteTableDialogComponent } from "./dialogs/delete-table-dialog/delete-table-dialog.component"
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
 import { AddPrintRuleDialogComponent } from "./dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
+import { DeletePrintRuleDialogComponent } from "./dialogs/delete-print-rule-dialog/delete-print-rule-dialog.component"
 import { ResetPasswordDialogComponent } from "./dialogs/reset-password-dialog/reset-password-dialog.component"
 import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
@@ -142,6 +143,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		DeleteTableDialogComponent,
 		SelectTableDialogComponent,
 		AddPrintRuleDialogComponent,
+		DeletePrintRuleDialogComponent,
 		ResetPasswordDialogComponent,
 		SelectProductDialogComponent,
 		SelectProductVariationsDialogComponent,

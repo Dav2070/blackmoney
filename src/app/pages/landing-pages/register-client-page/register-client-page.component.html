@@ -32,6 +32,7 @@
 									<dav-icon-button
 										size="xs"
 										[tooltip]="locale.options"
+										(click)="showPrintRuleItemContextMenu($event, printRule)"
 									>
 										<fa-icon [icon]="faEllipsis"></fa-icon>
 									</dav-icon-button>
@@ -68,3 +69,24 @@
 	[restaurantUuid]="restaurantUuid"
 	(primaryButtonClick)="addPrintRuleDialogPrimaryButtonClick($event)"
 ></app-add-print-rule-dialog>
+
+<dav-context-menu
+	#printRuleItemContextMenu
+	[visible]="printRuleItemContextMenuVisible"
+	[posX]="printRuleItemContextMenuPositionX"
+	[posY]="printRuleItemContextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="showEditPrintRuleDialog()"
+	>
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="showDeletePrintRuleDialog()"
+	>
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

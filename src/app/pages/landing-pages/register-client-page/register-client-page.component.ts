@@ -1,6 +1,7 @@
-import { Component, ViewChild } from "@angular/core"
+import { Component, ElementRef, HostListener, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
-import { faEllipsis } from "@fortawesome/pro-regular-svg-icons"
+import { faEllipsis, faPen, faTrash } from "@fortawesome/pro-regular-svg-icons"
+import { ContextMenu } from "dav-ui-components"
 import { EditRegisterClientNameDialogComponent } from "src/app/dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import {
 	AddPrintRuleDialogComponent,
@@ -50,8 +51,11 @@ const printRuleQueryData = `
 })
 export class RegisterClientPageComponent {
 	locale = this.localizationService.locale.registerClientPage
+	actionsLocale = this.localizationService.locale.actions
 	errorsLocale = this.localizationService.locale.errors
 	faEllipsis = faEllipsis
+	faPen = faPen
+	faTrash = faTrash
 	restaurantUuid: string = null
 	registerUuid: string = null
 	registerClientUuid: string = null
@@ -67,6 +71,13 @@ export class RegisterClientPageComponent {
 	@ViewChild("addPrintRuleDialog")
 	addPrintRuleDialog: AddPrintRuleDialogComponent
 	addPrintRuleDialogLoading: boolean = false
+
+	@ViewChild("printRuleItemContextMenu")
+	printRuleItemContextMenu: ElementRef<ContextMenu>
+	printRuleItemContextMenuVisible: boolean = false
+	printRuleItemContextMenuPositionX: number = 0
+	printRuleItemContextMenuPositionY: number = 0
+	printRuleItemContextMenuPrintRule: PrintRule = null
 
 	constructor(
 		private dataService: DataService,
@@ -117,6 +128,17 @@ export class RegisterClientPageComponent {
 		}
 	}
 
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		if (
+			!this.printRuleItemContextMenu.nativeElement.contains(
+				event.target as Node
+			)
+		) {
+			this.printRuleItemContextMenuVisible = false
+		}
+	}
+
 	navigateBack() {
 		this.router.navigate([
 			"user",
@@ -125,6 +147,19 @@ export class RegisterClientPageComponent {
 			"registers",
 			this.registerUuid
 		])
+	}
+
+	showPrintRuleItemContextMenu(event: Event, printRule: PrintRule) {
+		this.printRuleItemContextMenuPrintRule = printRule
+		const detail = (event as CustomEvent).detail
+
+		if (this.printRuleItemContextMenuVisible) {
+			this.printRuleItemContextMenuVisible = false
+		} else {
+			this.printRuleItemContextMenuPositionX = detail.contextMenuPosition.x
+			this.printRuleItemContextMenuPositionY = detail.contextMenuPosition.y
+			this.printRuleItemContextMenuVisible = true
+		}
 	}
 
 	showEditRegisterClientNameDialog() {
@@ -138,6 +173,10 @@ export class RegisterClientPageComponent {
 	showAddPrintRuleDialog() {
 		this.addPrintRuleDialog.show()
 	}
+
+	showEditPrintRuleDialog() {}
+
+	showDeletePrintRuleDialog() {}
 
 	async editRegisterClientNameDialogPrimaryButtonClick(event: {
 		name: string

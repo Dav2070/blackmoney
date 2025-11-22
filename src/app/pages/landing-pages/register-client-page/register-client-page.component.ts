@@ -5,6 +5,7 @@ import { ContextMenu } from "dav-ui-components"
 import { EditRegisterClientNameDialogComponent } from "src/app/dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import {
 	AddPrintRuleDialogComponent,
+	SearchResult,
 	SelectedPrintRuleType
 } from "src/app/dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
 import { EditPrintRuleDialogComponent } from "src/app/dialogs/edit-print-rule-dialog/edit-print-rule-dialog.component"
@@ -77,6 +78,8 @@ export class RegisterClientPageComponent {
 	@ViewChild("editPrintRuleDialog")
 	editPrintRuleDialog: EditPrintRuleDialogComponent
 	editPrintRuleDialogLoading: boolean = false
+	editPrintRuleDialogPrintRuleType: PrintRuleType = "BILLS"
+	editPrintRuleDialogSelectedPrinters: SearchResult[] = []
 
 	@ViewChild("deletePrintRuleDialog")
 	deletePrintRuleDialog: DeletePrintRuleDialogComponent
@@ -186,6 +189,16 @@ export class RegisterClientPageComponent {
 
 	showEditPrintRuleDialog() {
 		this.printRuleItemContextMenuVisible = false
+
+		this.editPrintRuleDialogPrintRuleType =
+			this.printRuleItemContextMenuPrintRule.type
+
+		this.editPrintRuleDialogSelectedPrinters =
+			this.printRuleItemContextMenuPrintRule.printers.map(printer => ({
+				key: printer.uuid,
+				value: printer.name
+			}))
+
 		this.editPrintRuleDialog.show()
 	}
 
@@ -307,7 +320,42 @@ export class RegisterClientPageComponent {
 		this.addPrintRuleDialog.hide()
 	}
 
-	editPrintRuleDialogPrimaryButtonClick(event: {}) {}
+	async editPrintRuleDialogPrimaryButtonClick(event: {
+		printerUuids: string[]
+		categoryUuids: string[]
+		productUuids: string[]
+	}) {
+		this.editPrintRuleDialogLoading = true
+
+		const updatePrintRuleResponse = await this.apiService.updatePrintRule(
+			printRuleQueryData,
+			{
+				uuid: this.printRuleItemContextMenuPrintRule.uuid,
+				printerUuids: event.printerUuids,
+				categoryUuids: event.categoryUuids,
+				productUuids: event.productUuids
+			}
+		)
+
+		this.editPrintRuleDialogLoading = false
+
+		if (updatePrintRuleResponse.data?.updatePrintRule != null) {
+			const responseData = convertPrintRuleResourceToPrintRule(
+				updatePrintRuleResponse.data.updatePrintRule
+			)
+
+			const index = this.printRules.findIndex(
+				printRule =>
+					printRule.uuid === this.printRuleItemContextMenuPrintRule.uuid
+			)
+
+			if (index !== -1) {
+				this.printRules[index] = responseData
+			}
+		}
+
+		this.editPrintRuleDialog.hide()
+	}
 
 	async deletePrintRuleDialogPrimaryButtonClick() {
 		if (this.printRuleItemContextMenuPrintRule == null) return

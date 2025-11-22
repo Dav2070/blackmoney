@@ -23,7 +23,7 @@ export type SelectedPrintRuleType =
 	| "categories"
 	| "products"
 
-interface SearchResult {
+export interface SearchResult {
 	key: string
 	value: string
 }
@@ -83,9 +83,9 @@ export class AddPrintRuleDialogComponent {
 		}
 	}
 
-	async printersSearchtextfieldChange(event: Event) {
+	printersSearchtextfieldChange(event: Event) {
 		const value = (event as CustomEvent).detail.value
-		await this.updatePrintersSearchResults(value)
+		this.updatePrintersSearchResults(value)
 	}
 
 	printersSearchTextfieldSelect(event: Event) {
@@ -99,9 +99,9 @@ export class AddPrintRuleDialogComponent {
 		if (i !== -1) this.selectedPrinters.splice(i, 1)
 	}
 
-	async categoriesSearchTextfieldChange(event: Event) {
+	categoriesSearchTextfieldChange(event: Event) {
 		const value = (event as CustomEvent).detail.value
-		await this.updateCategoriesSearchResults(value)
+		this.updateCategoriesSearchResults(value)
 	}
 
 	categoriesSearchTextfieldSelect(event: Event) {
@@ -115,9 +115,9 @@ export class AddPrintRuleDialogComponent {
 		if (i !== -1) this.selectedCategories.splice(i, 1)
 	}
 
-	async productsSearchTextfieldChange(event: Event) {
+	productsSearchTextfieldChange(event: Event) {
 		const value = (event as CustomEvent).detail.value
-		await this.updateProductsSearchResults(value)
+		this.updateProductsSearchResults(value)
 	}
 
 	productsSearchTextfieldSelect(event: Event) {

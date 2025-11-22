@@ -233,7 +233,10 @@ export const de = {
 			products: "Ausgewählte Produkte"
 		},
 		editPrintRuleDialog: {
-			headline: "Druckregel bearbeiten"
+			headline: "Druckregel bearbeiten",
+			selectPrinters: "Drucker auswählen",
+			selectCategories: "Kategorien auswählen",
+			selectProducts: "Produkte auswählen"
 		},
 		deletePrintRuleDialog: {
 			headline: "Druckregel löschen",

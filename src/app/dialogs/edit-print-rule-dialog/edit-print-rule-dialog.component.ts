@@ -10,11 +10,16 @@ import {
 } from "@angular/core"
 import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
+import { SearchResult } from "../add-print-rule-dialog/add-print-rule-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
+import { ApiService } from "src/app/services/api-service"
+import { DataService } from "src/app/services/data-service"
+import { PrinterResource, PrintRuleType } from "src/app/types"
 
 @Component({
 	selector: "app-edit-print-rule-dialog",
 	templateUrl: "./edit-print-rule-dialog.component.html",
+	styleUrl: "./edit-print-rule-dialog.component.scss",
 	standalone: false
 })
 export class EditPrintRuleDialogComponent {
@@ -22,20 +27,37 @@ export class EditPrintRuleDialogComponent {
 	actionsLocale = this.localizationService.locale.actions
 
 	@Input() loading: boolean = false
+	@Input() restaurantUuid: string = ""
+	@Input() printRuleType: PrintRuleType = "BILLS"
+	@Input() selectedPrinters: SearchResult[] = []
+	@Input() selectedCategories: SearchResult[] = []
+	@Input() selectedProducts: SearchResult[] = []
 	@Output() primaryButtonClick = new EventEmitter()
 
 	@ViewChild("dialog") dialog!: ElementRef<Dialog>
 	visible: boolean = false
+	printers: SearchResult[] = []
+	categories: SearchResult[] = []
+	products: SearchResult[] = []
 
 	constructor(
+		private dataService: DataService,
+		private apiService: ApiService,
 		private localizationService: LocalizationService,
 		@Inject(PLATFORM_ID) private platformId: object
 	) {}
 
-	ngAfterViewInit() {
+	async ngAfterViewInit() {
 		if (isPlatformBrowser(this.platformId)) {
 			document.body.appendChild(this.dialog.nativeElement)
 		}
+
+		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
+		await this.dataService.restaurantPromiseHolder.AwaitResult()
+
+		await this.updatePrintersSearchResults()
+		await this.updateCategoriesSearchResults()
+		await this.updateProductsSearchResults()
 	}
 
 	ngOnDestroy() {
@@ -44,8 +66,104 @@ export class EditPrintRuleDialogComponent {
 		}
 	}
 
+	printersSearchtextfieldChange(event: Event) {
+		const value = (event as CustomEvent).detail.value
+		this.updatePrintersSearchResults(value)
+	}
+
+	printersSearchTextfieldSelect(event: Event) {
+		const result = (event as CustomEvent).detail.result
+		this.selectedPrinters.push(result)
+		this.updatePrintersSearchResults()
+	}
+
+	removeSelectedPrinter(uuid: string) {
+		const i = this.selectedPrinters.findIndex(p => p.key === uuid)
+		if (i !== -1) this.selectedPrinters.splice(i, 1)
+	}
+
+	async updatePrintersSearchResults(query: string = "") {
+		const searchPrintersResponse = await this.apiService.searchPrinters(
+			`
+				items {
+					uuid
+					name
+				}
+			`,
+			{
+				restaurantUuid: this.restaurantUuid,
+				query,
+				exclude: this.selectedPrinters.map(p => p.key)
+			}
+		)
+
+		if (searchPrintersResponse.data.searchPrinters != null) {
+			this.printers = searchPrintersResponse.data.searchPrinters.items.map(
+				(printer: PrinterResource) => ({
+					key: printer.uuid,
+					value: printer.name
+				})
+			)
+		}
+	}
+
+	async updateCategoriesSearchResults(query: string = "") {
+		const searchCategoriesResponse = await this.apiService.searchCategories(
+			`
+				items {
+					uuid
+					name
+				}
+			`,
+			{
+				restaurantUuid: this.restaurantUuid,
+				query,
+				exclude: this.selectedCategories.map(c => c.key)
+			}
+		)
+
+		if (searchCategoriesResponse.data.searchCategories != null) {
+			this.categories =
+				searchCategoriesResponse.data.searchCategories.items.map(
+					(category: any) => ({
+						key: category.uuid,
+						value: category.name
+					})
+				)
+		}
+	}
+
+	async updateProductsSearchResults(query: string = "") {
+		const searchProductsResponse = await this.apiService.searchProducts(
+			`
+				items {
+					uuid
+					name
+				}
+			`,
+			{
+				restaurantUuid: this.restaurantUuid,
+				query,
+				exclude: this.selectedProducts.map(p => p.key)
+			}
+		)
+
+		if (searchProductsResponse.data.searchProducts != null) {
+			this.products = searchProductsResponse.data.searchProducts.items.map(
+				(product: any) => ({
+					key: product.uuid,
+					value: product.name
+				})
+			)
+		}
+	}
+
 	show() {
 		this.visible = true
+
+		this.updatePrintersSearchResults()
+		this.updateCategoriesSearchResults()
+		this.updateProductsSearchResults()
 	}
 
 	hide() {
@@ -53,6 +171,10 @@ export class EditPrintRuleDialogComponent {
 	}
 
 	submit() {
-		this.primaryButtonClick.emit()
+		this.primaryButtonClick.emit({
+			printerUuids: this.selectedPrinters.map(p => p.key),
+			categoryUuids: this.selectedCategories.map(c => c.key),
+			productUuids: this.selectedProducts.map(p => p.key)
+		})
 	}
 }

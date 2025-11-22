@@ -6,9 +6,32 @@
 	[visible]="visible"
 	maxWidth="450"
 	[loading]="loading"
+	[primaryButtonDisabled]="
+		selectedPrinters.length === 0 ||
+		(printRuleType === 'CATEGORIES' &&
+			selectedCategories.length === 0) ||
+		(printRuleType === 'PRODUCTS' && selectedProducts.length === 0)
+	"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"
 >
-	
+	<div class="container">
+		<div class="printer-search-container">
+			<dav-search-textfield
+				[label]="locale.selectPrinters"
+				[searchResults]="printers"
+				(change)="printersSearchtextfieldChange($event)"
+				(select)="printersSearchTextfieldSelect($event)"
+			></dav-search-textfield>
+
+			<div class="selected-printers-container">
+				@for (printer of selectedPrinters; track printer.key) {
+					<dav-badge (click)="removeSelectedPrinter(printer.key)">
+						{{ printer.value }}
+					</dav-badge>
+				}
+			</div>
+		</div>
+	</div>
 </dav-dialog>

@@ -610,6 +610,40 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async updatePrintRule(
+		queryData: string,
+		variables: {
+			uuid: string
+			printerUuids: string[]
+			categoryUuids?: string[]
+			productUuids?: string[]
+		}
+	): Promise<MutationResult<{ updatePrintRule: PrintRuleResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updatePrintRule: PrintRuleResource }>({
+				mutation: gql`
+					mutation UpdatePrintRule(
+						$uuid: String!
+						$printerUuids: [String!]!
+						$categoryUuids: [String!]
+						$productUuids: [String!]
+					) {
+						updatePrintRule(
+							uuid: $uuid
+							printerUuids: $printerUuids
+							categoryUuids: $categoryUuids
+							productUuids: $productUuids
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async deletePrintRule(
 		queryData: string,
 		variables: { uuid: string }

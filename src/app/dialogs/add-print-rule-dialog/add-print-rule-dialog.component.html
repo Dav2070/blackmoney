@@ -5,7 +5,12 @@
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
 	[loading]="loading"
-	[primaryButtonDisabled]="selectedPrinters.length === 0"
+	[primaryButtonDisabled]="
+		selectedPrinters.length === 0 ||
+		(selectedPrintRuleType === 'categories' &&
+			selectedCategories.length === 0) ||
+		(selectedPrintRuleType === 'products' && selectedProducts.length === 0)
+	"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"
@@ -15,6 +20,7 @@
 			<dav-search-textfield
 				[label]="locale.selectPrinters"
 				[searchResults]="printers"
+				(change)="printersSearchtextfieldChange($event)"
 				(select)="printersSearchTextfieldSelect($event)"
 			></dav-search-textfield>
 
@@ -58,9 +64,18 @@
 				<dav-search-textfield
 					[label]="locale.selectCategories"
 					[searchResults]="categories"
+					(change)="categoriesSearchTextfieldChange($event)"
 					(select)="categoriesSearchTextfieldSelect($event)"
 					[disabled]="selectedPrintRuleType !== 'categories'"
 				></dav-search-textfield>
+
+				<div class="selected-categories-container">
+					@for (category of selectedCategories; track category.key) {
+						<dav-badge (click)="removeSelectedCategory(category.key)">
+							{{ category.value }}
+						</dav-badge>
+					}
+				</div>
 			</div>
 
 			<dav-radio-button
@@ -72,9 +87,18 @@
 				<dav-search-textfield
 					[label]="locale.selectProducts"
 					[searchResults]="products"
+					(change)="productsSearchTextfieldChange($event)"
 					(select)="productsSearchTextfieldSelect($event)"
 					[disabled]="selectedPrintRuleType !== 'products'"
 				></dav-search-textfield>
+
+				<div class="selected-products-container">
+					@for (product of selectedProducts; track product.key) {
+						<dav-badge (click)="removeSelectedProduct(product.key)">
+							{{ product.value }}
+						</dav-badge>
+					}
+				</div>
 			</div>
 		</dav-radio-group>
 	</div>

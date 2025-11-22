@@ -248,6 +248,8 @@ export class RegisterClientPageComponent {
 	async addPrintRuleDialogPrimaryButtonClick(event: {
 		printerUuids: string[]
 		printRuleType: SelectedPrintRuleType
+		categoryUuids: string[]
+		productUuids: string[]
 	}) {
 		let printRuleType: PrintRuleType = "BILLS"
 		let categoryType: CategoryType = null
@@ -280,7 +282,9 @@ export class RegisterClientPageComponent {
 				registerClientUuid: this.registerClientUuid,
 				type: printRuleType,
 				categoryType,
-				printerUuids: event.printerUuids
+				printerUuids: event.printerUuids,
+				categoryUuids: event.categoryUuids,
+				productUuids: event.productUuids
 			}
 		)
 
@@ -339,6 +343,16 @@ export class RegisterClientPageComponent {
 			type = this.locale.food
 		} else if (printRule.type === "CATEGORY_TYPE") {
 			type = this.locale.foodAndDrinks
+		} else if (printRule.type === "CATEGORIES") {
+			type = this.locale.categories.replace(
+				"{count}",
+				printRule.categories.length.toString()
+			)
+		} else if (printRule.type === "PRODUCTS") {
+			type = this.locale.products.replace(
+				"{count}",
+				printRule.products.length.toString()
+			)
 		}
 
 		return this.locale.printRuleText.replace("{type}", type)

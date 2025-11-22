@@ -474,6 +474,7 @@ export class ApiService {
 		variables: {
 			restaurantUuid: string
 			query: string
+			exclude?: string[]
 		}
 	): Promise<ApolloQueryResult<{ searchPrinters: List<PrinterResource> }>> {
 		return await this.blackmoneyAuthApollo
@@ -482,10 +483,12 @@ export class ApiService {
 					query SearchPrinters(
 						$restaurantUuid: String!
 						$query: String!
+						$exclude: [String!]
 					) {
 						searchPrinters(
 							restaurantUuid: $restaurantUuid
 							query: $query
+							exclude: $exclude
 						) {
 							${queryData}
 						}
@@ -808,19 +811,84 @@ export class ApiService {
 			.toPromise()
 	}
 
-	async listCategories(
-		queryData: string
-	): Promise<ApolloQueryResult<{ listCategories: List<CategoryResource> }>> {
+	async searchCategories(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			query: string
+			exclude?: string[]
+		}
+	): Promise<ApolloQueryResult<{ searchCategories: List<CategoryResource> }>> {
 		return await this.blackmoneyAuthApollo
-			.query<{ listCategories: List<CategoryResource> }>({
+			.query<{ searchCategories: List<CategoryResource> }>({
 				query: gql`
-					query ListCategories {
-						listCategories {
+					query SearchCategories(
+						$restaurantUuid: String!
+						$query: String!
+						$exclude: [String!]
+					) {
+						searchCategories(
+							restaurantUuid: $restaurantUuid
+							query: $query
+							exclude: $exclude
+						) {
 							${queryData}
 						}
 					}
 				`,
-				variables: {},
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async listCategories(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+		}
+	): Promise<ApolloQueryResult<{ listCategories: List<CategoryResource> }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ listCategories: List<CategoryResource> }>({
+				query: gql`
+					query ListCategories($restaurantUuid: String!) {
+						listCategories(restaurantUuid: $restaurantUuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async searchProducts(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			query: string
+			exclude?: string[]
+		}
+	): Promise<ApolloQueryResult<{ searchProducts: List<CategoryResource> }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ searchProducts: List<CategoryResource> }>({
+				query: gql`
+					query SearchProducts(
+						$restaurantUuid: String!
+						$query: String!
+						$exclude: [String!]
+					) {
+						searchProducts(
+							restaurantUuid: $restaurantUuid
+							query: $query
+							exclude: $exclude
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
 				errorPolicy
 			})
 			.toPromise()
@@ -835,8 +903,11 @@ export class ApiService {
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveTable: TableResource }>({
 				query: gql`
-					query retrieveTable($uuid:String!,${paidParam}) {
-						retrieveTable(uuid:$uuid) {
+					query retrieveTable(
+						$uuid:String!
+						${paidParam}
+					) {
+						retrieveTable(uuid: $uuid) {
 							${queryData}
 						}
 					}

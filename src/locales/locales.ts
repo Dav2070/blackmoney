@@ -66,6 +66,8 @@ export const de = {
 		drinks: "Getränke",
 		food: "Speisen",
 		foodAndDrinks: "Speisen und Getränke",
+		categories: "{count} Kategorien",
+		products: "{count} Produkte",
 		options: "Weitere Optionen"
 	},
 	employeesPage: {

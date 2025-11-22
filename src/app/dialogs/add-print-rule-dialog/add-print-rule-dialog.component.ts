@@ -20,6 +20,13 @@ export type SelectedPrintRuleType =
 	| "allFoodAndDrinks"
 	| "allDrinks"
 	| "allFood"
+	| "categories"
+	| "products"
+
+interface SearchResult {
+	key: string
+	value: string
+}
 
 @Component({
 	selector: "app-add-print-rule-dialog",
@@ -41,14 +48,12 @@ export class AddPrintRuleDialogComponent {
 	visible: boolean = false
 	selectedPrintRuleType: SelectedPrintRuleType = "bills"
 
-	printers: {
-		key: string
-		value: string
-	}[] = []
-	selectedPrinters: {
-		key: string
-		value: string
-	}[] = []
+	printers: SearchResult[] = []
+	selectedPrinters: SearchResult[] = []
+	categories: SearchResult[] = []
+	selectedCategories: SearchResult[] = []
+	products: SearchResult[] = []
+	selectedProducts: SearchResult[] = []
 
 	constructor(
 		private dataService: DataService,
@@ -102,6 +107,14 @@ export class AddPrintRuleDialogComponent {
 	removeSelectedPrinter(uuid: string) {
 		const i = this.selectedPrinters.findIndex(p => p.key === uuid)
 		if (i !== -1) this.selectedPrinters.splice(i, 1)
+	}
+
+	categoriesSearchTextfieldSelect(event: Event) {
+		const result = (event as CustomEvent).detail.result
+	}
+
+	productsSearchTextfieldSelect(event: Event) {
+		const result = (event as CustomEvent).detail.result
 	}
 
 	radioGroupChange(event: Event) {

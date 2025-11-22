@@ -264,6 +264,12 @@ export class RegisterClientPageComponent {
 			case "allFoodAndDrinks":
 				printRuleType = "CATEGORY_TYPE"
 				break
+			case "categories":
+				printRuleType = "CATEGORIES"
+				break
+			case "products":
+				printRuleType = "PRODUCTS"
+				break
 		}
 
 		this.addPrintRuleDialogLoading = true

@@ -48,6 +48,34 @@
 				[label]="locale.allFood"
 				value="allFood"
 			></dav-radio-button>
+
+			<dav-radio-button
+				[label]="locale.categories"
+				value="categories"
+			></dav-radio-button>
+
+			<div class="category-search-container">
+				<dav-search-textfield
+					[label]="locale.selectCategories"
+					[searchResults]="categories"
+					(select)="categoriesSearchTextfieldSelect($event)"
+					[disabled]="selectedPrintRuleType !== 'categories'"
+				></dav-search-textfield>
+			</div>
+
+			<dav-radio-button
+				[label]="locale.products"
+				value="products"
+			></dav-radio-button>
+
+			<div class="product-search-container">
+				<dav-search-textfield
+					[label]="locale.selectProducts"
+					[searchResults]="products"
+					(select)="productsSearchTextfieldSelect($event)"
+					[disabled]="selectedPrintRuleType !== 'products'"
+				></dav-search-textfield>
+			</div>
 		</dav-radio-group>
 	</div>
 </dav-dialog>

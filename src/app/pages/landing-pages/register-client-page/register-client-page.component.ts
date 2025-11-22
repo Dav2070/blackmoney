@@ -7,6 +7,7 @@ import {
 	AddPrintRuleDialogComponent,
 	SelectedPrintRuleType
 } from "src/app/dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
+import { EditPrintRuleDialogComponent } from "src/app/dialogs/edit-print-rule-dialog/edit-print-rule-dialog.component"
 import { DeletePrintRuleDialogComponent } from "src/app/dialogs/delete-print-rule-dialog/delete-print-rule-dialog.component"
 import { RegisterClient } from "src/app/models/RegisterClient"
 import { PrintRule } from "src/app/models/PrintRule"
@@ -72,6 +73,10 @@ export class RegisterClientPageComponent {
 	@ViewChild("addPrintRuleDialog")
 	addPrintRuleDialog: AddPrintRuleDialogComponent
 	addPrintRuleDialogLoading: boolean = false
+
+	@ViewChild("editPrintRuleDialog")
+	editPrintRuleDialog: EditPrintRuleDialogComponent
+	editPrintRuleDialogLoading: boolean = false
 
 	@ViewChild("deletePrintRuleDialog")
 	deletePrintRuleDialog: DeletePrintRuleDialogComponent
@@ -181,6 +186,7 @@ export class RegisterClientPageComponent {
 
 	showEditPrintRuleDialog() {
 		this.printRuleItemContextMenuVisible = false
+		this.editPrintRuleDialog.show()
 	}
 
 	showDeletePrintRuleDialog() {
@@ -300,6 +306,8 @@ export class RegisterClientPageComponent {
 
 		this.addPrintRuleDialog.hide()
 	}
+
+	editPrintRuleDialogPrimaryButtonClick(event: {}) {}
 
 	async deletePrintRuleDialogPrimaryButtonClick() {
 		if (this.printRuleItemContextMenuPrintRule == null) return

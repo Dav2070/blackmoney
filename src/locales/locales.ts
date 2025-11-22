@@ -232,6 +232,9 @@ export const de = {
 			categories: "Ausgewählte Kategorien",
 			products: "Ausgewählte Produkte"
 		},
+		editPrintRuleDialog: {
+			headline: "Druckregel bearbeiten"
+		},
 		deletePrintRuleDialog: {
 			headline: "Druckregel löschen",
 			description:

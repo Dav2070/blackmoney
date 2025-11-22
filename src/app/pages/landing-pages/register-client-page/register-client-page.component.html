@@ -70,6 +70,12 @@
 	(primaryButtonClick)="addPrintRuleDialogPrimaryButtonClick($event)"
 ></app-add-print-rule-dialog>
 
+<app-edit-print-rule-dialog
+	#editPrintRuleDialog
+	[loading]="editPrintRuleDialogLoading"
+	(primaryButtonClick)="editPrintRuleDialogPrimaryButtonClick($event)"
+></app-edit-print-rule-dialog>
+
 <app-delete-print-rule-dialog
 	#deletePrintRuleDialog
 	[loading]="deletePrintRuleDialogLoading"

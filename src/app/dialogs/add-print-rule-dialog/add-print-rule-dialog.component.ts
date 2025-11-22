@@ -213,7 +213,15 @@ export class AddPrintRuleDialogComponent {
 	}
 
 	show() {
+		this.selectedPrinters = []
+		this.selectedCategories = []
+		this.selectedProducts = []
+		this.selectedPrintRuleType = "bills"
 		this.visible = true
+
+		this.updatePrintersSearchResults()
+		this.updateCategoriesSearchResults()
+		this.updateProductsSearchResults()
 	}
 
 	hide() {

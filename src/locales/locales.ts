@@ -222,10 +222,12 @@ export const de = {
 		},
 		addPrintRuleDialog: {
 			headline: "Druckregel hinzufügen",
+			typeSubhead: "Was soll gedruckt werden?",
+			printersSubhead: "Welche Drucker sollen verwendet werden?",
 			selectPrinters: "Drucker auswählen",
 			selectCategories: "Kategorien auswählen",
 			selectProducts: "Produkte auswählen",
-			bills: "Rechnungen",
+			bills: "Alle Rechnungen",
 			allFoodAndDrinks: "Alle Getränke & Speisen",
 			allDrinks: "Alle Getränke",
 			allFood: "Alle Speisen",

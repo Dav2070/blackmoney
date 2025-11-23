@@ -17,9 +17,9 @@ import { PrinterResource } from "src/app/types"
 
 export type SelectedPrintRuleType =
 	| "bills"
-	| "allFoodAndDrinks"
-	| "allDrinks"
-	| "allFood"
+	| "foodAndDrinks"
+	| "drinks"
+	| "food"
 	| "categories"
 	| "products"
 
@@ -97,7 +97,7 @@ export class AddPrintRuleDialogComponent {
 	removeSelectedPrinter(uuid: string) {
 		const i = this.selectedPrinters.findIndex(p => p.key === uuid)
 		if (i !== -1) this.selectedPrinters.splice(i, 1)
-		
+
 		this.updatePrintersSearchResults()
 	}
 
@@ -115,7 +115,7 @@ export class AddPrintRuleDialogComponent {
 	removeSelectedCategory(uuid: string) {
 		const i = this.selectedCategories.findIndex(c => c.key === uuid)
 		if (i !== -1) this.selectedCategories.splice(i, 1)
-		
+
 		this.updateCategoriesSearchResults()
 	}
 
@@ -133,7 +133,7 @@ export class AddPrintRuleDialogComponent {
 	removeSelectedProduct(uuid: string) {
 		const i = this.selectedProducts.findIndex(p => p.key === uuid)
 		if (i !== -1) this.selectedProducts.splice(i, 1)
-		
+
 		this.updateProductsSearchResults()
 	}
 

@@ -4,6 +4,11 @@
 	gap: 16px;
 	width: 400px;
 	box-sizing: border-box;
+	padding: 0;
+
+	p {
+		margin: 0;
+	}
 }
 
 .selected-printers-container,

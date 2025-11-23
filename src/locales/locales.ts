@@ -227,18 +227,24 @@ export const de = {
 			selectPrinters: "Drucker auswählen",
 			selectCategories: "Kategorien auswählen",
 			selectProducts: "Produkte auswählen",
-			bills: "Alle Rechnungen",
-			allFoodAndDrinks: "Alle Getränke & Speisen",
-			allDrinks: "Alle Getränke",
-			allFood: "Alle Speisen",
+			bills: "Rechnungen",
+			foodAndDrinks: "Speisen & Getränke",
+			drinks: "Getränke",
+			food: "Speisen",
 			categories: "Ausgewählte Kategorien",
 			products: "Ausgewählte Produkte"
 		},
 		editPrintRuleDialog: {
 			headline: "Druckregel bearbeiten",
+			printersSubhead: "Welche Drucker sollen verwendet werden?",
+			printersTypeSubhead: "{type} an folgende Drucker senden:",
 			selectPrinters: "Drucker auswählen",
 			selectCategories: "Kategorien auswählen",
-			selectProducts: "Produkte auswählen"
+			selectProducts: "Produkte auswählen",
+			bills: "Rechnungen",
+			foodAndDrinks: "Speisen & Getränke",
+			drinks: "Getränke",
+			food: "Speisen"
 		},
 		deletePrintRuleDialog: {
 			headline: "Druckregel löschen",

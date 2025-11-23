@@ -14,7 +14,7 @@ import { SearchResult } from "../add-print-rule-dialog/add-print-rule-dialog.com
 import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
-import { PrinterResource, PrintRuleType } from "src/app/types"
+import { CategoryType, PrinterResource, PrintRuleType } from "src/app/types"
 
 @Component({
 	selector: "app-edit-print-rule-dialog",
@@ -29,6 +29,7 @@ export class EditPrintRuleDialogComponent {
 	@Input() loading: boolean = false
 	@Input() restaurantUuid: string = ""
 	@Input() printRuleType: PrintRuleType = "BILLS"
+	@Input() categoryType: CategoryType = null
 	@Input() selectedPrinters: SearchResult[] = []
 	@Input() selectedCategories: SearchResult[] = []
 	@Input() selectedProducts: SearchResult[] = []
@@ -80,6 +81,8 @@ export class EditPrintRuleDialogComponent {
 	removeSelectedPrinter(uuid: string) {
 		const i = this.selectedPrinters.findIndex(p => p.key === uuid)
 		if (i !== -1) this.selectedPrinters.splice(i, 1)
+
+		this.updatePrintersSearchResults()
 	}
 
 	async updatePrintersSearchResults(query: string = "") {
@@ -155,6 +158,36 @@ export class EditPrintRuleDialogComponent {
 					value: product.name
 				})
 			)
+		}
+	}
+
+	getPrintersSubheadText() {
+		switch (this.printRuleType) {
+			case "CATEGORIES":
+			case "PRODUCTS":
+				return this.locale.printersSubhead
+			case "CATEGORY_TYPE":
+				if (this.categoryType === "DRINK") {
+					return this.locale.printersTypeSubhead.replace(
+						"{type}",
+						this.locale.drinks
+					)
+				} else if (this.categoryType === "FOOD") {
+					return this.locale.printersTypeSubhead.replace(
+						"{type}",
+						this.locale.food
+					)
+				} else {
+					return this.locale.printersTypeSubhead.replace(
+						"{type}",
+						this.locale.foodAndDrinks
+					)
+				}
+			default:
+				return this.locale.printersTypeSubhead.replace(
+					"{type}",
+					this.locale.bills
+				)
 		}
 	}
 

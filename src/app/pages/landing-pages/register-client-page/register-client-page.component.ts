@@ -79,6 +79,7 @@ export class RegisterClientPageComponent {
 	editPrintRuleDialog: EditPrintRuleDialogComponent
 	editPrintRuleDialogLoading: boolean = false
 	editPrintRuleDialogPrintRuleType: PrintRuleType = "BILLS"
+	editPrintRuleDialogCategoryType: CategoryType = null
 	editPrintRuleDialogSelectedPrinters: SearchResult[] = []
 
 	@ViewChild("deletePrintRuleDialog")
@@ -192,6 +193,8 @@ export class RegisterClientPageComponent {
 
 		this.editPrintRuleDialogPrintRuleType =
 			this.printRuleItemContextMenuPrintRule.type
+		this.editPrintRuleDialogCategoryType =
+			this.printRuleItemContextMenuPrintRule.categoryType
 
 		this.editPrintRuleDialogSelectedPrinters =
 			this.printRuleItemContextMenuPrintRule.printers.map(printer => ({
@@ -274,15 +277,15 @@ export class RegisterClientPageComponent {
 		let categoryType: CategoryType = null
 
 		switch (event.printRuleType) {
-			case "allDrinks":
+			case "drinks":
 				printRuleType = "CATEGORY_TYPE"
 				categoryType = "DRINK"
 				break
-			case "allFood":
+			case "food":
 				printRuleType = "CATEGORY_TYPE"
 				categoryType = "FOOD"
 				break
-			case "allFoodAndDrinks":
+			case "foodAndDrinks":
 				printRuleType = "CATEGORY_TYPE"
 				break
 			case "categories":

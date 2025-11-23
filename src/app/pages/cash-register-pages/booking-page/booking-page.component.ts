@@ -225,7 +225,6 @@ export class BookingPageComponent {
 						items {
 							uuid
 							name
-							type
 							products {
 								total
 								items {
@@ -257,7 +256,6 @@ export class BookingPageComponent {
 						items {
 							id
 							uuid
-							name
 							offerType
 							discountType
 							offerValue
@@ -1052,6 +1050,18 @@ export class BookingPageComponent {
 											}
 										}
 									}
+								}
+								offer {
+									id
+									uuid
+									offerType
+									discountType
+									offerValue
+									startDate
+									endDate
+									startTime
+									endTime
+									weekdays
 								}
 								orderItemVariations {
 									total

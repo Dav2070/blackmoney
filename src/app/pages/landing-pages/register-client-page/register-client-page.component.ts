@@ -26,7 +26,7 @@ import * as ErrorCodes from "src/app/errorCodes"
 const printRuleQueryData = `
 	uuid
 	type
-	categoryType
+	productType
 	printers {
 		items {
 			uuid

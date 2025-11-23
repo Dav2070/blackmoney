@@ -91,14 +91,14 @@ export class BookingPageComponent {
 	productsLoading: boolean = true
 	ordersLoading: boolean = true
 
-	menues: Offer[] = []
-	specials: Offer[] = []
+	menues: Product[] = []
+	specials: Product[] = []
 	isMenuePopupVisible: boolean = false
 	specialCategories: Category[] = []
 	specialProducts: Product[] = []
-	currentSpecial: Offer | null = null
-	currentMenu: Offer | null = null
-	tmpCurrentMenu: Offer | null = null
+	currentSpecial: Product | null = null
+	currentMenu: Product | null = null
+	tmpCurrentMenu: Product | null = null
 	currentMaxSelections: number = 0
 	currentIndex: number = 0
 	tmpSpecialSelectedItems: OrderItem[] = []
@@ -903,15 +903,17 @@ export class BookingPageComponent {
 
 				if (this.currentMenu) {
 					this.currentMaxSelections =
-						this.currentMenu.offerItems[this.currentIndex].maxSelections
+						this.currentMenu.offer.offerItems[
+							this.currentIndex
+						].maxSelections
 
 					if (this.currentMaxSelections === 0) {
 						let nextIndex = this.findNextAvailableCategory()
 						if (nextIndex !== -1) {
 							this.currentIndex = nextIndex
 							this.changeSelectedMenuInventory(
-								this.currentMenu.offerItems[this.currentIndex],
-								this.currentMenu.offerItems[this.currentIndex]
+								this.currentMenu.offer.offerItems[this.currentIndex],
+								this.currentMenu.offer.offerItems[this.currentIndex]
 									.maxSelections,
 								this.currentIndex
 							)
@@ -953,11 +955,11 @@ export class BookingPageComponent {
 					// Index- und maxSelections-Logik für Produkte mit Variationen
 					let firstIndex = this.currentIndex
 					if (this.currentMenu) {
-						this.currentMenu.offerItems[
+						this.currentMenu.offer.offerItems[
 							this.currentIndex
 						].maxSelections -= 1
 						this.currentMaxSelections =
-							this.currentMenu.offerItems[
+							this.currentMenu.offer.offerItems[
 								this.currentIndex
 							].maxSelections
 
@@ -968,8 +970,8 @@ export class BookingPageComponent {
 							if (nextIndex !== -1) {
 								this.currentIndex = nextIndex
 								this.changeSelectedMenuInventory(
-									this.currentMenu.offerItems[this.currentIndex],
-									this.currentMenu.offerItems[this.currentIndex]
+									this.currentMenu.offer.offerItems[this.currentIndex],
+									this.currentMenu.offer.offerItems[this.currentIndex]
 										.maxSelections,
 									this.currentIndex
 								)
@@ -1555,12 +1557,13 @@ export class BookingPageComponent {
 
 		if (
 			this.tmpCurrentMenu &&
-			this.tmpCurrentMenu.offerItems &&
-			this.tmpCurrentMenu.offerItems[this.currentIndex]
+			this.tmpCurrentMenu.offer.offerItems &&
+			this.tmpCurrentMenu.offer.offerItems[this.currentIndex]
 		) {
 			return (
 				totalCount >=
-				this.tmpCurrentMenu.offerItems[this.currentIndex].maxSelections
+				this.tmpCurrentMenu.offer.offerItems[this.currentIndex]
+					.maxSelections
 			)
 		}
 
@@ -1640,14 +1643,14 @@ export class BookingPageComponent {
 		return (total / 100).toFixed(2)
 	}
 
-	clickSpecial(special: Offer) {
+	clickSpecial(special: Product) {
 		this.currentSpecial = JSON.parse(JSON.stringify(special))
 		this.currentMenu = null
 		this.isMenuePopupVisible = true
 		this.selectedItem = null
 
 		this.specialCategories = []
-		for (let offerItem of special.offerItems) {
+		for (let offerItem of special.offer.offerItems) {
 			for (let product of offerItem.products) {
 				if (
 					!this.specialCategories.some(
@@ -1662,19 +1665,19 @@ export class BookingPageComponent {
 		this.changeSelectedSpecialInventory(this.specialCategories[0])
 	}
 
-	clickMenu(menu: Offer) {
+	clickMenu(menu: Product) {
 		this.currentMenu = JSON.parse(JSON.stringify(menu))
 		this.tmpCurrentMenu = JSON.parse(JSON.stringify(menu))
 		this.currentSpecial = null
 		this.isMenuePopupVisible = true
 		this.selectedItem = null
 		this.changeSelectedMenuInventory(
-			this.currentMenu.offerItems[0],
-			this.currentMenu.offerItems[0].maxSelections,
+			this.currentMenu.offer.offerItems[0],
+			this.currentMenu.offer.offerItems[0].maxSelections,
 			0
 		)
 
-		for (let item of this.currentMenu.offerItems) {
+		for (let item of this.currentMenu.offer.offerItems) {
 			for (let product of item.products) {
 				if (
 					!this.specialCategories.some(
@@ -1691,7 +1694,7 @@ export class BookingPageComponent {
 		// Filtere alle Produkte der ausgewählten Kategorie aus allen OfferItems
 		this.specialProducts = []
 		if (this.currentSpecial) {
-			for (let offerItem of this.currentSpecial.offerItems) {
+			for (let offerItem of this.currentSpecial.offer.offerItems) {
 				for (let product of offerItem.products) {
 					if (product.category.uuid === category.uuid) {
 						this.specialProducts.push(product)
@@ -1719,17 +1722,17 @@ export class BookingPageComponent {
 		// Starte bei der nächsten Kategorie nach der aktuellen
 		for (
 			let i = this.currentIndex + 1;
-			i < this.currentMenu.offerItems.length;
+			i < this.currentMenu.offer.offerItems.length;
 			i++
 		) {
-			if (this.currentMenu.offerItems[i].maxSelections > 0) {
+			if (this.currentMenu.offer.offerItems[i].maxSelections > 0) {
 				return i
 			}
 		}
 
 		// Falls keine gefunden, suche von Anfang bis zur aktuellen Position
 		for (let i = 0; i < this.currentIndex; i++) {
-			if (this.currentMenu.offerItems[i].maxSelections > 0) {
+			if (this.currentMenu.offer.offerItems[i].maxSelections > 0) {
 				return i
 			}
 		}
@@ -1744,7 +1747,7 @@ export class BookingPageComponent {
 			// Gehe durch alle Items im temporären Handler und stelle maxSelections wieder her
 			for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
 				// Finde die entsprechende Kategorie für dieses Produkt
-				for (let menuItem of this.currentMenu.offerItems) {
+				for (let menuItem of this.currentMenu.offer.offerItems) {
 					for (let product of menuItem.products) {
 						if (product.uuid === item.product.uuid) {
 							menuItem.maxSelections += item.count
@@ -1782,17 +1785,21 @@ export class BookingPageComponent {
 			let firstIndex = this.currentIndex
 
 			if (this.currentMenu) {
-				this.currentMenu.offerItems[this.currentIndex].maxSelections -= 1
+				this.currentMenu.offer.offerItems[
+					this.currentIndex
+				].maxSelections -= 1
 				this.currentMaxSelections =
-					this.currentMenu.offerItems[this.currentIndex].maxSelections
+					this.currentMenu.offer.offerItems[
+						this.currentIndex
+					].maxSelections
 
 				if (this.currentMaxSelections === 0) {
 					let nextIndex = this.findNextAvailableCategory()
 					if (nextIndex !== -1) {
 						this.currentIndex = nextIndex
 						this.changeSelectedMenuInventory(
-							this.currentMenu.offerItems[this.currentIndex],
-							this.currentMenu.offerItems[this.currentIndex]
+							this.currentMenu.offer.offerItems[this.currentIndex],
+							this.currentMenu.offer.offerItems[this.currentIndex]
 								.maxSelections,
 							this.currentIndex
 						)
@@ -1853,8 +1860,8 @@ export class BookingPageComponent {
 
 		// Finde die entsprechende Kategorie basierend auf dem Produkt
 		let targetCategoryIndex = -1
-		for (let i = 0; i < this.currentMenu.offerItems.length; i++) {
-			const menuItem = this.currentMenu.offerItems[i]
+		for (let i = 0; i < this.currentMenu.offer.offerItems.length; i++) {
+			const menuItem = this.currentMenu.offer.offerItems[i]
 
 			let fountCategory = false
 
@@ -1873,13 +1880,15 @@ export class BookingPageComponent {
 
 		// Erhöhe die maxSelections der entsprechenden Kategorie
 		if (targetCategoryIndex >= 0) {
-			this.currentMenu.offerItems[targetCategoryIndex].maxSelections += 1
+			this.currentMenu.offer.offerItems[targetCategoryIndex].maxSelections +=
+				1
 
 			// Springe zur entsprechenden Kategorie
 			this.currentIndex = targetCategoryIndex
 			this.changeSelectedMenuInventory(
-				this.currentMenu.offerItems[targetCategoryIndex],
-				this.currentMenu.offerItems[targetCategoryIndex].maxSelections,
+				this.currentMenu.offer.offerItems[targetCategoryIndex],
+				this.currentMenu.offer.offerItems[targetCategoryIndex]
+					.maxSelections,
 				targetCategoryIndex
 			)
 		}
@@ -1929,8 +1938,8 @@ export class BookingPageComponent {
 		let targetCategoryIndex = -1
 
 		if (this.currentMenu) {
-			for (let i = 0; i < this.currentMenu.offerItems.length; i++) {
-				const menuItem = this.currentMenu.offerItems[i]
+			for (let i = 0; i < this.currentMenu.offer.offerItems.length; i++) {
+				const menuItem = this.currentMenu.offer.offerItems[i]
 
 				let fountCategory = false
 
@@ -1950,8 +1959,9 @@ export class BookingPageComponent {
 			if (targetCategoryIndex >= 0) {
 				this.currentIndex = targetCategoryIndex
 				this.changeSelectedMenuInventory(
-					this.currentMenu.offerItems[targetCategoryIndex],
-					this.currentMenu.offerItems[targetCategoryIndex].maxSelections,
+					this.currentMenu.offer.offerItems[targetCategoryIndex],
+					this.currentMenu.offer.offerItems[targetCategoryIndex]
+						.maxSelections,
 					targetCategoryIndex
 				)
 			}
@@ -1972,9 +1982,9 @@ export class BookingPageComponent {
 
 		if (
 			this.currentSpecial &&
-			this.currentSpecial.discountType === "PERCENTAGE"
+			this.currentSpecial.offer.discountType === "PERCENTAGE"
 		) {
-			rabattFaktor = this.currentSpecial.offerValue / 100
+			rabattFaktor = this.currentSpecial.offer.offerValue / 100
 		}
 
 		// Durch alle ausgewählten Produkte gehen und für jedes ein separates Special OrderItem erstellen
@@ -1987,7 +1997,6 @@ export class BookingPageComponent {
 				type: OrderItemType.Special,
 				count: processedItem.count,
 				order: null,
-				offer: this.currentSpecial,
 				product: {
 					id: this.currentSpecial.id,
 					uuid: processedItem.product.uuid,
@@ -1995,7 +2004,8 @@ export class BookingPageComponent {
 					name: processedItem.product.name,
 					price: originalProductPrice,
 					category: processedItem.product.category,
-					variations: []
+					variations: [],
+					offer: this.currentSpecial.offer
 				},
 				orderItems: [processedItem],
 				orderItemVariations: [],
@@ -2037,22 +2047,22 @@ export class BookingPageComponent {
 		let finalMenuPrice = originalTotalPrice
 		let totalRabattBetrag = 0
 
-		if (this.currentMenu && this.currentMenu.offerType) {
-			switch (this.currentMenu.offerType) {
+		if (this.currentMenu && this.currentMenu.offer.offerType) {
+			switch (this.currentMenu.offer.offerType) {
 				case "FIXED_PRICE":
-					finalMenuPrice = this.currentMenu.offerValue
+					finalMenuPrice = this.currentMenu.offer.offerValue
 					totalRabattBetrag = finalMenuPrice - originalTotalPrice
 					break
 				case "DISCOUNT":
-					if (this.currentMenu.discountType === "PERCENTAGE") {
+					if (this.currentMenu.offer.discountType === "PERCENTAGE") {
 						finalMenuPrice =
 							originalTotalPrice *
-							(1 - this.currentMenu.offerValue / 100)
+							(1 - this.currentMenu.offer.offerValue / 100)
 						totalRabattBetrag = finalMenuPrice - originalTotalPrice
-					} else if (this.currentMenu.discountType === "AMOUNT") {
+					} else if (this.currentMenu.offer.discountType === "AMOUNT") {
 						finalMenuPrice =
-							originalTotalPrice - this.currentMenu.offerValue
-						totalRabattBetrag = -this.currentMenu.offerValue
+							originalTotalPrice - this.currentMenu.offer.offerValue
+						totalRabattBetrag = -this.currentMenu.offer.offerValue
 					}
 					break
 				default:
@@ -2066,7 +2076,6 @@ export class BookingPageComponent {
 			type: OrderItemType.Menu,
 			count: 1,
 			order: null,
-			offer: this.currentMenu,
 			product: {
 				id: this.currentMenu.id,
 				uuid: crypto.randomUUID(),
@@ -2074,7 +2083,8 @@ export class BookingPageComponent {
 				name: "TODO",
 				price: finalMenuPrice,
 				category: null,
-				variations: []
+				variations: [],
+				offer: this.currentMenu.offer
 			},
 			orderItems: allOrderItems,
 			discount: totalRabattBetrag
@@ -2110,17 +2120,21 @@ export class BookingPageComponent {
 		// Bestimme das aktuelle Menü oder Special für Preisberechnung
 		let currentMenuOrSpecial = this.currentSpecial || this.currentMenu
 
-		if (currentMenuOrSpecial && currentMenuOrSpecial.offerType) {
-			switch (currentMenuOrSpecial.offerType) {
+		if (currentMenuOrSpecial && currentMenuOrSpecial.offer.offerType) {
+			switch (currentMenuOrSpecial.offer.offerType) {
 				case "FIXED_PRICE":
-					itemPrice = currentMenuOrSpecial.offerValue
+					itemPrice = currentMenuOrSpecial.offer.offerValue
 					break
 				case "DISCOUNT":
-					if (currentMenuOrSpecial.discountType === "PERCENTAGE") {
+					if (currentMenuOrSpecial.offer.discountType === "PERCENTAGE") {
 						itemPrice =
-							originalPrice * (1 - currentMenuOrSpecial.offerValue / 100)
-					} else if (currentMenuOrSpecial.discountType === "AMOUNT") {
-						itemPrice = originalPrice - currentMenuOrSpecial.offerValue
+							originalPrice *
+							(1 - currentMenuOrSpecial.offer.offerValue / 100)
+					} else if (
+						currentMenuOrSpecial.offer.discountType === "AMOUNT"
+					) {
+						itemPrice =
+							originalPrice - currentMenuOrSpecial.offer.offerValue
 					}
 					break
 				default:

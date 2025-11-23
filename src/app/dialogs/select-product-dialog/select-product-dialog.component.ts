@@ -25,13 +25,13 @@ export class SelectProductDialogComponent {
 	actionsLocale = this.localizationService.locale.actions
 	visible: boolean = false
 
-	@Input() menues: Offer[] = []
-	@Input() specials: Offer[] = []
+	@Input() menues: Product[] = []
+	@Input() specials: Product[] = []
 	@Input() products: Product[] = []
 	@Input() categories: Category[] = []
 	@Input() loading: boolean = false
-	@Output() selectMenue = new EventEmitter<Offer>()
-	@Output() selectSpecial = new EventEmitter<Offer>()
+	@Output() selectMenue = new EventEmitter<Product>()
+	@Output() selectSpecial = new EventEmitter<Product>()
 	@Output() selectProduct = new EventEmitter<Product>()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
@@ -60,11 +60,11 @@ export class SelectProductDialogComponent {
 		this.visible = false
 	}
 
-	submitMenue(menue: Offer) {
+	submitMenue(menue: Product) {
 		this.selectMenue.emit(menue)
 	}
 
-	submitSpecial(special: Offer) {
+	submitSpecial(special: Product) {
 		this.selectSpecial.emit(special)
 	}
 

@@ -368,7 +368,7 @@
 			} @else if (selectedCategory === "menues") {
 				@for (menu of menues; track menu.uuid) {
 					<dav-button class="slide-up-in-light" (click)="clickMenu(menu)">
-						{{ menu.product?.name ?? '' }}
+						{{ menu.name ?? "" }}
 					</dav-button>
 				}
 			} @else if (selectedCategory === "specials") {
@@ -377,7 +377,7 @@
 						class="slide-up-in-light"
 						(click)="clickSpecial(special)"
 					>
-						{{ special.product?.name ?? '' }}
+						{{ special.name ?? "" }}
 					</dav-button>
 				}
 			} @else {
@@ -640,7 +640,7 @@
 				<div class="categories-section">
 					<h3>Kategorien</h3>
 					<div class="category-list">
-						@for (item of currentMenu.offerItems; track item.uuid) {
+						@for (item of currentMenu.offer.offerItems; track item.uuid) {
 							<button
 								[disabled]="item.maxSelections <= 0"
 								[class.selected-category]="currentIndex === $index"
@@ -663,14 +663,17 @@
 				<div class="products-section">
 					<h3>
 						Produkte - Wähle
-						{{ this.currentMenu.offerItems[currentIndex].maxSelections }}
+						{{
+							this.currentMenu.offer.offerItems[currentIndex]
+								.maxSelections
+						}}
 						Produkte aus
 					</h3>
 					<div class="product-list">
 						@for (product of specialProducts; track product.uuid) {
 							<button
 								[disabled]="
-									this.currentMenu.offerItems[currentIndex]
+									this.currentMenu.offer.offerItems[currentIndex]
 										.maxSelections <= 0
 								"
 								(click)="clickSpecialProduct(product)"

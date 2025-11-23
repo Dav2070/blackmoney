@@ -12,7 +12,7 @@
 		<dav-tree-item [headline]="locale.menues" node [open]="false">
 			@for (menu of menues; track menu.uuid) {
 				<dav-tree-item
-					[headline]="menu.product?.name ?? ''"
+					[headline]="menu.name"
 					(click)="submitMenue(menu)"
 				></dav-tree-item>
 			}
@@ -21,7 +21,7 @@
 		<dav-tree-item [headline]="locale.specials" node [open]="false">
 			@for (special of specials; track special.uuid) {
 				<dav-tree-item
-					[headline]="special.product?.name ?? ''"
+					[headline]="special.name ?? ''"
 					(click)="submitSpecial(special)"
 				></dav-tree-item>
 			}

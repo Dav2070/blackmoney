@@ -76,7 +76,6 @@ export class SpecialsTableComponent implements AfterViewInit, OnChanges {
 		this.newSpecial = {
 			id: 0,
 			uuid: "special_" + Date.now(),
-			name: "Neues Special",
 			offerType: undefined,
 			discountType: undefined,
 			offerValue: 0,

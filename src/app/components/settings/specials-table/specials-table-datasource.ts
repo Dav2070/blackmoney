@@ -60,7 +60,11 @@ export class SpecialsTableDataSource extends DataSource<Offer> {
 				case "uuid":
 					return compare(a.uuid, b.uuid, isAsc)
 				case "name":
-					return compare(a.name, b.name, isAsc)
+					return compare(
+						a.product?.name ?? "",
+						b.product?.name ?? "",
+						isAsc
+					)
 				default:
 					return 0
 			}

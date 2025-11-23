@@ -14,7 +14,7 @@ import { SearchResult } from "../add-print-rule-dialog/add-print-rule-dialog.com
 import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
-import { CategoryType, PrinterResource, PrintRuleType } from "src/app/types"
+import { ProductType, PrinterResource, PrintRuleType } from "src/app/types"
 
 @Component({
 	selector: "app-edit-print-rule-dialog",
@@ -29,7 +29,7 @@ export class EditPrintRuleDialogComponent {
 	@Input() loading: boolean = false
 	@Input() restaurantUuid: string = ""
 	@Input() printRuleType: PrintRuleType = "BILLS"
-	@Input() categoryType: CategoryType = null
+	@Input() productType: ProductType = null
 	@Input() selectedPrinters: SearchResult[] = []
 	@Input() selectedCategories: SearchResult[] = []
 	@Input() selectedProducts: SearchResult[] = []
@@ -202,13 +202,13 @@ export class EditPrintRuleDialogComponent {
 			case "CATEGORIES":
 			case "PRODUCTS":
 				return this.locale.printersSubhead
-			case "CATEGORY_TYPE":
-				if (this.categoryType === "DRINK") {
+			case "PRODUCT_TYPE":
+				if (this.productType === "DRINK") {
 					return this.locale.printersTypeSubhead.replace(
 						"{type}",
 						this.locale.drinks
 					)
-				} else if (this.categoryType === "FOOD") {
+				} else if (this.productType === "FOOD") {
 					return this.locale.printersTypeSubhead.replace(
 						"{type}",
 						this.locale.food

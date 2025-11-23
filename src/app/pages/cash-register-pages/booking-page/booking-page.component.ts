@@ -1981,7 +1981,8 @@ export class BookingPageComponent {
 				product: {
 					id: this.currentSpecial.id,
 					uuid: processedItem.product.uuid,
-					name: this.currentSpecial.name,
+					type: processedItem.product.type,
+					name: processedItem.product.name,
 					price: originalProductPrice,
 					category: processedItem.product.category,
 					variations: []
@@ -2059,7 +2060,8 @@ export class BookingPageComponent {
 			product: {
 				id: this.currentMenu.id,
 				uuid: crypto.randomUUID(),
-				name: this.currentMenu.name,
+				type: "FOOD",
+				name: "TODO",
 				price: finalMenuPrice,
 				category: null,
 				variations: []

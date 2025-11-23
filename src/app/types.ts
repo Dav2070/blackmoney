@@ -79,7 +79,7 @@ export interface PrinterResource {
 export interface PrintRuleResource {
 	uuid: string
 	type: PrintRuleType
-	categoryType?: CategoryType
+	productType?: ProductType
 	printers: List<PrinterResource>
 	categories: List<CategoryResource>
 	products: List<ProductResource>
@@ -94,7 +94,6 @@ export interface MenuResource {
 export interface OfferResource {
 	id: number
 	uuid: string
-	name: string
 	offerType: OfferType
 	discountType?: DiscountType
 	offerValue: number
@@ -103,6 +102,7 @@ export interface OfferResource {
 	startTime?: string
 	endTime?: string
 	weekdays: Weekday[]
+	product?: ProductResource
 	offerItems: List<OfferItemResource>
 }
 
@@ -116,6 +116,7 @@ export interface OfferItemResource {
 export interface ProductResource {
 	id: number
 	uuid: string
+	type: ProductType
 	name: string
 	price: number
 	category: CategoryResource
@@ -139,7 +140,6 @@ export interface VariationItemResource {
 export interface CategoryResource {
 	uuid: string
 	name: string
-	type: CategoryType
 	products: List<ProductResource>
 }
 
@@ -184,12 +184,8 @@ export interface AddProductVariationInput {
 }
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"
-export type CategoryType = "FOOD" | "DRINK"
-export type PrintRuleType =
-	| "BILLS"
-	| "CATEGORY_TYPE"
-	| "CATEGORIES"
-	| "PRODUCTS"
+export type ProductType = "FOOD" | "DRINK" | "SPECIAL" | "MENU"
+export type PrintRuleType = "BILLS" | "PRODUCT_TYPE" | "CATEGORIES" | "PRODUCTS"
 
 export enum OrderItemType {
 	Product = "PRODUCT",

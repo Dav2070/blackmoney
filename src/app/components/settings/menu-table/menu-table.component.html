@@ -383,7 +383,7 @@
 			<div class="menu-items-container">
 				<div class="menu-detail">
 					<div class="menu-items-section">
-						<h3>Items für "{{ menu.name }}"</h3>
+						<h3>Items für "{{ menu.product?.name ?? ''}}"</h3>
 
 						<!-- Items List -->
 						@if (menu.offerItems.length > 0) {
@@ -516,11 +516,7 @@
 																	)
 																"
 															>
-																{{ category.name }} ({{
-																	category.type === "FOOD"
-																		? "Speise"
-																		: "Getränk"
-																}})
+																{{ category.name }}
 															</mat-checkbox>
 														}
 													</div>

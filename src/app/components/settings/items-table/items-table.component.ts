@@ -61,6 +61,7 @@ export class ItemsTableComponent implements AfterViewInit, OnChanges {
 		this.newProduct = {
 			id: this.getNextProductId(),
 			uuid: "product_" + Date.now(),
+			type: "FOOD",
 			name: "",
 			price: 0,
 			category: null,

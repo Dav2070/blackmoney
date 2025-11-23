@@ -20,7 +20,7 @@ import {
 	convertRegisterClientResourceToRegisterClient,
 	convertPrintRuleResourceToPrintRule
 } from "src/app/utils"
-import { CategoryType, PrintRuleType } from "src/app/types"
+import { ProductType, PrintRuleType } from "src/app/types"
 import * as ErrorCodes from "src/app/errorCodes"
 
 const printRuleQueryData = `
@@ -79,7 +79,7 @@ export class RegisterClientPageComponent {
 	editPrintRuleDialog: EditPrintRuleDialogComponent
 	editPrintRuleDialogLoading: boolean = false
 	editPrintRuleDialogPrintRuleType: PrintRuleType = "BILLS"
-	editPrintRuleDialogCategoryType: CategoryType = null
+	editPrintRuleDialogProductType: ProductType = null
 	editPrintRuleDialogSelectedPrinters: SearchResult[] = []
 	editPrintRuleDialogSelectedCategories: SearchResult[] = []
 	editPrintRuleDialogSelectedProducts: SearchResult[] = []
@@ -195,8 +195,8 @@ export class RegisterClientPageComponent {
 
 		this.editPrintRuleDialogPrintRuleType =
 			this.printRuleItemContextMenuPrintRule.type
-		this.editPrintRuleDialogCategoryType =
-			this.printRuleItemContextMenuPrintRule.categoryType
+		this.editPrintRuleDialogProductType =
+			this.printRuleItemContextMenuPrintRule.productType
 
 		this.editPrintRuleDialogSelectedPrinters =
 			this.printRuleItemContextMenuPrintRule.printers.map(printer => ({
@@ -288,19 +288,19 @@ export class RegisterClientPageComponent {
 		productUuids: string[]
 	}) {
 		let printRuleType: PrintRuleType = "BILLS"
-		let categoryType: CategoryType = null
+		let productType: ProductType = null
 
 		switch (event.printRuleType) {
 			case "drinks":
-				printRuleType = "CATEGORY_TYPE"
-				categoryType = "DRINK"
+				printRuleType = "PRODUCT_TYPE"
+				productType = "DRINK"
 				break
 			case "food":
-				printRuleType = "CATEGORY_TYPE"
-				categoryType = "FOOD"
+				printRuleType = "PRODUCT_TYPE"
+				productType = "FOOD"
 				break
 			case "foodAndDrinks":
-				printRuleType = "CATEGORY_TYPE"
+				printRuleType = "PRODUCT_TYPE"
 				break
 			case "categories":
 				printRuleType = "CATEGORIES"
@@ -317,7 +317,7 @@ export class RegisterClientPageComponent {
 			{
 				registerClientUuid: this.registerClientUuid,
 				type: printRuleType,
-				categoryType,
+				productType,
 				printerUuids: event.printerUuids,
 				categoryUuids: event.categoryUuids,
 				productUuids: event.productUuids
@@ -405,16 +405,16 @@ export class RegisterClientPageComponent {
 		let type = this.locale.bills
 
 		if (
-			printRule.type === "CATEGORY_TYPE" &&
-			printRule.categoryType == "DRINK"
+			printRule.type === "PRODUCT_TYPE" &&
+			printRule.productType == "DRINK"
 		) {
 			type = this.locale.drinks
 		} else if (
-			printRule.type === "CATEGORY_TYPE" &&
-			printRule.categoryType == "FOOD"
+			printRule.type === "PRODUCT_TYPE" &&
+			printRule.productType == "FOOD"
 		) {
 			type = this.locale.food
-		} else if (printRule.type === "CATEGORY_TYPE") {
+		} else if (printRule.type === "PRODUCT_TYPE") {
 			type = this.locale.foodAndDrinks
 		} else if (printRule.type === "CATEGORIES") {
 			if (printRule.categories.length === 1) {

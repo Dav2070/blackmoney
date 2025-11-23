@@ -413,7 +413,7 @@ export function convertPrintRuleResourceToPrintRule(
 	return {
 		uuid: printRuleResource.uuid,
 		type: printRuleResource.type,
-		categoryType: printRuleResource.categoryType,
+		productType: printRuleResource.productType,
 		printers,
 		categories,
 		products
@@ -460,7 +460,6 @@ export function convertOfferResourceToOffer(
 	return {
 		id: offerResource.id,
 		uuid: offerResource.uuid,
-		name: offerResource.name,
 		offerType: offerResource.offerType,
 		discountType: offerResource.discountType,
 		offerValue: offerResource.offerValue,
@@ -473,6 +472,7 @@ export function convertOfferResourceToOffer(
 		startTime: offerResource.startTime,
 		endTime: offerResource.endTime,
 		weekdays: offerResource.weekdays,
+		product: convertProductResourceToProduct(offerResource.product),
 		offerItems
 	}
 }
@@ -514,6 +514,7 @@ export function convertProductResourceToProduct(
 	return {
 		id: productResource.id,
 		uuid: productResource.uuid,
+		type: productResource.type,
 		name: productResource.name,
 		price: productResource.price,
 		category: convertCategoryResourceToCategory(productResource.category),
@@ -537,7 +538,6 @@ export function convertCategoryResourceToCategory(
 	return {
 		uuid: categoryResource.uuid,
 		name: categoryResource.name,
-		type: categoryResource.type,
 		products
 	}
 }

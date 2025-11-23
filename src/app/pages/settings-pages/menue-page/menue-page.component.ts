@@ -34,11 +34,11 @@ export class MenuePageComponent {
 	selectedCategory: Category = {
 		uuid: "vorspeisen",
 		name: "Vorspeisen",
-		type: "FOOD",
 		products: [
 			{
 				id: 5,
 				uuid: "vorspeisenteller",
+				type: "FOOD",
 				price: 14.7,
 				name: "Vorspeisenteller",
 				category: null,
@@ -51,11 +51,11 @@ export class MenuePageComponent {
 		{
 			uuid: "vorspeisen",
 			name: "Vorspeisen",
-			type: "FOOD",
 			products: [
 				{
 					id: 5,
 					uuid: "vorspeisenteller",
+					type: "FOOD",
 					price: 14.7,
 					name: "Vorspeisenteller",
 					category: null,
@@ -66,11 +66,11 @@ export class MenuePageComponent {
 		{
 			uuid: "hauptgerichte",
 			name: "Hauptgerichte",
-			type: "FOOD",
 			products: [
 				{
 					id: 6,
 					uuid: "rinderfilet",
+					type: "FOOD",
 					price: 35.7,
 					name: "Rinderfilet",
 					category: null,
@@ -81,11 +81,11 @@ export class MenuePageComponent {
 		{
 			uuid: "beilagen",
 			name: "Beilagen",
-			type: "FOOD",
 			products: [
 				{
 					id: 7,
 					uuid: "pommes",
+					type: "FOOD",
 					price: 4.7,
 					name: "Pommes",
 					category: null,
@@ -96,11 +96,11 @@ export class MenuePageComponent {
 		{
 			uuid: "dessert",
 			name: "Dessert",
-			type: "FOOD",
 			products: [
 				{
 					id: 8,
 					uuid: "tiramisu",
+					type: "FOOD",
 					price: 6.4,
 					name: "Tiramisu",
 					category: null,
@@ -114,7 +114,6 @@ export class MenuePageComponent {
 		{
 			id: 1,
 			uuid: "menu_1",
-			name: "Gutschein 205",
 			offerType: "FIXED_PRICE",
 			discountType: undefined,
 			offerValue: 999,
@@ -131,6 +130,7 @@ export class MenuePageComponent {
 						{
 							id: 101,
 							uuid: "maiskolben",
+							type: "FOOD",
 							price: 300,
 							name: "Maiskolben",
 							category: null,
@@ -139,6 +139,7 @@ export class MenuePageComponent {
 						{
 							id: 102,
 							uuid: "pommes_gross",
+							type: "FOOD",
 							price: 300,
 							name: "Pommes Groß",
 							category: null,
@@ -154,6 +155,7 @@ export class MenuePageComponent {
 						{
 							id: 201,
 							uuid: "mayo",
+							type: "FOOD",
 							price: 100,
 							name: "Mayo",
 							category: null,
@@ -162,6 +164,7 @@ export class MenuePageComponent {
 						{
 							id: 202,
 							uuid: "ketchup",
+							type: "FOOD",
 							price: 100,
 							name: "Ketchup",
 							category: null,
@@ -170,6 +173,7 @@ export class MenuePageComponent {
 						{
 							id: 203,
 							uuid: "senf",
+							type: "FOOD",
 							price: 100,
 							name: "Senf",
 							category: null,
@@ -185,6 +189,7 @@ export class MenuePageComponent {
 						{
 							id: 301,
 							uuid: "cola",
+							type: "DRINK",
 							price: 200,
 							name: "Cola",
 							category: null,
@@ -212,6 +217,7 @@ export class MenuePageComponent {
 						{
 							id: 301,
 							uuid: "cola_light",
+							type: "DRINK",
 							price: 200,
 							name: "Cola Light",
 							category: null,
@@ -220,6 +226,7 @@ export class MenuePageComponent {
 						{
 							id: 302,
 							uuid: "7up",
+							type: "DRINK",
 							price: 200,
 							name: "7Up",
 							category: null,
@@ -228,6 +235,7 @@ export class MenuePageComponent {
 						{
 							id: 303,
 							uuid: "fanta",
+							type: "DRINK",
 							price: 200,
 							name: "Fanta",
 							category: null,
@@ -243,6 +251,7 @@ export class MenuePageComponent {
 						{
 							id: 401,
 							uuid: "zinger",
+							type: "FOOD",
 							price: 600,
 							name: "Zinger",
 							category: null,
@@ -251,6 +260,7 @@ export class MenuePageComponent {
 						{
 							id: 402,
 							uuid: "veggie",
+							type: "FOOD",
 							price: 600,
 							name: "Veggie",
 							category: null,
@@ -259,6 +269,7 @@ export class MenuePageComponent {
 						{
 							id: 403,
 							uuid: "classic",
+							type: "FOOD",
 							price: 600,
 							name: "Classic",
 							category: null,
@@ -272,7 +283,6 @@ export class MenuePageComponent {
 		{
 			id: 2,
 			uuid: "menu_2",
-			name: "Abendkarte",
 			offerType: "FIXED_PRICE",
 			discountType: undefined,
 			offerValue: 800,
@@ -289,6 +299,7 @@ export class MenuePageComponent {
 						{
 							id: 401,
 							uuid: "zinger",
+							type: "FOOD",
 							price: 600,
 							name: "Zinger",
 							category: null,
@@ -297,6 +308,7 @@ export class MenuePageComponent {
 						{
 							id: 402,
 							uuid: "veggie",
+							type: "FOOD",
 							price: 600,
 							name: "Veggie",
 							category: null,
@@ -305,6 +317,7 @@ export class MenuePageComponent {
 						{
 							id: 403,
 							uuid: "classic",
+							type: "FOOD",
 							price: 600,
 							name: "Classic",
 							category: null,
@@ -321,7 +334,6 @@ export class MenuePageComponent {
 		{
 			id: 1,
 			uuid: "special_1",
-			name: "Happy Hour Special",
 			offerType: "DISCOUNT",
 			discountType: "PERCENTAGE",
 			offerValue: 20,
@@ -338,12 +350,12 @@ export class MenuePageComponent {
 						{
 							id: 301,
 							uuid: "cola_light",
+							type: "DRINK",
 							price: 200,
 							name: "Cola Light",
 							category: {
 								uuid: "alkoholfrei",
 								name: "Alkoholfrei",
-								type: "DRINK",
 								products: []
 							},
 							variations: []
@@ -351,22 +363,22 @@ export class MenuePageComponent {
 						{
 							id: 302,
 							uuid: "7up",
+							type: "DRINK",
 							price: 200,
 							name: "7Up",
 							category: {
 								uuid: "alkoholfrei",
 								name: "Alkoholfrei",
-								type: "DRINK",
 								products: [
 									{
 										id: 301,
 										uuid: "cola_light",
+										type: "DRINK",
 										price: 200,
 										name: "Cola Light",
 										category: {
 											uuid: "alkoholfrei",
 											name: "Alkoholfrei",
-											type: "DRINK",
 											products: []
 										},
 										variations: []
@@ -378,22 +390,22 @@ export class MenuePageComponent {
 						{
 							id: 303,
 							uuid: "fanta",
+							type: "DRINK",
 							price: 200,
 							name: "Fanta",
 							category: {
 								uuid: "alkoholfrei",
 								name: "Alkoholfrei",
-								type: "DRINK",
 								products: [
 									{
 										id: 301,
 										uuid: "cola_light",
+										type: "DRINK",
 										price: 200,
 										name: "Cola Light",
 										category: {
 											uuid: "alkoholfrei",
 											name: "Alkoholfrei",
-											type: "DRINK",
 											products: []
 										},
 										variations: []
@@ -410,7 +422,6 @@ export class MenuePageComponent {
 		{
 			id: 2,
 			uuid: "special_2",
-			name: "Wochenend-Brunch",
 			offerType: "FIXED_PRICE",
 			discountType: undefined,
 			offerValue: 1590,
@@ -427,11 +438,11 @@ export class MenuePageComponent {
 		{
 			uuid: "alkoholfrei",
 			name: "Alkoholfrei",
-			type: "DRINK",
 			products: [
 				{
 					id: 1,
 					uuid: "cola",
+					type: "DRINK",
 					price: 500,
 					name: "Cola 0,5",
 					category: null,
@@ -442,11 +453,11 @@ export class MenuePageComponent {
 		{
 			uuid: "bier",
 			name: "Bier",
-			type: "DRINK",
 			products: [
 				{
 					id: 2,
 					uuid: "pils",
+					type: "DRINK",
 					price: 370,
 					name: "Pils 0,4",
 					category: null,
@@ -457,11 +468,11 @@ export class MenuePageComponent {
 		{
 			uuid: "wein",
 			name: "Wein",
-			type: "DRINK",
 			products: [
 				{
 					id: 3,
 					uuid: "grauburunder",
+					type: "DRINK",
 					price: 670,
 					name: "Grauburunder 0,2",
 					category: null,
@@ -472,11 +483,11 @@ export class MenuePageComponent {
 		{
 			uuid: "schnapps",
 			name: "Schnapps",
-			type: "DRINK",
 			products: [
 				{
 					id: 4,
 					uuid: "ouzo",
+					type: "DRINK",
 					price: 300,
 					name: "Ouzo",
 					category: null,
@@ -496,7 +507,7 @@ export class MenuePageComponent {
 	setCategory(category: Category) {
 		this.selectedCategory = category
 		// Optional: Setze categoryTabIndex passend, falls du z.B. von außen eine Kategorie auswählst
-		this.categoryTabIndex = category.type === "FOOD" ? 0 : 1
+		// this.categoryTabIndex = category.type === "FOOD" ? 0 : 1
 	}
 
 	startAddCategory(type: "FOOD" | "DRINK") {
@@ -516,7 +527,6 @@ export class MenuePageComponent {
 		const newCategory: Category = {
 			uuid: "category_" + Date.now(),
 			name,
-			type,
 			products: []
 		}
 		if (type === "FOOD") {
@@ -548,15 +558,6 @@ export class MenuePageComponent {
 	}
 
 	deleteCategory(category: Category) {
-		if (category.type === "FOOD") {
-			this.foodCategories = this.foodCategories.filter(
-				c => c.uuid !== category.uuid
-			)
-		} else {
-			this.drinkCategories = this.drinkCategories.filter(
-				c => c.uuid !== category.uuid
-			)
-		}
 		if (this.selectedCategory?.uuid === category.uuid) {
 			this.selectedCategory =
 				this.foodCategories[0] || this.drinkCategories[0] || null

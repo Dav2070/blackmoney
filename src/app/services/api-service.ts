@@ -19,7 +19,7 @@ import {
 	UserRole,
 	PrinterResource,
 	AddProductsInput,
-	CategoryType,
+	ProductType,
 	PrintRuleType
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
@@ -569,7 +569,7 @@ export class ApiService {
 		variables: {
 			registerClientUuid: string
 			type: PrintRuleType
-			categoryType?: CategoryType
+			productType?: ProductType
 			printerUuids: string[]
 			categoryUuids?: string[]
 			productUuids?: string[]
@@ -587,7 +587,7 @@ export class ApiService {
 					mutation CreatePrintRule(
 						$registerClientUuid: String!
 						$type: PrintRuleType!
-						$categoryType: CategoryType
+						$productType: ProductType
 						$printerUuids: [String!]!
 						$categoryUuids: [String!]
 						$productUuids: [String!]
@@ -595,7 +595,7 @@ export class ApiService {
 						createPrintRule(
 							registerClientUuid: $registerClientUuid
 							type: $type
-							categoryType: $categoryType
+							productType: $productType
 							printerUuids: $printerUuids
 							categoryUuids: $categoryUuids
 							productUuids: $productUuids

@@ -13,6 +13,5 @@ export class Offer {
 	startTime?: string
 	endTime?: string
 	weekdays: Weekday[]
-	product?: Product
 	offerItems: OfferItem[]
 }

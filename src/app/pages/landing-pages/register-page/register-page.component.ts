@@ -22,16 +22,19 @@ export class RegisterPageComponent {
 		private apiService: ApiService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute
-	) { }
-	
+	) {}
+
 	async ngOnInit() {
-		this.restaurantUuid = this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
-		this.registerUuid = this.activatedRoute.snapshot.paramMap.get("registerUuid")
+		this.restaurantUuid =
+			this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
+		this.registerUuid =
+			this.activatedRoute.snapshot.paramMap.get("registerUuid")
 
 		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
 
 		const retrieveRegisterResponse = await this.apiService.retrieveRegister(
 			`
+				uuid
 				name
 				registerClients {
 					items {
@@ -64,6 +67,23 @@ export class RegisterPageComponent {
 			"restaurants",
 			this.restaurantUuid,
 			"registers"
+		])
+	}
+
+	navigateToRegisterClientPage(
+		event: MouseEvent,
+		registerClient: RegisterClient
+	) {
+		event.preventDefault()
+
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.restaurantUuid,
+			"registers",
+			this.registerUuid,
+			"clients",
+			registerClient.uuid
 		])
 	}
 }

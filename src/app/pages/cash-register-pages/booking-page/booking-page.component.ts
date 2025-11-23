@@ -225,7 +225,6 @@ export class BookingPageComponent {
 						items {
 							uuid
 							name
-							type
 							products {
 								total
 								items {
@@ -257,7 +256,6 @@ export class BookingPageComponent {
 						items {
 							id
 							uuid
-							name
 							offerType
 							discountType
 							offerValue
@@ -1052,6 +1050,18 @@ export class BookingPageComponent {
 											}
 										}
 									}
+								}
+								offer {
+									id
+									uuid
+									offerType
+									discountType
+									offerValue
+									startDate
+									endDate
+									startTime
+									endTime
+									weekdays
 								}
 								orderItemVariations {
 									total
@@ -1981,7 +1991,8 @@ export class BookingPageComponent {
 				product: {
 					id: this.currentSpecial.id,
 					uuid: processedItem.product.uuid,
-					name: this.currentSpecial.name,
+					type: processedItem.product.type,
+					name: processedItem.product.name,
 					price: originalProductPrice,
 					category: processedItem.product.category,
 					variations: []
@@ -2059,7 +2070,8 @@ export class BookingPageComponent {
 			product: {
 				id: this.currentMenu.id,
 				uuid: crypto.randomUUID(),
-				name: this.currentMenu.name,
+				type: "FOOD",
+				name: "TODO",
 				price: finalMenuPrice,
 				category: null,
 				variations: []

@@ -15,9 +15,12 @@ import {
 	RestaurantResource,
 	RegisterResource,
 	RegisterClientResource,
+	PrintRuleResource,
 	UserRole,
 	PrinterResource,
-	AddProductsInput
+	AddProductsInput,
+	ProductType,
+	PrintRuleType
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -379,6 +382,27 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async retrieveRegisterClient(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<
+		ApolloQueryResult<{ retrieveRegisterClient: RegisterClientResource }>
+	> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveRegisterClient: RegisterClientResource }>({
+				query: gql`
+					query RetrieveRegisterClient($uuid: String!) {
+						retrieveRegisterClient(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveRegisterClientBySerialNumber(
 		queryData: string,
 		variables: {
@@ -445,6 +469,37 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async searchPrinters(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			query: string
+			exclude?: string[]
+		}
+	): Promise<ApolloQueryResult<{ searchPrinters: List<PrinterResource> }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ searchPrinters: List<PrinterResource> }>({
+				query: gql`
+					query SearchPrinters(
+						$restaurantUuid: String!
+						$query: String!
+						$exclude: [String!]
+					) {
+						searchPrinters(
+							restaurantUuid: $restaurantUuid
+							query: $query
+							exclude: $exclude
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async createPrinter(
 		queryData: string,
 		variables: {
@@ -499,6 +554,105 @@ export class ApiService {
 							name: $name
 							ipAddress: $ipAddress
 						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createPrintRule(
+		queryData: string,
+		variables: {
+			registerClientUuid: string
+			type: PrintRuleType
+			productType?: ProductType
+			printerUuids: string[]
+			categoryUuids?: string[]
+			productUuids?: string[]
+		}
+	): Promise<
+		MutationResult<{
+			createPrintRule: PrintRuleResource
+		}>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				createPrintRule: PrintRuleResource
+			}>({
+				mutation: gql`
+					mutation CreatePrintRule(
+						$registerClientUuid: String!
+						$type: PrintRuleType!
+						$productType: ProductType
+						$printerUuids: [String!]!
+						$categoryUuids: [String!]
+						$productUuids: [String!]
+					) {
+						createPrintRule(
+							registerClientUuid: $registerClientUuid
+							type: $type
+							productType: $productType
+							printerUuids: $printerUuids
+							categoryUuids: $categoryUuids
+							productUuids: $productUuids
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updatePrintRule(
+		queryData: string,
+		variables: {
+			uuid: string
+			printerUuids: string[]
+			categoryUuids?: string[]
+			productUuids?: string[]
+		}
+	): Promise<MutationResult<{ updatePrintRule: PrintRuleResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updatePrintRule: PrintRuleResource }>({
+				mutation: gql`
+					mutation UpdatePrintRule(
+						$uuid: String!
+						$printerUuids: [String!]!
+						$categoryUuids: [String!]
+						$productUuids: [String!]
+					) {
+						updatePrintRule(
+							uuid: $uuid
+							printerUuids: $printerUuids
+							categoryUuids: $categoryUuids
+							productUuids: $productUuids
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async deletePrintRule(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<MutationResult<{ deletePrintRule: PrintRuleResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ deletePrintRule: PrintRuleResource }>({
+				mutation: gql`
+					mutation DeletePrintRule($uuid: String!) {
+						deletePrintRule(uuid: $uuid) {
 							${queryData}
 						}
 					}
@@ -691,19 +845,84 @@ export class ApiService {
 			.toPromise()
 	}
 
-	async listCategories(
-		queryData: string
-	): Promise<ApolloQueryResult<{ listCategories: List<CategoryResource> }>> {
+	async searchCategories(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			query: string
+			exclude?: string[]
+		}
+	): Promise<ApolloQueryResult<{ searchCategories: List<CategoryResource> }>> {
 		return await this.blackmoneyAuthApollo
-			.query<{ listCategories: List<CategoryResource> }>({
+			.query<{ searchCategories: List<CategoryResource> }>({
 				query: gql`
-					query ListCategories {
-						listCategories {
+					query SearchCategories(
+						$restaurantUuid: String!
+						$query: String!
+						$exclude: [String!]
+					) {
+						searchCategories(
+							restaurantUuid: $restaurantUuid
+							query: $query
+							exclude: $exclude
+						) {
 							${queryData}
 						}
 					}
 				`,
-				variables: {},
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async listCategories(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+		}
+	): Promise<ApolloQueryResult<{ listCategories: List<CategoryResource> }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ listCategories: List<CategoryResource> }>({
+				query: gql`
+					query ListCategories($restaurantUuid: String!) {
+						listCategories(restaurantUuid: $restaurantUuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async searchProducts(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			query: string
+			exclude?: string[]
+		}
+	): Promise<ApolloQueryResult<{ searchProducts: List<CategoryResource> }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ searchProducts: List<CategoryResource> }>({
+				query: gql`
+					query SearchProducts(
+						$restaurantUuid: String!
+						$query: String!
+						$exclude: [String!]
+					) {
+						searchProducts(
+							restaurantUuid: $restaurantUuid
+							query: $query
+							exclude: $exclude
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
 				errorPolicy
 			})
 			.toPromise()
@@ -718,8 +937,11 @@ export class ApiService {
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveTable: TableResource }>({
 				query: gql`
-					query retrieveTable($uuid:String!,${paidParam}) {
-						retrieveTable(uuid:$uuid) {
+					query retrieveTable(
+						$uuid:String!
+						${paidParam}
+					) {
+						retrieveTable(uuid: $uuid) {
 							${queryData}
 						}
 					}

@@ -368,7 +368,7 @@
 			} @else if (selectedCategory === "menues") {
 				@for (menu of menues; track menu.uuid) {
 					<dav-button class="slide-up-in-light" (click)="clickMenu(menu)">
-						{{ menu.name }}
+						{{ menu.product?.name ?? '' }}
 					</dav-button>
 				}
 			} @else if (selectedCategory === "specials") {
@@ -377,7 +377,7 @@
 						class="slide-up-in-light"
 						(click)="clickSpecial(special)"
 					>
-						{{ special.name }}
+						{{ special.product?.name ?? '' }}
 					</dav-button>
 				}
 			} @else {

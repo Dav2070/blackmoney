@@ -45,7 +45,7 @@ import { OfferOrderItemCardComponent } from "./components/cash-register/offer-or
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
-import { EditDeviceNameDialogComponent } from "./dialogs/edit-device-name-dialog/edit-device-name-dialog.component"
+import { EditRegisterClientNameDialogComponent } from "./dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
@@ -59,6 +59,9 @@ import { AddTableDialogComponent } from "./dialogs/add-table-dialog/add-table-di
 import { EditTableDialogComponent } from "./dialogs/edit-table-dialog/edit-table-dialog.component"
 import { DeleteTableDialogComponent } from "./dialogs/delete-table-dialog/delete-table-dialog.component"
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
+import { AddPrintRuleDialogComponent } from "./dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
+import { EditPrintRuleDialogComponent } from "./dialogs/edit-print-rule-dialog/edit-print-rule-dialog.component"
+import { DeletePrintRuleDialogComponent } from "./dialogs/delete-print-rule-dialog/delete-print-rule-dialog.component"
 import { ResetPasswordDialogComponent } from "./dialogs/reset-password-dialog/reset-password-dialog.component"
 import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
@@ -77,6 +80,7 @@ import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page
 import { RestaurantPageComponent } from "./pages/landing-pages/restaurant-page/restaurant-page.component"
 import { RegistersPageComponent } from "./pages/landing-pages/registers-page/registers-page.component"
 import { RegisterPageComponent } from "./pages/landing-pages/register-page/register-page.component"
+import { RegisterClientPageComponent } from "./pages/landing-pages/register-client-page/register-client-page.component"
 import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/employees-page.component"
 import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
@@ -132,7 +136,7 @@ import { VariationsOverviewPageComponent } from "./pages/landing-pages/variation
 		OfferOrderItemCardComponent,
 		// Dialog
 		LogoutDialogComponent,
-		EditDeviceNameDialogComponent,
+		EditRegisterClientNameDialogComponent,
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,
@@ -146,6 +150,9 @@ import { VariationsOverviewPageComponent } from "./pages/landing-pages/variation
 		EditTableDialogComponent,
 		DeleteTableDialogComponent,
 		SelectTableDialogComponent,
+		AddPrintRuleDialogComponent,
+		EditPrintRuleDialogComponent,
+		DeletePrintRuleDialogComponent,
 		ResetPasswordDialogComponent,
 		SelectProductDialogComponent,
 		SelectProductVariationsDialogComponent,
@@ -165,6 +172,7 @@ import { VariationsOverviewPageComponent } from "./pages/landing-pages/variation
 		RestaurantPageComponent,
 		RegistersPageComponent,
 		RegisterPageComponent,
+		RegisterClientPageComponent,
 		EmployeesPageComponent,
 		EmployeePageComponent,
 		LoginPageComponent,

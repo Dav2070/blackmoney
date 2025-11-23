@@ -60,6 +60,20 @@ export const de = {
 		addPicture: "Bild hinzufügen",
 		manageMenu: "Speisekarte verwalten"
 	},
+	registerClientPage: {
+		printRulesHeadline: "Druckregeln",
+		printRuleText:
+			"<strong>{type}</strong> werden an folgende Drucker gesendet:",
+		printRuleTextSingle:
+			"<strong>{type}</strong> wird an folgende Drucker gesendet:",
+		bills: "Rechnungen",
+		drinks: "Getränke",
+		food: "Speisen",
+		foodAndDrinks: "Speisen und Getränke",
+		categories: "{count} Kategorien",
+		products: "{count} Produkte",
+		options: "Weitere Optionen"
+	},
 	employeesPage: {
 		headline: "Deine Mitarbeiter"
 	},
@@ -152,7 +166,7 @@ export const de = {
 			headline: "Abmelden",
 			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
 		},
-		editDeviceNameDialog: {
+		editRegisterClientNameDialog: {
 			headline: "Gerätename bearbeiten",
 			name: "Gerätename"
 		},
@@ -225,6 +239,39 @@ export const de = {
 			line2: "Sitzplätze",
 			line3: "Anzahl Tische",
 			line4: "Anfangs Tischnummer"
+		},
+		addPrintRuleDialog: {
+			headline: "Druckregel hinzufügen",
+			typeSubhead: "Was soll gedruckt werden?",
+			printersSubhead: "Welche Drucker sollen verwendet werden?",
+			selectPrinters: "Drucker auswählen",
+			selectCategories: "Kategorien auswählen",
+			selectProducts: "Produkte auswählen",
+			bills: "Rechnungen",
+			foodAndDrinks: "Speisen & Getränke",
+			drinks: "Getränke",
+			food: "Speisen",
+			categories: "Ausgewählte Kategorien",
+			products: "Ausgewählte Produkte"
+		},
+		editPrintRuleDialog: {
+			headline: "Druckregel bearbeiten",
+			categoriesSubhead: "Welche Kategorien sollen gedruckt werden?",
+			productsSubhead: "Welche Produkte sollen gedruckt werden?",
+			printersSubhead: "Welche Drucker sollen verwendet werden?",
+			printersTypeSubhead: "{type} an folgende Drucker senden:",
+			selectPrinters: "Drucker auswählen",
+			selectCategories: "Kategorien auswählen",
+			selectProducts: "Produkte auswählen",
+			bills: "Rechnungen",
+			foodAndDrinks: "Speisen & Getränke",
+			drinks: "Getränke",
+			food: "Speisen"
+		},
+		deletePrintRuleDialog: {
+			headline: "Druckregel löschen",
+			description:
+				"Bist du dir sicher, dass du diese Druckregel löschen möchtest?"
 		},
 		resetPasswordDialog: {
 			headline: "Passwort zurücksetzen",

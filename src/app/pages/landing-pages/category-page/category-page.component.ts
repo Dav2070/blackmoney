@@ -22,18 +22,17 @@ export class CategoryPageComponent {
 	locale = this.localizationService.locale.categoryPage
 	errorsLocale = this.localizationService.locale.errors
 	categories: Category[] = [
-		{ uuid: "1", name: "Vorspeise", type: "FOOD", products: [] },
-		{ uuid: "2", name: "Hauptspeise", type: "FOOD", products: [] },
+		{ uuid: "1", name: "Vorspeise",  products: [] },
+		{ uuid: "2", name: "Hauptspeise",  products: [] },
 		{
 			uuid: "3",
 			name: "Bier",
-			type: "DRINK",
+
 			products: []
 		},
 		{
 			uuid: "4",
 			name: "Softdrinks",
-			type: "DRINK",
 			products: []
 		}
 	]
@@ -82,7 +81,6 @@ export class CategoryPageComponent {
 		this.categories.push({
 			uuid: "",
 			name: event.name,
-			type: "FOOD",
 			products: []
 		})
 

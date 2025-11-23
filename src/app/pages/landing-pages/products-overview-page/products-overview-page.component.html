@@ -7,80 +7,39 @@
 		>
 			{{ locale.headline }}
 		</dav-header>
-		<div class="products-list">
-			@if (selectedCategoryObj?.products?.length > 0) {
-				@for (product of selectedCategoryObj.products; track product.uuid) {
-					<dav-card class="product-card">
-						<div class="product-info-row">
-							<div class="product-main">
-								<div class="product-title-row">
-									<span class="product-id">#{{ product.id }}</span>
-									<div class="product-name-center">
-										<span class="product-name">{{
-											product.name
-										}}</span>
-									</div>
-									<span class="product-price">
-										{{
-											product.price
-												| currency: "EUR" : "symbol" : "1.2-2"
-										}}
-									</span>
-								</div>
-								<div class="product-details-row">
-									<span class="product-detail">
-										<b>Variationen:</b>
-										@if (product.variations?.length > 0) {
-											@for (v of product.variations; track v.name) {
-												{{ v.name }}
-												@if (
-													product.variations.indexOf(v) <
-													product.variations.length - 1
-												) {
-													<span>, </span>
-												}
-											}
-										} @else {
-											<span>Keine</span>
-										}
-									</span>
-									<span class="product-detail product-takeaway">
-										<b>Außerhaus:</b>
-										{{ product.takeaway ? "Ja" : "Nein" }}
-									</span>
-								</div>
-							</div>
-							<div class="product-actions">
-								<dav-icon-button
-									size="sm"
-									(click)="editProduct(product)"
-								>
-									<fa-icon [icon]="faPen"></fa-icon>
-								</dav-icon-button>
-								<dav-icon-button
-									size="sm"
-									(click)="deleteProduct(product)"
-								>
-									<fa-icon [icon]="faTrash"></fa-icon>
-								</dav-icon-button>
-							</div>
-						</div>
-					</dav-card>
-				}
-			} @else {
-				<p class="no-products">Keine Produkte in dieser Kategorie.</p>
-			}
-		</div>
-	</div>
-	<div class="sidenav-container">
-		<dav-sidenav>
-			@for (category of categories; track category.uuid) {
-				<dav-sidenav-item
-					[value]="category.name"
-					[active]="selectedCategory === category.uuid"
-					(click)="selectCategory(category)"
-				></dav-sidenav-item>
-			}
-		</dav-sidenav>
+
+		<dav-tab-bar>
+			<dav-tab-bar-item
+				id="tab-food"
+				[active]="activeTab === 'food'"
+				(click)="selectTab('food')"
+			>
+				Speisen
+			</dav-tab-bar-item>
+			<dav-tab-bar-item
+				id="tab-drinks"
+				[active]="activeTab === 'drinks'"
+				(click)="selectTab('drinks')"
+			>
+				Getränke
+			</dav-tab-bar-item>
+			<dav-tab-bar-item
+				id="tab-specials"
+				[active]="activeTab === 'specials'"
+				(click)="selectTab('specials')"
+			>
+				Specials
+			</dav-tab-bar-item>
+			<dav-tab-bar-item
+				id="tab-menus"
+				[active]="activeTab === 'menus'"
+				(click)="selectTab('menus')"
+			>
+				Menüs
+			</dav-tab-bar-item>
+		</dav-tab-bar>
+
+		<!-- Child-Route wird hier geladen (product-list, drinks-list, etc.) -->
+		<router-outlet></router-outlet>
 	</div>
 </div>

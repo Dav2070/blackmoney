@@ -1,10 +1,6 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen, faTrash } from "@fortawesome/pro-regular-svg-icons"
-import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
-import { Variation } from "src/app/models/Variation"
-import { VariationItem } from "src/app/models/VariationItem"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 
@@ -15,123 +11,10 @@ import { LocalizationService } from "src/app/services/localization-service"
 	styleUrl: "./products-overview-page.component.scss"
 })
 export class ProductsOverviewPageComponent {
-	deleteCategory(_t7: Category) {
-		throw new Error("Method not implemented.")
-	}
-	editCategory(_t7: Category) {
-		throw new Error("Method not implemented.")
-	}
 	locale = this.localizationService.locale.productPage
 	errorsLocale = this.localizationService.locale.errors
-	faPen = faPen
-	faTrash = faTrash
 	uuid: string = null
-
-	// Beispiel-VariationItems
-	großItem: VariationItem = {
-		id: 1,
-		uuid: "vi-1",
-		name: "Groß",
-		additionalCost: 2
-	}
-	kleinItem: VariationItem = {
-		id: 2,
-		uuid: "vi-2",
-		name: "Klein",
-		additionalCost: 0
-	}
-	extraKäseItem: VariationItem = {
-		id: 3,
-		uuid: "vi-3",
-		name: "Extra Käse",
-		additionalCost: 1
-	}
-	mitEisItem: VariationItem = {
-		id: 4,
-		uuid: "vi-4",
-		name: "Mit Eis",
-		additionalCost: 0
-	}
-
-	// Beispiel-Variationen
-	sizeVariation: Variation = {
-		uuid: "v-1",
-		name: "Größe",
-		variationItems: [this.kleinItem, this.großItem]
-	}
-	toppingVariation: Variation = {
-		uuid: "v-2",
-		name: "Topping",
-		variationItems: [this.extraKäseItem]
-	}
-	iceVariation: Variation = {
-		uuid: "v-3",
-		name: "Eis",
-		variationItems: [this.mitEisItem]
-	}
-	categories: Category[] = [
-		{
-			uuid: "1",
-			name: "Vorspeise",
-			type: "FOOD",
-			products: [
-				{
-					id: 10,
-					uuid: "prod-10",
-					name: "Vorspeisenteller",
-					price: 10.5,
-					variations: [],
-					takeaway: false
-				}
-			]
-		},
-		{
-			uuid: "2",
-			name: "Hauptspeise",
-			type: "FOOD",
-			products: [
-				{
-					id: 1,
-					uuid: "prod-1",
-					name: "Margherita",
-					price: 7.5,
-					variations: [this.sizeVariation, this.toppingVariation],
-					takeaway: true
-				},
-				{
-					id: 3,
-					uuid: "prod-3",
-					name: "Salami",
-					price: 8.5,
-					variations: [this.sizeVariation, this.toppingVariation],
-					takeaway: true
-				}
-			]
-		},
-		{
-			uuid: "3",
-			name: "Bier",
-			type: "DRINK",
-			products: []
-		},
-		{
-			uuid: "4",
-			name: "Softdrinks",
-			type: "DRINK",
-			products: [
-				{
-					id: 2,
-					uuid: "prod-2",
-					name: "Cola",
-					price: 2.5,
-					variations: [this.iceVariation],
-					takeaway: false
-				}
-			]
-		}
-	]
-	selectedCategory: String = null
-	selectedCategoryObj: Category | null = null
+	activeTab = "food" // default
 
 	constructor(
 		private readonly dataService: DataService,
@@ -142,13 +25,23 @@ export class ProductsOverviewPageComponent {
 
 	async ngOnInit() {
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
-		this.selectedCategory =
-			this.activatedRoute.snapshot.paramMap.get("categoryuuid")
-
-		this.selectedCategoryObj =
-			this.categories.find(c => c.uuid === this.selectedCategory) || null
-
 		await this.dataService.davUserPromiseHolder.AwaitResult()
+
+		// Initialer Tab aus URL oder default
+		const currentChild =
+			this.activatedRoute.firstChild?.snapshot.routeConfig?.path
+		if (currentChild) {
+			this.activeTab = currentChild
+		} else {
+			// Navigiere zum default tab wenn keine Child-Route aktiv
+			this.selectTab("food")
+		}
+	}
+
+	selectTab(tab: string) {
+		this.activeTab = tab
+		// navigate to child route (relativeTo this component's route)
+		this.router.navigate([tab], { relativeTo: this.activatedRoute })
 	}
 
 	navigateBack() {
@@ -162,16 +55,9 @@ export class ProductsOverviewPageComponent {
 		])
 	}
 
-	selectCategory(category: Category) {
-		this.selectedCategory = category.uuid
-		this.selectedCategoryObj = category
-	}
-
-	editProduct(product: Product) {
-		// Öffne Dialog oder setze das Produkt zum Bearbeiten
-	}
-
 	deleteProduct(product: Product) {
 		// Lösche das Produkt oder öffne Bestätigungsdialog
+		console.log("Delete product:", product)
+		// z.B.: this.selectedCategoryObj.products = this.selectedCategoryObj.products.filter(p => p.uuid !== product.uuid)
 	}
 }

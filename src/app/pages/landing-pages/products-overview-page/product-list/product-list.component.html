@@ -1,0 +1,51 @@
+<div class="products-list">
+	@if (products?.length > 0) {
+		@for (product of products; track product.uuid) {
+			<dav-card class="product-card">
+				<div class="product-header">
+					<h3>{{ product.name }}</h3>
+					<div class="product-actions">
+						<button
+							class="icon-button"
+							(click)="editProduct(product)"
+							title="Bearbeiten"
+						>
+							<fa-icon [icon]="faPen"></fa-icon>
+						</button>
+						<button
+							class="icon-button delete"
+							(click)="deleteProduct(product)"
+							title="Löschen"
+						>
+							<fa-icon [icon]="faTrash"></fa-icon>
+						</button>
+					</div>
+				</div>
+				<div class="product-details">
+					<p class="price">{{ (product.price / 100).toFixed(2) }} €</p>
+					<p class="type">{{ product.type }}</p>
+					@if (product.variations?.length > 0) {
+						<div class="variations">
+							<strong>Variationen:</strong>
+							@for (
+								variation of product.variations;
+								track variation.uuid
+							) {
+								<span class="variation-badge">{{
+									variation.name
+								}}</span>
+							}
+						</div>
+					}
+					@if (product.takeaway) {
+						<span class="badge takeaway">Takeaway verfügbar</span>
+					}
+				</div>
+			</dav-card>
+		}
+	} @else {
+		<div class="empty-state">
+			<p>Keine Produkte in dieser Kategorie.</p>
+		</div>
+	}
+</div>

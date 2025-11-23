@@ -35,6 +35,7 @@ import { ProductPageComponent } from "./pages/landing-pages/product-page/product
 import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
 import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
+import { ProductListComponent } from "./pages/landing-pages/products-overview-page/product-list/product-list.component"
 
 const routes: Routes = [
 	{
@@ -127,13 +128,19 @@ const routes: Routes = [
 			},
 			{
 				path: "user/restaurants/:uuid/menu/product/category/:categoryuuid",
-				component: ProductsOverviewPageComponent
+				component: ProductsOverviewPageComponent,
+				children: [
+					{ path: "", redirectTo: "food", pathMatch: "full" },
+					{ path: "food", component: ProductListComponent },
+					{ path: "drinks", component: ProductListComponent }, // später durch DrinksListComponent ersetzen
+					{ path: "specials", component: ProductListComponent }, // später durch SpecialsListComponent ersetzen
+					{ path: "menus", component: ProductListComponent } // später durch MenusListComponent ersetzen
+				]
 			},
 			{
 				path: "user/restaurants/:uuid/menu/product/variations",
 				component: VariationsOverviewPageComponent
-			},
-			
+			}
 		]
 	},
 	{

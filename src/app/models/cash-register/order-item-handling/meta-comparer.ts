@@ -3,7 +3,7 @@ import { VariationComparer } from "./variation-comparer"
 import { OrderItemType } from "src/app/types"
 
 export class MetaComparer {
-	private variationComparer = new VariationComparer()
+	private readonly variationComparer = new VariationComparer()
 
 	// Public entry: strikter Vergleich nur für Menus, sonst Basic-Check
 	isOrderItemMetaEqual(existing: OrderItem, incoming: OrderItem): boolean {
@@ -164,7 +164,7 @@ export class MetaComparer {
 		if (aVars.length !== bVars.length) return false
 
 		// copy of b to mark matched variations
-		const bCopy = bVars.map(v => JSON.parse(JSON.stringify(v)))
+		const bCopy = bVars.map(v => structuredClone(v))
 
 		for (const aVar of aVars) {
 			const aVarCount = aVar.count

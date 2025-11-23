@@ -3,10 +3,9 @@ import { OrderItem } from "../../OrderItem"
 import { OrderItemVariation } from "../../OrderItemVariation"
 import { VariationComparer } from "./variation-comparer"
 import { OrderItemMerger } from "./order-item-merger"
-import { Order } from "../../Order"
 
 export class OrderItemsArrayMerger {
-	private variationComparer = new VariationComparer()
+	private readonly variationComparer = new VariationComparer()
 
 	// Merge alle orderItems von incoming in existing.orderItems (fügt zusammen oder hängt an)
 	mergeOrderItemArray(existing: OrderItem, incoming: OrderItem) {
@@ -19,7 +18,6 @@ export class OrderItemsArrayMerger {
 			existing.type === OrderItemType.Special
 		) {
 			const orderItemMerger = new OrderItemMerger(existing.orderItems)
-			incoming.orderItems[0]
 			// standard merge vom subitem, muss nicht gesucht werden, da es nur eins geben kann
 			orderItemMerger.mergeIntoExisting(
 				existing.orderItems[0],
@@ -132,7 +130,7 @@ export class OrderItemsArrayMerger {
 	): boolean {
 		if (aVars.length !== bVars.length) return false
 		// copy of b to mark matches
-		const bCopy = bVars.map(v => JSON.parse(JSON.stringify(v)))
+		const bCopy = bVars.map(v => structuredClone(v))
 		for (const aVar of aVars) {
 			const idx = bCopy.findIndex(bVar =>
 				this.variationComparer.isVariationItemEqual(aVar, bVar)
@@ -145,6 +143,6 @@ export class OrderItemsArrayMerger {
 
 	// Einfacher tiefen-Klon
 	private cloneOrderItem<T extends OrderItem>(item: T): T {
-		return JSON.parse(JSON.stringify(item)) as T
+		return structuredClone(item)
 	}
 }

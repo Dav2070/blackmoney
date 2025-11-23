@@ -11,10 +11,10 @@ import { OrderItemsArrayMerger } from "./orderItemsArray-item-merger"
  * - mergeIntoExisting gibt true zurück, wenn tatsächlich gemerged wurde
  */
 export class OrderItemMerger {
-	private allItems: OrderItem[]
-	private variationComparer: VariationComparer
-	private metaComparer: MetaComparer
-	private orderItemsArrayMerger: OrderItemsArrayMerger
+	private readonly allItems: OrderItem[]
+	private readonly variationComparer: VariationComparer
+	private readonly metaComparer: MetaComparer
+	private readonly orderItemsArrayMerger: OrderItemsArrayMerger
 
 	constructor(allItemsRef: OrderItem[]) {
 		this.allItems = allItemsRef

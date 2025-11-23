@@ -472,7 +472,6 @@ export function convertOfferResourceToOffer(
 		startTime: offerResource.startTime,
 		endTime: offerResource.endTime,
 		weekdays: offerResource.weekdays,
-		product: convertProductResourceToProduct(offerResource.product),
 		offerItems
 	}
 }

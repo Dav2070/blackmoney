@@ -1,6 +1,5 @@
 import { OrderItem } from "src/app/models/OrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
-import { Variation } from "src/app/models/Variation"
 import { ApiService } from "src/app/services/api-service"
 import {
 	convertOrderItemResourceToOrderItem,
@@ -11,7 +10,7 @@ import { OrderItemMerger } from "./order-item-merger"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
-	private merger: OrderItemMerger
+	private readonly merger: OrderItemMerger
 
 	constructor() {
 		this.merger = new OrderItemMerger(this.allPickedItems)
@@ -102,7 +101,7 @@ export class AllItemHandler {
 
 		if (target) {
 			// Match gefunden -> zusammenführen; wenn Merge fehlschlägt -> einfügen
-			const merged = this.merger.mergeIntoExisting(target, incoming)
+			this.merger.mergeIntoExisting(target, incoming)
 		} else {
 			// Kein Match -> neues Item einfügen
 			this.insertAtIndex(incoming, index)
@@ -314,6 +313,6 @@ export class AllItemHandler {
 	// Klont ein OrderItem sauber (statt JSON.stringify/parse überall)
 	cloneOrderItem<T extends OrderItem>(item: T): T {
 		// tiefer Klon: Produkte/Variationen/Subitems klonen
-		return JSON.parse(JSON.stringify(item)) as T
+		return structuredClone(item)
 	}
 }

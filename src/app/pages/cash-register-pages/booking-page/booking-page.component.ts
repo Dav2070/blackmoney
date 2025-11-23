@@ -336,7 +336,8 @@ export class BookingPageComponent {
 			)
 		}
 
-		for (const offerResource of offers) {
+		//TODO: Offers in product pushen
+		/*for (const offerResource of offers) {
 			const offer = convertOfferResourceToOffer(offerResource)
 			if (offer.offerItems.length === 0) continue
 
@@ -345,7 +346,7 @@ export class BookingPageComponent {
 			} else {
 				this.menues.push(offer)
 			}
-		}
+		}*/
 
 		this.showTotal()
 		this.productsLoading = false

@@ -81,6 +81,8 @@ export class RegisterClientPageComponent {
 	editPrintRuleDialogPrintRuleType: PrintRuleType = "BILLS"
 	editPrintRuleDialogCategoryType: CategoryType = null
 	editPrintRuleDialogSelectedPrinters: SearchResult[] = []
+	editPrintRuleDialogSelectedCategories: SearchResult[] = []
+	editPrintRuleDialogSelectedProducts: SearchResult[] = []
 
 	@ViewChild("deletePrintRuleDialog")
 	deletePrintRuleDialog: DeletePrintRuleDialogComponent
@@ -200,6 +202,18 @@ export class RegisterClientPageComponent {
 			this.printRuleItemContextMenuPrintRule.printers.map(printer => ({
 				key: printer.uuid,
 				value: printer.name
+			}))
+
+		this.editPrintRuleDialogSelectedCategories =
+			this.printRuleItemContextMenuPrintRule.categories.map(category => ({
+				key: category.uuid,
+				value: category.name
+			}))
+
+		this.editPrintRuleDialogSelectedProducts =
+			this.printRuleItemContextMenuPrintRule.products.map(product => ({
+				key: product.uuid,
+				value: product.name
 			}))
 
 		this.editPrintRuleDialog.show()
@@ -403,15 +417,29 @@ export class RegisterClientPageComponent {
 		} else if (printRule.type === "CATEGORY_TYPE") {
 			type = this.locale.foodAndDrinks
 		} else if (printRule.type === "CATEGORIES") {
-			type = this.locale.categories.replace(
-				"{count}",
-				printRule.categories.length.toString()
-			)
+			if (printRule.categories.length === 1) {
+				return this.locale.printRuleTextSingle.replace(
+					"{type}",
+					printRule.categories[0].name
+				)
+			} else {
+				type = this.locale.categories.replace(
+					"{count}",
+					printRule.categories.length.toString()
+				)
+			}
 		} else if (printRule.type === "PRODUCTS") {
-			type = this.locale.products.replace(
-				"{count}",
-				printRule.products.length.toString()
-			)
+			if (printRule.products.length === 1) {
+				return this.locale.printRuleTextSingle.replace(
+					"{type}",
+					printRule.products[0].name
+				)
+			} else {
+				type = this.locale.products.replace(
+					"{count}",
+					printRule.products.length.toString()
+				)
+			}
 		}
 
 		return this.locale.printRuleText.replace("{type}", type)

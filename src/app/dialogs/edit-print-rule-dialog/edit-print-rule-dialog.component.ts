@@ -85,6 +85,42 @@ export class EditPrintRuleDialogComponent {
 		this.updatePrintersSearchResults()
 	}
 
+	categoriesSearchTextfieldChange(event: Event) {
+		const value = (event as CustomEvent).detail.value
+		this.updateCategoriesSearchResults(value)
+	}
+
+	categoriesSearchTextfieldSelect(event: Event) {
+		const result = (event as CustomEvent).detail.result
+		this.selectedCategories.push(result)
+		this.updateCategoriesSearchResults()
+	}
+
+	removeSelectedCategory(uuid: string) {
+		const i = this.selectedCategories.findIndex(c => c.key === uuid)
+		if (i !== -1) this.selectedCategories.splice(i, 1)
+
+		this.updateCategoriesSearchResults()
+	}
+
+	productsSearchTextfieldChange(event: Event) {
+		const value = (event as CustomEvent).detail.value
+		this.updateProductsSearchResults(value)
+	}
+
+	productsSearchTextfieldSelect(event: Event) {
+		const result = (event as CustomEvent).detail.result
+		this.selectedProducts.push(result)
+		this.updateProductsSearchResults()
+	}
+
+	removeSelectedProduct(uuid: string) {
+		const i = this.selectedProducts.findIndex(p => p.key === uuid)
+		if (i !== -1) this.selectedProducts.splice(i, 1)
+
+		this.updateProductsSearchResults()
+	}
+
 	async updatePrintersSearchResults(query: string = "") {
 		const searchPrintersResponse = await this.apiService.searchPrinters(
 			`

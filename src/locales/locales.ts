@@ -62,6 +62,8 @@ export const de = {
 		printRulesHeadline: "Druckregeln",
 		printRuleText:
 			"<strong>{type}</strong> werden an folgende Drucker gesendet:",
+		printRuleTextSingle:
+			"<strong>{type}</strong> wird an folgende Drucker gesendet:",
 		bills: "Rechnungen",
 		drinks: "Getränke",
 		food: "Speisen",
@@ -236,6 +238,8 @@ export const de = {
 		},
 		editPrintRuleDialog: {
 			headline: "Druckregel bearbeiten",
+			categoriesSubhead: "Welche Kategorien sollen gedruckt werden?",
+			productsSubhead: "Welche Produkte sollen gedruckt werden?",
 			printersSubhead: "Welche Drucker sollen verwendet werden?",
 			printersTypeSubhead: "{type} an folgende Drucker senden:",
 			selectPrinters: "Drucker auswählen",

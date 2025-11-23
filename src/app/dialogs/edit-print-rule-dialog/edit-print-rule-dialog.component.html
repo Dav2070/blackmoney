@@ -8,8 +8,7 @@
 	[loading]="loading"
 	[primaryButtonDisabled]="
 		selectedPrinters.length === 0 ||
-		(printRuleType === 'CATEGORIES' &&
-			selectedCategories.length === 0) ||
+		(printRuleType === 'CATEGORIES' && selectedCategories.length === 0) ||
 		(printRuleType === 'PRODUCTS' && selectedProducts.length === 0)
 	"
 	(dismiss)="hide()"
@@ -17,22 +16,70 @@
 	(defaultButtonClick)="hide()"
 >
 	<div class="container">
-		<p>{{ getPrintersSubheadText() }}</p>
+		@if (printRuleType === "CATEGORIES") {
+			<div>
+				<p>{{ locale.categoriesSubhead }}</p>
 
-		<div class="printer-search-container">
-			<dav-search-textfield
-				[label]="locale.selectPrinters"
-				[searchResults]="printers"
-				(change)="printersSearchtextfieldChange($event)"
-				(select)="printersSearchTextfieldSelect($event)"
-			></dav-search-textfield>
+				<div class="category-search-container">
+					<dav-search-textfield
+						[label]="locale.selectCategories"
+						[searchResults]="categories"
+						(change)="categoriesSearchTextfieldChange($event)"
+						(select)="categoriesSearchTextfieldSelect($event)"
+					></dav-search-textfield>
 
-			<div class="selected-printers-container">
-				@for (printer of selectedPrinters; track printer.key) {
-					<dav-badge (click)="removeSelectedPrinter(printer.key)">
-						{{ printer.value }}
-					</dav-badge>
-				}
+					<div class="selected-categories-container">
+						@for (category of selectedCategories; track category.key) {
+							<dav-badge (click)="removeSelectedCategory(category.key)">
+								{{ category.value }}
+							</dav-badge>
+						}
+					</div>
+				</div>
+			</div>
+		}
+
+		@if (printRuleType === "PRODUCTS") {
+			<div>
+				<p>{{ locale.productsSubhead }}</p>
+
+				<div class="product-search-container">
+					<dav-search-textfield
+						[label]="locale.selectProducts"
+						[searchResults]="products"
+						(change)="productsSearchTextfieldChange($event)"
+						(select)="productsSearchTextfieldSelect($event)"
+					></dav-search-textfield>
+
+					<div class="selected-products-container">
+						@for (product of selectedProducts; track product.key) {
+							<dav-badge (click)="removeSelectedProduct(product.key)">
+								{{ product.value }}
+							</dav-badge>
+						}
+					</div>
+				</div>
+			</div>
+		}
+
+		<div>
+			<p>{{ getPrintersSubheadText() }}</p>
+
+			<div class="printer-search-container">
+				<dav-search-textfield
+					[label]="locale.selectPrinters"
+					[searchResults]="printers"
+					(change)="printersSearchtextfieldChange($event)"
+					(select)="printersSearchTextfieldSelect($event)"
+				></dav-search-textfield>
+
+				<div class="selected-printers-container">
+					@for (printer of selectedPrinters; track printer.key) {
+						<dav-badge (click)="removeSelectedPrinter(printer.key)">
+							{{ printer.value }}
+						</dav-badge>
+					}
+				</div>
 			</div>
 		</div>
 	</div>

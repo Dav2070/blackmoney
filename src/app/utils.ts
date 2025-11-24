@@ -517,6 +517,7 @@ export function convertProductResourceToProduct(
 		name: productResource.name,
 		price: productResource.price,
 		category: convertCategoryResourceToCategory(productResource.category),
+		offer: convertOfferResourceToOffer(productResource.offer),
 		variations
 	}
 }

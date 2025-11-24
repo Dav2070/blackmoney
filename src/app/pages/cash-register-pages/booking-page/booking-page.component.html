@@ -365,21 +365,6 @@
 					class="product-item-skeleton"
 					style="width: 100px"
 				></dav-skeleton>
-			} @else if (selectedCategory === "menues") {
-				@for (menu of menues; track menu.uuid) {
-					<dav-button class="slide-up-in-light" (click)="clickMenu(menu)">
-						{{ menu.name ?? "" }}
-					</dav-button>
-				}
-			} @else if (selectedCategory === "specials") {
-				@for (special of specials; track special.uuid) {
-					<dav-button
-						class="slide-up-in-light"
-						(click)="clickSpecial(special)"
-					>
-						{{ special.name ?? "" }}
-					</dav-button>
-				}
 			} @else {
 				@for (item of selectedInventory; track item.uuid) {
 					<dav-button class="slide-up-in-light" (click)="clickItem(item)">
@@ -404,20 +389,6 @@
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 			} @else {
-				<!-- Menues & Specials -->
-				<dav-sidenav-item
-					value="Menüs"
-					[active]="selectedCategory === 'menues'"
-					(click)="showMenus()"
-				></dav-sidenav-item>
-
-				<dav-sidenav-item
-					value="Specials"
-					[active]="selectedCategory === 'specials'"
-					(click)="showSpecials()"
-				></dav-sidenav-item>
-
-				<!-- Dynamic categories -->
 				@for (category of categories; track category.uuid) {
 					<dav-sidenav-item
 						[value]="category.name"
@@ -993,12 +964,8 @@
 
 <app-select-product-dialog
 	#selectProductDialog
-	[menues]="menues"
-	[specials]="specials"
 	[products]="selectedInventory"
 	[categories]="categories"
-	(selectMenue)="selectProductDialog.hide(); clickMenu($event)"
-	(selectSpecial)="selectProductDialog.hide(); clickSpecial($event)"
 	(selectProduct)="selectProductDialog.hide(); clickItem($event)"
 ></app-select-product-dialog>
 

@@ -9,24 +9,6 @@
 	(defaultButtonClick)="hide()"
 >
 	<dav-tree>
-		<dav-tree-item [headline]="locale.menues" node [open]="false">
-			@for (menu of menues; track menu.uuid) {
-				<dav-tree-item
-					[headline]="menu.name"
-					(click)="submitMenue(menu)"
-				></dav-tree-item>
-			}
-		</dav-tree-item>
-
-		<dav-tree-item [headline]="locale.specials" node [open]="false">
-			@for (special of specials; track special.uuid) {
-				<dav-tree-item
-					[headline]="special.name ?? ''"
-					(click)="submitSpecial(special)"
-				></dav-tree-item>
-			}
-		</dav-tree-item>
-
 		@for (category of categories; track category.uuid) {
 			<dav-tree-item [headline]="category.name" node [open]="false">
 				@for (product of category.products; track product.uuid) {

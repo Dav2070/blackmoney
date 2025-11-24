@@ -120,6 +120,7 @@ export interface ProductResource {
 	name: string
 	price: number
 	category: CategoryResource
+	offer?: OfferResource
 	variations: List<VariationResource>
 }
 

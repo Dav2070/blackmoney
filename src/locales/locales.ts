@@ -261,9 +261,7 @@ export const de = {
 				"Bist du dir sicher, dass du das Passwort für {name} zurücksetzen möchtest?"
 		},
 		selectProductDialog: {
-			headline: "Produkt hinzufügen",
-			menues: "Menüs",
-			specials: "Specials"
+			headline: "Produkt hinzufügen"
 		},
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"

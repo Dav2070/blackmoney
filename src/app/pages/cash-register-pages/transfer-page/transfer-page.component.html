@@ -15,7 +15,7 @@
 						class="mobile-hidden"
 						size="sm"
 						[tooltip]="locale.transferAllItemsToRight"
-						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
 					>
 						<fa-icon [icon]="faChevronsRight"></fa-icon>
 					</dav-icon-button>
@@ -24,7 +24,7 @@
 						class="desktop-hidden"
 						size="sm"
 						[tooltip]="locale.transferAllItemsToBottom"
-						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
 					>
 						<fa-icon [icon]="faChevronsDown"></fa-icon>
 					</dav-icon-button>
@@ -88,7 +88,7 @@
 						class="mobile-hidden"
 						size="sm"
 						[tooltip]="locale.transferAllItemsToLeft"
-						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
 					>
 						<fa-icon [icon]="faChevronsLeft"></fa-icon>
 					</dav-icon-button>
@@ -97,7 +97,7 @@
 						class="desktop-hidden"
 						size="sm"
 						[tooltip]="locale.transferAllItemsToTop"
-						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
 					>
 						<fa-icon [icon]="faChevronsUp"></fa-icon>
 					</dav-icon-button>

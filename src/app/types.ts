@@ -164,6 +164,7 @@ export interface OrderItemResource {
 	type: OrderItemType
 	order: OrderResource
 	product: ProductResource
+	orderItems: List<OrderItemResource>
 	orderItemVariations: List<OrderItemVariationResource>
 }
 

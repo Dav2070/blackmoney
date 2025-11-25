@@ -620,6 +620,12 @@ export function convertOrderItemResourceToOrderItem(
 		return null
 	}
 
+	const orderItems: OrderItem[] = []
+
+	for (const orderItem of orderItemResource.orderItems?.items ?? []) {
+		orderItems.push(convertOrderItemResourceToOrderItem(orderItem))
+	}
+
 	const orderItemVariations: OrderItemVariation[] = []
 
 	for (const orderItemVariation of orderItemResource.orderItemVariations
@@ -637,6 +643,7 @@ export function convertOrderItemResourceToOrderItem(
 		count: orderItemResource.count,
 		order: convertOrderResourceToOrder(orderItemResource.order),
 		product: convertProductResourceToProduct(orderItemResource.product),
+		orderItems,
 		orderItemVariations
 	}
 }

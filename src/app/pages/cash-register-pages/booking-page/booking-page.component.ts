@@ -38,7 +38,6 @@ import { Order } from "src/app/models/Order"
 import { OfferItem } from "src/app/models/OfferItem"
 import {
 	AddProductsInput,
-	AddProductVariationInput,
 	OrderItemType
 } from "src/app/types"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
@@ -474,8 +473,9 @@ export class BookingPageComponent {
 			this.currentSpecial = JSON.parse(JSON.stringify(product))
 			this.isMenuePopupVisible = true
 			this.specialCategories = []
-			for (let offerItem of product.offer.offerItems) {
-				for (let product of offerItem.products) {
+
+			for (const offerItem of product.offer.offerItems) {
+				for (const product of offerItem.products) {
 					if (
 						!this.specialCategories.some(
 							cat => cat.uuid === product.category.uuid
@@ -497,8 +497,8 @@ export class BookingPageComponent {
 				0
 			)
 
-			for (let item of this.currentMenu.offer.offerItems) {
-				for (let product of item.products) {
+			for (const item of this.currentMenu.offer.offerItems) {
+				for (const product of item.products) {
 					if (
 						!this.specialCategories.some(
 							cat => cat.uuid === product.category.uuid
@@ -515,6 +515,7 @@ export class BookingPageComponent {
 				count: 0,
 				order: null,
 				product,
+				orderItems: [],
 				orderItemVariations: [],
 				note: note
 			}
@@ -528,7 +529,7 @@ export class BookingPageComponent {
 				// Öffnet Popup für Variationen
 				this.lastClickedItem = product
 
-				for (let variationItem of this.lastClickedItem.variations[
+				for (const variationItem of this.lastClickedItem.variations[
 					this.tmpCountVariations
 				].variationItems) {
 					this.tmpPickedVariationResource.push(
@@ -786,6 +787,7 @@ export class BookingPageComponent {
 			count: 1,
 			order: null,
 			product: this.lastClickedItem,
+			orderItems: [],
 			orderItemVariations: []
 		}
 
@@ -945,6 +947,7 @@ export class BookingPageComponent {
 					type: OrderItemType.Product,
 					order: null,
 					product: this.lastClickedItem,
+					orderItems: [],
 					count: 0,
 					orderItemVariations: []
 				}
@@ -1089,10 +1092,20 @@ export class BookingPageComponent {
 											total
 											items {
 												id
+												uuid
 												name
 												additionalCost
 											}
 										}
+									}
+								}
+								orderItems {
+									items {
+										uuid
+										count
+										notes
+										takeAway
+										course
 									}
 								}
 							}
@@ -1144,27 +1157,21 @@ export class BookingPageComponent {
 		this.bottomSheet.nativeElement.snap("bottom")
 		let tmpProductArray: AddProductsInput[] = []
 
-		for (let values of this.stagedItems.getAllPickedItems().values()) {
-			let product: AddProductsInput = {
-				uuid: values.product.uuid,
-				count: values.count,
-				variations: []
-			}
-
-			for (let orderItemVariation of values.orderItemVariations) {
-				let variation: AddProductVariationInput = {
-					count: orderItemVariation.count,
-					variationItemUuids: []
-				}
-
-				for (let variationItem of orderItemVariation.variationItems) {
-					variation.variationItemUuids.push(variationItem.uuid)
-				}
-
-				product.variations.push(variation)
-			}
-
-			tmpProductArray.push(product)
+		for (const item of this.stagedItems.getAllPickedItems().values()) {
+			tmpProductArray.push({
+				uuid: item.product.uuid,
+				count: item.count,
+				variations: item.orderItemVariations?.map(variation => ({
+					count: variation.count,
+					variationItemUuids: variation.variationItems.map(vi => vi.uuid)
+				})),
+				orderItems: item.orderItems?.map(orderItem => ({
+					count: orderItem.count,
+					notes: orderItem.note,
+					takeAway: orderItem.takeAway ?? false,
+					course: orderItem.course
+				}))
+			})
 		}
 
 		let items = await this.apiService.addProductsToOrder(
@@ -1224,7 +1231,7 @@ export class BookingPageComponent {
 
 		this.bookedItems.clearItems()
 
-		for (let item of items.data.addProductsToOrder.orderItems.items) {
+		for (const item of items.data.addProductsToOrder.orderItems.items) {
 			this.bookedItems.pushNewItem(convertOrderItemResourceToOrderItem(item))
 		}
 
@@ -1745,6 +1752,7 @@ export class BookingPageComponent {
 			count: 0,
 			order: null,
 			product,
+			orderItems: [],
 			orderItemVariations: []
 		}
 
@@ -1807,12 +1815,12 @@ export class BookingPageComponent {
 	}
 
 	addSpecial(item: OrderItem) {
-		item.count += 1
+		item.count++
 	}
 
 	removeSpecial(item: OrderItem) {
 		// Einfaches Item ohne Variationen
-		item.count -= 1
+		item.count--
 		if (item.count === 0) {
 			this.tmpSpecialAllItemsHandler.deleteItem(item)
 		}
@@ -1820,7 +1828,7 @@ export class BookingPageComponent {
 
 	removeMenuItem(item: OrderItem) {
 		// Entferne das Item aus der temporären Liste
-		item.count -= 1
+		item.count--
 		if (item.count === 0 || item.orderItemVariations.length > 0) {
 			this.tmpSpecialAllItemsHandler.deleteItem(item)
 		}
@@ -1998,8 +2006,8 @@ export class BookingPageComponent {
 		let originalTotalPrice = 0
 
 		// Durch alle ausgewählten Produkte gehen
-		for (let item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
-			let processedItem: OrderItem = JSON.parse(JSON.stringify(item))
+		for (const item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
+			const processedItem: OrderItem = JSON.parse(JSON.stringify(item))
 			allOrderItems.push(processedItem)
 
 			let itemPrice = processedItem.product.price * processedItem.count
@@ -2042,16 +2050,7 @@ export class BookingPageComponent {
 			type: OrderItemType.Menu,
 			count: 1,
 			order: null,
-			product: {
-				id: this.currentMenu.id,
-				uuid: crypto.randomUUID(),
-				type: "FOOD",
-				name: this.currentMenu.name,
-				price: finalMenuPrice,
-				category: null,
-				variations: [],
-				offer: this.currentMenu.offer
-			},
+			product: this.currentMenu,
 			orderItems: allOrderItems,
 			discount: totalRabattBetrag
 		}

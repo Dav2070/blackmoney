@@ -178,11 +178,19 @@ export interface AddProductsInput {
 	uuid: string
 	count: number
 	variations?: AddProductVariationInput[]
+	orderItems?: AddProductOrderItemInput[]
 }
 
 export interface AddProductVariationInput {
 	variationItemUuids: string[]
 	count: number
+}
+
+export interface AddProductOrderItemInput {
+	count: number
+	notes?: string
+	takeAway: boolean
+	course?: number
 }
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"

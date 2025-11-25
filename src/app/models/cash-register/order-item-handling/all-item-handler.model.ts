@@ -27,49 +27,49 @@ export class AllItemHandler {
 	): Promise<Order> {
 		let order = await apiService.retrieveTable(
 			`
-                orders(paid: $paid) {
-                    total
-                    items {
-                        uuid
-                        totalPrice
-                        bill {
-                            uuid
-                        }
-                        orderItems {
-                            total
-                            items {
-                                uuid
-                                count
-                                order {
-                                    uuid
-                                }
-                                product {
-                                    id
-                                    uuid
-                                    name
-                                    price
-                                }
-                                orderItemVariations {
-                                    total
-                                    items {
-                                        uuid
-                                        count
-                                        variationItems {
-                                            total
-                                            items {
-                                                id
-                                                uuid
-                                                name
-                                                additionalCost
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            `,
+				orders(paid: $paid) {
+					total
+					items {
+						uuid
+						totalPrice
+						bill {
+							uuid
+						}
+						orderItems {
+							total
+							items {
+								uuid
+								count
+								order {
+									uuid
+								}
+								product {
+									id
+									uuid
+									name
+									price
+								}
+								orderItemVariations {
+									total
+									items {
+										uuid
+										count
+										variationItems {
+											total
+											items {
+												id
+												uuid
+												name
+												additionalCost
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			`,
 			{
 				uuid: tableUuid,
 				paid: false

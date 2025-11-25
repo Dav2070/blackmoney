@@ -1146,7 +1146,7 @@ export class BookingPageComponent {
 
 		for (let values of this.stagedItems.getAllPickedItems().values()) {
 			let product: AddProductsInput = {
-				uuid: values.uuid,
+				uuid: values.product.uuid,
 				count: values.count,
 				variations: []
 			}

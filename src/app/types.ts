@@ -191,10 +191,8 @@ export interface AddProductVariationInput {
 }
 
 export interface AddProductOrderItemInput {
+	productUuid: string
 	count: number
-	notes?: string
-	takeAway: boolean
-	course?: number
 }
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"

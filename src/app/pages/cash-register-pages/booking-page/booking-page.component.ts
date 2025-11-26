@@ -1196,10 +1196,8 @@ export class BookingPageComponent {
 					variationItemUuids: variation.variationItems.map(vi => vi.uuid)
 				})),
 				orderItems: item.orderItems?.map(orderItem => ({
-					count: orderItem.count,
-					notes: orderItem.notes,
-					takeAway: orderItem.takeAway ?? false,
-					course: orderItem.course
+					productUuid: orderItem.product.uuid,
+					count: orderItem.count
 				}))
 			})
 		}
@@ -1816,7 +1814,6 @@ export class BookingPageComponent {
 			newItem.count = 1
 			this.tmpSpecialAllItemsHandler.pushNewItem(newItem, firstIndex)
 		} else {
-			console.log("Special-Variation-Popup öffnen")
 			// Special-Variation-Popup öffnen
 			this.lastClickedItem = product
 			this.tmpPickedVariationResource = []

@@ -517,7 +517,7 @@ export class BookingPageComponent {
 				product,
 				orderItems: [],
 				orderItemVariations: [],
-				note: note
+				notes: note
 			}
 
 			if (product.variations.length === 0) {
@@ -1047,12 +1047,18 @@ export class BookingPageComponent {
 							items {
 								uuid
 								count
+								type
+								discount
+								notes
+								takeAway
+								course
 								order {
 									uuid
 								}
 								product {
 									id
 									uuid
+									type
 									name
 									price
 									variations {
@@ -1103,9 +1109,33 @@ export class BookingPageComponent {
 									items {
 										uuid
 										count
+										type
+										discount
 										notes
 										takeAway
 										course
+										product {
+											id
+											uuid
+											name
+											type
+											price
+											variations {
+												total
+												items {
+													uuid
+													name
+													variationItems {
+														total
+														items {
+															uuid
+															name
+															additionalCost
+														}
+													}
+												}
+											}
+										}
 									}
 								}
 							}
@@ -1167,7 +1197,7 @@ export class BookingPageComponent {
 				})),
 				orderItems: item.orderItems?.map(orderItem => ({
 					count: orderItem.count,
-					notes: orderItem.note,
+					notes: orderItem.notes,
 					takeAway: orderItem.takeAway ?? false,
 					course: orderItem.course
 				}))
@@ -1412,7 +1442,7 @@ export class BookingPageComponent {
 				this.showTotal()
 			}
 		} else {
-			this.clickItem(orderItem.product, orderItem.note)
+			this.clickItem(orderItem.product, orderItem.notes)
 		}
 	}
 
@@ -2124,7 +2154,7 @@ export class BookingPageComponent {
 
 	addNoteDialogPrimaryButtonClick(event: { note: string }) {
 		if (this.selectedItem != null) {
-			this.selectedItem.note = event.note
+			this.selectedItem.notes = event.note
 
 			// Prüfe ob Items mit gleicher Notiz zusammengefasst werden können
 			if (this.tmpAllItemHandler != null) {

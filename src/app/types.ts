@@ -162,6 +162,10 @@ export interface OrderItemResource {
 	uuid: string
 	count: number
 	type: OrderItemType
+	discount: number
+	notes?: string
+	takeAway: boolean
+	course?: number
 	order: OrderResource
 	product: ProductResource
 	orderItems: List<OrderItemResource>

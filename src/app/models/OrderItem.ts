@@ -13,7 +13,7 @@ export class OrderItem {
 	product: Product
 	orderItems: OrderItem[]
 	orderItemVariations?: OrderItemVariation[]
-	note?: string
+	notes?: string
 	discount?: number
 	takeAway?: boolean
 	course?: number

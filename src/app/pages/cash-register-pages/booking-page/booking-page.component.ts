@@ -1210,6 +1210,11 @@ export class BookingPageComponent {
 					items {
 						uuid
 						count
+						type
+						discount
+						notes
+						takeAway
+						course
 						order {
 							uuid
 						}
@@ -1245,6 +1250,39 @@ export class BookingPageComponent {
 										uuid
 										name
 										additionalCost
+									}
+								}
+							}
+						}
+						orderItems {
+							items {
+								uuid
+								count
+								type
+								discount
+								notes
+								takeAway
+								course
+								product {
+									id
+									uuid
+									name
+									type
+									price
+									variations {
+										total
+										items {
+											uuid
+											name
+											variationItems {
+												total
+												items {
+													uuid
+													name
+													additionalCost
+												}
+											}
+										}
 									}
 								}
 							}
@@ -2012,7 +2050,7 @@ export class BookingPageComponent {
 				},
 				orderItems: [processedItem],
 				orderItemVariations: [],
-				discount: -(originalProductPrice * rabattFaktor)
+				discount: originalProductPrice * rabattFaktor
 			}
 
 			// vorher: manuelles sameOrderItemExists + inkrementieren
@@ -2064,7 +2102,7 @@ export class BookingPageComponent {
 					} else if (this.currentMenu.offer.discountType === "AMOUNT") {
 						finalMenuPrice =
 							originalTotalPrice - this.currentMenu.offer.offerValue
-						totalRabattBetrag = -this.currentMenu.offer.offerValue
+						totalRabattBetrag = this.currentMenu.offer.offerValue
 					}
 					break
 				default:

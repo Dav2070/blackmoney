@@ -105,7 +105,7 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
 	) {
 		let total = 0
 
-		total += orderItem.discount * orderItem.count
+		total += -orderItem.discount * orderItem.count
 
 		for (let item of orderItem.orderItems) {
 			total += item.product.price * item.count

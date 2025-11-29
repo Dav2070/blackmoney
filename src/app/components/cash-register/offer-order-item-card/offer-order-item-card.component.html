@@ -85,7 +85,7 @@
 		<div class="offer-order-item-card-variation-unit-price">
 			<p>
 				{{ orderItem.count }} ×
-				{{ (orderItem.discount / 100).toFixed(2).replace(".", ",") }}
+				{{ "-" + (orderItem.discount / 100).toFixed(2).replace(".", ",") }}
 				€
 			</p>
 		</div>

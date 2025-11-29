@@ -143,6 +143,9 @@ export const de = {
 		transferAllItemsToTop: "Alles nach oben verschieben",
 		moveMultipleProducts: "Mehrere verschieben"
 	},
+	offerOrderItemCard: {
+		discount: "Rabatt"
+	},
 	dialogs: {
 		logoutDialog: {
 			headline: "Abmelden",

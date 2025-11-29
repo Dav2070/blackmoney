@@ -1191,6 +1191,7 @@ export class BookingPageComponent {
 			tmpProductArray.push({
 				uuid: item.product.uuid,
 				count: item.count,
+				discount: item.discount,
 				variations: item.orderItemVariations?.map(variation => ({
 					count: variation.count,
 					variationItemUuids: variation.variationItems.map(vi => vi.uuid)

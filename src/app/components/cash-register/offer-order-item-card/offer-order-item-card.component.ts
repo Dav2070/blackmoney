@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
-import { OrderItem } from "src/app/models/OrderItem"
-import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 import {
 	faNoteSticky,
 	faCupTogo,
 	faUtensils
 } from "@fortawesome/pro-solid-svg-icons"
+import { OrderItem } from "src/app/models/OrderItem"
+import { LocalizationService } from "src/app/services/localization-service"
+import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 
 @Component({
 	selector: "app-offer-order-item-card",
@@ -14,6 +15,7 @@ import {
 	standalone: false
 })
 export class OfferOrderItemCardComponent {
+	locale = this.localizationService.locale.offerOrderItemCard
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo
@@ -23,6 +25,8 @@ export class OfferOrderItemCardComponent {
 	@Output() noteIconClick = new EventEmitter<{
 		orderItem: OrderItem
 	}>()
+
+	constructor(private localizationService: LocalizationService) {}
 
 	onNoteIconClick(event: Event) {
 		event.stopPropagation()

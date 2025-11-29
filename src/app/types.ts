@@ -181,6 +181,7 @@ export interface OrderItemVariationResource {
 export interface AddProductsInput {
 	uuid: string
 	count: number
+	discount?: number
 	variations?: AddProductVariationInput[]
 	orderItems?: AddProductOrderItemInput[]
 }

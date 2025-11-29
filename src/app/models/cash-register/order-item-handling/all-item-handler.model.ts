@@ -40,6 +40,8 @@ export class AllItemHandler {
 							items {
 								uuid
 								count
+								type
+								discount
 								order {
 									uuid
 								}
@@ -61,6 +63,39 @@ export class AllItemHandler {
 												uuid
 												name
 												additionalCost
+											}
+										}
+									}
+								}
+								orderItems {
+									items {
+										uuid
+										count
+										type
+										discount
+										notes
+										takeAway
+										course
+										product {
+											id
+											uuid
+											name
+											type
+											price
+											variations {
+												total
+												items {
+													uuid
+													name
+													variationItems {
+														total
+														items {
+															uuid
+															name
+															additionalCost
+														}
+													}
+												}
 											}
 										}
 									}

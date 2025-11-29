@@ -61,8 +61,8 @@
 					track orderItem.uuid
 				) {
 					@if (
-						orderItem.type === OrderItemType.Menu ||
-						orderItem.type === OrderItemType.Special
+						orderItem.type === "MENU" ||
+						orderItem.type === "SPECIAL"
 					) {
 						<app-offer-order-item-card
 							[orderItem]="orderItem"
@@ -96,8 +96,8 @@
 					track orderItem.uuid
 				) {
 					@if (
-						orderItem.type === OrderItemType.Menu ||
-						orderItem.type === OrderItemType.Special
+						orderItem.type === "MENU" ||
+						orderItem.type === "SPECIAL"
 					) {
 						<app-offer-order-item-card
 							[orderItem]="orderItem"

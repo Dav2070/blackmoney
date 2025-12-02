@@ -1,1 +1,80 @@
-<p>variations-overview-page works!</p>
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddVariationDialog()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		<div class="separator"></div>
+
+		<!-- Variationen-Liste -->
+		@if (variations.length > 0) {
+			@for (variation of variations; track variation.uuid) {
+				<dav-card>
+					<div class="variation-header">
+						<h3>{{ variation.name }}</h3>
+						<div class="variation-actions">
+							<dav-icon-button
+								size="xs"
+								(click)="editVariation(variation)"
+							>
+								<fa-icon [icon]="faPen"></fa-icon>
+							</dav-icon-button>
+							<dav-icon-button
+								size="xs"
+								(click)="deleteVariation(variation)"
+							>
+								<fa-icon [icon]="faTrash"></fa-icon>
+							</dav-icon-button>
+						</div>
+					</div>
+
+					<div class="separator"></div>
+
+					<!-- VariationItems -->
+					<div class="variation-items">
+						@if (variation.variationItems?.length > 0) {
+							@for (item of variation.variationItems; track item.uuid) {
+								<div class="variation-item">
+									<span>{{ item.name }}</span>
+									<span class="item-price">{{
+										item.additionalCost | currency: "EUR"
+									}}</span>
+									<div class="item-actions">
+										<dav-icon-button
+											size="xs"
+											(click)="editVariationItem(variation, item)"
+										>
+											<fa-icon [icon]="faPen"></fa-icon>
+										</dav-icon-button>
+										<dav-icon-button
+											size="xs"
+											(click)="deleteVariationItem(variation, item)"
+										>
+											<fa-icon [icon]="faTrash"></fa-icon>
+										</dav-icon-button>
+									</div>
+								</div>
+							}
+						} @else {
+							<p class="no-items">{{ locale.noVariationItems }}</p>
+						}
+					</div>
+
+					<dav-button
+						class="add-item-button"
+						(click)="showAddVariationItemDialog(variation)"
+					>
+						{{ locale.addVariationItem }}
+					</dav-button>
+				</dav-card>
+			}
+		} @else {
+			<p class="no-variations">{{ locale.noVariations }}</p>
+		}
+	</div>
+</div>

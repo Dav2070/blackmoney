@@ -161,6 +161,12 @@ export const de = {
 		transferAllItemsToTop: "Alles nach oben verschieben",
 		moveMultipleProducts: "Mehrere verschieben"
 	},
+	variationsPage: {
+		headline: "Variationen verwalten",
+		noVariations: "Keine Variationen vorhanden",
+		noVariationItems: "Keine Variations-Items vorhanden",
+		addVariationItem: "Item hinzufügen"
+	},
 	offerOrderItemCard: {
 		discount: "Rabatt"
 	},

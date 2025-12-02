@@ -120,6 +120,7 @@ export interface ProductResource {
 	name: string
 	price: number
 	category: CategoryResource
+	offer?: OfferResource
 	variations: List<VariationResource>
 }
 
@@ -161,8 +162,13 @@ export interface OrderItemResource {
 	uuid: string
 	count: number
 	type: OrderItemType
+	discount: number
+	notes?: string
+	takeAway: boolean
+	course?: number
 	order: OrderResource
 	product: ProductResource
+	orderItems: List<OrderItemResource>
 	orderItemVariations: List<OrderItemVariationResource>
 }
 
@@ -175,11 +181,18 @@ export interface OrderItemVariationResource {
 export interface AddProductsInput {
 	uuid: string
 	count: number
+	discount?: number
 	variations?: AddProductVariationInput[]
+	orderItems?: AddProductOrderItemInput[]
 }
 
 export interface AddProductVariationInput {
 	variationItemUuids: string[]
+	count: number
+}
+
+export interface AddProductOrderItemInput {
+	productUuid: string
 	count: number
 }
 

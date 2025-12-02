@@ -120,8 +120,6 @@ import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-o
 import { MatTooltipModule } from "@angular/material/tooltip"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
-import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
-import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
@@ -205,8 +203,6 @@ import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dial
 		RestaurantOverviewComponent,
 		RoomManagementComponent,
 		EmployeeManagementComponent,
-		MenuTableComponent,
-		SpecialsTableComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

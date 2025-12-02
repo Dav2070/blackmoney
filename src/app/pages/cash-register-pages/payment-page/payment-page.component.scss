@@ -22,6 +22,7 @@
 	height: 100%;
 	min-height: 100%;
 	padding-bottom: 8px;
+	overflow: scroll;
 }
 
 .order-items-container {
@@ -49,6 +50,8 @@
 .price-container {
 	grid-row: 2;
 	border-top: 1px solid var(--dav-color-outline-variant);
+	background-color: var(--dav-color-surface);
+	z-index: 1;
 
 	p {
 		margin: 16px;
@@ -63,6 +66,10 @@
 	grid-template-rows: 1fr auto;
 	overflow: hidden;
 	margin: 0 16px;
+}
+
+.bills-container {
+	overflow: scroll;
 }
 
 .bills-list-container {

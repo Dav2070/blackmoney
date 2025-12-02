@@ -8,7 +8,7 @@
 
 	<div class="offer-order-item-card-name">
 		<p>{{ orderItem.product.name }}</p>
-		@if (orderItem.note) {
+		@if (orderItem.notes) {
 			<fa-icon
 				[icon]="faNoteSticky"
 				class="note-icon"
@@ -75,17 +75,17 @@
 		}
 	}
 
-	<div class="offer-order-item-variations-separator"></div>
-
 	@if (orderItem.discount) {
+		<div class="offer-order-item-variations-separator"></div>
+
 		<div class="offer-order-item-card-discount-name">
-			<p>- Rabatt</p>
+			<p>- {{ locale.discount }}</p>
 		</div>
 
 		<div class="offer-order-item-card-variation-unit-price">
 			<p>
 				{{ orderItem.count }} ×
-				{{ (orderItem.discount / 100).toFixed(2).replace(".", ",") }}
+				{{ "-" + (orderItem.discount / 100).toFixed(2).replace(".", ",") }}
 				€
 			</p>
 		</div>

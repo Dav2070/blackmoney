@@ -105,7 +105,7 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
 	) {
 		let total = 0
 
-		total += orderItem.discount * orderItem.count
+		total += -orderItem.discount * orderItem.count
 
 		for (let item of orderItem.orderItems) {
 			total += item.product.price * item.count
@@ -472,7 +472,6 @@ export function convertOfferResourceToOffer(
 		startTime: offerResource.startTime,
 		endTime: offerResource.endTime,
 		weekdays: offerResource.weekdays,
-		product: convertProductResourceToProduct(offerResource.product),
 		offerItems
 	}
 }
@@ -518,6 +517,7 @@ export function convertProductResourceToProduct(
 		name: productResource.name,
 		price: productResource.price,
 		category: convertCategoryResourceToCategory(productResource.category),
+		offer: convertOfferResourceToOffer(productResource.offer),
 		variations
 	}
 }
@@ -620,6 +620,12 @@ export function convertOrderItemResourceToOrderItem(
 		return null
 	}
 
+	const orderItems: OrderItem[] = []
+
+	for (const orderItem of orderItemResource.orderItems?.items ?? []) {
+		orderItems.push(convertOrderItemResourceToOrderItem(orderItem))
+	}
+
 	const orderItemVariations: OrderItemVariation[] = []
 
 	for (const orderItemVariation of orderItemResource.orderItemVariations
@@ -635,8 +641,13 @@ export function convertOrderItemResourceToOrderItem(
 		uuid: orderItemResource.uuid,
 		type: orderItemResource.type,
 		count: orderItemResource.count,
+		discount: orderItemResource.discount,
+		notes: orderItemResource.notes,
+		takeAway: orderItemResource.takeAway,
+		course: orderItemResource.course,
 		order: convertOrderResourceToOrder(orderItemResource.order),
 		product: convertProductResourceToProduct(orderItemResource.product),
+		orderItems,
 		orderItemVariations
 	}
 }

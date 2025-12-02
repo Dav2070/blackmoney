@@ -27,6 +27,11 @@
 	background-color: var(--dav-color-surface-focus);
 }
 
+.offer-order-item-card-id {
+	display: flex;
+	align-items: center;
+}
+
 .offer-order-item-card-total-price {
 	grid-column: 4;
 }

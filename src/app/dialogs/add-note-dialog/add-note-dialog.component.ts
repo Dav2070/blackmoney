@@ -46,7 +46,7 @@ export class AddNoteDialogComponent {
 	}
 
 	show() {
-		this.note = this.orderItem?.note || ""
+		this.note = this.orderItem?.notes || ""
 		this.visible = true
 	}
 

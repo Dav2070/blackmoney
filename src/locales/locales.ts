@@ -161,6 +161,9 @@ export const de = {
 		transferAllItemsToTop: "Alles nach oben verschieben",
 		moveMultipleProducts: "Mehrere verschieben"
 	},
+	offerOrderItemCard: {
+		discount: "Rabatt"
+	},
 	dialogs: {
 		logoutDialog: {
 			headline: "Abmelden",
@@ -279,9 +282,7 @@ export const de = {
 				"Bist du dir sicher, dass du das Passwort für {name} zurücksetzen möchtest?"
 		},
 		selectProductDialog: {
-			headline: "Produkt hinzufügen",
-			menues: "Menüs",
-			specials: "Specials"
+			headline: "Produkt hinzufügen"
 		},
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"

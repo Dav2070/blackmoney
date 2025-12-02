@@ -1,5 +1,4 @@
 import { OfferItem } from "./OfferItem"
-import { Product } from "./Product"
 import { DiscountType, OfferType, Weekday } from "../types"
 
 export class Offer {
@@ -13,6 +12,5 @@ export class Offer {
 	startTime?: string
 	endTime?: string
 	weekdays: Weekday[]
-	product?: Product
 	offerItems: OfferItem[]
 }

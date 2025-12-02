@@ -60,25 +60,25 @@
 					orderItem of stagedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					@if (orderItem.type === OrderItemType.Product) {
-						<app-order-item-card
-							[orderItem]="orderItem"
-							[selectedOrderItemUuid]="selectedItem?.uuid"
-							[selectedOrderItemNote]="selectedItem?.note"
-							(click)="selectItem(orderItem, stagedItems)"
-							(noteIconClick)="orderItemNoteIconClick($event)"
-						></app-order-item-card>
-					} @else if (
-						orderItem.type === OrderItemType.Menu ||
-						orderItem.type === OrderItemType.Special
+					@if (
+						orderItem.type === "MENU" ||
+						orderItem.type === "SPECIAL"
 					) {
 						<app-offer-order-item-card
 							[orderItem]="orderItem"
 							[selectedOrderItemUuid]="selectedItem?.uuid"
-							[selectedOrderItemNote]="selectedItem?.note"
+							[selectedOrderItemNote]="selectedItem?.notes"
 							(click)="selectItem(orderItem, stagedItems)"
 							(noteIconClick)="orderItemNoteIconClick($event)"
 						></app-offer-order-item-card>
+					} @else {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.notes"
+							(click)="selectItem(orderItem, stagedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
+						></app-order-item-card>
 					}
 				}
 			</ul>
@@ -95,22 +95,14 @@
 					orderItem of bookedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					@if (orderItem.type === OrderItemType.Product) {
-						<app-order-item-card
-							[orderItem]="orderItem"
-							[selectedOrderItemUuid]="selectedItem?.uuid"
-							[selectedOrderItemNote]="selectedItem?.note"
-							(click)="selectItem(orderItem, bookedItems)"
-							(noteIconClick)="orderItemNoteIconClick($event)"
-						></app-order-item-card>
-					} @else if (
-						orderItem.type === OrderItemType.Menu ||
-						orderItem.type === OrderItemType.Special
+					@if (
+						orderItem.type === "MENU" ||
+						orderItem.type === "SPECIAL"
 					) {
 						<app-offer-order-item-card
 							[orderItem]="orderItem"
 							[selectedOrderItemUuid]="selectedItem?.uuid"
-							[selectedOrderItemNote]="selectedItem?.note"
+							[selectedOrderItemNote]="selectedItem?.notes"
 							(click)="selectItem(orderItem, bookedItems)"
 							(noteIconClick)="orderItemNoteIconClick($event)"
 						></app-offer-order-item-card>
@@ -118,7 +110,9 @@
 						<app-order-item-card
 							[orderItem]="orderItem"
 							[selectedOrderItemUuid]="selectedItem?.uuid"
+							[selectedOrderItemNote]="selectedItem?.notes"
 							(click)="selectItem(orderItem, bookedItems)"
+							(noteIconClick)="orderItemNoteIconClick($event)"
 						></app-order-item-card>
 					}
 				}
@@ -365,21 +359,6 @@
 					class="product-item-skeleton"
 					style="width: 100px"
 				></dav-skeleton>
-			} @else if (selectedCategory === "menues") {
-				@for (menu of menues; track menu.uuid) {
-					<dav-button class="slide-up-in-light" (click)="clickMenu(menu)">
-						{{ menu.product?.name ?? '' }}
-					</dav-button>
-				}
-			} @else if (selectedCategory === "specials") {
-				@for (special of specials; track special.uuid) {
-					<dav-button
-						class="slide-up-in-light"
-						(click)="clickSpecial(special)"
-					>
-						{{ special.product?.name ?? '' }}
-					</dav-button>
-				}
 			} @else {
 				@for (item of selectedInventory; track item.uuid) {
 					<dav-button class="slide-up-in-light" (click)="clickItem(item)">
@@ -404,20 +383,6 @@
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 				<dav-skeleton class="category-item-skeleton"></dav-skeleton>
 			} @else {
-				<!-- Menues & Specials -->
-				<dav-sidenav-item
-					value="Menüs"
-					[active]="selectedCategory === 'menues'"
-					(click)="showMenus()"
-				></dav-sidenav-item>
-
-				<dav-sidenav-item
-					value="Specials"
-					[active]="selectedCategory === 'specials'"
-					(click)="showSpecials()"
-				></dav-sidenav-item>
-
-				<!-- Dynamic categories -->
 				@for (category of categories; track category.uuid) {
 					<dav-sidenav-item
 						[value]="category.name"
@@ -640,7 +605,7 @@
 				<div class="categories-section">
 					<h3>Kategorien</h3>
 					<div class="category-list">
-						@for (item of currentMenu.offerItems; track item.uuid) {
+						@for (item of currentMenu.offer.offerItems; track item.uuid) {
 							<button
 								[disabled]="item.maxSelections <= 0"
 								[class.selected-category]="currentIndex === $index"
@@ -663,14 +628,17 @@
 				<div class="products-section">
 					<h3>
 						Produkte - Wähle
-						{{ this.currentMenu.offerItems[currentIndex].maxSelections }}
+						{{
+							this.currentMenu.offer.offerItems[currentIndex]
+								.maxSelections
+						}}
 						Produkte aus
 					</h3>
 					<div class="product-list">
 						@for (product of specialProducts; track product.uuid) {
 							<button
 								[disabled]="
-									this.currentMenu.offerItems[currentIndex]
+									this.currentMenu.offer.offerItems[currentIndex]
 										.maxSelections <= 0
 								"
 								(click)="clickSpecialProduct(product)"
@@ -990,12 +958,8 @@
 
 <app-select-product-dialog
 	#selectProductDialog
-	[menues]="menues"
-	[specials]="specials"
 	[products]="selectedInventory"
 	[categories]="categories"
-	(selectMenue)="selectProductDialog.hide(); clickMenu($event)"
-	(selectSpecial)="selectProductDialog.hide(); clickSpecial($event)"
 	(selectProduct)="selectProductDialog.hide(); clickItem($event)"
 ></app-select-product-dialog>
 

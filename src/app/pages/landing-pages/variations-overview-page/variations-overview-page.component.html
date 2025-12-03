@@ -47,7 +47,7 @@
 									<div class="item-actions">
 										<dav-icon-button
 											size="xs"
-											(click)="editVariationItem(variation, item)"
+											(click)="editVariation(variation)"
 										>
 											<fa-icon [icon]="faPen"></fa-icon>
 										</dav-icon-button>
@@ -77,4 +77,16 @@
 			<p class="no-variations">{{ locale.noVariations }}</p>
 		}
 	</div>
+
+	<app-add-variation-dialog
+		#addVariationDialog
+		[loading]="false"
+		(primaryButtonClick)="addVariationDialogPrimaryButtonClick($event)"
+	></app-add-variation-dialog>
+
+	<app-add-variation-item-dialog
+		#addVariationItemDialog
+		[loading]="false"
+		(primaryButtonClick)="addVariationItemDialogPrimaryButtonClick($event)"
+	></app-add-variation-item-dialog>
 </div>

@@ -122,6 +122,8 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
+import { AddVariationDialogComponent } from "./dialogs/add-variation-dialog/add-variation-dialog.component"
+import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
 
 
 @NgModule({
@@ -161,6 +163,8 @@ import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.com
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
 		AddCategoryDialogComponent,
+		AddVariationDialogComponent,
+		AddVariationItemDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

@@ -1,22 +1,24 @@
-import { Component, OnInit } from "@angular/core"
+import { Component, OnInit, ViewChild } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
 import { LocalizationService } from "src/app/services/localization-service"
+import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialog/add-variation-dialog.component"
 
 @Component({
 	selector: "app-variations-overview-page",
-	standalone: false,
 	templateUrl: "./variations-overview-page.component.html",
-	styleUrl: "./variations-overview-page.component.scss"
+	styleUrls: ["./variations-overview-page.component.scss"],
+	standalone: false
 })
 export class VariationsOverviewPageComponent implements OnInit {
 	locale = this.localizationService.locale.variationsPage
 	faPen = faPen
 	faTrash = faTrash
 
-  uuid: string = null
+	uuid: string = null
+	selectedVariation: Variation = null
 
 	variations: Variation[] = [
 		{
@@ -38,27 +40,43 @@ export class VariationsOverviewPageComponent implements OnInit {
 		}
 	]
 
+	@ViewChild("addVariationDialog")
+	addVariationDialog: AddVariationDialogComponent
+
+	@ViewChild("addVariationItemDialog")
+	addVariationItemDialog: any
+
 	constructor(
 		private router: Router,
 		private localizationService: LocalizationService,
-    private readonly activatedRoute: ActivatedRoute
+		private readonly activatedRoute: ActivatedRoute
 	) {}
 
-  async ngOnInit() {
+	async ngOnInit() {
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 	}
 
 	navigateBack() {
-		this.router.navigate([
-			"user",
-			"restaurants",
-			this.uuid,
-			"menu"
-		])
+		this.router.navigate(["user", "restaurants", this.uuid, "menu"])
 	}
 
 	showAddVariationDialog() {
-		console.log("Add Variation")
+		this.addVariationDialog.show()
+	}
+
+	addVariationDialogPrimaryButtonClick(event: {
+		name: string
+		variationItems: VariationItem[]
+	}) {
+		const newVariation: Variation = {
+			uuid: crypto.randomUUID(),
+			name: event.name,
+			variationItems: event.variationItems
+		}
+
+		this.variations.push(newVariation)
+		console.log("Added Variation:", newVariation)
+		this.addVariationDialog.hide()
 	}
 
 	editVariation(variation: Variation) {
@@ -70,11 +88,17 @@ export class VariationsOverviewPageComponent implements OnInit {
 	}
 
 	showAddVariationItemDialog(variation: Variation) {
-		console.log("Add VariationItem to", variation)
+		this.selectedVariation = variation
+		this.addVariationItemDialog.show()
 	}
 
-	editVariationItem(variation: Variation, item: VariationItem) {
-		console.log("Edit VariationItem", item, "in", variation)
+	addVariationItemDialogPrimaryButtonClick(event: {
+		name: string
+		additionalCost: number
+	}) {
+		// API call hier
+		console.log("Add Item to", this.selectedVariation, event)
+		this.addVariationItemDialog.hide()
 	}
 
 	deleteVariationItem(variation: Variation, item: VariationItem) {

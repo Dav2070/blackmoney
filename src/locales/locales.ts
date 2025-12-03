@@ -306,6 +306,22 @@ export const de = {
 		addCategoryDialog: {
 			headline: "Kategorie hinzufügen",
 			name: "Name"
+		},
+		addVariationDialog: {
+			headline: "Variation hinzufügen",
+			name: "Name der Variation",
+			variationItems: "Variation-Items",
+			itemName: "Item-Name",
+			itemCost: "Aufpreis (€)",
+			addItem: "Item hinzufügen",
+			nameRequired: "Name ist erforderlich",
+			itemsRequired: "Mindestens ein Item erforderlich",
+			itemNameRequired: "Item-Name ist erforderlich"
+		},
+		addVariationItemDialog: {
+			headline: "Variation-Item hinzufügen",
+			name: "Name",
+			additionalCost: "Aufpreis (€)"
 		}
 	},
 	actions: {

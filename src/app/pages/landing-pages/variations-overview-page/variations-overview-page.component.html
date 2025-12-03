@@ -86,6 +86,18 @@
 		(primaryButtonClick)="addVariationItemDialogPrimaryButtonClick($event)"
 	></app-add-variation-item-dialog>
 
+	<app-edit-variation-dialog
+		#editVariationDialog
+		[loading]="false"
+		(primaryButtonClick)="editVariationDialogPrimaryButtonClick($event)"
+	></app-edit-variation-dialog>
+
+	<app-edit-variation-item-dialog
+		#editVariationItemDialog
+		[loading]="false"
+		(primaryButtonClick)="editVariationItemDialogPrimaryButtonClick($event)"
+	></app-edit-variation-item-dialog>
+
 	<!-- Variation context menu -->
 	<dav-context-menu
 		#variationContextMenu

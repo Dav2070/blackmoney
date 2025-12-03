@@ -124,6 +124,8 @@ import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dial
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { AddVariationDialogComponent } from "./dialogs/add-variation-dialog/add-variation-dialog.component"
 import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
+import { EditVariationDialogComponent } from "./dialogs/edit-variation-dialog/edit-variation-dialog.component"
+import { EditVariationItemDialogComponent } from "./dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
 
 
 @NgModule({
@@ -165,6 +167,8 @@ import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-di
 		AddCategoryDialogComponent,
 		AddVariationDialogComponent,
 		AddVariationItemDialogComponent,
+		EditVariationDialogComponent,
+		EditVariationItemDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

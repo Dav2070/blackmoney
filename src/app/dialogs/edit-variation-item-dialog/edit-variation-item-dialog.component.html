@@ -1,0 +1,38 @@
+<p>edit-variation-item-dialog works!</p>
+
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="name"
+				[label]="locale.name"
+				[disabled]="loading"
+				[errorMessage]="nameError"
+				(change)="nameTextfieldChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="additionalCost.toString()"
+				[label]="locale.additionalCost"
+				[disabled]="loading"
+				[errorMessage]="costError"
+				type="number"
+				step="0.01"
+				(change)="costTextfieldChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+	</form>
+</dav-dialog>

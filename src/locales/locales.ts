@@ -323,6 +323,24 @@ export const de = {
 			headline: "Variation-Item hinzufügen",
 			name: "Name",
 			additionalCost: "Aufpreis (€)"
+		},
+		editVariationDialog: {
+			headline: "Variation bearbeiten",
+			name: "Name der Variation",
+			variationItems: "Variation-Items",
+			itemName: "Item-Name",
+			itemCost: "Aufpreis (€)",
+			addItem: "Item hinzufügen",
+			nameRequired: "Name ist erforderlich",
+			itemsRequired: "Mindestens ein Item erforderlich",
+			itemNameRequired: "Item-Name ist erforderlich"
+		},
+		editVariationItemDialog: {
+			headline: "Variation-Item bearbeiten",
+			name: "Name",
+			additionalCost: "Aufpreis (€)",
+			nameRequired: "Name ist erforderlich",
+			costPositive: "Preis muss positiv sein"
 		}
 	},
 	actions: {

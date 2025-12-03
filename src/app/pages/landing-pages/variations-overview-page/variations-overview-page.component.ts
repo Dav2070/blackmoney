@@ -12,6 +12,8 @@ import { VariationItem } from "src/app/models/VariationItem"
 import { LocalizationService } from "src/app/services/localization-service"
 import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialog/add-variation-dialog.component"
 import { ContextMenu } from "dav-ui-components"
+import { EditVariationDialogComponent } from "src/app/dialogs/edit-variation-dialog/edit-variation-dialog.component"
+import { EditVariationItemDialogComponent } from "src/app/dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
 
 @Component({
 	selector: "app-variations-overview-page",
@@ -20,12 +22,6 @@ import { ContextMenu } from "dav-ui-components"
 	standalone: false
 })
 export class VariationsOverviewPageComponent implements OnInit {
-editSelectedVariation() {
-throw new Error('Method not implemented.')
-}
-editSelectedVariationItem() {
-throw new Error('Method not implemented.')
-}
 	locale = this.localizationService.locale.variationsPage
 	actionsLocale = this.localizationService.locale.actions
 	faPen = faPen
@@ -65,6 +61,12 @@ throw new Error('Method not implemented.')
 	variationContextMenu!: ElementRef<ContextMenu>
 	@ViewChild("variationItemContextMenu")
 	variationItemContextMenu!: ElementRef<ContextMenu>
+
+	@ViewChild("editVariationDialog")
+	editVariationDialog: EditVariationDialogComponent
+
+	@ViewChild("editVariationItemDialog")
+	editVariationItemDialog: EditVariationItemDialogComponent
 
 	variationContextMenuVisible = false
 	variationContextMenuX = 0
@@ -208,6 +210,54 @@ throw new Error('Method not implemented.')
 		this.selectedVariationForItemContext = null
 		this.selectedVariationItemForContext = null
 		this.variationItemContextMenuVisible = false
+	}
+
+	editSelectedVariation() {
+		if (!this.selectedVariationForContext) return
+		this.editVariationDialog.show(this.selectedVariationForContext)
+		this.variationContextMenuVisible = false
+	}
+
+	editSelectedVariationItem() {
+		if (
+			!this.selectedVariationForItemContext ||
+			!this.selectedVariationItemForContext
+		)
+			return
+		this.editVariationItemDialog.show(this.selectedVariationItemForContext)
+		this.variationItemContextMenuVisible = false
+	}
+
+	editVariationDialogPrimaryButtonClick(event: {
+		uuid: string
+		name: string
+		variationItems: VariationItem[]
+	}) {
+		const idx = this.variations.findIndex(v => v.uuid === event.uuid)
+		if (idx !== -1) {
+			this.variations[idx].name = event.name
+			this.variations[idx].variationItems = event.variationItems
+		}
+		this.editVariationDialog.hide()
+	}
+
+	editVariationItemDialogPrimaryButtonClick(event: {
+		uuid: string
+		name: string
+		additionalCost: number
+	}) {
+		if (!this.selectedVariationForItemContext) return
+
+		const item = this.selectedVariationForItemContext.variationItems.find(
+			i => i.uuid === event.uuid
+		)
+		if (item) {
+			item.name = event.name
+			item.additionalCost = event.additionalCost
+		}
+
+		this.editVariationItemDialog.hide()
+		this.selectedVariationForItemContext = null
 	}
 
 	@HostListener("document:click", ["$event"])

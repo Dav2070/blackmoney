@@ -20,15 +20,10 @@
 						<div class="variation-actions">
 							<dav-icon-button
 								size="xs"
-								(click)="editVariation(variation)"
+								[tooltip]="locale.options"
+								(click)="showVariationContextMenu($event, variation)"
 							>
-								<fa-icon [icon]="faPen"></fa-icon>
-							</dav-icon-button>
-							<dav-icon-button
-								size="xs"
-								(click)="deleteVariation(variation)"
-							>
-								<fa-icon [icon]="faTrash"></fa-icon>
+								<fa-icon [icon]="faEllipsis"></fa-icon>
 							</dav-icon-button>
 						</div>
 					</div>
@@ -47,15 +42,16 @@
 									<div class="item-actions">
 										<dav-icon-button
 											size="xs"
-											(click)="editVariation(variation)"
+											[tooltip]="locale.options"
+											(click)="
+												showVariationItemContextMenu(
+													$event,
+													variation,
+													item
+												)
+											"
 										>
-											<fa-icon [icon]="faPen"></fa-icon>
-										</dav-icon-button>
-										<dav-icon-button
-											size="xs"
-											(click)="deleteVariationItem(variation, item)"
-										>
-											<fa-icon [icon]="faTrash"></fa-icon>
+											<fa-icon [icon]="faEllipsis"></fa-icon>
 										</dav-icon-button>
 									</div>
 								</div>
@@ -89,4 +85,48 @@
 		[loading]="false"
 		(primaryButtonClick)="addVariationItemDialogPrimaryButtonClick($event)"
 	></app-add-variation-item-dialog>
+
+	<!-- Variation context menu -->
+	<dav-context-menu
+		#variationContextMenu
+		[visible]="variationContextMenuVisible"
+		[posX]="variationContextMenuX"
+		[posY]="variationContextMenuY"
+	>
+		<dav-context-menu-item
+			[value]="actionsLocale.edit"
+			(click)="editSelectedVariation()"
+		>
+			<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+		</dav-context-menu-item>
+
+		<dav-context-menu-item
+			[value]="actionsLocale.delete"
+			(click)="deleteSelectedVariation()"
+		>
+			<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+		</dav-context-menu-item>
+	</dav-context-menu>
+
+	<!-- Variation item context menu -->
+	<dav-context-menu
+		#variationItemContextMenu
+		[visible]="variationItemContextMenuVisible"
+		[posX]="variationItemContextMenuX"
+		[posY]="variationItemContextMenuY"
+	>
+		<dav-context-menu-item
+			[value]="actionsLocale.edit"
+			(click)="editSelectedVariationItem()"
+		>
+			<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+		</dav-context-menu-item>
+
+		<dav-context-menu-item
+			[value]="actionsLocale.delete"
+			(click)="deleteSelectedVariationItem()"
+		>
+			<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+		</dav-context-menu-item>
+	</dav-context-menu>
 </div>

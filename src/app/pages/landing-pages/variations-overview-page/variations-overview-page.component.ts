@@ -1,10 +1,17 @@
-import { Component, OnInit, ViewChild } from "@angular/core"
+import {
+	Component,
+	OnInit,
+	ViewChild,
+	ElementRef,
+	HostListener
+} from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
 import { LocalizationService } from "src/app/services/localization-service"
 import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialog/add-variation-dialog.component"
+import { ContextMenu } from "dav-ui-components"
 
 @Component({
 	selector: "app-variations-overview-page",
@@ -13,9 +20,17 @@ import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialo
 	standalone: false
 })
 export class VariationsOverviewPageComponent implements OnInit {
+editSelectedVariation() {
+throw new Error('Method not implemented.')
+}
+editSelectedVariationItem() {
+throw new Error('Method not implemented.')
+}
 	locale = this.localizationService.locale.variationsPage
+	actionsLocale = this.localizationService.locale.actions
 	faPen = faPen
 	faTrash = faTrash
+	faEllipsis = faEllipsis
 
 	uuid: string = null
 	selectedVariation: Variation = null
@@ -45,6 +60,22 @@ export class VariationsOverviewPageComponent implements OnInit {
 
 	@ViewChild("addVariationItemDialog")
 	addVariationItemDialog: any
+
+	@ViewChild("variationContextMenu")
+	variationContextMenu!: ElementRef<ContextMenu>
+	@ViewChild("variationItemContextMenu")
+	variationItemContextMenu!: ElementRef<ContextMenu>
+
+	variationContextMenuVisible = false
+	variationContextMenuX = 0
+	variationContextMenuY = 0
+	selectedVariationForContext: Variation = null
+
+	variationItemContextMenuVisible = false
+	variationItemContextMenuX = 0
+	variationItemContextMenuY = 0
+	selectedVariationItemForContext: VariationItem = null
+	selectedVariationForItemContext: Variation = null
 
 	constructor(
 		private router: Router,
@@ -84,7 +115,16 @@ export class VariationsOverviewPageComponent implements OnInit {
 	}
 
 	deleteVariation(variation: Variation) {
-		console.log("Delete Variation", variation)
+		this.variations = this.variations.filter(v => v.uuid !== variation.uuid)
+	}
+
+	deleteVariationItem(variation: Variation, item: VariationItem) {
+		const idx = this.variations.findIndex(v => v.uuid === variation.uuid)
+		if (idx === -1) return
+		const items = this.variations[idx].variationItems ?? []
+		this.variations[idx].variationItems = items.filter(
+			i => i.uuid !== item.uuid
+		)
 	}
 
 	showAddVariationItemDialog(variation: Variation) {
@@ -116,7 +156,78 @@ export class VariationsOverviewPageComponent implements OnInit {
 		this.selectedVariation = null
 	}
 
-	deleteVariationItem(variation: Variation, item: VariationItem) {
-		console.log("Delete VariationItem", item, "from", variation)
+	showVariationContextMenu(event: Event, variation: Variation) {
+		const detail = (event as CustomEvent).detail
+		this.selectedVariationForContext = variation
+
+		if (this.variationContextMenuVisible) {
+			this.variationContextMenuVisible = false
+		} else {
+			this.variationContextMenuX = detail.contextMenuPosition.x
+			this.variationContextMenuY = detail.contextMenuPosition.y
+			this.variationContextMenuVisible = true
+		}
+	}
+
+	showVariationItemContextMenu(
+		event: Event,
+		variation: Variation,
+		item: VariationItem
+	) {
+		const detail = (event as CustomEvent).detail
+		this.selectedVariationForItemContext = variation
+		this.selectedVariationItemForContext = item
+
+		if (this.variationItemContextMenuVisible) {
+			this.variationItemContextMenuVisible = false
+		} else {
+			this.variationItemContextMenuX = detail.contextMenuPosition.x
+			this.variationItemContextMenuY = detail.contextMenuPosition.y
+			this.variationItemContextMenuVisible = true
+		}
+	}
+
+	// actions invoked from context menu
+	deleteSelectedVariation() {
+		if (!this.selectedVariationForContext) return
+		this.deleteVariation(this.selectedVariationForContext)
+		this.selectedVariationForContext = null
+		this.variationContextMenuVisible = false
+	}
+
+	deleteSelectedVariationItem() {
+		if (
+			!this.selectedVariationForItemContext ||
+			!this.selectedVariationItemForContext
+		)
+			return
+		this.deleteVariationItem(
+			this.selectedVariationForItemContext,
+			this.selectedVariationItemForContext
+		)
+		this.selectedVariationForItemContext = null
+		this.selectedVariationItemForContext = null
+		this.variationItemContextMenuVisible = false
+	}
+
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		// Variation-Menü schließen, wenn außerhalb geklickt wird
+		if (
+			this.variationContextMenuVisible &&
+			!this.variationContextMenu.nativeElement.contains(event.target as Node)
+		) {
+			this.variationContextMenuVisible = false
+		}
+
+		// Variation-Item-Menü schließen, wenn außerhalb geklickt wird
+		if (
+			this.variationItemContextMenuVisible &&
+			!this.variationItemContextMenu.nativeElement.contains(
+				event.target as Node
+			)
+		) {
+			this.variationItemContextMenuVisible = false
+		}
 	}
 }

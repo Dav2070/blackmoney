@@ -162,6 +162,7 @@ export const de = {
 		moveMultipleProducts: "Mehrere verschieben"
 	},
 	variationsPage: {
+		options: "Weitere Optionen",
 		headline: "Variationen verwalten",
 		noVariations: "Keine Variationen vorhanden",
 		noVariationItems: "Keine Variations-Items vorhanden",

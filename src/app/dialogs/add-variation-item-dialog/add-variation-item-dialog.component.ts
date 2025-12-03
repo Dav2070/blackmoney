@@ -64,6 +64,17 @@ export class AddVariationItemDialogComponent {
 	}
 
 	submit() {
+		// Validierung
+		if (!this.name.trim()) {
+			this.nameError = "Name ist erforderlich"
+			return
+		}
+
+		if (this.additionalCost < 0) {
+			this.costError = "Preis muss positiv sein"
+			return
+		}
+
 		this.primaryButtonClick.emit({
 			name: this.name,
 			additionalCost: this.additionalCost

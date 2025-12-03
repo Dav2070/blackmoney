@@ -96,9 +96,24 @@ export class VariationsOverviewPageComponent implements OnInit {
 		name: string
 		additionalCost: number
 	}) {
-		// API call hier
-		console.log("Add Item to", this.selectedVariation, event)
+		if (!this.selectedVariation) return
+
+		const newItem: VariationItem = {
+			id: Date.now(),
+			uuid: crypto.randomUUID(),
+			name: event.name,
+			additionalCost: event.additionalCost
+		}
+
+		// Item zur ausgewählten Variation hinzufügen
+		if (!this.selectedVariation.variationItems) {
+			this.selectedVariation.variationItems = []
+		}
+		this.selectedVariation.variationItems.push(newItem)
+
+		console.log("Added Item to", this.selectedVariation, newItem)
 		this.addVariationItemDialog.hide()
+		this.selectedVariation = null
 	}
 
 	deleteVariationItem(variation: Variation, item: VariationItem) {

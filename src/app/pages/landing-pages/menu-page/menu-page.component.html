@@ -1,43 +1,34 @@
+<p>menu-page works!</p>
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header
-			backButtonVisible
-			(backButtonClick)="navigateBack()"
-		>
+		<dav-header backButtonVisible (backButtonClick)="navigateBack()">
 			{{ locale.headline }}
 		</dav-header>
-
 
 		<div class="actions-container">
 			<div class="actions-container">
 				<dav-icon-card
-					[text]="locale.clone"
-					(click)="openCopyDialog($event)"
+					[text]="locale.category"
+					[href]="'/user/restaurants/' + uuid + '/menu/product/category'"
+					(click)="navigateToCategoryPage($event)"
 				>
-					<fa-icon [icon]="faCopy"></fa-icon>
-				</dav-icon-card>
-				<dav-icon-card
-					[text]="locale.products"
-					[href]="'/user/restaurants/' + uuid + '/menu/product'"
-					(click)="navigateToProductPage($event)"
-				>
-					<fa-icon [icon]="faUtensils"></fa-icon>
+					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-card>
 
 				<dav-icon-card
-					[text]="locale.offers"
-					[href]="'/user/restaurants/' + uuid + '/menu/offers'"
-					(click)="navigateToOffersPage($event)"
+					[text]="locale.variations"
+					[href]="'/user/restaurants/' + uuid + '/menu/product/variations'"
+					(click)="navigateToVariationsPage($event)"
 				>
-					<fa-icon [icon]="faPercent"></fa-icon>
+					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-card>
 
 				<dav-icon-card
-					[text]="locale.menu"
+					[text]="locale.options"
 					[href]="'/user/restaurants/' + uuid + '/menu/menus'"
-					(click)="navigateToMenusPage($event)"
+					(click)="navigateToOptionsPage($event)"
 				>
-					<fa-icon [icon]="faReceipt"></fa-icon>
+					<fa-icon [icon]="faPen"></fa-icon>
 				</dav-icon-card>
 			</div>
 		</div>

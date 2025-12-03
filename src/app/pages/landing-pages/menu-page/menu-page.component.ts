@@ -1,28 +1,19 @@
-import { Component, ViewChild } from "@angular/core"
-import { Router, ActivatedRoute } from "@angular/router"
+import { Component } from "@angular/core"
+import { ActivatedRoute, Router } from "@angular/router"
+import { faPen } from "@fortawesome/pro-regular-svg-icons"
 import { DataService } from "src/app/services/data-service"
-import {
-	faCopy,
-	faPercent,
-	faReceipt,
-	faUtensils
-} from "@fortawesome/pro-regular-svg-icons"
 import { LocalizationService } from "src/app/services/localization-service"
-
 
 @Component({
 	selector: "app-menu-page",
+	standalone: false,
 	templateUrl: "./menu-page.component.html",
-	styleUrl: "./menu-page.component.scss",
-	standalone: false
+	styleUrl: "./menu-page.component.scss"
 })
 export class MenuPageComponent {
-	locale = this.localizationService.locale.menuPage
+	locale = this.localizationService.locale.productPage
 	errorsLocale = this.localizationService.locale.errors
-	faCopy = faCopy
-	faPercent = faPercent
-	faReceipt = faReceipt
-	faUtensils = faUtensils
+	faPen = faPen
 	uuid: string = null
 
 	constructor(
@@ -42,7 +33,7 @@ export class MenuPageComponent {
 		this.router.navigate(["user", "restaurants", this.uuid])
 	}
 
-	navigateToProductPage(event: MouseEvent) {
+	navigateToCategoryPage(event: MouseEvent) {
 		event.preventDefault()
 
 		this.router.navigate([
@@ -50,21 +41,31 @@ export class MenuPageComponent {
 			"restaurants",
 			this.uuid,
 			"menu",
-			"product"
+			"category"
 		])
 	}
 
-	navigateToOffersPage(event: MouseEvent) {
+	navigateToVariationsPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", this.uuid, "menu", "offers"])
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.uuid,
+			"menu",
+			"variations"
+		])
 	}
 
-	navigateToMenusPage(event: MouseEvent) {
+	navigateToOptionsPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", this.uuid, "menu", "menus"])
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.uuid,
+			"menu",
+			"options"
+		])
 	}
-
-	openCopyDialog(event: MouseEvent) {}
 }

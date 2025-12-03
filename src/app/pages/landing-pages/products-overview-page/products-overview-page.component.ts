@@ -50,7 +50,6 @@ export class ProductsOverviewPageComponent {
 			"restaurants",
 			this.uuid,
 			"menu",
-			"product",
 			"category"
 		])
 	}

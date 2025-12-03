@@ -53,8 +53,7 @@ export class VariationsOverviewPageComponent implements OnInit {
 			"user",
 			"restaurants",
 			this.uuid,
-			"menu",
-			"product"
+			"menu"
 		])
 	}
 

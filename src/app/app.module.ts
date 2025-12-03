@@ -95,8 +95,6 @@ import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
-import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
-import { ProductPageComponent } from "./pages/landing-pages/product-page/product-page.component"
 import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
 import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
@@ -123,6 +121,7 @@ import { EmployeeManagementComponent } from "./pages/settings-pages/employee-man
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
+import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 
 
 @NgModule({
@@ -183,22 +182,21 @@ import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dial
 		BookingPageComponent,
 		TransferPageComponent,
 		PaymentPageComponent,
-		ProductPageComponent,
 		ProductsOverviewPageComponent,
 		CategoryPageComponent,
+		MenuPageComponent,
 		//Landing-Pages
 		PrintersPageComponent,
 		RoomsPageComponent,
 		RoomPageComponent,
 		TableCombinationsPageComponent,
 		OpeningTimePageComponent,
-		MenuPageComponent,
 		VariationsOverviewPageComponent,
 		ProductListComponent,
 		//Settings-Pages
 		SettingsPageComponent,
-		MenuePageComponent,
 		ItemsTableComponent,
+		MenuePageComponent,
 		VariationsTableComponent,
 		RestaurantOverviewComponent,
 		RoomManagementComponent,

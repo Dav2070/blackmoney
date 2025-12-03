@@ -58,8 +58,7 @@ export class CategoryPageComponent {
 			"user",
 			"restaurants",
 			this.uuid,
-			"menu",
-			"product"
+			"menu"
 		])
 	}
 
@@ -71,7 +70,6 @@ export class CategoryPageComponent {
 			"restaurants",
 			this.uuid,
 			"menu",
-			"product",
 			"category",
 			category.uuid
 		])

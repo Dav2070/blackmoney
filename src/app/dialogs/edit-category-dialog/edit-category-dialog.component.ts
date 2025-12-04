@@ -1,4 +1,3 @@
-import { isPlatformBrowser } from "@angular/common"
 import {
 	Component,
 	ElementRef,
@@ -9,26 +8,32 @@ import {
 	PLATFORM_ID,
 	ViewChild
 } from "@angular/core"
+import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
+import { Category } from "src/app/models/Category"
 
 @Component({
-	selector: "app-add-category-dialog",
-	standalone: false,
-	templateUrl: "./add-category-dialog.component.html",
-	styleUrl: "./add-category-dialog.component.scss"
+	selector: "app-edit-category-dialog",
+	templateUrl: "./edit-category-dialog.component.html",
+	styleUrls: ["./edit-category-dialog.component.scss"],
+	standalone: false
 })
-export class AddCategoryDialogComponent {
-	locale = this.localizationService.locale.dialogs.addCategoryDialog
+export class EditCategoryDialogComponent {
+	locale = this.localizationService.locale.dialogs.editCategoryDialog
 	actionsLocale = this.localizationService.locale.actions
 
 	@Input() loading: boolean = false
 	@Input() nameError: string = ""
-	@Output() primaryButtonClick = new EventEmitter<{ name: string }>()
+	@Output() primaryButtonClick = new EventEmitter<{
+		uuid: string
+		name: string
+	}>()
 	@Output() clearErrors = new EventEmitter()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
 	visible: boolean = false
+	category: Category = null
 	name: string = ""
 
 	constructor(
@@ -48,7 +53,9 @@ export class AddCategoryDialogComponent {
 		}
 	}
 
-	show() {
+	show(category: Category) {
+		this.category = category
+		this.name = category.name
 		this.visible = true
 	}
 
@@ -58,6 +65,7 @@ export class AddCategoryDialogComponent {
 	}
 
 	reset() {
+		this.category = null
 		this.name = ""
 		this.nameError = ""
 	}
@@ -69,6 +77,7 @@ export class AddCategoryDialogComponent {
 		}
 
 		this.primaryButtonClick.emit({
+			uuid: this.category.uuid,
 			name: this.name
 		})
 	}

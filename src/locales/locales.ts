@@ -116,7 +116,9 @@ export const de = {
 		menu: "Menüs"
 	},
 	categoryPage: {
-		headline: "Deine Kategorien"
+		headline: "Deine Kategorien",
+		noCategories: "Keine Kategorien vorhanden",
+		options: "Weitere Optionen"
 	},
 	productPage: {
 		headline: "Produkte verwalten",
@@ -306,7 +308,13 @@ export const de = {
 		},
 		addCategoryDialog: {
 			headline: "Kategorie hinzufügen",
-			name: "Name"
+			name: "Name",
+			nameRequired: "Name ist erforderlich"
+		},
+		editCategoryDialog: {
+			headline: "Kategorie bearbeiten",
+			name: "Name",
+			nameRequired: "Name ist erforderlich"
 		},
 		addVariationDialog: {
 			headline: "Variation hinzufügen",

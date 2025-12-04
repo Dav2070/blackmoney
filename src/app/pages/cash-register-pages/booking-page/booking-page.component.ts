@@ -36,14 +36,12 @@ import { Room } from "src/app/models/Room"
 import { VariationItem } from "src/app/models/VariationItem"
 import { Order } from "src/app/models/Order"
 import { OfferItem } from "src/app/models/OfferItem"
-import {
-	AddProductsInput,
-	OrderItemType
-} from "src/app/types"
+import { AddProductsInput, OrderItemType } from "src/app/types"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { SubtractProductVariationsDialogComponent } from "src/app/dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "src/app/dialogs/view-note-dialog/view-note-dialog.component"
 import { digitKeyRegex, numpadKeyRegex } from "src/app/constants"
@@ -164,6 +162,11 @@ export class BookingPageComponent {
 	//#region SelectProductVariationsDialog variables
 	@ViewChild("selectProductVariationsDialog")
 	selectProductVariationsDialog: SelectProductVariationsDialogComponent
+	//#endregion
+
+	//#region SubtractProductVariationsDialog variables
+	@ViewChild("subtractProductVariationsDialog")
+	subtractProductVariationsDialog: SubtractProductVariationsDialogComponent
 	//#endregion
 
 	//#region BottomSheet variables
@@ -606,27 +609,31 @@ export class BookingPageComponent {
 				this.showTotal()
 			} else {
 				if (this.tmpAnzahl > 0) {
-					for (let i = 0; i < orderItem.orderItems.length; i++) {
-						let existingOrderItem = orderItem.orderItems[i]
+					if (orderItem.count >= this.tmpAnzahl) {
+						for (let i = 0; i < orderItem.orderItems.length; i++) {
+							let existingOrderItem = orderItem.orderItems[i]
 
-						if (existingOrderItem.orderItemVariations) {
-							for (
-								let j = 0;
-								j <
-								(existingOrderItem.orderItemVariations?.length || 0);
-								j++
-							) {
-								existingOrderItem.orderItemVariations[j].count -=
-									(existingOrderItem.count / orderItem.count) *
-									this.tmpAnzahl
+							if (existingOrderItem.orderItemVariations) {
+								for (
+									let j = 0;
+									j <
+									(existingOrderItem.orderItemVariations?.length || 0);
+									j++
+								) {
+									existingOrderItem.orderItemVariations[j].count -=
+										(existingOrderItem.count / orderItem.count) *
+										this.tmpAnzahl
+								}
 							}
-						}
 
-						existingOrderItem.count -=
-							(existingOrderItem.count / orderItem.count) *
-							this.tmpAnzahl
+							existingOrderItem.count -=
+								(existingOrderItem.count / orderItem.count) *
+								this.tmpAnzahl
+						}
+						orderItem.count -= this.tmpAnzahl
+					} else {
+						window.alert("Anzahl ist zu hoch")
 					}
-					orderItem.count -= this.tmpAnzahl
 				} else {
 					for (let i = 0; i < orderItem.orderItems.length; i++) {
 						let existingOrderItem = orderItem.orderItems[i]
@@ -654,11 +661,32 @@ export class BookingPageComponent {
 				this.showTotal()
 			}
 		} else if (orderItem.type === OrderItemType.Special) {
-			this.tmpSelectedItem = JSON.parse(
-				JSON.stringify(this.selectedItem.orderItems[0])
-			)
-			this.minusUsed = true
-			this.isItemPopupVisible = true
+			if (
+				this.selectedItem.orderItems &&
+				this.selectedItem.orderItems.length > 0 &&
+				this.selectedItem.orderItems[0].orderItemVariations &&
+				this.selectedItem.orderItems[0].orderItemVariations.length > 0
+			) {
+				this.subtractProductVariationsDialog.show()
+			} else {
+				if (this.tmpAnzahl > 0) {
+					if (this.selectedItem.count >= this.tmpAnzahl) {
+						this.selectedItem.count -= this.tmpAnzahl
+						this.selectedItem.orderItems[0].count -= this.tmpAnzahl
+					} else {
+						window.alert("Anzahl ist zu hoch")
+					}
+				} else {
+					this.selectedItem.count -= 1
+					this.selectedItem.orderItems[0].count -= 1
+				}
+				if (this.tmpAllItemHandler === this.bookedItems) {
+					this.sendOrderItem(this.selectedItem)
+					this.bookedItems.removeEmptyItems()
+				} else {
+					this.stagedItems.removeEmptyItems()
+				}
+			}
 		} else {
 			// Bestehende OrderItem Logik
 			if (this.tmpAllItemHandler === this.bookedItems) {
@@ -678,21 +706,13 @@ export class BookingPageComponent {
 
 					this.showTotal()
 				} else {
-					// Wenn Variationen vorhanden sind
-					this.tmpSelectedItem = JSON.parse(
-						JSON.stringify(this.selectedItem)
-					)
-					this.minusUsed = true
-					this.isItemPopupVisible = true
+					// Wenn Variationen vorhanden sind - öffne den Subtract Dialog
+					this.subtractProductVariationsDialog.show()
 				}
 			} else {
 				if (this.selectedItem.orderItemVariations.length > 0) {
-					//Wenn Item Variationen enthält
-					this.tmpSelectedItem = JSON.parse(
-						JSON.stringify(this.selectedItem)
-					)
-					this.minusUsed = true
-					this.isItemPopupVisible = true
+					//Wenn Item Variationen enthält - öffne den Subtract Dialog
+					this.subtractProductVariationsDialog.show()
 				} else if (this.tmpAnzahl > 0) {
 					//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
 					if (this.selectedItem.count >= this.tmpAnzahl) {
@@ -825,6 +845,67 @@ export class BookingPageComponent {
 			newItem.count = newItem.orderItemVariations.length
 			this.stagedItems.pushNewItem(newItem)
 		}
+	}
+
+	subtractProductVariationsDialogPrimaryButtonClick(event: {
+		variationCombinations: { [key: string]: number }
+	}) {
+		this.subtractProductVariationsDialog.hide()
+
+		const variationCombinations = event.variationCombinations
+
+		// Determine which item contains the variations
+		let targetItem: OrderItem
+		if (this.selectedItem.type === OrderItemType.Special) {
+			targetItem = this.selectedItem.orderItems[0]
+		} else {
+			targetItem = this.selectedItem
+		}
+
+		// Update the orderItemVariations based on the variationCombinations
+		for (let i = targetItem.orderItemVariations.length - 1; i >= 0; i--) {
+			const orderItemVariation = targetItem.orderItemVariations[i]
+			const key = orderItemVariation.variationItems
+				.map(vi => vi.uuid)
+				.join(",")
+
+			if (variationCombinations[key] !== undefined) {
+				const newCount = variationCombinations[key]
+
+				// Update count
+				orderItemVariation.count = newCount
+
+				// Remove if count is 0
+				if (orderItemVariation.count === 0) {
+					targetItem.orderItemVariations.splice(i, 1)
+				}
+			}
+		}
+
+		// Recalculate counts
+		if (this.selectedItem.type === OrderItemType.Special) {
+			targetItem.count = 0
+			for (const variation of targetItem.orderItemVariations) {
+				targetItem.count += variation.count
+			}
+
+			this.selectedItem.count = targetItem.count
+		} else {
+			this.selectedItem.count = 0
+			for (const variation of this.selectedItem.orderItemVariations) {
+				this.selectedItem.count += variation.count
+			}
+		}
+
+		if (this.tmpAllItemHandler === this.bookedItems) {
+			this.sendOrderItem(this.selectedItem)
+			this.bookedItems.removeEmptyItems()
+		} else {
+			this.stagedItems.removeEmptyItems()
+		}
+
+		this.showTotal()
+		this.tmpAnzahl = undefined
 	}
 
 	//Füge item mit Variation zu stagedItems hinzu

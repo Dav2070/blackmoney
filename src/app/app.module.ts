@@ -64,6 +64,7 @@ import { DeletePrintRuleDialogComponent } from "./dialogs/delete-print-rule-dial
 import { ResetPasswordDialogComponent } from "./dialogs/reset-password-dialog/reset-password-dialog.component"
 import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { SubtractProductVariationsDialogComponent } from "./dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
@@ -147,6 +148,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		ResetPasswordDialogComponent,
 		SelectProductDialogComponent,
 		SelectProductVariationsDialogComponent,
+		SubtractProductVariationsDialogComponent,
 		MoveMultipleProductsDialogComponent,
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,
@@ -186,7 +188,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		VariationsTableComponent,
 		RestaurantOverviewComponent,
 		RoomManagementComponent,
-		EmployeeManagementComponent,
+		EmployeeManagementComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

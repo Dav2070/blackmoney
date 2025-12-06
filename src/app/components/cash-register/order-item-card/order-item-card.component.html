@@ -40,7 +40,7 @@
 	</div>
 
 	<div class="order-item-card-total-price">
-		<p>{{ calculateTotalPriceOfOrderItem(orderItem) }} €</p>
+		<p>{{ (calculateTotalPriceOfOrderItem(orderItem) / 100).toFixed(2).replace(".", ",") }} €</p>
 	</div>
 
 	@if (orderItem.orderItemVariations.length > 0) {

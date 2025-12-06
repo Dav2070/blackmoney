@@ -30,14 +30,25 @@
 		@if (orderItem.count > 1) {
 			<p>
 				{{ orderItem.count }} ×
-				{{ (calculateUnitPriceOfOrderItem(orderItem) / 100).toFixed(2).replace(".", ",") }}
+				{{
+					(calculateUnitPriceOfOrderItem(orderItem) / 100)
+						.toFixed(2)
+						.replace(".", ",")
+				}}
 				€
 			</p>
 		}
 	</div>
 
 	<div class="offer-order-item-card-total-price">
-		<p>{{ (calculateTotalPriceOfOrderItem(orderItem) / 100).toFixed(2).replace(".", ",") }} €</p>
+		<p>
+			{{
+				(calculateTotalPriceOfOrderItem(orderItem) / 100)
+					.toFixed(2)
+					.replace(".", ",")
+			}}
+			€
+		</p>
 	</div>
 
 	@if (orderItem.orderItems.length > 0) {
@@ -70,15 +81,17 @@
 					</div>
 
 					<div class="offer-order-item-card-variation-unit-price">
-						<p>
-							{{ variation.count }} ×
-							{{
-								(variationItem.additionalCost / 100)
-									.toFixed(2)
-									.replace(".", ",")
-							}}
-							€
-						</p>
+						@if (variationItem.additionalCost > 0) {
+							<p>
+								{{ variation.count }} ×
+								{{
+									(variationItem.additionalCost / 100)
+										.toFixed(2)
+										.replace(".", ",")
+								}}
+								€
+							</p>
+						}
 					</div>
 				}
 			}

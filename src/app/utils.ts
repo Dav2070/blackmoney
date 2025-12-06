@@ -101,23 +101,30 @@ export async function loadRegisterClient(
 export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
 	let unitPrice = 0
 
-	for (const item of orderItem.orderItems) {
-		unitPrice += item.product.price * item.count
+	if (
+		orderItem.type === OrderItemType.Menu ||
+		orderItem.type === OrderItemType.Special
+	) {
+		for (const item of orderItem.orderItems) {
+			unitPrice += item.product.price * item.count
 
-		for (const variation of item.orderItemVariations) {
-			for (const variationItem of variation.variationItems) {
-				unitPrice += variationItem.additionalCost * variation.count
+			for (const variation of item.orderItemVariations) {
+				for (const variationItem of variation.variationItems) {
+					unitPrice += variationItem.additionalCost * variation.count
+				}
 			}
 		}
-	}
 
-	for (const variation of orderItem.orderItemVariations) {
-		for (const variationItem of variation.variationItems) {
-			unitPrice += variation.count * variationItem.additionalCost
+		for (const variation of orderItem.orderItemVariations) {
+			for (const variationItem of variation.variationItems) {
+				unitPrice += variation.count * variationItem.additionalCost
+			}
 		}
+	} else {
+		unitPrice = orderItem.product.price
 	}
 
-	unitPrice = unitPrice - orderItem.discount
+	unitPrice = unitPrice - (orderItem.discount ?? 0)
 
 	return unitPrice
 }

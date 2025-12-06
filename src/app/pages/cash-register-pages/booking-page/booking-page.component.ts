@@ -38,6 +38,7 @@ import { Order } from "src/app/models/Order"
 import { OfferItem } from "src/app/models/OfferItem"
 import { AddProductsInput, OrderItemType } from "src/app/types"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
+import { BillsOverviewDialogComponent } from "src/app/dialogs/bills-overview-dialog/bills-overview-dialog.component"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
@@ -151,6 +152,11 @@ export class BookingPageComponent {
 
 	@ViewChild("ordersContainer")
 	ordersContainer: ElementRef<HTMLDivElement>
+
+	//#region BillsOverviewDialog variables
+	@ViewChild("billsOverviewDialog")
+	billsOverviewDialog: BillsOverviewDialogComponent
+	//#endregion
 
 	//#region SelectTableDialog variables
 	@ViewChild("selectTableDialog")
@@ -1658,12 +1664,14 @@ export class BookingPageComponent {
 
 		if (this.bills.length > 0) {
 			this.pickedBill = this.bills[0]
-			this.isBillPopupVisible = true
+			// this.isBillPopupVisible = true
+			this.billsOverviewDialog.show()
 		}
 	}
 
 	closeBills() {
-		this.isBillPopupVisible = false
+		// this.isBillPopupVisible = false
+		this.billsOverviewDialog.hide()
 		this.bills = []
 		this.pickedBill = null
 	}

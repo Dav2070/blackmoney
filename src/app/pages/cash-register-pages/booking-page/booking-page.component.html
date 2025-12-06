@@ -214,7 +214,12 @@
 			<div class="numpad-footer-separator separator"></div>
 
 			<div class="numpad-footer">
-				<dav-button color="secondary" text (click)="sendOrder()">
+				<dav-button
+					color="secondary"
+					text
+					[disabled]="sendOrderLoading"
+					(click)="sendOrder()"
+				>
 					<fa-icon [icon]="faPaperPlaneTop" slot="icon-left"></fa-icon>
 					{{ locale.sendOrder }}
 				</dav-button>
@@ -445,8 +450,8 @@
 									variation of item.orderItemVariations;
 									track variation.uuid
 								) {
-									<span
-										>{{ variation.count }} x
+									<span>
+										{{ variation.count }} x
 										@for (
 											variationItem of variation.variationItems;
 											track variationItem.uuid

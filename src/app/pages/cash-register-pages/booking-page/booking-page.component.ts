@@ -87,6 +87,7 @@ export class BookingPageComponent {
 	selectedCategory: string = ""
 	productsLoading: boolean = true
 	ordersLoading: boolean = true
+	sendOrderLoading: boolean = false
 
 	isMenuePopupVisible: boolean = false
 	specialCategories: Category[] = []
@@ -1265,6 +1266,7 @@ export class BookingPageComponent {
 
 	// Fügt Items der Liste an bestellten Artikeln hinzu
 	async sendOrder() {
+		this.sendOrderLoading = true
 		this.bottomSheet.nativeElement.snap("bottom")
 		let tmpProductArray: AddProductsInput[] = []
 
@@ -1386,6 +1388,7 @@ export class BookingPageComponent {
 		this.stagedItems.clearItems()
 
 		this.showTotal()
+		this.sendOrderLoading = false
 		await showToast(this.locale.sendOrderToastText)
 	}
 

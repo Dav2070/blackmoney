@@ -2173,7 +2173,7 @@ export class BookingPageComponent {
 		let discount = 0
 
 		if (offer.offerType === "FIXED_PRICE") {
-			discount = offer.offerValue - total
+			discount = total - offer.offerValue
 		} else if (
 			offer.offerType === "DISCOUNT" &&
 			offer.discountType === "PERCENTAGE"
@@ -2193,6 +2193,7 @@ export class BookingPageComponent {
 			order: null,
 			product: this.currentMenu,
 			orderItems: allOrderItems,
+			orderItemVariations: [],
 			discount
 		}
 

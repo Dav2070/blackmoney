@@ -6,7 +6,10 @@ import {
 } from "@fortawesome/pro-solid-svg-icons"
 import { OrderItem } from "src/app/models/OrderItem"
 import { LocalizationService } from "src/app/services/localization-service"
-import { calculateTotalPriceOfOrderItem } from "src/app/utils"
+import {
+	calculateUnitPriceOfOrderItem,
+	calculateTotalPriceOfOrderItem
+} from "src/app/utils"
 
 @Component({
 	selector: "app-offer-order-item-card",
@@ -16,6 +19,7 @@ import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 })
 export class OfferOrderItemCardComponent {
 	locale = this.localizationService.locale.offerOrderItemCard
+	calculateUnitPriceOfOrderItem = calculateUnitPriceOfOrderItem
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo

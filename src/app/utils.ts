@@ -98,41 +98,32 @@ export async function loadRegisterClient(
 	dataService.registerClientPromiseHolder.Resolve()
 }
 
-export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
-	if (
-		orderItem.type === OrderItemType.Menu ||
-		orderItem.type === OrderItemType.Special
-	) {
-		let total = 0
+export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
+	let unitPrice = 0
 
-		total += -orderItem.discount * orderItem.count
+	for (const item of orderItem.orderItems) {
+		unitPrice += item.product.price * item.count
 
-		for (let item of orderItem.orderItems) {
-			total += item.product.price * item.count
-
-			if (item.orderItemVariations) {
-				for (const variation of item.orderItemVariations) {
-					for (const variationItem of variation.variationItems) {
-						total += variationItem.additionalCost * variation.count
-					}
-				}
+		for (const variation of item.orderItemVariations) {
+			for (const variationItem of variation.variationItems) {
+				unitPrice += variationItem.additionalCost * variation.count
 			}
 		}
-
-		return (total / 100).toFixed(2).replace(".", ",")
-	} else {
-		let total = 0
-
-		for (let variation of orderItem.orderItemVariations) {
-			for (let variationItem of variation.variationItems) {
-				total += variation.count * variationItem.additionalCost
-			}
-		}
-
-		return ((total + orderItem.product.price * orderItem.count) / 100)
-			.toFixed(2)
-			.replace(".", ",")
 	}
+
+	for (const variation of orderItem.orderItemVariations) {
+		for (const variationItem of variation.variationItems) {
+			unitPrice += variation.count * variationItem.additionalCost
+		}
+	}
+
+	unitPrice = unitPrice - orderItem.discount
+
+	return unitPrice
+}
+
+export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {
+	return calculateUnitPriceOfOrderItem(orderItem) * orderItem.count
 }
 
 export function getGraphQLErrorCodes(

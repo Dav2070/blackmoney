@@ -29,8 +29,9 @@ export class MetaComparer {
 			existing.type === OrderItemType.Menu &&
 			incoming.type === OrderItemType.Menu
 		) {
-			const aSubs = existing.orderItems ?? []
-			const bSubs = incoming.orderItems ?? []
+			const aSubs = existing.orderItems
+			const bSubs = incoming.orderItems
+
 			return this.areOrderItemsArrayEqualForMerge(
 				aSubs,
 				bSubs,

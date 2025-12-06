@@ -2040,11 +2040,11 @@ export class BookingPageComponent {
 				order: null,
 				product: {
 					id: this.currentSpecial.id,
-					uuid: processedItem.product.uuid,
-					type: processedItem.product.type,
-					name: processedItem.product.name,
+					uuid: this.currentSpecial.uuid,
+					type: this.currentSpecial.type,
+					name: this.currentSpecial.name,
 					price: originalProductPrice,
-					category: processedItem.product.category,
+					category: this.currentSpecial.category,
 					variations: [],
 					offer: this.currentSpecial.offer
 				},
@@ -2068,47 +2068,41 @@ export class BookingPageComponent {
 	}
 
 	confirmMenu() {
+		if (this.currentMenu == null) return
+
 		let allOrderItems: OrderItem[] = []
-		let originalTotalPrice = 0
+		let total = 0
 
 		// Durch alle ausgewählten Produkte gehen
 		for (const item of this.tmpSpecialAllItemsHandler.getAllPickedItems()) {
 			const processedItem: OrderItem = JSON.parse(JSON.stringify(item))
+			let itemPrice = processedItem.product.price * processedItem.count
 			allOrderItems.push(processedItem)
 
-			let itemPrice = processedItem.product.price * processedItem.count
 			for (let variation of processedItem.orderItemVariations) {
 				for (let variationItem of variation.variationItems) {
 					itemPrice += variation.count * variationItem.additionalCost
 				}
 			}
-			originalTotalPrice += itemPrice
-		}
-		let finalMenuPrice = originalTotalPrice
-		let totalRabattBetrag = 0
 
-		if (this.currentMenu && this.currentMenu.offer.offerType) {
-			switch (this.currentMenu.offer.offerType) {
-				case "FIXED_PRICE":
-					finalMenuPrice = this.currentMenu.offer.offerValue
-					totalRabattBetrag = finalMenuPrice - originalTotalPrice
-					break
-				case "DISCOUNT":
-					if (this.currentMenu.offer.discountType === "PERCENTAGE") {
-						finalMenuPrice =
-							originalTotalPrice *
-							(1 - this.currentMenu.offer.offerValue / 100)
-						totalRabattBetrag = finalMenuPrice - originalTotalPrice
-					} else if (this.currentMenu.offer.discountType === "AMOUNT") {
-						finalMenuPrice =
-							originalTotalPrice - this.currentMenu.offer.offerValue
-						totalRabattBetrag = this.currentMenu.offer.offerValue
-					}
-					break
-				default:
-					finalMenuPrice = originalTotalPrice
-					break
-			}
+			total += itemPrice
+		}
+
+		const offer = this.currentMenu.offer
+		let discount = 0
+
+		if (offer.offerType === "FIXED_PRICE") {
+			discount = offer.offerValue - total
+		} else if (
+			offer.offerType === "DISCOUNT" &&
+			offer.discountType === "PERCENTAGE"
+		) {
+			discount = total * (offer.offerValue / 100)
+		} else if (
+			offer.offerType === "DISCOUNT" &&
+			offer.discountType === "AMOUNT"
+		) {
+			discount = offer.offerValue
 		}
 
 		let orderItem: OrderItem = {
@@ -2118,7 +2112,7 @@ export class BookingPageComponent {
 			order: null,
 			product: this.currentMenu,
 			orderItems: allOrderItems,
-			discount: totalRabattBetrag
+			discount
 		}
 
 		// Delegiere das Mergen / Einfügen an den Handler / Merger

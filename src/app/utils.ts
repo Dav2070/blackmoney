@@ -133,6 +133,10 @@ export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {
 	return calculateUnitPriceOfOrderItem(orderItem) * orderItem.count
 }
 
+export function formatPrice(priceInCents: number): string {
+	return (priceInCents / 100).toFixed(2).replace(".", ",") + " €"
+}
+
 export function getGraphQLErrorCodes(
 	response: ApolloQueryResult<any> | MutationResult<any>
 ): ErrorCode[] {

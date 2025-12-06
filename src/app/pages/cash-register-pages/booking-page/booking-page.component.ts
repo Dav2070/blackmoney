@@ -50,6 +50,7 @@ import {
 	convertCategoryResourceToCategory,
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder,
+	formatPrice,
 	showToast
 } from "src/app/utils"
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
@@ -79,6 +80,7 @@ export class BookingPageComponent {
 	faSeat = faSeat
 	faUtensils = faUtensils
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+	formatPrice = formatPrice
 	OrderItemType = OrderItemType
 	categories: Category[] = []
 	selectedInventory: Product[] = []
@@ -839,7 +841,6 @@ export class BookingPageComponent {
 			}
 			incoming.orderItems = [newItem]
 			incoming.count = newItem.count
-			console.log(incoming)
 			this.stagedItems.pushNewItem(incoming)
 		} else {
 			newItem.count = newItem.orderItemVariations.length
@@ -1251,10 +1252,9 @@ export class BookingPageComponent {
 
 	// Aktualisiert den Gesamtpreis
 	async showTotal() {
-		this.console =
-			(this.bookedItems.calculateTotal() + this.stagedItems.calculateTotal())
-				.toFixed(2)
-				.replace(".", ",") + " €"
+		this.console = formatPrice(
+			this.bookedItems.calculateTotal() + this.stagedItems.calculateTotal()
+		)
 
 		this.consoleActive = false
 		this.commaUsed = false
@@ -1810,7 +1810,7 @@ export class BookingPageComponent {
 			}
 		}
 
-		return (total / 100).toFixed(2)
+		return formatPrice(total)
 	}
 
 	changeSelectedSpecialInventory(category: Category) {

@@ -33,14 +33,13 @@
 		@if (orderItem.orderItemVariations.length === 0 && orderItem.count > 1) {
 			<p>
 				{{ orderItem.count }} ×
-				{{ (orderItem.product.price / 100).toFixed(2).replace(".", ",") }}
-				€
+				{{ formatPrice(orderItem.product.price) }}
 			</p>
 		}
 	</div>
 
 	<div class="order-item-card-total-price">
-		<p>{{ (calculateTotalPriceOfOrderItem(orderItem) / 100).toFixed(2).replace(".", ",") }} €</p>
+		<p>{{ formatPrice(calculateTotalPriceOfOrderItem(orderItem)) }}</p>
 	</div>
 
 	@if (orderItem.orderItemVariations.length > 0) {
@@ -59,15 +58,10 @@
 					<p>
 						{{ variation.count }} ×
 						{{
-							(
-								(orderItem.product.price +
-									variationItem.additionalCost) /
-								100
+							formatPrice(
+								orderItem.product.price + variationItem.additionalCost
 							)
-								.toFixed(2)
-								.replace(".", ",")
 						}}
-						€
 					</p>
 				</div>
 			}

@@ -2,6 +2,7 @@ import { OrderItem } from "src/app/models/OrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { ApiService } from "src/app/services/api-service"
 import {
+	calculateTotalPriceOfOrderItem,
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
@@ -295,9 +296,14 @@ export class AllItemHandler {
 		return this.allPickedItems.length === 0
 	}
 
-	// TODO: Funktionalität implementieren
 	calculateTotal() {
-		return 0.1
+		let total = 0
+
+		for (const item of this.allPickedItems) {
+			total += calculateTotalPriceOfOrderItem(item)
+		}
+
+		return total
 	}
 
 	transferAllItems(AllItemHandlerTarget: AllItemHandler) {

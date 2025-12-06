@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { OrderItem } from "src/app/models/OrderItem"
-import { calculateTotalPriceOfOrderItem } from "src/app/utils"
+import { calculateTotalPriceOfOrderItem, formatPrice } from "src/app/utils"
 import {
 	faNoteSticky,
 	faCupTogo,
@@ -15,6 +15,7 @@ import {
 })
 export class OrderItemCardComponent {
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+	formatPrice = formatPrice
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo
 	faUtensils = faUtensils

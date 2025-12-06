@@ -415,7 +415,7 @@
 							}}
 							Uhr</span
 						>
-						<span>{{ calculateBillTotal(bill) }} €</span>
+						<span>{{ calculateBillTotal(bill) }}</span>
 					</div>
 				}
 			</div>
@@ -433,9 +433,11 @@
 						<div class="bill-item-detail">
 							<div class="item-header">
 								<span>{{ item.count }} x {{ item.product.name }}</span>
-								<span class="total-price"
-									>{{ calculateTotalPriceOfOrderItem(item) }}€</span
-								>
+								<span class="total-price">
+									{{
+										formatPrice(calculateTotalPriceOfOrderItem(item))
+									}}
+								</span>
 							</div>
 
 							@if (item.orderItemVariations.length > 0) {
@@ -454,12 +456,11 @@
 												@if (variationItem.additionalCost > 0) {
 													+
 													{{
-														(
-															(variation.count *
-																variationItem.additionalCost) /
-															100
-														).toFixed(2)
-													}}€
+														formatPrice(
+															variation.count *
+																variationItem.additionalCost
+														)
+													}}
 												}
 											</span>
 											<br />
@@ -472,7 +473,7 @@
 				</div>
 				<div class="bill-total">
 					<span>Gesamt</span>
-					<span>{{ calculateBillTotal(pickedBill) }}€</span>
+					<span>{{ calculateBillTotal(pickedBill) }}</span>
 				</div>
 				<div class="bill-buttons">
 					<button class="bill-back-button">Tisch zurückholen</button>

@@ -30,24 +30,14 @@
 		@if (orderItem.count > 1) {
 			<p>
 				{{ orderItem.count }} ×
-				{{
-					(calculateUnitPriceOfOrderItem(orderItem) / 100)
-						.toFixed(2)
-						.replace(".", ",")
-				}}
-				€
+				{{ formatPrice(calculateUnitPriceOfOrderItem(orderItem)) }}
 			</p>
 		}
 	</div>
 
 	<div class="offer-order-item-card-total-price">
 		<p>
-			{{
-				(calculateTotalPriceOfOrderItem(orderItem) / 100)
-					.toFixed(2)
-					.replace(".", ",")
-			}}
-			€
+			{{ formatPrice(calculateTotalPriceOfOrderItem(orderItem)) }}
 		</p>
 	</div>
 
@@ -62,12 +52,10 @@
 			<div class="offer-order-item-card-variation-unit-price">
 				<p>
 					{{ orderItem.count }} ×
-					{{
-						(orderItem.product.price / 100).toFixed(2).replace(".", ",")
-					}}
-					€
+					{{ formatPrice(orderItem.product.price) }}
 				</p>
 			</div>
+
 			@for (
 				variation of orderItem.orderItemVariations;
 				track variation.uuid
@@ -84,12 +72,7 @@
 						@if (variationItem.additionalCost > 0) {
 							<p>
 								{{ variation.count }} ×
-								{{
-									(variationItem.additionalCost / 100)
-										.toFixed(2)
-										.replace(".", ",")
-								}}
-								€
+								{{ formatPrice(variationItem.additionalCost) }}
 							</p>
 						}
 					</div>
@@ -107,8 +90,7 @@
 
 		<div class="offer-order-item-card-variation-unit-price">
 			<p>
-				{{ "-" + (orderItem.discount / 100).toFixed(2).replace(".", ",") }}
-				€
+				{{ "-" + formatPrice(orderItem.discount) }}
 			</p>
 		</div>
 	}

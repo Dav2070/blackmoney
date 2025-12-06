@@ -8,7 +8,8 @@ import { OrderItem } from "src/app/models/OrderItem"
 import { LocalizationService } from "src/app/services/localization-service"
 import {
 	calculateUnitPriceOfOrderItem,
-	calculateTotalPriceOfOrderItem
+	calculateTotalPriceOfOrderItem,
+	formatPrice
 } from "src/app/utils"
 
 @Component({
@@ -21,6 +22,7 @@ export class OfferOrderItemCardComponent {
 	locale = this.localizationService.locale.offerOrderItemCard
 	calculateUnitPriceOfOrderItem = calculateUnitPriceOfOrderItem
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+	formatPrice = formatPrice
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo
 	faUtensils = faUtensils

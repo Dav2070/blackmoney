@@ -1,0 +1,49 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.delete"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[primaryButtonDisabled]="false"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	@if (product != null) {
+		<div class="container">
+			<div class="variation-container">
+				@for (key of Object.keys(variationCombinations); track key) {
+					@let currentCount = variationCombinations[key] ?? 0;
+					@let originalCount = getOriginalCount(key);
+
+					@if (originalCount > 0) {
+						<div class="variation-selection-container">
+							<dav-icon-button
+								size="sm"
+								[disabled]="currentCount === 0"
+								(click)="removeButtonClick(key)"
+							>
+								<fa-icon [icon]="faMinus"></fa-icon>
+							</dav-icon-button>
+
+							<p>
+								{{ currentCount }}
+								×
+								{{ getHeadlineForKey(key) }}
+							</p>
+
+							<dav-icon-button
+								size="sm"
+								[disabled]="currentCount >= originalCount"
+								(click)="addButtonClick(key)"
+							>
+								<fa-icon [icon]="faPlus"></fa-icon>
+							</dav-icon-button>
+						</div>
+					}
+				}
+			</div>
+		</div>
+	}
+</dav-dialog>

@@ -7,9 +7,6 @@ export class MetaComparer {
 
 	// Public entry: strikter Vergleich nur für Menus, sonst Basic-Check
 	isOrderItemMetaEqual(existing: OrderItem, incoming: OrderItem): boolean {
-		if (!this.isDiversOrderItemMetaEqual(existing, incoming)) {
-			return false
-		}
 		if (!existing || !incoming) return false
 
 		// basic comparison (ignores uuid, count, order and orderItemVariations)
@@ -41,6 +38,11 @@ export class MetaComparer {
 				existing.count,
 				incoming.count
 			)
+		}
+
+		//Zusatz Vergleich für Diverse Artikel
+		if (!this.isDiversOrderItemMetaEqual(existing, incoming)) {
+			return false
 		}
 
 		return true

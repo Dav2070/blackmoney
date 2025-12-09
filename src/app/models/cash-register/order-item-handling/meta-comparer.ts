@@ -7,6 +7,9 @@ export class MetaComparer {
 
 	// Public entry: strikter Vergleich nur für Menus, sonst Basic-Check
 	isOrderItemMetaEqual(existing: OrderItem, incoming: OrderItem): boolean {
+		if (!this.isDiversOrderItemMetaEqual(existing, incoming)) {
+			return false
+		}
 		if (!existing || !incoming) return false
 
 		// basic comparison (ignores uuid, count, order and orderItemVariations)
@@ -195,5 +198,17 @@ export class MetaComparer {
 			bCopy.splice(idx, 1)
 		}
 		return bCopy.length === 0
+	}
+
+	// Comparison for miscellaneous items: price and name is relevant
+	private isDiversOrderItemMetaEqual(
+		existing: OrderItem,
+		incoming: OrderItem
+	): boolean {
+		if (existing.product.id == 0 && incoming.product.id == 0) {
+			if (existing.product.price !== incoming.product.price) return false
+			if (existing.product.name !== incoming.product.name) return false
+		}
+		return true
 	}
 }

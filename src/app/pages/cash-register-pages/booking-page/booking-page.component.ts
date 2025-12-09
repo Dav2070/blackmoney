@@ -22,7 +22,8 @@ import {
 	faNoteSticky,
 	faStar,
 	faSeat,
-	faUtensils
+	faUtensils,
+	faBurger
 } from "@fortawesome/pro-regular-svg-icons"
 import { BottomSheet } from "dav-ui-components"
 import { DataService } from "src/app/services/data-service"
@@ -44,6 +45,7 @@ import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-p
 import { SubtractProductVariationsDialogComponent } from "src/app/dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "src/app/dialogs/view-note-dialog/view-note-dialog.component"
+import { AddDiverseProductDialogComponent } from "src/app/dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
 import { digitKeyRegex, numpadKeyRegex } from "src/app/constants"
 import {
 	calculateTotalPriceOfOrderItem,
@@ -77,6 +79,7 @@ export class BookingPageComponent {
 	faCupTogo = faCupTogo
 	faNoteSticky = faNoteSticky
 	faStar = faStar
+	faBurger = faBurger
 	faSeat = faSeat
 	faUtensils = faUtensils
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
@@ -189,6 +192,11 @@ export class BookingPageComponent {
 	//#region ViewNoteDialog
 	@ViewChild("viewNoteDialog")
 	viewNoteDialog: ViewNoteDialogComponent
+	//#endregion
+
+	//#region AddDiverseProductDialog
+	@ViewChild("addDiverseProductDialog")
+	addDiverseProductDialog: AddDiverseProductDialogComponent
 	//#endregion
 
 	constructor(
@@ -2291,6 +2299,31 @@ export class BookingPageComponent {
 			this.viewNoteDialog.showEditButton = false
 			this.viewNoteDialog.show()
 		}
+	}
+
+	addDiverseProductDialogPrimaryButtonClick(event: {
+		name: string
+		productType: string
+		price: number
+	}) {
+		const product = new Product()
+		product.id = 0
+		product.price = event.price
+		product.variations = []
+
+		if (event.productType === "diverse_speisen") {
+			product.type = "FOOD"
+			product.name = "Diverse Speise"
+		} else if (event.productType === "diverse_getraenke") {
+			product.type = "DRINK"
+			product.name = "Diverse Getränke"
+		} else {
+			product.type = null
+			product.name = "Diverse Kosten"
+		}
+
+		// Add as order item with note
+		this.clickItem(product, event.name)
 	}
 
 	takeAwayButtonClick() {

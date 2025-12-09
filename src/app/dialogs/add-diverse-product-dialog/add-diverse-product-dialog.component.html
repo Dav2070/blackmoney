@@ -1,0 +1,40 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.add"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	[primaryButtonDisabled]="!isValid"
+	maxWidth="400px"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="name"
+				[label]="locale.name"
+				(change)="nameTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<div class="dialog-formfield-container">
+			<dav-dropdown
+				[label]="locale.art"
+				[options]="categoryOptions"
+				[selectedKey]="productType"
+				(change)="categoryDropdownChange($event)"
+			></dav-dropdown>
+		</div>
+
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="priceString"
+				[label]="locale.price"
+				type="text"
+				(change)="priceTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+	</form>
+</dav-dialog>

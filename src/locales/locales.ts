@@ -120,6 +120,7 @@ export const de = {
 		notes: "Notizen",
 		course: "Gang",
 		extras: "Extras",
+		diverseProducts: "Diverse Produkte",
 		addProduct: "Produkt hinzufügen",
 		showBills: "Rechnungen anzeigen",
 		sendOrderToastText: "Bestellung wurde erfolgreich abgeschickt."
@@ -281,6 +282,12 @@ export const de = {
 		},
 		viewNoteDialog: {
 			headline: "Deine Notiz"
+		},
+		addDiverseProductDialog: {
+			headline: "Diverses Produkt buchen",
+			name: "Produktname",
+			art: "Art",
+			price: "Preis"
 		}
 	},
 	actions: {

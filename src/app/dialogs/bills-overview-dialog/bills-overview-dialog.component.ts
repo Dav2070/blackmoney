@@ -61,6 +61,12 @@ export class BillsOverviewDialogComponent {
 
 	show() {
 		this.visible = true
+
+		setTimeout(() => {
+			if (this.orders.length > 0) {
+				this.selectedOrder = this.orders[0]
+			}
+		}, 200)
 	}
 
 	hide() {

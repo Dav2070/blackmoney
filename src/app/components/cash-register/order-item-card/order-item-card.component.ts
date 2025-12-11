@@ -22,6 +22,7 @@ export class OrderItemCardComponent {
 	@Input() orderItem: OrderItem = null
 	@Input() selectedOrderItemUuid: string = null
 	@Input() selectedOrderItemNote: string = null
+	@Input() clickable: boolean = false
 	@Output() noteIconClick = new EventEmitter<{
 		orderItem: OrderItem
 	}>()

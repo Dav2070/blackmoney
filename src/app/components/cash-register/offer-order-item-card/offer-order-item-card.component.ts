@@ -28,6 +28,7 @@ export class OfferOrderItemCardComponent {
 	faUtensils = faUtensils
 	@Input() orderItem: OrderItem = null
 	@Input() selectedOrderItemUuid: string = null
+	@Input() clickable: boolean = false
 	@Output() noteIconClick = new EventEmitter<{
 		orderItem: OrderItem
 	}>()

@@ -99,6 +99,7 @@ export async function loadRegisterClient(
 }
 
 export function calculateTotalPriceOfOrder(order: Order): number {
+	if (order == null) return 0
 	let totalPrice = 0
 
 	for (const orderItem of order.orderItems) {
@@ -109,6 +110,7 @@ export function calculateTotalPriceOfOrder(order: Order): number {
 }
 
 export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
+	if (orderItem == null) return 0
 	let unitPrice = 0
 
 	if (
@@ -140,6 +142,7 @@ export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
 }
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {
+	if (orderItem == null) return 0
 	return calculateUnitPriceOfOrderItem(orderItem) * orderItem.count
 }
 

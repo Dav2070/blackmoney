@@ -1,6 +1,7 @@
 <li
 	class="offer-order-item-card slide-up-in-light"
 	[class.selected]="selectedOrderItemUuid === orderItem.uuid"
+	[class.clickable]="clickable"
 >
 	<div class="offer-order-item-card-id">
 		<p>#{{ orderItem.product.id }}</p>

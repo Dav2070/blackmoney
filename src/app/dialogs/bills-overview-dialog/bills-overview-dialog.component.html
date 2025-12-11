@@ -56,34 +56,36 @@
 					</p>
 				</div>
 			</div>
-			<div class="bill-items">
-				@for (
-					orderItem of selectedOrder?.orderItems ?? [];
-					track orderItem.uuid
-				) {
-					<dav-card>
-						<div class="bill-item">
-							<p class="bill-item-name">
-								{{ orderItem.product?.name ?? "" }}
-							</p>
-							<p class="bill-item-quantity">x{{ orderItem.count }}</p>
-							<p class="bill-item-price">
-								{{
-									formatPrice(
-										calculateTotalPriceOfOrderItem(orderItem)
-									)
-								}}
-							</p>
-						</div>
-					</dav-card>
-				}
+			<div class="bill-details-body">
+				<div class="bill-items">
+					@for (
+						orderItem of selectedOrder?.orderItems ?? [];
+						track orderItem.uuid
+					) {
+						@if (
+							orderItem.type === "MENU" || orderItem.type === "SPECIAL"
+						) {
+							<app-offer-order-item-card
+								[orderItem]="orderItem"
+							></app-offer-order-item-card>
+						} @else {
+							<app-order-item-card
+								[orderItem]="orderItem"
+							></app-order-item-card>
+						}
+					}
+				</div>
+
+				<div class="separator"></div>
+
+				<div class="bill-price-container">
+					<p>
+						{{ formatPrice(calculateTotalPriceOfOrder(selectedOrder)) }}
+					</p>
+				</div>
 			</div>
 			<div class="bill-actions">
-				<dav-button
-					size="sm"
-					outline
-					(click)="visible = false"
-				>
+				<dav-button size="sm" outline (click)="visible = false">
 					{{ actionsLocale.close }}
 				</dav-button>
 			</div>

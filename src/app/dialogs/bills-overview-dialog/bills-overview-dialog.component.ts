@@ -1,15 +1,26 @@
 import {
 	Component,
+	Input,
 	Output,
 	EventEmitter,
 	ViewChild,
 	ElementRef,
 	Inject,
 	PLATFORM_ID
- } from "@angular/core"
+} from "@angular/core"
 import { isPlatformBrowser } from "@angular/common"
+import {
+	faMoneyBill1Wave,
+	faCreditCard
+} from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
+import { Order } from "src/app/models/Order"
+import {
+	calculateTotalPriceOfOrder,
+	calculateTotalPriceOfOrderItem,
+	formatPrice
+} from "src/app/utils"
 
 @Component({
 	selector: "app-bills-overview-dialog",
@@ -20,9 +31,16 @@ import { LocalizationService } from "src/app/services/localization-service"
 export class BillsOverviewDialogComponent {
 	locale = this.localizationService.locale.dialogs.billsOverviewDialog
 	actionsLocale = this.localizationService.locale.actions
+	calculateTotalPriceOfOrder = calculateTotalPriceOfOrder
+	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+	formatPrice = formatPrice
+	faMoneyBill1Wave = faMoneyBill1Wave
+	faCreditCard = faCreditCard
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
+	@Input() orders: Order[] = []
 	@Output() primaryButtonClick = new EventEmitter()
 	visible: boolean = false
+	selectedOrder: Order = null
 
 	constructor(
 		private localizationService: LocalizationService,

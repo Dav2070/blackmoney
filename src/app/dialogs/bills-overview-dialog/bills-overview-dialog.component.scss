@@ -1,0 +1,70 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	padding: 0;
+	max-height: 65vh;
+}
+
+.bills-list {
+	width: 30%;
+	border-right: 1px solid var(--dav-color-outline-variant);
+	padding: 0 16px 16px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.bills-list > dav-card {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.bill-info {
+	display: flex;
+	justify-content: space-around;
+	margin: 0;
+}
+
+.bill-info-details > p {
+	margin: 0;
+}
+
+.bill-details {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	width: 70%;
+	padding: 0 16px;
+}
+
+.bill-details-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.bill-details-paid-at > p {
+	margin: 0;
+}
+
+.bill-items {
+	display: flex;
+	flex-direction: column;
+	overflow-y: scroll;
+
+	dav-card {
+		width: 100%;
+		box-sizing: border-box;
+	}
+}
+
+.bill-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 0;
+	height: 300px;
+
+	p {
+		margin: 0;
+	}
+}

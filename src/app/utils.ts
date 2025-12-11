@@ -98,6 +98,16 @@ export async function loadRegisterClient(
 	dataService.registerClientPromiseHolder.Resolve()
 }
 
+export function calculateTotalPriceOfOrder(order: Order): number {
+	let totalPrice = 0
+
+	for (const orderItem of order.orderItems) {
+		totalPrice += calculateTotalPriceOfOrderItem(orderItem)
+	}
+
+	return totalPrice
+}
+
 export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
 	let unitPrice = 0
 

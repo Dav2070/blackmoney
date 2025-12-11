@@ -1,12 +1,85 @@
 <dav-dialog
 	#dialog
-	[headline]="locale.headline"
-	[defaultButtonText]="actionsLocale.close"
 	[visible]="visible"
-	maxWidth="340"
+	maxWidth="800"
 	(dismiss)="visible = false"
 	(primaryButtonClick)="primaryButtonClick.emit()"
 	(defaultButtonClick)="visible = false"
 >
-	<p>Hello World</p>
+	<div class="container">
+		<div class="bills-list">
+			@for (order of orders; track order.uuid) {
+				<dav-card
+					clickable
+					(click)="selectedOrder = order"
+					[selected]="order === selectedOrder"
+				>
+					<div class="bill-info">
+						<div class="bill-info-details">
+							<p>Tisch {{ order.table.name }}</p>
+							<p>{{ order.paidAt.toLocaleDateString("de-DE") }}</p>
+							<p>
+								{{
+									order.paidAt.toLocaleTimeString([], {
+										hour: "2-digit",
+										minute: "2-digit"
+									})
+								}}
+								Uhr
+							</p>
+							<p>{{ formatPrice(calculateTotalPriceOfOrder(order)) }}</p>
+						</div>
+						<div class="bill-info-icon">
+							<fa-icon
+								[icon]="
+									order.paymentMethod === 'CARD'
+										? faCreditCard
+										: faMoneyBill1Wave
+								"
+							></fa-icon>
+						</div>
+					</div>
+				</dav-card>
+			}
+		</div>
+
+		<div class="bill-details">
+			<div class="bill-details-header">
+				<div>
+					<h3>Tisch {{ selectedOrder?.table.name }}</h3>
+				</div>
+
+				<div class="bill-details-paid-at">
+					<p>
+						{{ selectedOrder?.paidAt.toLocaleTimeString("de-DE") }} —
+						{{ selectedOrder?.paidAt.toLocaleDateString("de-DE") }}
+					</p>
+				</div>
+			</div>
+			@if (selectedOrder?.orderItems) {
+				<div class="bill-items">
+					@for (
+						orderItem of selectedOrder.orderItems;
+						track orderItem.uuid
+					) {
+						<dav-card>
+							<div class="bill-item">
+								<p class="bill-item-name">
+									{{ orderItem.product?.name ?? "" }}
+								</p>
+								<p class="bill-item-quantity">x{{ orderItem.count }}</p>
+								<p class="bill-item-price">
+									{{
+										formatPrice(
+											calculateTotalPriceOfOrderItem(orderItem)
+										)
+									}}
+								</p>
+							</div>
+						</dav-card>
+					}
+				</div>
+			}
+		</div>
+	</div>
 </dav-dialog>

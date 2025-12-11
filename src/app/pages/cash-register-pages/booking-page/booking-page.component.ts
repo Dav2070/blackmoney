@@ -136,11 +136,7 @@ export class BookingPageComponent {
 	tmpSelectedItem: OrderItem = null
 	tmpAllItemHandler: AllItemHandler = null
 
-	isBillPopupVisible: boolean = false
-
 	bills: Order[] = []
-
-	pickedBill: Order = null
 
 	tmpCountVariations: number = 0
 
@@ -1646,6 +1642,7 @@ export class BookingPageComponent {
 			`,
 			{ completed: true }
 		)
+
 		this.bills = []
 
 		for (let orderResource of listOrdersResult.data.listOrders.items) {
@@ -1662,18 +1659,7 @@ export class BookingPageComponent {
 			})
 		}
 
-		if (this.bills.length > 0) {
-			this.pickedBill = this.bills[0]
-			// this.isBillPopupVisible = true
-			this.billsOverviewDialog.show()
-		}
-	}
-
-	closeBills() {
-		// this.isBillPopupVisible = false
-		this.billsOverviewDialog.hide()
-		this.bills = []
-		this.pickedBill = null
+		this.billsOverviewDialog.show()
 	}
 
 	async navigateToTransferPage() {
@@ -1806,22 +1792,6 @@ export class BookingPageComponent {
 		}
 
 		return count != maxCount
-	}
-
-	calculateBillTotal(bill: Order): string {
-		let total = 0
-
-		for (const item of bill.orderItems) {
-			total += item.product.price * item.count
-
-			for (const variation of item.orderItemVariations) {
-				for (const variationItem of variation.variationItems) {
-					total += variation.count * variationItem.additionalCost
-				}
-			}
-		}
-
-		return formatPrice(total)
 	}
 
 	changeSelectedSpecialInventory(category: Category) {

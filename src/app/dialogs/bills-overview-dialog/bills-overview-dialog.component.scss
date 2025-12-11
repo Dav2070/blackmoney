@@ -33,13 +33,18 @@
 	flex-direction: column;
 	min-height: 0;
 	width: 70%;
-	padding: 0 16px;
+	padding: 16px;
 }
 
 .bill-details-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	margin-bottom: 16px;
+
+	h3 {
+		margin: 0;
+	}
 }
 
 .bill-details-paid-at > p {
@@ -49,6 +54,9 @@
 .bill-items {
 	display: flex;
 	flex-direction: column;
+	flex-grow: 1;
+	padding: 0 8px;
+	overflow-x: hidden;
 	overflow-y: scroll;
 
 	dav-card {
@@ -62,9 +70,14 @@
 	justify-content: space-between;
 	align-items: center;
 	margin: 0;
-	height: 300px;
 
 	p {
 		margin: 0;
 	}
+}
+
+.bill-actions {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 16px;
 }

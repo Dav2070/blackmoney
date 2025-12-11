@@ -56,30 +56,37 @@
 					</p>
 				</div>
 			</div>
-			@if (selectedOrder?.orderItems) {
-				<div class="bill-items">
-					@for (
-						orderItem of selectedOrder.orderItems;
-						track orderItem.uuid
-					) {
-						<dav-card>
-							<div class="bill-item">
-								<p class="bill-item-name">
-									{{ orderItem.product?.name ?? "" }}
-								</p>
-								<p class="bill-item-quantity">x{{ orderItem.count }}</p>
-								<p class="bill-item-price">
-									{{
-										formatPrice(
-											calculateTotalPriceOfOrderItem(orderItem)
-										)
-									}}
-								</p>
-							</div>
-						</dav-card>
-					}
-				</div>
-			}
+			<div class="bill-items">
+				@for (
+					orderItem of selectedOrder?.orderItems ?? [];
+					track orderItem.uuid
+				) {
+					<dav-card>
+						<div class="bill-item">
+							<p class="bill-item-name">
+								{{ orderItem.product?.name ?? "" }}
+							</p>
+							<p class="bill-item-quantity">x{{ orderItem.count }}</p>
+							<p class="bill-item-price">
+								{{
+									formatPrice(
+										calculateTotalPriceOfOrderItem(orderItem)
+									)
+								}}
+							</p>
+						</div>
+					</dav-card>
+				}
+			</div>
+			<div class="bill-actions">
+				<dav-button
+					size="sm"
+					outline
+					(click)="visible = false"
+				>
+					{{ actionsLocale.close }}
+				</dav-button>
+			</div>
 		</div>
 	</div>
 </dav-dialog>

@@ -437,24 +437,6 @@ export class BookingPageComponent {
 		}
 	}
 
-	// Zeige Variations-Popup an
-	toggleItemPopup() {
-		// this.isItemPopupVisible = !this.isItemPopupVisible
-		this.selectProductVariationsDialog.show()
-	}
-
-	closeItemPopup() {
-		this.isItemPopupVisible = !this.isItemPopupVisible
-		this.tmpPickedVariationResource = []
-		this.tmpCountVariations = 0
-		this.isSpecialVariationMode = false
-		if (this.minusUsed === true) {
-			this.minusUsed = false
-		}
-		this.tmpSelectedItem = undefined
-		this.showTotal()
-	}
-
 	closeSpecialVariationPopup() {
 		this.isSpecialVariationPopupVisible = false
 		this.tmpPickedVariationResource = []
@@ -555,7 +537,6 @@ export class BookingPageComponent {
 					)
 				}
 
-				// this.isItemPopupVisible = true
 				this.selectProductVariationsDialog.show()
 			}
 		}
@@ -754,8 +735,6 @@ export class BookingPageComponent {
 		if (this.isSpecialVariationMode) {
 			this.isSpecialVariationPopupVisible = false
 			this.isSpecialVariationMode = false
-		} else {
-			this.isItemPopupVisible = false
 		}
 
 		this.tmpVariations = []

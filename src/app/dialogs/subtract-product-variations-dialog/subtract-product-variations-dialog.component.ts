@@ -117,17 +117,8 @@ export class SubtractProductVariationsDialogComponent {
 		}
 	}
 
-	removeButtonClick(key: string) {
-		if (this.variationCombinations[key] > 0) {
-			this.variationCombinations[key]--
-		}
-	}
-
-	addButtonClick(key: string) {
-		const originalCount = this.getOriginalCount(key)
-		if (this.variationCombinations[key] < originalCount) {
-			this.variationCombinations[key]++
-		}
+	counterChange(key: string, count: number) {
+		this.variationCombinations[key] = count
 	}
 
 	cartesian(args: string[][]) {

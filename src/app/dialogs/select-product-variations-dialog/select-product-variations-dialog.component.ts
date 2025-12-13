@@ -99,7 +99,7 @@ export class SelectProductVariationsDialogComponent {
 		this.visible = false
 	}
 
-	onCountChange(key: string, value: string, count: number) {
+	counterChange(key: string, value: string, count: number) {
 		this.variationTree[this.currentVariation][
 			(key ? key + "," : "") + value
 		] = count

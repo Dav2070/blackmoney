@@ -29,6 +29,7 @@ export class SelectProductSpecialDialogComponent {
 	visible: boolean = false
 	categories: Category[] = []
 	selectedCategory: Category = null
+	selectedProducts: Product[] = []
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -44,6 +45,19 @@ export class SelectProductSpecialDialogComponent {
 	ngOnDestroy() {
 		if (isPlatformBrowser(this.platformId)) {
 			document.body.removeChild(this.dialog.nativeElement)
+		}
+	}
+
+	selectCategory(category: Category) {
+		this.selectedCategory = category
+		this.selectedProducts = []
+
+		for (const offerItem of this.product.offer.offerItems) {
+			for (const product of offerItem.products) {
+				if (product.category.uuid === category.uuid) {
+					this.selectedProducts.push(product)
+				}
+			}
 		}
 	}
 
@@ -65,7 +79,7 @@ export class SelectProductSpecialDialogComponent {
 			}
 
 			if (this.categories.length > 0) {
-				this.selectedCategory = this.categories[0]
+				this.selectCategory(this.categories[0])
 			}
 
 			this.visible = true

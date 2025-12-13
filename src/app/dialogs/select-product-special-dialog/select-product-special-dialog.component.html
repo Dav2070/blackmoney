@@ -1,40 +1,55 @@
 <dav-dialog
-   #dialog
-   [visible]="visible"
-   maxWidth="800"
+	#dialog
+	[visible]="visible"
+	maxWidth="800"
+	(dismiss)="visible = false"
 >
-   <div class="container">
-      <div class="categories-container">
-         <h3>{{ locale.categoriesHeadline }}</h3>
+	<div class="container">
+		<div class="categories-container">
+			<h3>{{ locale.categoriesHeadline }}</h3>
 
-         <dav-sidenav>
-            @for (category of categories; track category.uuid) {
-               <dav-sidenav-item
-                  [value]="category.name"
-                  [active]="category === selectedCategory"
-                  (click)="selectedCategory = category"
-               ></dav-sidenav-item>
-            }
-         </dav-sidenav>
-      </div>
+			<dav-sidenav>
+				@for (category of categories; track category.uuid) {
+					<dav-sidenav-item
+						[value]="category.name"
+						[active]="category === selectedCategory"
+						(click)="selectCategory(category)"
+					></dav-sidenav-item>
+				}
+			</dav-sidenav>
+		</div>
 
-      <div class="products-container">
-         <h3>{{ locale.productsHeadline }}</h3>
+		<div class="products-container">
+			<h3>{{ locale.productsHeadline }}</h3>
 
-         <div class="products-list">
-            @for (
-               product of selectedCategory?.products ?? [];
-               track product.uuid
-            ) {
-               <dav-button class="slide-up-in-light">
-                  {{ product.name }}
-               </dav-button>
-            }
-         </div>
-      </div>
+			<div class="products-list">
+				@for (product of selectedProducts; track product.uuid) {
+					<dav-button class="slide-up-in-light">
+						{{ product.name }}
+					</dav-button>
+				}
+			</div>
+		</div>
 
-      <div class="selection-container">
-         <h3>{{ locale.selectionHeadline }}</h3>
-      </div>
-   </div>
+		<div class="selection-container">
+			<h3>{{ locale.selectionHeadline }}</h3>
+
+			<div class="selected-items-list"></div>
+
+			<div class="actions-container">
+				<dav-button
+					size="sm"
+					outline
+					color="primary"
+					(click)="visible = false"
+				>
+					{{ actionsLocale.cancel }}
+				</dav-button>
+
+				<dav-button size="sm" color="primary">
+					{{ actionsLocale.add }}
+				</dav-button>
+			</div>
+		</div>
+	</div>
 </dav-dialog>

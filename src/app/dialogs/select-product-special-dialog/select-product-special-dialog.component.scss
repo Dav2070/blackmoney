@@ -13,14 +13,14 @@ h3 {
 .categories-container {
    width: 20%;
 	border-right: 1px solid var(--dav-color-outline-variant);
-   padding: 0 16px 16px;
+   padding: 16px;
 	overflow-x: hidden;
 	overflow-y: scroll;
 }
 
 .products-container {
    width: 50%;
-   padding: 0 16px 16px;
+   padding: 16px;
    border-right: 1px solid var(--dav-color-outline-variant);
 }
 
@@ -31,6 +31,21 @@ h3 {
 }
 
 .selection-container {
+   display: flex;
+   flex-direction: column;
    width: 30%;
-   padding: 0 16px 16px;
+   padding: 16px;
+}
+
+.selected-items-list {
+   flex-grow: 1;
+   overflow-x: hidden;
+   overflow-y: scroll;
+   margin-bottom: 16px;
+}
+
+.actions-container {
+   display: flex;
+   justify-content: flex-end;
+   gap: 8px;
 }

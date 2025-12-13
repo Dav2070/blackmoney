@@ -28,7 +28,9 @@ export class SelectProductSpecialDialogComponent {
 	actionsLocale = this.localizationService.locale.actions
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	@Input() product: Product = null
-	@Output() primaryButtonClick = new EventEmitter()
+	@Output() primaryButtonClick = new EventEmitter<{
+		orderItems: OrderItem[]
+	}>()
 	visible: boolean = false
 	categories: Category[] = []
 	selectedCategory: Category = null
@@ -126,5 +128,13 @@ export class SelectProductSpecialDialogComponent {
 
 	hide() {
 		this.visible = false
+	}
+
+	submit() {
+		if (!this.allItemHandler.isEmpty()) {
+			this.primaryButtonClick.emit({
+				orderItems: this.allItemHandler.getAllPickedItems()
+			})
+		}
 	}
 }

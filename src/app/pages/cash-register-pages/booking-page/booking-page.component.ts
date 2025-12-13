@@ -2067,6 +2067,50 @@ export class BookingPageComponent {
 		this.tmpAllItemHandler = this.tmpSpecialAllItemsHandler
 	}
 
+	selectProductSpecialDialogPrimaryButtonClick(event: {
+		orderItems: OrderItem[]
+	}) {
+		let rabattFaktor = 0
+
+		if (
+			this.currentSpecial &&
+			this.currentSpecial.offer.discountType === "PERCENTAGE"
+		) {
+			rabattFaktor = this.currentSpecial.offer.offerValue / 100
+		}
+
+		for (const item of event.orderItems) {
+			let processedItem: OrderItem = JSON.parse(JSON.stringify(item))
+			let originalProductPrice = processedItem.product.price
+
+			let orderItem: OrderItem = {
+				uuid: crypto.randomUUID(),
+				type: OrderItemType.Special,
+				count: 1,
+				order: null,
+				product: {
+					id: this.currentSpecial.id,
+					uuid: this.currentSpecial.uuid,
+					type: this.currentSpecial.type,
+					name: this.currentSpecial.name,
+					price: originalProductPrice,
+					category: this.currentSpecial.category,
+					variations: [],
+					offer: this.currentSpecial.offer
+				},
+				orderItems: [processedItem],
+				orderItemVariations: [],
+				discount: originalProductPrice * rabattFaktor
+			}
+
+			// vorher: manuelles sameOrderItemExists + inkrementieren
+			// ersatz: delegieren an den Handler / Merger
+			this.stagedItems.pushNewItem(orderItem)
+		}
+
+		this.selectProductSpecialDialog.hide()
+	}
+
 	confirmSpecials() {
 		let rabattFaktor = 0
 
@@ -2085,7 +2129,7 @@ export class BookingPageComponent {
 			let orderItem: OrderItem = {
 				uuid: crypto.randomUUID(),
 				type: OrderItemType.Special,
-				count: processedItem.count,
+				count: 1,
 				order: null,
 				product: {
 					id: this.currentSpecial.id,

@@ -771,6 +771,8 @@
 <app-select-product-special-dialog
 	#selectProductSpecialDialog
 	[product]="currentSpecial"
+	(primaryButtonClick)="
+		selectProductSpecialDialogPrimaryButtonClick($event)"
 ></app-select-product-special-dialog>
 
 <app-select-product-variations-dialog

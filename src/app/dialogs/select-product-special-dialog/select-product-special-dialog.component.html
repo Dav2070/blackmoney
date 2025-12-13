@@ -1,9 +1,4 @@
-<dav-dialog
-	#dialog
-	[visible]="visible"
-	maxWidth="800"
-	(dismiss)="dismiss()"
->
+<dav-dialog #dialog [visible]="visible" maxWidth="800" (dismiss)="dismiss()">
 	<div class="container">
 		<div class="categories-container">
 			<h3>{{ locale.categoriesHeadline }}</h3>
@@ -60,7 +55,12 @@
 					{{ actionsLocale.cancel }}
 				</dav-button>
 
-				<dav-button size="sm" color="primary">
+				<dav-button
+					size="sm"
+					color="primary"
+					[disabled]="allItemHandler.isEmpty()"
+					(click)="submit()"
+				>
 					{{ actionsLocale.add }}
 				</dav-button>
 			</div>

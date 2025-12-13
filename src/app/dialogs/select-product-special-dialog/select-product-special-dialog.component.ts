@@ -11,6 +11,8 @@ import {
 import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
+import { Product } from "src/app/models/Product"
+import { Category } from "src/app/models/Category"
 
 @Component({
 	selector: "app-select-product-special-dialog",
@@ -22,8 +24,11 @@ export class SelectProductSpecialDialogComponent {
 	locale = this.localizationService.locale.dialogs.selectProductSpecialDialog
 	actionsLocale = this.localizationService.locale.actions
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
+	@Input() product: Product = null
 	@Output() primaryButtonClick = new EventEmitter()
 	visible: boolean = false
+	categories: Category[] = []
+	selectedCategory: Category = null
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -43,7 +48,28 @@ export class SelectProductSpecialDialogComponent {
 	}
 
 	show() {
-		this.visible = true
+		setTimeout(() => {
+			// Get the categories of the special
+			this.categories = []
+
+			for (const offerItem of this.product.offer.offerItems) {
+				for (const product of offerItem.products) {
+					if (
+						!this.categories.some(
+							cat => cat.uuid === product.category.uuid
+						)
+					) {
+						this.categories.push(product.category)
+					}
+				}
+			}
+
+			if (this.categories.length > 0) {
+				this.selectedCategory = this.categories[0]
+			}
+
+			this.visible = true
+		}, 200)
 	}
 
 	hide() {

@@ -266,7 +266,11 @@ export const de = {
 		selectProductDialog: {
 			headline: "Produkt hinzufügen"
 		},
-		selectProductSpecialDialog: {},
+		selectProductSpecialDialog: {
+			categoriesHeadline: "Kategorien",
+			productsHeadline: "Produkte",
+			selectionHeadline: "Auswahl"
+		},
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"
 		},

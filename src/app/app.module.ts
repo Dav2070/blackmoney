@@ -41,6 +41,7 @@ import { HeaderComponent } from "./components/cash-register/header/header.compon
 import { HeadlineComponent } from "./components/cash-register/headline/headline.component"
 import { OrderItemCardComponent } from "./components/cash-register/order-item-card/order-item-card.component"
 import { OfferOrderItemCardComponent } from "./components/cash-register/offer-order-item-card/offer-order-item-card.component"
+import { CounterComponent } from "./components/cash-register/counter/counter.component"
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
@@ -128,6 +129,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		HeadlineComponent,
 		OrderItemCardComponent,
 		OfferOrderItemCardComponent,
+		CounterComponent,
 		// Dialog
 		LogoutDialogComponent,
 		EditRegisterClientNameDialogComponent,

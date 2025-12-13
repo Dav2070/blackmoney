@@ -99,18 +99,10 @@ export class SelectProductVariationsDialogComponent {
 		this.visible = false
 	}
 
-	addButtonClick(key: string, value: string) {
+	onCountChange(key: string, value: string, count: number) {
 		this.variationTree[this.currentVariation][
 			(key ? key + "," : "") + value
-		]++
-	}
-
-	removeButtonClick(key: string, value: string) {
-		const currentVariationKey = (key ? key + "," : "") + value
-
-		if (this.variationTree[this.currentVariation][currentVariationKey] > 0) {
-			this.variationTree[this.currentVariation][currentVariationKey]--
-		}
+		] = count
 	}
 
 	cartesian(args: string[][]) {

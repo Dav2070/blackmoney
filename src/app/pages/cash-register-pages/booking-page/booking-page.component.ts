@@ -41,6 +41,7 @@ import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { BillsOverviewDialogComponent } from "src/app/dialogs/bills-overview-dialog/bills-overview-dialog.component"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
+import { SelectProductSpecialDialogComponent } from "src/app/dialogs/select-product-special-dialog/select-product-special-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { SubtractProductVariationsDialogComponent } from "src/app/dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
@@ -162,6 +163,11 @@ export class BookingPageComponent {
 	//#region SelectProductDialog variables
 	@ViewChild("selectProductDialog")
 	selectProductDialog: SelectProductDialogComponent
+	//#endregion
+
+	//#region SelectProductSpecialDialog variables
+	@ViewChild("selectProductSpecialDialog")
+	selectProductSpecialDialog: SelectProductSpecialDialogComponent
 	//#endregion
 
 	//#region SelectProductVariationsDialog variables
@@ -460,8 +466,10 @@ export class BookingPageComponent {
 		this.currentMenu = null
 
 		if (product.type === "SPECIAL") {
-			this.currentSpecial = JSON.parse(JSON.stringify(product))
-			this.isMenuePopupVisible = true
+			// this.currentSpecial = JSON.parse(JSON.stringify(product))
+			this.currentSpecial = product
+			// this.isMenuePopupVisible = true
+			this.selectProductSpecialDialog.show()
 			this.specialCategories = []
 
 			for (const offerItem of product.offer.offerItems) {

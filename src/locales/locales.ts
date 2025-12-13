@@ -263,12 +263,10 @@ export const de = {
 			description:
 				"Bist du dir sicher, dass du das Passwort für {name} zurücksetzen möchtest?"
 		},
-		billsOverviewDialog: {
-			headline: "Vergangene Rechnungen"
-		},
 		selectProductDialog: {
 			headline: "Produkt hinzufügen"
 		},
+		selectProductSpecialDialog: {},
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"
 		},

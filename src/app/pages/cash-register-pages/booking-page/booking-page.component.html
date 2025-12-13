@@ -768,6 +768,10 @@
 	(selectProduct)="selectProductDialog.hide(); clickItem($event)"
 ></app-select-product-dialog>
 
+<app-select-product-special-dialog
+	#selectProductSpecialDialog
+></app-select-product-special-dialog>
+
 <app-select-product-variations-dialog
 	#selectProductVariationsDialog
 	[product]="lastClickedItem"

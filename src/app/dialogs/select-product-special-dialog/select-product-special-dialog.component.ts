@@ -9,36 +9,21 @@ import {
 	PLATFORM_ID
 } from "@angular/core"
 import { isPlatformBrowser } from "@angular/common"
-import {
-	faMoneyBill1Wave,
-	faCreditCard
-} from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
-import { Order } from "src/app/models/Order"
-import {
-	calculateTotalPriceOfOrder,
-	calculateTotalPriceOfOrderItem,
-	formatPrice
-} from "src/app/utils"
 
 @Component({
-	selector: "app-bills-overview-dialog",
-	templateUrl: "./bills-overview-dialog.component.html",
-	styleUrl: "./bills-overview-dialog.component.scss",
+	selector: "app-select-product-special-dialog",
+	templateUrl: "./select-product-special-dialog.component.html",
+	styleUrl: "./select-product-special-dialog.component.scss",
 	standalone: false
 })
-export class BillsOverviewDialogComponent {
+export class SelectProductSpecialDialogComponent {
+	locale = this.localizationService.locale.dialogs.selectProductSpecialDialog
 	actionsLocale = this.localizationService.locale.actions
-	calculateTotalPriceOfOrder = calculateTotalPriceOfOrder
-	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
-	formatPrice = formatPrice
-	faMoneyBill1Wave = faMoneyBill1Wave
-	faCreditCard = faCreditCard
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
-	@Input() orders: Order[] = []
+	@Output() primaryButtonClick = new EventEmitter()
 	visible: boolean = false
-	selectedOrder: Order = null
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -59,12 +44,6 @@ export class BillsOverviewDialogComponent {
 
 	show() {
 		this.visible = true
-
-		setTimeout(() => {
-			if (this.orders.length > 0) {
-				this.selectedOrder = this.orders[0]
-			}
-		}, 200)
 	}
 
 	hide() {

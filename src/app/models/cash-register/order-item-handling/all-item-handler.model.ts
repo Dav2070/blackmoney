@@ -133,7 +133,7 @@ export class AllItemHandler {
 		const incoming = { ...pickedItem } // Kopie zum Schutz vor Seiteneffekten
 
 		// Suche Merge-Ziel (gibt undefined zurück, wenn keines vorhanden)
-		const target = this.merger.findMergeTarget(incoming)
+		const target = this.merger.findMergeTarget(incoming, this.allPickedItems)
 
 		if (target) {
 			// Match gefunden -> zusammenführen; wenn Merge fehlschlägt -> einfügen

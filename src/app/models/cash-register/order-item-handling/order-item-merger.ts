@@ -27,13 +27,19 @@ export class OrderItemMerger {
 	 * Findet ein Merge-Ziel oder gibt undefined zurück.
 	 * Menüs und Specials werden strenger geprüft (keine fälschlichen merges nur wegen offerId).
 	 */
-	findMergeTarget(incoming: OrderItem): OrderItem | undefined {
-		for (const existing of this.allItems) {
+	findMergeTarget(
+		incoming: OrderItem,
+		allItems?: OrderItem[]
+	): OrderItem | null {
+		const list = allItems ?? this.allItems
+
+		for (const existing of list) {
 			if (this.metaComparer.isOrderItemMetaEqual(existing, incoming)) {
 				return existing
 			}
 		}
-		return undefined
+
+		return null
 	}
 
 	/**

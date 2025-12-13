@@ -13,6 +13,9 @@ import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Product } from "src/app/models/Product"
 import { Category } from "src/app/models/Category"
+import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
+import { OrderItem } from "src/app/models/OrderItem"
+import { OrderItemType } from "src/app/types"
 
 @Component({
 	selector: "app-select-product-special-dialog",
@@ -30,6 +33,7 @@ export class SelectProductSpecialDialogComponent {
 	categories: Category[] = []
 	selectedCategory: Category = null
 	selectedProducts: Product[] = []
+	allItemHandler: AllItemHandler = new AllItemHandler()
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -61,6 +65,39 @@ export class SelectProductSpecialDialogComponent {
 		}
 	}
 
+	selectProduct(product: Product) {
+		if (product.variations.length === 0) {
+			let newItem: OrderItem = {
+				uuid: crypto.randomUUID(),
+				type: OrderItemType.Product,
+				count: 1,
+				order: null,
+				product,
+				orderItems: [],
+				orderItemVariations: []
+			}
+
+			this.allItemHandler.pushNewItem(newItem)
+		} else {
+			// Open variations dialog
+			// TODO
+		}
+	}
+
+	counterChange(orderItem: OrderItem, count: number) {
+		orderItem.count = count
+
+		if (orderItem.count === 0) {
+			this.allItemHandler.deleteItem(orderItem)
+		}
+	}
+
+	dismiss() {
+		if (this.allItemHandler.isEmpty()) {
+			this.hide()
+		}
+	}
+
 	show() {
 		setTimeout(() => {
 			// Get the categories of the special
@@ -82,6 +119,7 @@ export class SelectProductSpecialDialogComponent {
 				this.selectCategory(this.categories[0])
 			}
 
+			this.allItemHandler.clearItems()
 			this.visible = true
 		}, 200)
 	}

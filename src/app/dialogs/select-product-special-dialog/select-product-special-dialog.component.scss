@@ -19,7 +19,7 @@ h3 {
 }
 
 .products-container {
-   width: 50%;
+   width: 40%;
    padding: 16px;
    border-right: 1px solid var(--dav-color-outline-variant);
 }
@@ -33,12 +33,15 @@ h3 {
 .selection-container {
    display: flex;
    flex-direction: column;
-   width: 30%;
+   width: 40%;
    padding: 16px;
 }
 
 .selected-items-list {
+   display: flex;
+   flex-direction: column;
    flex-grow: 1;
+   gap: 8px;
    overflow-x: hidden;
    overflow-y: scroll;
    margin-bottom: 16px;

@@ -43,11 +43,21 @@
 					orderItem of allItemHandler.getOrderItems();
 					track orderItem.uuid
 				) {
-					<app-counter
-						[count]="orderItem.count"
-						[headline]="orderItem.product.name"
-						(change)="counterChange(orderItem, $event)"
-					></app-counter>
+					@if (orderItem.orderItemVariations.length > 0) {
+						@for (variation of orderItem.orderItemVariations; track variation.uuid) {
+							<app-counter
+								[count]="variation.count"
+								[headline]="getVariationHeadline(orderItem.product.name, variation)"
+								(change)="variationCounterChange(orderItem, variation, $event)"
+							></app-counter>
+						}
+					} @else {
+						<app-counter
+							[count]="orderItem.count"
+							[headline]="orderItem.product.name"
+							(change)="counterChange(orderItem, $event)"
+						></app-counter>
+					}
 				}
 			</div>
 

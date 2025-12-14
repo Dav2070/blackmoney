@@ -18,6 +18,7 @@ import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-p
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { OrderItemType } from "src/app/types"
 import { VariationItem } from "src/app/models/VariationItem"
+import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 
 @Component({
 	selector: "app-select-product-special-dialog",
@@ -93,11 +94,40 @@ export class SelectProductSpecialDialogComponent {
 		}
 	}
 
+	getVariationHeadline(
+		productName: string,
+		orderItemVariation: OrderItemVariation
+	): string {
+		const itemNames: string[] = orderItemVariation.variationItems.map(
+			vi => vi.name
+		)
+
+		return `${productName} (${itemNames.join(", ")})`
+	}
+
 	counterChange(orderItem: OrderItem, count: number) {
 		orderItem.count = count
 
 		if (orderItem.count === 0) {
 			this.allItemHandler.deleteItem(orderItem)
+		}
+	}
+
+	variationCounterChange(
+		orderItem: OrderItem,
+		orderItemVariation: OrderItemVariation,
+		count: number
+	) {
+		orderItemVariation.count = count
+
+		if (orderItemVariation.count === 0) {
+			orderItem.orderItemVariations = orderItem.orderItemVariations.filter(
+				oiv => oiv.uuid !== orderItemVariation.uuid
+			)
+
+			if (orderItem.orderItemVariations.length === 0) {
+				this.allItemHandler.deleteItem(orderItem)
+			}
 		}
 	}
 

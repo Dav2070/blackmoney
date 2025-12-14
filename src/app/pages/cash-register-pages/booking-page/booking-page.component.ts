@@ -134,6 +134,7 @@ export class BookingPageComponent {
 	tmpAnzahl = 0
 
 	selectedItem: OrderItem = null
+	selectedProduct: Product = null
 	tmpSelectedItem: OrderItem = null
 	tmpAllItemHandler: AllItemHandler = null
 
@@ -462,13 +463,10 @@ export class BookingPageComponent {
 	clickItem(product: Product, note?: string) {
 		if (product == null) return
 		this.selectedItem = null
-		this.currentSpecial = null
-		this.currentMenu = null
+		this.selectedProduct = product
 
 		if (product.type === "SPECIAL") {
-			// this.currentSpecial = JSON.parse(JSON.stringify(product))
-			this.currentSpecial = product
-			// this.isMenuePopupVisible = true
+			this.selectedProduct = product
 			this.selectProductSpecialDialog.show()
 			this.specialCategories = []
 
@@ -486,16 +484,10 @@ export class BookingPageComponent {
 
 			this.changeSelectedSpecialInventory(this.specialCategories[0])
 		} else if (product.type === "MENU") {
-			this.currentMenu = JSON.parse(JSON.stringify(product))
-			this.tmpCurrentMenu = JSON.parse(JSON.stringify(product))
-			this.isMenuePopupVisible = true
-			this.changeSelectedMenuInventory(
-				this.currentMenu.offer.offerItems[0],
-				this.currentMenu.offer.offerItems[0].maxSelections,
-				0
-			)
+			this.selectedProduct = JSON.parse(JSON.stringify(product))
+			this.selectProductSpecialDialog.show()
 
-			for (const item of this.currentMenu.offer.offerItems) {
+			for (const item of this.selectedProduct.offer.offerItems) {
 				for (const product of item.products) {
 					if (
 						!this.specialCategories.some(
@@ -2073,42 +2065,76 @@ export class BookingPageComponent {
 	selectProductSpecialDialogPrimaryButtonClick(event: {
 		orderItems: OrderItem[]
 	}) {
-		let rabattFaktor = 0
+		if (this.selectedProduct.type === "MENU") {
+			let total = 0
 
-		if (
-			this.currentSpecial &&
-			this.currentSpecial.offer.discountType === "PERCENTAGE"
-		) {
-			rabattFaktor = this.currentSpecial.offer.offerValue / 100
-		}
-
-		for (const item of event.orderItems) {
-			let processedItem: OrderItem = JSON.parse(JSON.stringify(item))
-			let originalProductPrice = processedItem.product.price
-
-			let orderItem: OrderItem = {
-				uuid: crypto.randomUUID(),
-				type: OrderItemType.Special,
-				count: 1,
-				order: null,
-				product: {
-					id: this.currentSpecial.id,
-					uuid: this.currentSpecial.uuid,
-					type: this.currentSpecial.type,
-					name: this.currentSpecial.name,
-					price: originalProductPrice,
-					category: this.currentSpecial.category,
-					variations: [],
-					offer: this.currentSpecial.offer
-				},
-				orderItems: [processedItem],
-				orderItemVariations: [],
-				discount: originalProductPrice * rabattFaktor
+			// Durch alle ausgewählten Produkte gehen
+			for (const orderItem of event.orderItems) {
+				total += calculateTotalPriceOfOrderItem(orderItem)
 			}
 
-			// vorher: manuelles sameOrderItemExists + inkrementieren
-			// ersatz: delegieren an den Handler / Merger
-			this.stagedItems.pushNewItem(orderItem)
+			const offer = this.selectedProduct.offer
+			let discount = 0
+
+			if (offer.offerType === "FIXED_PRICE") {
+				discount = total - offer.offerValue
+			} else if (
+				offer.offerType === "DISCOUNT" &&
+				offer.discountType === "PERCENTAGE"
+			) {
+				discount = total * (offer.offerValue / 100)
+			} else if (
+				offer.offerType === "DISCOUNT" &&
+				offer.discountType === "AMOUNT"
+			) {
+				discount = offer.offerValue
+			}
+
+			this.stagedItems.pushNewItem({
+				uuid: crypto.randomUUID(),
+				type: OrderItemType.Menu,
+				count: 1,
+				order: null,
+				product: this.selectedProduct,
+				orderItems: event.orderItems,
+				orderItemVariations: [],
+				discount
+			})
+		} else {
+			let rabattFaktor = 0
+
+			if (
+				this.selectedProduct &&
+				this.selectedProduct.offer.discountType === "PERCENTAGE"
+			) {
+				rabattFaktor = this.selectedProduct.offer.offerValue / 100
+			}
+
+			for (const orderItem of event.orderItems) {
+				const processedItem: OrderItem = JSON.parse(
+					JSON.stringify(orderItem)
+				)
+
+				this.stagedItems.pushNewItem({
+					uuid: crypto.randomUUID(),
+					type: OrderItemType.Special,
+					count: 1,
+					order: null,
+					product: {
+						id: this.selectedProduct.id,
+						uuid: this.selectedProduct.uuid,
+						type: this.selectedProduct.type,
+						name: this.selectedProduct.name,
+						price: processedItem.product.price,
+						category: this.selectedProduct.category,
+						variations: [],
+						offer: this.selectedProduct.offer
+					},
+					orderItems: [processedItem],
+					orderItemVariations: [],
+					discount: processedItem.product.price * rabattFaktor
+				})
+			}
 		}
 
 		this.selectProductSpecialDialog.hide()

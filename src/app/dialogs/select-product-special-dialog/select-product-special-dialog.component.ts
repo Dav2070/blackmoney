@@ -19,6 +19,7 @@ import { AllItemHandler } from "src/app/models/cash-register/order-item-handling
 import { OrderItemType } from "src/app/types"
 import { VariationItem } from "src/app/models/VariationItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
+import { OfferItem } from "src/app/models/OfferItem"
 
 @Component({
 	selector: "app-select-product-special-dialog",
@@ -38,6 +39,7 @@ export class SelectProductSpecialDialogComponent {
 	selectProductVariationsDialogVisible: boolean = false
 	categories: Category[] = []
 	selectedCategory: Category = null
+	selectedOfferItem: OfferItem = null
 	selectedProducts: Product[] = []
 	allItemHandler: AllItemHandler = new AllItemHandler()
 
@@ -75,6 +77,16 @@ export class SelectProductSpecialDialogComponent {
 		}
 	}
 
+	selectOfferItem(offerItem: OfferItem) {
+		this.selectedOfferItem = offerItem
+
+		this.selectedProducts = []
+
+		for (const product of offerItem.products) {
+			this.selectedProducts.push(product)
+		}
+	}
+
 	selectProduct(product: Product) {
 		if (product.variations.length === 0) {
 			this.allItemHandler.pushNewItem({
@@ -86,6 +98,21 @@ export class SelectProductSpecialDialogComponent {
 				orderItems: [],
 				orderItemVariations: []
 			})
+
+			if (this.product.type === OrderItemType.Menu) {
+				this.selectedOfferItem.maxSelections--
+
+				if (this.selectedOfferItem.maxSelections <= 0) {
+					// Auto select next offer item
+					const i = this.product.offer.offerItems.findIndex(
+						oi => oi.uuid === this.selectedOfferItem.uuid
+					)
+
+					if (i + 1 < this.product.offer.offerItems.length) {
+						this.selectOfferItem(this.product.offer.offerItems[i + 1])
+					}
+				}
+			}
 		} else {
 			// Open variations dialog
 			this.selectedProduct = product
@@ -111,6 +138,15 @@ export class SelectProductSpecialDialogComponent {
 		if (orderItem.count === 0) {
 			this.allItemHandler.deleteItem(orderItem)
 		}
+
+		// Find the offer item and update max selections
+		if (this.product.type === OrderItemType.Menu) {
+			const offerItem = this.product.offer.offerItems.find(oi =>
+				oi.products.some(p => p.uuid === orderItem.product.uuid)
+			)
+
+			if (offerItem) offerItem.maxSelections++
+		}
 	}
 
 	variationCounterChange(
@@ -129,6 +165,15 @@ export class SelectProductSpecialDialogComponent {
 				this.allItemHandler.deleteItem(orderItem)
 			}
 		}
+
+		// Find the offer item and update max selections
+		if (this.product.type === OrderItemType.Menu) {
+			const offerItem = this.product.offer.offerItems.find(oi =>
+				oi.products.some(p => p.uuid === orderItem.product.uuid)
+			)
+
+			if (offerItem) offerItem.maxSelections++
+		}
 	}
 
 	selectProductVariationsDialogPrimaryButtonClick(event: {
@@ -142,6 +187,7 @@ export class SelectProductSpecialDialogComponent {
 			.map(v => v.variationItems)
 			.flat()
 
+		let totalCount = 0
 		let newItem: OrderItem = {
 			uuid: crypto.randomUUID(),
 			type: OrderItemType.Product,
@@ -170,6 +216,8 @@ export class SelectProductSpecialDialogComponent {
 				count: value,
 				variationItems
 			})
+
+			totalCount += value
 		}
 
 		if (this.selectedProduct?.type === OrderItemType.Special) {
@@ -187,6 +235,7 @@ export class SelectProductSpecialDialogComponent {
 		} else {
 			newItem.count = newItem.orderItemVariations.length
 			this.allItemHandler.pushNewItem(newItem)
+			this.selectedOfferItem.maxSelections -= totalCount
 		}
 	}
 
@@ -205,6 +254,13 @@ export class SelectProductSpecialDialogComponent {
 
 	show() {
 		setTimeout(() => {
+			if (
+				this.product.type === OrderItemType.Menu &&
+				this.product.offer.offerItems.length > 0
+			) {
+				this.selectedOfferItem = this.product.offer.offerItems[0]
+			}
+
 			// Get the categories of the special
 			this.categories = []
 

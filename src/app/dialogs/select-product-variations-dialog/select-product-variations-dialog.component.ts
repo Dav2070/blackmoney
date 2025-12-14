@@ -41,6 +41,7 @@ export class SelectProductVariationsDialogComponent {
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	@Input() product: Product = null
 	@Input() child: boolean = false
+	@Input() maxTotalCount: number = 0
 	@Output() dismiss = new EventEmitter<void>()
 	@Output() primaryButtonClick = new EventEmitter<{
 		variationTree: {
@@ -211,6 +212,20 @@ export class SelectProductVariationsDialogComponent {
 		}
 
 		return count
+	}
+
+	isPlusButtonDisabled(
+		currentVariation: number,
+		currentTreeVariationItemCount: number,
+		previousTreeVariationItemCount: number
+	): boolean {
+		if (currentVariation === 0 && this.maxTotalCount > 0) {
+			return currentTreeVariationItemCount >= this.maxTotalCount
+		} else if (currentVariation === 0) {
+			return false
+		} else {
+			return currentTreeVariationItemCount >= previousTreeVariationItemCount
+		}
 	}
 
 	submit() {

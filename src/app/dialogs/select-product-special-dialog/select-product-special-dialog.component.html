@@ -10,12 +10,28 @@
 			<h3>{{ locale.categoriesHeadline }}</h3>
 
 			<dav-sidenav>
-				@for (category of categories; track category.uuid) {
-					<dav-sidenav-item
-						[value]="category.name"
-						[active]="category === selectedCategory"
-						(click)="selectCategory(category)"
-					></dav-sidenav-item>
+				@if (product?.type === "MENU") {
+					@for (
+						offerItem of product.offer.offerItems;
+						track offerItem.uuid
+					) {
+						<dav-sidenav-item
+							[value]="
+								offerItem.name + ' (' + offerItem.maxSelections + ')'
+							"
+							[active]="offerItem === selectedOfferItem"
+							[disabled]="offerItem.maxSelections <= 0"
+							(click)="selectOfferItem(offerItem)"
+						></dav-sidenav-item>
+					}
+				} @else {
+					@for (category of categories; track category.uuid) {
+						<dav-sidenav-item
+							[value]="category.name"
+							[active]="category === selectedCategory"
+							(click)="selectCategory(category)"
+						></dav-sidenav-item>
+					}
 				}
 			</dav-sidenav>
 		</div>
@@ -24,12 +40,16 @@
 			<h3>{{ locale.productsHeadline }}</h3>
 
 			<div class="products-list">
-				@for (product of selectedProducts; track product.uuid) {
+				@for (p of selectedProducts; track p.uuid) {
 					<dav-button
 						class="slide-up-in-light"
-						(click)="selectProduct(product)"
+						[disabled]="
+							product.type === 'MENU' &&
+							selectedOfferItem.maxSelections <= 0
+						"
+						(click)="selectProduct(p)"
 					>
-						{{ product.name }}
+						{{ p.name }}
 					</dav-button>
 				}
 			</div>
@@ -44,17 +64,29 @@
 					track orderItem.uuid
 				) {
 					@if (orderItem.orderItemVariations.length > 0) {
-						@for (variation of orderItem.orderItemVariations; track variation.uuid) {
+						@for (
+							variation of orderItem.orderItemVariations;
+							track variation.uuid
+						) {
 							<app-counter
 								[count]="variation.count"
-								[headline]="getVariationHeadline(orderItem.product.name, variation)"
-								(change)="variationCounterChange(orderItem, variation, $event)"
+								[headline]="
+									getVariationHeadline(
+										orderItem.product.name,
+										variation
+									)
+								"
+								[plusButtonDisabled]="product.type === 'MENU'"
+								(change)="
+									variationCounterChange(orderItem, variation, $event)
+								"
 							></app-counter>
 						}
 					} @else {
 						<app-counter
 							[count]="orderItem.count"
 							[headline]="orderItem.product.name"
+							[plusButtonDisabled]="product.type === 'MENU'"
 							(change)="counterChange(orderItem, $event)"
 						></app-counter>
 					}
@@ -88,6 +120,9 @@
 	#selectProductVariationsDialog
 	[product]="selectedProduct"
 	[child]="true"
+	[maxTotalCount]="
+		product?.type === 'MENU' ? (selectedOfferItem?.maxSelections ?? 0) : 0
+	"
 	(dismiss)="dismissSelectProductVariationsDialog()"
 	(primaryButtonClick)="
 		selectProductVariationsDialogPrimaryButtonClick($event)

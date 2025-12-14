@@ -1,4 +1,10 @@
-<dav-dialog #dialog [visible]="visible" maxWidth="800" (dismiss)="dismiss()">
+<dav-dialog
+	#dialog
+	[visible]="visible"
+	maxWidth="800"
+	[hideBehindOverlay]="selectProductVariationsDialogVisible"
+	(dismiss)="dismiss()"
+>
 	<div class="container">
 		<div class="categories-container">
 			<h3>{{ locale.categoriesHeadline }}</h3>
@@ -67,3 +73,13 @@
 		</div>
 	</div>
 </dav-dialog>
+
+<app-select-product-variations-dialog
+	#selectProductVariationsDialog
+	[product]="selectedProduct"
+	[child]="true"
+	(dismiss)="dismissSelectProductVariationsDialog()"
+	(primaryButtonClick)="
+		selectProductVariationsDialogPrimaryButtonClick($event)
+	"
+></app-select-product-variations-dialog>

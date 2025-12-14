@@ -38,13 +38,15 @@ export class SelectProductVariationsDialogComponent {
 		[key: string]: number
 	}[] = []
 
+	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	@Input() product: Product = null
+	@Input() child: boolean = false
+	@Output() dismiss = new EventEmitter<void>()
 	@Output() primaryButtonClick = new EventEmitter<{
 		variationTree: {
 			[key: string]: number
 		}[]
 	}>()
-	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -97,6 +99,7 @@ export class SelectProductVariationsDialogComponent {
 
 	hide() {
 		this.visible = false
+		this.dismiss.emit()
 	}
 
 	counterChange(key: string, value: string, count: number) {

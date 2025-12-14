@@ -13,9 +13,11 @@ import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Product } from "src/app/models/Product"
 import { Category } from "src/app/models/Category"
-import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { OrderItem } from "src/app/models/OrderItem"
+import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { OrderItemType } from "src/app/types"
+import { VariationItem } from "src/app/models/VariationItem"
 
 @Component({
 	selector: "app-select-product-special-dialog",
@@ -32,10 +34,15 @@ export class SelectProductSpecialDialogComponent {
 		orderItems: OrderItem[]
 	}>()
 	visible: boolean = false
+	selectProductVariationsDialogVisible: boolean = false
 	categories: Category[] = []
 	selectedCategory: Category = null
 	selectedProducts: Product[] = []
 	allItemHandler: AllItemHandler = new AllItemHandler()
+
+	@ViewChild("selectProductVariationsDialog")
+	selectProductVariationsDialog: SelectProductVariationsDialogComponent
+	selectedProduct: Product = null
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -69,7 +76,7 @@ export class SelectProductSpecialDialogComponent {
 
 	selectProduct(product: Product) {
 		if (product.variations.length === 0) {
-			let newItem: OrderItem = {
+			this.allItemHandler.pushNewItem({
 				uuid: crypto.randomUUID(),
 				type: OrderItemType.Product,
 				count: 1,
@@ -77,12 +84,12 @@ export class SelectProductSpecialDialogComponent {
 				product,
 				orderItems: [],
 				orderItemVariations: []
-			}
-
-			this.allItemHandler.pushNewItem(newItem)
+			})
 		} else {
 			// Open variations dialog
-			// TODO
+			this.selectedProduct = product
+			this.selectProductVariationsDialogVisible = true
+			this.selectProductVariationsDialog.show()
 		}
 	}
 
@@ -91,6 +98,72 @@ export class SelectProductSpecialDialogComponent {
 
 		if (orderItem.count === 0) {
 			this.allItemHandler.deleteItem(orderItem)
+		}
+	}
+
+	selectProductVariationsDialogPrimaryButtonClick(event: {
+		variationTree: { [key: string]: number }[]
+	}) {
+		this.selectProductVariationsDialogVisible = false
+		this.selectProductVariationsDialog.hide()
+
+		const lastVariationTree = event.variationTree.pop()
+		const allVariationItems = this.selectedProduct.variations
+			.map(v => v.variationItems)
+			.flat()
+
+		let newItem: OrderItem = {
+			uuid: crypto.randomUUID(),
+			type: OrderItemType.Product,
+			count: 1,
+			order: null,
+			product: this.selectedProduct,
+			orderItems: [],
+			orderItemVariations: []
+		}
+
+		for (const key of Object.keys(lastVariationTree)) {
+			const value = lastVariationTree[key]
+			if (value === 0) continue
+
+			const variationItems: VariationItem[] = []
+
+			for (const variationItemUuid of key.split(",")) {
+				const item = allVariationItems.find(
+					vi => vi.uuid === variationItemUuid
+				)
+				if (item) variationItems.push(item)
+			}
+
+			newItem.orderItemVariations.push({
+				uuid: crypto.randomUUID(),
+				count: value,
+				variationItems
+			})
+		}
+
+		if (this.selectedProduct?.type === OrderItemType.Special) {
+			let incoming = JSON.parse(JSON.stringify(this.selectProduct))
+
+			newItem.count = 0
+
+			for (let variation of newItem.orderItemVariations) {
+				newItem.count += variation.count
+			}
+
+			incoming.orderItems = [newItem]
+			incoming.count = newItem.count
+			this.allItemHandler.pushNewItem(incoming)
+		} else {
+			newItem.count = newItem.orderItemVariations.length
+			this.allItemHandler.pushNewItem(newItem)
+		}
+	}
+
+	dismissSelectProductVariationsDialog() {
+		if (this.selectProductVariationsDialogVisible) {
+			this.selectProductVariationsDialogVisible = false
+			this.selectProductVariationsDialog.hide()
 		}
 	}
 

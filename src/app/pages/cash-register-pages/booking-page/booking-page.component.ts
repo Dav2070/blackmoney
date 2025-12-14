@@ -822,13 +822,16 @@ export class BookingPageComponent {
 				variationItems
 			})
 		}
+
 		if (this.selectedItem?.type === OrderItemType.Special) {
 			let incoming = JSON.parse(JSON.stringify(this.selectedItem))
 
 			newItem.count = 0
+
 			for (let variation of newItem.orderItemVariations) {
 				newItem.count += variation.count
 			}
+
 			incoming.orderItems = [newItem]
 			incoming.count = newItem.count
 			this.stagedItems.pushNewItem(incoming)

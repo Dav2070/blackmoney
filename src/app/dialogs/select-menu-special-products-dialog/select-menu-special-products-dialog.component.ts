@@ -22,13 +22,13 @@ import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { OfferItem } from "src/app/models/OfferItem"
 
 @Component({
-	selector: "app-select-product-special-dialog",
-	templateUrl: "./select-product-special-dialog.component.html",
-	styleUrl: "./select-product-special-dialog.component.scss",
+	selector: "app-select-menu-special-products-dialog",
+	templateUrl: "./select-menu-special-products-dialog.component.html",
+	styleUrl: "./select-menu-special-products-dialog.component.scss",
 	standalone: false
 })
-export class SelectProductSpecialDialogComponent {
-	locale = this.localizationService.locale.dialogs.selectProductSpecialDialog
+export class SelectMenuSpecialProductsDialogComponent {
+	locale = this.localizationService.locale.dialogs.selectMenuSpecialProductsDialog
 	actionsLocale = this.localizationService.locale.actions
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	@Input() product: Product = null

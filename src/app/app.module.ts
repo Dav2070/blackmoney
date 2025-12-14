@@ -65,7 +65,7 @@ import { DeletePrintRuleDialogComponent } from "./dialogs/delete-print-rule-dial
 import { ResetPasswordDialogComponent } from "./dialogs/reset-password-dialog/reset-password-dialog.component"
 import { BillsOverviewDialogComponent } from "./dialogs/bills-overview-dialog/bills-overview-dialog.component"
 import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
-import { SelectProductSpecialDialogComponent } from "./dialogs/select-product-special-dialog/select-product-special-dialog.component"
+import { SelectMenuSpecialProductsDialogComponent } from "./dialogs/select-menu-special-products-dialog/select-menu-special-products-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { SubtractProductVariationsDialogComponent } from "./dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
@@ -152,7 +152,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		ResetPasswordDialogComponent,
 		BillsOverviewDialogComponent,
 		SelectProductDialogComponent,
-		SelectProductSpecialDialogComponent,
+		SelectMenuSpecialProductsDialogComponent,
 		SelectProductVariationsDialogComponent,
 		SubtractProductVariationsDialogComponent,
 		MoveMultipleProductsDialogComponent,

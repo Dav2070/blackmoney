@@ -41,7 +41,7 @@ import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { BillsOverviewDialogComponent } from "src/app/dialogs/bills-overview-dialog/bills-overview-dialog.component"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
-import { SelectProductSpecialDialogComponent } from "src/app/dialogs/select-product-special-dialog/select-product-special-dialog.component"
+import { SelectMenuSpecialProductsDialogComponent } from "src/app/dialogs/select-menu-special-products-dialog/select-menu-special-products-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { SubtractProductVariationsDialogComponent } from "src/app/dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
@@ -167,8 +167,8 @@ export class BookingPageComponent {
 	//#endregion
 
 	//#region SelectProductSpecialDialog variables
-	@ViewChild("selectProductSpecialDialog")
-	selectProductSpecialDialog: SelectProductSpecialDialogComponent
+	@ViewChild("selectMenuSpecialProductsDialog")
+	selectMenuSpecialProductsDialog: SelectMenuSpecialProductsDialogComponent
 	//#endregion
 
 	//#region SelectProductVariationsDialog variables
@@ -467,7 +467,7 @@ export class BookingPageComponent {
 
 		if (product.type === "SPECIAL") {
 			this.selectedProduct = product
-			this.selectProductSpecialDialog.show()
+			this.selectMenuSpecialProductsDialog.show()
 			this.specialCategories = []
 
 			for (const offerItem of product.offer.offerItems) {
@@ -485,7 +485,7 @@ export class BookingPageComponent {
 			this.changeSelectedSpecialInventory(this.specialCategories[0])
 		} else if (product.type === "MENU") {
 			this.selectedProduct = JSON.parse(JSON.stringify(product))
-			this.selectProductSpecialDialog.show()
+			this.selectMenuSpecialProductsDialog.show()
 
 			for (const item of this.selectedProduct.offer.offerItems) {
 				for (const product of item.products) {
@@ -2062,7 +2062,7 @@ export class BookingPageComponent {
 		this.tmpAllItemHandler = this.tmpSpecialAllItemsHandler
 	}
 
-	selectProductSpecialDialogPrimaryButtonClick(event: {
+	selectMenuSpecialProductsDialogPrimaryButtonClick(event: {
 		orderItems: OrderItem[]
 	}) {
 		if (this.selectedProduct.type === "MENU") {
@@ -2137,7 +2137,7 @@ export class BookingPageComponent {
 			}
 		}
 
-		this.selectProductSpecialDialog.hide()
+		this.selectMenuSpecialProductsDialog.hide()
 	}
 
 	confirmSpecials() {

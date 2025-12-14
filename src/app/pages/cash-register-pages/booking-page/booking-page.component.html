@@ -768,12 +768,12 @@
 	(selectProduct)="selectProductDialog.hide(); clickItem($event)"
 ></app-select-product-dialog>
 
-<app-select-product-special-dialog
-	#selectProductSpecialDialog
+<app-select-menu-special-products-dialog
+	#selectMenuSpecialProductsDialog
 	[product]="selectedProduct"
 	(primaryButtonClick)="
-		selectProductSpecialDialogPrimaryButtonClick($event)"
-></app-select-product-special-dialog>
+		selectMenuSpecialProductsDialogPrimaryButtonClick($event)"
+></app-select-menu-special-products-dialog>
 
 <app-select-product-variations-dialog
 	#selectProductVariationsDialog

@@ -127,6 +127,7 @@ import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-di
 import { EditVariationDialogComponent } from "./dialogs/edit-variation-dialog/edit-variation-dialog.component"
 import { EditVariationItemDialogComponent } from "./dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
 import { EditCategoryDialogComponent } from "./dialogs/edit-category-dialog/edit-category-dialog.component"
+import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-product-dialog.component"
 
 
 @NgModule({
@@ -171,6 +172,7 @@ import { EditCategoryDialogComponent } from "./dialogs/edit-category-dialog/edit
 		EditVariationDialogComponent,
 		EditVariationItemDialogComponent,
 		EditCategoryDialogComponent,
+		AddProductDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

@@ -1,10 +1,12 @@
-import { Component, OnInit } from "@angular/core"
+import { Component, OnInit, ViewChild } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
+import { AddProductDialogComponent } from "src/app/dialogs/add-product-dialog/add-product-dialog.component"
+import { ProductType } from "src/app/types"
 
 @Component({
 	selector: "app-products-overview-page",
@@ -18,6 +20,13 @@ export class ProductsOverviewPageComponent implements OnInit {
 	uuid: string = null
 	activeTab = "food"
 	category: Category = null
+	availableVariations: Variation[] = []
+
+	@ViewChild("addProductDialog")
+	addProductDialog: AddProductDialogComponent
+	addProductDialogLoading: boolean = false
+	addProductDialogNameError: string = ""
+	addProductDialogPriceError: string = ""
 
 	constructor(
 		private readonly dataService: DataService,
@@ -30,6 +39,9 @@ export class ProductsOverviewPageComponent implements OnInit {
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
+		// Lade Sample-Variationen
+		this.availableVariations = this.buildSampleVariations()
+
 		// Lade Sample-Kategorie mit Produkten
 		this.category = this.buildSampleCategory()
 
@@ -41,6 +53,48 @@ export class ProductsOverviewPageComponent implements OnInit {
 		} else {
 			this.selectTab("food")
 		}
+	}
+
+	private buildSampleVariations(): Variation[] {
+		return [
+			{
+				uuid: "var-1",
+				name: "Größe",
+				variationItems: [
+					{ id: 1, uuid: "item-1-1", name: "Klein", additionalCost: 0 },
+					{ id: 2, uuid: "item-1-2", name: "Mittel", additionalCost: 150 },
+					{ id: 3, uuid: "item-1-3", name: "Groß", additionalCost: 300 }
+				]
+			},
+			{
+				uuid: "var-2",
+				name: "Extras",
+				variationItems: [
+					{
+						id: 4,
+						uuid: "item-2-1",
+						name: "Extra Käse",
+						additionalCost: 150
+					},
+					{ id: 5, uuid: "item-2-2", name: "Bacon", additionalCost: 200 },
+					{
+						id: 6,
+						uuid: "item-2-3",
+						name: "Champignons",
+						additionalCost: 100
+					}
+				]
+			},
+			{
+				uuid: "var-3",
+				name: "Sauce",
+				variationItems: [
+					{ id: 7, uuid: "item-3-1", name: "Ketchup", additionalCost: 0 },
+					{ id: 8, uuid: "item-3-2", name: "Mayo", additionalCost: 0 },
+					{ id: 9, uuid: "item-3-3", name: "BBQ", additionalCost: 50 }
+				]
+			}
+		]
 	}
 
 	private buildSampleCategory(): Category {
@@ -110,6 +164,35 @@ export class ProductsOverviewPageComponent implements OnInit {
 			"menu",
 			"category"
 		])
+	}
+
+	mapPathToType(path: string): ProductType {
+		switch (path) {
+			case "drinks":
+				return "DRINK"
+			case "specials":
+				return "SPECIAL"
+			case "menus":
+				return "MENU"
+			default:
+				return "FOOD"
+		}
+	}
+
+	showAddProductDialog() {
+		if (this.addProductDialog) {
+			this.addProductDialog.show()
+		}
+	}
+
+	addProductDialogPrimaryButtonClick(product: Product) {
+		this.addProductDialogLoading = true
+		// TODO: API call
+		if (this.category) {
+			this.category.products = [...this.category.products, product]
+		}
+		this.addProductDialogLoading = false
+		this.addProductDialog.hide()
 	}
 
 	deleteProduct(product: Product) {

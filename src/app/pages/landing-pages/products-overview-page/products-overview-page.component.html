@@ -4,6 +4,7 @@
 			backButtonVisible
 			addButtonVisible
 			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddProductDialog()"
 		>
 			{{ category?.name || locale.headline }}
 		</dav-header>
@@ -47,3 +48,17 @@
 		></app-product-list>
 	</div>
 </div>
+
+<app-add-product-dialog
+	#addProductDialog
+	[loading]="addProductDialogLoading"
+	[nameError]="addProductDialogNameError"
+	[priceError]="addProductDialogPriceError"
+	[category]="category"
+	[productType]="mapPathToType(activeTab)"
+	[availableVariations]="availableVariations"
+	(primaryButtonClick)="addProductDialogPrimaryButtonClick($any($event))"
+	(clearErrors)="
+		addProductDialogNameError = ''; addProductDialogPriceError = ''
+	"
+></app-add-product-dialog>

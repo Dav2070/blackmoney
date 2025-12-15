@@ -1,0 +1,77 @@
+.dialog-formfield-container {
+	margin-bottom: 16px;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.variations-label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.variations-selection {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	max-height: 300px;
+	overflow-y: auto;
+	padding: 8px;
+	border: 1px solid var(--dav-color-on-surface-variant);
+	border-radius: 4px;
+}
+
+.variation-container {
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.variation-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+
+	&:hover {
+		background-color: var(--dav-color-surface-variant);
+	}
+
+	&.selected {
+		background-color: var(--dav-color-primary-container);
+	}
+}
+
+.variation-items-list {
+	padding: 8px 12px 12px 32px;
+	background-color: rgba(0, 0, 0, 0.02);
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.variation-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 6px 8px;
+	background-color: var(--dav-color-surface-variant);
+	border-radius: 4px;
+	font-size: 13px;
+
+	.item-name {
+		flex: 1;
+		color: var(--dav-color-on-surface-variant);
+	}
+
+	.item-price {
+		font-weight: 500;
+		color: var(--dav-color-primary);
+		margin-left: 12px;
+	}
+}

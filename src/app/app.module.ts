@@ -128,7 +128,7 @@ import { EditVariationDialogComponent } from "./dialogs/edit-variation-dialog/ed
 import { EditVariationItemDialogComponent } from "./dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
 import { EditCategoryDialogComponent } from "./dialogs/edit-category-dialog/edit-category-dialog.component"
 import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-product-dialog.component"
-
+import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-product-dialog.component"
 
 @NgModule({
 	declarations: [
@@ -173,6 +173,7 @@ import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-prod
 		EditVariationItemDialogComponent,
 		EditCategoryDialogComponent,
 		AddProductDialogComponent,
+		EditProductDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -212,7 +213,7 @@ import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-prod
 		VariationsTableComponent,
 		RestaurantOverviewComponent,
 		RoomManagementComponent,
-		EmployeeManagementComponent,
+		EmployeeManagementComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

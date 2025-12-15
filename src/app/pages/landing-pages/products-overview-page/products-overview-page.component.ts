@@ -6,6 +6,7 @@ import { Variation } from "src/app/models/Variation"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { AddProductDialogComponent } from "src/app/dialogs/add-product-dialog/add-product-dialog.component"
+import { EditProductDialogComponent } from "src/app/dialogs/edit-product-dialog/edit-product-dialog.component"
 import { ProductType } from "src/app/types"
 
 @Component({
@@ -27,6 +28,12 @@ export class ProductsOverviewPageComponent implements OnInit {
 	addProductDialogLoading: boolean = false
 	addProductDialogNameError: string = ""
 	addProductDialogPriceError: string = ""
+
+	@ViewChild("editProductDialog")
+	editProductDialog: EditProductDialogComponent
+	editProductDialogLoading: boolean = false
+	editProductDialogNameError: string = ""
+	editProductDialogPriceError: string = ""
 
 	constructor(
 		private readonly dataService: DataService,
@@ -193,6 +200,31 @@ export class ProductsOverviewPageComponent implements OnInit {
 		}
 		this.addProductDialogLoading = false
 		this.addProductDialog.hide()
+	}
+
+	showEditProductDialog(product: Product) {
+		if (this.editProductDialog) {
+			this.editProductDialog.show(product)
+		}
+	}
+
+	editProductDialogPrimaryButtonClick(product: Product) {
+		this.editProductDialogLoading = true
+		// TODO: API call
+		if (this.category) {
+			const index = this.category.products.findIndex(
+				p => p.uuid === product.uuid
+			)
+			if (index !== -1) {
+				this.category.products = [
+					...this.category.products.slice(0, index),
+					product,
+					...this.category.products.slice(index + 1)
+				]
+			}
+		}
+		this.editProductDialogLoading = false
+		this.editProductDialog.hide()
 	}
 
 	deleteProduct(product: Product) {

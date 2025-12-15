@@ -1,4 +1,13 @@
-import { Component, Input, OnInit, ViewChild, ElementRef, HostListener } from "@angular/core"
+import {
+	Component,
+	Input,
+	Output,
+	EventEmitter,
+	OnInit,
+	ViewChild,
+	ElementRef,
+	HostListener
+} from "@angular/core"
 import { Router } from "@angular/router"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
@@ -18,6 +27,7 @@ import { ProductType } from "src/app/types"
 export class ProductListComponent implements OnInit {
 	@Input() category: Category
 	@Input() activeTab: string = "food"
+	@Output() editProduct = new EventEmitter<Product>()
 
 	products: Product[] = []
 	productType: ProductType = "FOOD"
@@ -56,9 +66,10 @@ export class ProductListComponent implements OnInit {
 			return
 		}
 		this.productType = this.mapPathToType(this.activeTab)
-		this.products = (this.category.products as Product[])?.filter(
-			p => p.type === this.productType
-		) ?? []
+		this.products =
+			(this.category.products as Product[])?.filter(
+				p => p.type === this.productType
+			) ?? []
 	}
 
 	private mapPathToType(path: string): ProductType {
@@ -78,9 +89,9 @@ export class ProductListComponent implements OnInit {
 		return item.uuid
 	}
 
-	editProduct(product: Product) {
-		console.log("Edit product:", product)
-		// TODO: navigate to edit
+	onEditProduct(product: Product) {
+		this.editProduct.emit(product)
+		this.contextMenuVisible = false
 	}
 
 	deleteProduct(product: Product) {
@@ -104,8 +115,7 @@ export class ProductListComponent implements OnInit {
 
 	editSelectedProduct() {
 		if (!this.selectedProduct) return
-		this.editProduct(this.selectedProduct)
-		this.contextMenuVisible = false
+		this.onEditProduct(this.selectedProduct)
 		this.selectedProduct = null
 	}
 
@@ -157,4 +167,3 @@ export class ProductListComponent implements OnInit {
 		}
 	}
 }
-

@@ -45,6 +45,7 @@
 			*ngIf="category"
 			[category]="category"
 			[activeTab]="activeTab"
+			(editProduct)="showEditProductDialog($event)"
 		></app-product-list>
 	</div>
 </div>
@@ -62,3 +63,15 @@
 		addProductDialogNameError = ''; addProductDialogPriceError = ''
 	"
 ></app-add-product-dialog>
+
+<app-edit-product-dialog
+	#editProductDialog
+	[loading]="editProductDialogLoading"
+	[nameError]="editProductDialogNameError"
+	[priceError]="editProductDialogPriceError"
+	[availableVariations]="availableVariations"
+	(primaryButtonClick)="editProductDialogPrimaryButtonClick($any($event))"
+	(clearErrors)="
+		editProductDialogNameError = ''; editProductDialogPriceError = ''
+	"
+></app-edit-product-dialog>

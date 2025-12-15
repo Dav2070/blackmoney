@@ -1265,7 +1265,7 @@ export class BookingPageComponent {
 			let discount = 0
 
 			if (offer.offerType === "FIXED_PRICE") {
-				discount = total - offer.offerValue
+				discount = offer.offerValue
 			} else if (
 				offer.offerType === "DISCOUNT" &&
 				offer.discountType === "PERCENTAGE"

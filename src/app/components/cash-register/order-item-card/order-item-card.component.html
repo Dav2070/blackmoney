@@ -46,9 +46,9 @@
 	@if (orderItem.orderItemVariations.length > 0) {
 		<div class="order-item-variations-separator"></div>
 
-		@for (variation of orderItem.orderItemVariations; track variation.uuid) {
+		@for (orderItemVariation of orderItem.orderItemVariations; track orderItemVariation.uuid) {
 			@for (
-				variationItem of variation.variationItems;
+				variationItem of orderItemVariation.variationItems;
 				track variationItem.uuid
 			) {
 				<div class="order-item-card-variation-name">
@@ -57,7 +57,7 @@
 
 				<div class="order-item-card-variation-unit-price">
 					<p>
-						{{ variation.count }} ×
+						{{ orderItemVariation.count }} ×
 						{{
 							formatPrice(
 								orderItem.product.price + variationItem.additionalCost

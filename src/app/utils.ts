@@ -118,31 +118,35 @@ export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
 		orderItem.type === OrderItemType.Special
 	) {
 		for (const item of orderItem.orderItems) {
-			unitPrice += item.product.price * item.count
+			const subItemUnitPrice = calculateUnitPriceOfOrderItem(item)
 
-			for (const variation of item.orderItemVariations) {
-				for (const variationItem of variation.variationItems) {
-					unitPrice += variationItem.additionalCost * variation.count
-				}
-			}
-		}
-
-		for (const variation of orderItem.orderItemVariations) {
-			for (const variationItem of variation.variationItems) {
-				unitPrice += variation.count * variationItem.additionalCost
+			if (item.orderItemVariations.length === 0) {
+				unitPrice += subItemUnitPrice * item.count
+			} else {
+				unitPrice += subItemUnitPrice
 			}
 		}
 	} else {
-		unitPrice = orderItem.product.price
+		unitPrice =
+			orderItem.orderItemVariations.length === 0
+				? orderItem.product.price
+				: 0
+
+		for (const variation of orderItem.orderItemVariations) {
+			for (const variationItem of variation.variationItems) {
+				unitPrice +=
+					(orderItem.product.price + variationItem.additionalCost) *
+					variation.count
+			}
+		}
 	}
 
-	unitPrice = unitPrice - (orderItem.discount ?? 0)
-
-	return unitPrice
+	return unitPrice - (orderItem.discount ?? 0)
 }
 
 export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {
 	if (orderItem == null) return 0
+
 	return calculateUnitPriceOfOrderItem(orderItem) * orderItem.count
 }
 

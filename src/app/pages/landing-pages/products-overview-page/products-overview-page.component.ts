@@ -66,7 +66,7 @@ export class ProductsOverviewPageComponent implements OnInit {
 		return [
 			{
 				uuid: "var-1",
-				name: "Größe",
+				name: "Größe (Food)",
 				variationItems: [
 					{ id: 1, uuid: "item-1-1", name: "Klein", additionalCost: 0 },
 					{ id: 2, uuid: "item-1-2", name: "Mittel", additionalCost: 150 },
@@ -100,6 +100,43 @@ export class ProductsOverviewPageComponent implements OnInit {
 					{ id: 8, uuid: "item-3-2", name: "Mayo", additionalCost: 0 },
 					{ id: 9, uuid: "item-3-3", name: "BBQ", additionalCost: 50 }
 				]
+			},
+			{
+				uuid: "var-4",
+				name: "Größe (Drinks)",
+				variationItems: [
+					{ id: 10, uuid: "item-4-1", name: "0.2L", additionalCost: 0 },
+					{ id: 11, uuid: "item-4-2", name: "0.4L", additionalCost: 150 },
+					{ id: 12, uuid: "item-4-3", name: "0.5L", additionalCost: 200 },
+					{ id: 13, uuid: "item-4-4", name: "1L", additionalCost: 350 }
+				]
+			},
+			{
+				uuid: "var-5",
+				name: "Eis",
+				variationItems: [
+					{
+						id: 14,
+						uuid: "item-5-1",
+						name: "Ohne Eis",
+						additionalCost: 0
+					},
+					{ id: 15, uuid: "item-5-2", name: "Normal", additionalCost: 0 },
+					{
+						id: 16,
+						uuid: "item-5-3",
+						name: "Extra Eis",
+						additionalCost: 30
+					}
+				]
+			},
+			{
+				uuid: "var-6",
+				name: "Temperatur",
+				variationItems: [
+					{ id: 17, uuid: "item-6-1", name: "Kalt", additionalCost: 0 },
+					{ id: 18, uuid: "item-6-2", name: "Warm", additionalCost: 0 }
+				]
 			}
 		]
 	}
@@ -107,7 +144,7 @@ export class ProductsOverviewPageComponent implements OnInit {
 	private buildSampleCategory(): Category {
 		const category: Category = {
 			uuid: "1",
-			name: "Pizza",
+			name: "Getränke & Speisen",
 			products: []
 		}
 
@@ -121,7 +158,28 @@ export class ProductsOverviewPageComponent implements OnInit {
 			]
 		}
 
+		const drinkSizeVariation: Variation = {
+			uuid: "drink-size-var",
+			name: "Größe",
+			variationItems: [
+				{ id: 10, uuid: "drink-size-s", name: "0.2L", additionalCost: 0 },
+				{ id: 11, uuid: "drink-size-m", name: "0.4L", additionalCost: 150 },
+				{ id: 12, uuid: "drink-size-l", name: "0.5L", additionalCost: 200 }
+			]
+		}
+
+		const iceVariation: Variation = {
+			uuid: "ice-var",
+			name: "Eis",
+			variationItems: [
+				{ id: 13, uuid: "ice-none", name: "Ohne Eis", additionalCost: 0 },
+				{ id: 14, uuid: "ice-normal", name: "Normal", additionalCost: 0 },
+				{ id: 15, uuid: "ice-extra", name: "Extra Eis", additionalCost: 30 }
+			]
+		}
+
 		category.products = [
+			// Food Products
 			{
 				id: 1001,
 				uuid: "prod-1",
@@ -151,6 +209,69 @@ export class ProductsOverviewPageComponent implements OnInit {
 				category,
 				variations: [sizeVariation],
 				takeaway: false
+			},
+			// Drink Products
+			{
+				id: 2001,
+				uuid: "drink-1",
+				name: "Coca Cola",
+				price: 350,
+				type: "DRINK",
+				category,
+				variations: [drinkSizeVariation, iceVariation],
+				takeaway: true
+			},
+			{
+				id: 2002,
+				uuid: "drink-2",
+				name: "Fanta",
+				price: 350,
+				type: "DRINK",
+				category,
+				variations: [drinkSizeVariation, iceVariation],
+				takeaway: true
+			},
+			{
+				id: 2003,
+				uuid: "drink-3",
+				name: "Mineralwasser",
+				price: 280,
+				type: "DRINK",
+				category,
+				variations: [drinkSizeVariation],
+				takeaway: true
+			},
+			{
+				id: 2004,
+				uuid: "drink-4",
+				name: "Bier vom Fass",
+				price: 420,
+				type: "DRINK",
+				category,
+				variations: [drinkSizeVariation],
+				takeaway: false
+			},
+			// Special Products
+			{
+				id: 3001,
+				uuid: "special-1",
+				name: "Tagesgericht",
+				price: 1290,
+				type: "SPECIAL",
+				category,
+				variations: [],
+				takeaway: true
+			},
+			// Menu Products
+			{
+				id: 4001,
+				uuid: "menu-1",
+				name: "Lunch Menü",
+				price: 1490,
+				type: "MENU",
+				category,
+				variations: [],
+				takeaway: true
 			}
 		]
 

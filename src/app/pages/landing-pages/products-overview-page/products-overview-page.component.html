@@ -5,7 +5,7 @@
 			addButtonVisible
 			(backButtonClick)="navigateBack()"
 		>
-			{{ locale.headline }}
+			{{ category?.name || locale.headline }}
 		</dav-header>
 
 		<dav-tab-bar>
@@ -39,7 +39,11 @@
 			</dav-tab-bar-item>
 		</dav-tab-bar>
 
-		<!-- Child-Route wird hier geladen (product-list, drinks-list, etc.) -->
-		<router-outlet></router-outlet>
+		<!-- Produkt-Liste wird hier geladen -->
+		<app-product-list
+			*ngIf="category"
+			[category]="category"
+			[activeTab]="activeTab"
+		></app-product-list>
 	</div>
 </div>

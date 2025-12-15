@@ -1,51 +1,122 @@
 <div class="products-list">
-	@if (products?.length > 0) {
-		@for (product of products; track product.uuid) {
+	<ng-container *ngIf="products?.length > 0; else emptyState">
+		<ng-container *ngFor="let product of products; trackBy: trackByUuid">
 			<dav-card class="product-card">
 				<div class="product-header">
-					<h3>{{ product.name }}</h3>
+					<div class="header-content">
+						<h3>{{ product.name }}</h3>
+						<span class="product-id">ID: {{ product.id }}</span>
+					</div>
 					<div class="product-actions">
-						<button
-							class="icon-button"
-							(click)="editProduct(product)"
-							title="Bearbeiten"
+						<dav-icon-button
+							size="xs"
+							[tooltip]="'Optionen'"
+							(click)="showProductContextMenu($event, product)"
 						>
-							<fa-icon [icon]="faPen"></fa-icon>
-						</button>
-						<button
-							class="icon-button delete"
-							(click)="deleteProduct(product)"
-							title="Löschen"
-						>
-							<fa-icon [icon]="faTrash"></fa-icon>
-						</button>
+							<fa-icon [icon]="faEllipsis"></fa-icon>
+						</dav-icon-button>
 					</div>
 				</div>
-				<div class="product-details">
-					<p class="price">{{ (product.price / 100).toFixed(2) }} €</p>
-					<p class="type">{{ product.type }}</p>
-					@if (product.variations?.length > 0) {
-						<div class="variations">
+
+				<div class="separator"></div>
+
+				<div class="product-content">
+					<div class="product-meta">
+						<span class="price">{{
+							product.price / 100 | currency: "EUR" : "symbol" : "1.2-2"
+						}}</span>
+						<ng-container *ngIf="product.takeaway">
+							<span class="badge takeaway">Takeaway</span>
+						</ng-container>
+					</div>
+
+					<ng-container
+						*ngIf="product.variations?.length > 0; else noVariations"
+					>
+						<div class="variations-section">
 							<strong>Variationen:</strong>
-							@for (
-								variation of product.variations;
-								track variation.uuid
-							) {
-								<span class="variation-badge">{{
-									variation.name
-								}}</span>
-							}
+							<div class="variation-chips">
+								<ng-container
+									*ngFor="
+										let variation of product.variations;
+										trackBy: trackByUuid
+									"
+								>
+									<div
+										class="variation-chip"
+										(mouseenter)="
+											showVariationTooltip($event, variation)
+										"
+										(mouseleave)="scheduleHideVariationTooltip()"
+									>
+										<span class="variation-badge">{{
+											variation.name
+										}}</span>
+									</div>
+								</ng-container>
+							</div>
 						</div>
-					}
-					@if (product.takeaway) {
-						<span class="badge takeaway">Takeaway verfügbar</span>
-					}
+					</ng-container>
+					<ng-template #noVariations>
+						<p class="no-variations">Keine Variationen</p>
+					</ng-template>
 				</div>
 			</dav-card>
-		}
-	} @else {
+		</ng-container>
+	</ng-container>
+
+	<ng-template #emptyState>
 		<div class="empty-state">
-			<p>Keine Produkte in dieser Kategorie.</p>
+			<p>Keine Produkte für {{ category?.name }}.</p>
 		</div>
-	}
+	</ng-template>
+
+	<!-- Variation Tooltip Overlay -->
+	<ng-container *ngIf="variationTooltipVisible">
+		<div
+			class="variation-tooltip-overlay"
+			[style.left.px]="variationTooltipX"
+			[style.top.px]="variationTooltipY"
+			(mouseenter)="keepTooltipOpen()"
+			(mouseleave)="scheduleHideVariationTooltip()"
+		>
+			<strong>{{ variationTooltipTitle }}</strong>
+			<div class="variation-tooltip-items">
+				<ng-container
+					*ngFor="let item of variationTooltipItems; trackBy: trackByUuid"
+				>
+					<div class="variation-item">
+						<span>{{ item.name }}</span>
+						<span class="variation-price">
+							+{{
+								item.additionalCost / 100
+									| currency: "EUR" : "symbol" : "1.2-2"
+							}}
+						</span>
+					</div>
+				</ng-container>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- Context Menu -->
+	<dav-context-menu
+		#productContextMenu
+		[visible]="contextMenuVisible"
+		[posX]="contextMenuX"
+		[posY]="contextMenuY"
+	>
+		<dav-context-menu-item
+			[value]="'Bearbeiten'"
+			(click)="editSelectedProduct()"
+		>
+			<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+		</dav-context-menu-item>
+		<dav-context-menu-item
+			[value]="'Löschen'"
+			(click)="deleteSelectedProduct()"
+		>
+			<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+		</dav-context-menu-item>
+	</dav-context-menu>
 </div>

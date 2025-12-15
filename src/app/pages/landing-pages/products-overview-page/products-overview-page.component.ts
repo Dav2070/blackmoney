@@ -144,7 +144,7 @@ export class ProductsOverviewPageComponent implements OnInit {
 	private buildSampleCategory(): Category {
 		const category: Category = {
 			uuid: "1",
-			name: "Getränke & Speisen",
+			name: "Pizza",
 			products: []
 		}
 

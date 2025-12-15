@@ -49,6 +49,19 @@ export class AddProductDialogComponent {
 	expandedVariationUuids: Set<string> = new Set()
 	idError: string = ""
 
+	get dialogHeadline(): string {
+		switch (this.productType) {
+			case "DRINK":
+				return "Neues Getränk"
+			case "SPECIAL":
+				return "Neues Special"
+			case "MENU":
+				return "Neues Menü"
+			default:
+				return "Neue Speise"
+		}
+	}
+
 	constructor(
 		private localizationService: LocalizationService,
 		@Inject(PLATFORM_ID) private platformId: object

@@ -45,6 +45,20 @@ export class EditProductDialogComponent {
 	expandedVariationUuids: Set<string> = new Set()
 	idError: string = ""
 
+	get dialogHeadline(): string {
+		if (!this.product) return "Produkt bearbeiten"
+		switch (this.product.type) {
+			case "DRINK":
+				return "Getränk bearbeiten"
+			case "SPECIAL":
+				return "Special bearbeiten"
+			case "MENU":
+				return "Menü bearbeiten"
+			default:
+				return "Speise bearbeiten"
+		}
+	}
+
 	constructor(
 		private localizationService: LocalizationService,
 		@Inject(PLATFORM_ID) private platformId: object

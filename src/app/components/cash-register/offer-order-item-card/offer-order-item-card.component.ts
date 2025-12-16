@@ -7,7 +7,7 @@ import {
 import { OrderItem } from "src/app/models/OrderItem"
 import { LocalizationService } from "src/app/services/localization-service"
 import { formatPrice } from "src/app/utils"
-import { PriceCalculator } from "src/app/priceUtils"
+import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 
 @Component({
 	selector: "app-offer-order-item-card",

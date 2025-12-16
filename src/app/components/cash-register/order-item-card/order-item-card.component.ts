@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { OrderItem } from "src/app/models/OrderItem"
 import { formatPrice } from "src/app/utils"
-import { PriceCalculator } from "src/app/priceUtils"
+import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import {
 	faNoteSticky,
 	faCupTogo,

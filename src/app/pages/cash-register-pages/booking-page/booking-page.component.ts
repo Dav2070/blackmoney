@@ -54,7 +54,7 @@ import {
 	formatPrice,
 	showToast
 } from "src/app/utils"
-import { PriceCalculator } from "src/app/priceUtils"
+import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
 

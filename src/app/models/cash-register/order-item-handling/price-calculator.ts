@@ -1,6 +1,6 @@
-import { OrderItem } from "./models/OrderItem"
-import { OrderItemType, DiscountType, OfferType } from "./types"
-import { OrderItemVariation } from "./models/OrderItemVariation"
+import { OrderItem } from "../../OrderItem"
+import { OrderItemType, DiscountType, OfferType } from "../../../types"
+import { OrderItemVariation } from "../../OrderItemVariation"
 
 /**
  * PriceCalculator

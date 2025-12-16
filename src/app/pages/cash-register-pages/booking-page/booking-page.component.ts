@@ -855,6 +855,9 @@ export class BookingPageComponent {
 			newItem.count = newItem.orderItemVariations.length
 			this.stagedItems.pushNewItem(newItem)
 		}
+
+		this.showTotal()
+		this.tmpAnzahl = undefined
 	}
 
 	subtractProductVariationsDialogPrimaryButtonClick(event: {
@@ -2212,48 +2215,6 @@ export class BookingPageComponent {
 		this.tmpCurrentMenu = null
 		this.tmpSpecialAllItemsHandler = new AllItemHandler()
 		this.showTotal()
-	}
-
-	calculateSpecialPrice(item: OrderItem): number {
-		let originalPrice = item.product.price * item.count
-
-		for (let variation of item.orderItemVariations) {
-			for (let variationItem of variation.variationItems) {
-				if (variationItem.name !== "Rabatt") {
-					originalPrice += variation.count * variationItem.additionalCost
-				}
-			}
-		}
-
-		let itemPrice = originalPrice
-
-		// Bestimme das aktuelle Menü oder Special für Preisberechnung
-		let currentMenuOrSpecial = this.currentSpecial || this.currentMenu
-
-		if (currentMenuOrSpecial && currentMenuOrSpecial.offer.offerType) {
-			switch (currentMenuOrSpecial.offer.offerType) {
-				case "FIXED_PRICE":
-					itemPrice = currentMenuOrSpecial.offer.offerValue
-					break
-				case "DISCOUNT":
-					if (currentMenuOrSpecial.offer.discountType === "PERCENTAGE") {
-						itemPrice =
-							originalPrice *
-							(1 - currentMenuOrSpecial.offer.offerValue / 100)
-					} else if (
-						currentMenuOrSpecial.offer.discountType === "AMOUNT"
-					) {
-						itemPrice =
-							originalPrice - currentMenuOrSpecial.offer.offerValue
-					}
-					break
-				default:
-					itemPrice = originalPrice
-					break
-			}
-		}
-
-		return itemPrice
 	}
 
 	addNoteButtonClick() {

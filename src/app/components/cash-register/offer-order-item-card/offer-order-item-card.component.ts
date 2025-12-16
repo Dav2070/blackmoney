@@ -6,11 +6,8 @@ import {
 } from "@fortawesome/pro-solid-svg-icons"
 import { OrderItem } from "src/app/models/OrderItem"
 import { LocalizationService } from "src/app/services/localization-service"
-import {
-	calculateUnitPriceOfOrderItem,
-	calculateTotalPriceOfOrderItem,
-	formatPrice
-} from "src/app/utils"
+import { formatPrice } from "src/app/utils"
+import { PriceCalculator } from "src/app/priceUtils"
 
 @Component({
 	selector: "app-offer-order-item-card",
@@ -20,8 +17,6 @@ import {
 })
 export class OfferOrderItemCardComponent {
 	locale = this.localizationService.locale.offerOrderItemCard
-	calculateUnitPriceOfOrderItem = calculateUnitPriceOfOrderItem
-	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	formatPrice = formatPrice
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo
@@ -32,7 +27,22 @@ export class OfferOrderItemCardComponent {
 		orderItem: OrderItem
 	}>()
 
+	private priceCalculator = new PriceCalculator()
+
 	constructor(private localizationService: LocalizationService) {}
+
+	calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
+		const totalPrice = this.priceCalculator.calculateTotalPrice(orderItem)
+		return totalPrice / orderItem.count
+	}
+
+	calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {
+		return this.priceCalculator.calculateTotalPrice(orderItem)
+	}
+
+	calculateDiscountOfOrderItem(orderItem: OrderItem): number {
+		return this.priceCalculator.calculateDiscount(orderItem)
+	}
 
 	onNoteIconClick(event: Event) {
 		event.stopPropagation()

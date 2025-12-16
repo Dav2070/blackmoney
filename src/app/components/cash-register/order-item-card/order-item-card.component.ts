@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { OrderItem } from "src/app/models/OrderItem"
-import { calculateTotalPriceOfOrderItem, formatPrice } from "src/app/utils"
+import { formatPrice } from "src/app/utils"
+import { PriceCalculator } from "src/app/priceUtils"
 import {
 	faNoteSticky,
 	faCupTogo,
@@ -14,7 +15,6 @@ import {
 	standalone: false
 })
 export class OrderItemCardComponent {
-	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	formatPrice = formatPrice
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo
@@ -25,6 +25,12 @@ export class OrderItemCardComponent {
 	@Output() noteIconClick = new EventEmitter<{
 		orderItem: OrderItem
 	}>()
+
+	private priceCalculator = new PriceCalculator()
+
+	calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {
+		return this.priceCalculator.calculateTotalPrice(orderItem)
+	}
 
 	onNoteIconClick(event: Event) {
 		event.stopPropagation()

@@ -2130,16 +2130,8 @@ export class BookingPageComponent {
 				type: OrderItemType.Special,
 				count: processedItem.count,
 				order: null,
-				product: {
-					id: this.currentSpecial.id,
-					uuid: this.currentSpecial.uuid,
-					type: this.currentSpecial.type,
-					name: this.currentSpecial.name,
-					price: originalProductPrice,
-					category: this.currentSpecial.category,
-					variations: [],
-					offer: this.currentSpecial.offer
-				},
+				offer: this.currentSpecial.offer,
+				product: this.currentSpecial,
 				orderItems: [processedItem],
 				orderItemVariations: [],
 				discount: originalProductPrice * rabattFaktor
@@ -2202,6 +2194,7 @@ export class BookingPageComponent {
 			type: OrderItemType.Menu,
 			count: 1,
 			order: null,
+			offer: this.currentMenu.offer,
 			product: this.currentMenu,
 			orderItems: allOrderItems,
 			orderItemVariations: [],

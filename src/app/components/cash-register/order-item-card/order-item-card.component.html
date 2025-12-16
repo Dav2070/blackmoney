@@ -35,6 +35,11 @@
 				{{ orderItem.count }} ×
 				{{ formatPrice(orderItem.product.price) }}
 			</p>
+		} @else if (orderItem.orderItemVariations.length > 0) {
+			<p>
+				{{ orderItem.count }} ×
+				{{ formatPrice(orderItem.product.price) }}
+			</p>
 		}
 	</div>
 
@@ -57,11 +62,7 @@
 				<div class="order-item-card-variation-unit-price">
 					<p>
 						{{ variation.count }} ×
-						{{
-							formatPrice(
-								orderItem.product.price + variationItem.additionalCost
-							)
-						}}
+						{{ formatPrice(variationItem.additionalCost) }}
 					</p>
 				</div>
 			}

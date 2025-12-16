@@ -54,6 +54,7 @@ import {
 	formatPrice,
 	showToast
 } from "src/app/utils"
+import { PriceCalculator } from "src/app/priceUtils"
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
 
@@ -84,6 +85,7 @@ export class BookingPageComponent {
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	formatPrice = formatPrice
 	OrderItemType = OrderItemType
+	priceCalculator = new PriceCalculator()
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 	selectedCategory: string = ""
@@ -1265,60 +1267,33 @@ export class BookingPageComponent {
 		orderItems: OrderItem[]
 	}) {
 		if (this.selectedProduct.type === "MENU") {
-			let total = 0
-
-			// Durch alle ausgewählten Produkte gehen
-			for (const orderItem of event.orderItems) {
-				total += calculateTotalPriceOfOrderItem(orderItem)
-			}
-
-			const offer = this.selectedProduct.offer
-			let discount = 0
-
-			if (offer.offerType === "FIXED_PRICE") {
-				discount = offer.offerValue
-			} else if (
-				offer.offerType === "DISCOUNT" &&
-				offer.discountType === "PERCENTAGE"
-			) {
-				discount = total * (offer.offerValue / 100)
-			} else if (
-				offer.offerType === "DISCOUNT" &&
-				offer.discountType === "AMOUNT"
-			) {
-				discount = offer.offerValue
-			}
-
-			this.stagedItems.pushNewItem({
+			const menuOrderItem: OrderItem = {
 				uuid: crypto.randomUUID(),
 				type: OrderItemType.Menu,
 				count: 1,
 				order: null,
+				offer: this.selectedProduct.offer,
 				product: this.selectedProduct,
 				orderItems: event.orderItems,
-				orderItemVariations: [],
-				discount
-			})
-		} else {
-			let rabattFaktor = 0
-
-			if (
-				this.selectedProduct &&
-				this.selectedProduct.offer.discountType === "PERCENTAGE"
-			) {
-				rabattFaktor = this.selectedProduct.offer.offerValue / 100
+				orderItemVariations: []
 			}
 
+			const discount = this.priceCalculator.calculateDiscount(menuOrderItem)
+			menuOrderItem.discount = discount
+
+			this.stagedItems.pushNewItem(menuOrderItem)
+		} else {
 			for (const orderItem of event.orderItems) {
 				const processedItem: OrderItem = JSON.parse(
 					JSON.stringify(orderItem)
 				)
 
-				this.stagedItems.pushNewItem({
+				const specialOrderItem: OrderItem = {
 					uuid: crypto.randomUUID(),
 					type: OrderItemType.Special,
 					count: 1,
 					order: null,
+					offer: this.selectedProduct.offer,
 					product: {
 						id: this.selectedProduct.id,
 						uuid: this.selectedProduct.uuid,
@@ -1330,13 +1305,20 @@ export class BookingPageComponent {
 						offer: this.selectedProduct.offer
 					},
 					orderItems: [processedItem],
-					orderItemVariations: [],
-					discount: processedItem.product.price * rabattFaktor
-				})
+					orderItemVariations: []
+				}
+
+				// Use PriceCalculator to compute discount
+				const discount =
+					this.priceCalculator.calculateDiscount(specialOrderItem)
+				specialOrderItem.discount = discount
+
+				this.stagedItems.pushNewItem(specialOrderItem)
 			}
 		}
 
 		this.selectMenuSpecialProductsDialog.hide()
+		this.showTotal()
 	}
 
 	addNoteButtonClick() {

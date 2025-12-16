@@ -33,6 +33,19 @@ export class OrderItemCardComponent {
 		return this.priceCalculator.calculateTotalPrice(orderItem)
 	}
 
+	getCombinedVariationNames(orderItemVariation: any): string {
+		return orderItemVariation.variationItems
+			.map((vi: any) => vi.name)
+			.join(", ")
+	}
+
+	getTotalVariationPrice(orderItemVariation: any): number {
+		return orderItemVariation.variationItems.reduce(
+			(sum: number, vi: any) => sum + vi.additionalCost,
+			0
+		)
+	}
+
 	onNoteIconClick(event: Event) {
 		event.stopPropagation()
 		this.noteIconClick.emit({

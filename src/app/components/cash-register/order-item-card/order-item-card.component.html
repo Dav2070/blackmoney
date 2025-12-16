@@ -55,25 +55,21 @@
 			orderItemVariation of orderItem.orderItemVariations;
 			track orderItemVariation.uuid
 		) {
-			@for (
-				variationItem of orderItemVariation.variationItems;
-				track variationItem.uuid
-			) {
-				<div class="order-item-card-variation-name">
-					<p>- {{ variationItem.name }}</p>
-				</div>
+			<div class="order-item-card-variation-name">
+				<p>- {{ getCombinedVariationNames(orderItemVariation) }}</p>
+			</div>
 
-				<div class="order-item-card-variation-unit-price">
-					<p>
-						{{ orderItemVariation.count }} ×
-						{{
-							formatPrice(
-								orderItem.product.price + variationItem.additionalCost
-							)
-						}}
-					</p>
-				</div>
-			}
+			<div class="order-item-card-variation-unit-price">
+				<p>
+					{{ orderItemVariation.count }} ×
+					{{
+						formatPrice(
+							getTotalVariationPrice(orderItemVariation) +
+								orderItem.product.price
+						)
+					}}
+				</p>
+			</div>
 		}
 	}
 </li>

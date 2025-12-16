@@ -295,7 +295,10 @@ export const de = {
 			price: "Preis",
 			diverseFood: "Diverse Speise",
 			diverseDrinks: "Diverse Getränke",
-			diverseCosts: "Diverse Kosten"
+			diverseCosts: "Diverse Kosten",
+			food: "Speisen",
+			drinks: "Getränke",
+			otherCosts: "Andere Kosten"
 		}
 	},
 	actions: {

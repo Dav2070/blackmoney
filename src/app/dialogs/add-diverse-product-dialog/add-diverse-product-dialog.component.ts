@@ -28,20 +28,22 @@ export class AddDiverseProductDialogComponent {
 	price: number = 0
 	priceString: string = ""
 
-	categoryOptions = [
-		{
-			key: "diverse_speisen",
-			value: "Speisen"
-		},
-		{
-			key: "diverse_getraenke",
-			value: "Getränke"
-		},
-		{
-			key: "diverse_kosten",
-			value: "Andere Kosten"
-		}
-	]
+	get categoryOptions() {
+		return [
+			{
+				key: "diverse_speisen",
+				value: this.locale.food
+			},
+			{
+				key: "diverse_getraenke",
+				value: this.locale.drinks
+			},
+			{
+				key: "diverse_kosten",
+				value: this.locale.otherCosts
+			}
+		]
+	}
 
 	constructor(
 		private localizationService: LocalizationService,

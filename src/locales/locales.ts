@@ -292,7 +292,10 @@ export const de = {
 			headline: "Diverses Produkt buchen",
 			name: "Produktname",
 			art: "Art",
-			price: "Preis"
+			price: "Preis",
+			diverseFood: "Diverse Speise",
+			diverseDrinks: "Diverse Getränke",
+			diverseCosts: "Diverse Kosten"
 		}
 	},
 	actions: {

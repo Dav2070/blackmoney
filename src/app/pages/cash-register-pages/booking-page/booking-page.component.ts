@@ -67,6 +67,7 @@ const mobileBreakpoint = 860
 })
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
+	dialogLocale = this.localizationService.locale.dialogs
 	faArrowRightArrowLeft = faArrowRightArrowLeft
 	faFileLines = faFileLines
 	faXmark = faXmark
@@ -1371,13 +1372,13 @@ export class BookingPageComponent {
 
 		if (event.productType === "diverse_speisen") {
 			product.type = "FOOD"
-			product.name = "Diverse Speise"
+			product.name = this.dialogLocale.addDiverseProductDialog.diverseFood
 		} else if (event.productType === "diverse_getraenke") {
 			product.type = "DRINK"
-			product.name = "Diverse Getränke"
+			product.name = this.dialogLocale.addDiverseProductDialog.diverseDrinks
 		} else {
 			product.type = null
-			product.name = "Diverse Kosten"
+			product.name = this.dialogLocale.addDiverseProductDialog.diverseCosts
 		}
 
 		// Add as order item with note

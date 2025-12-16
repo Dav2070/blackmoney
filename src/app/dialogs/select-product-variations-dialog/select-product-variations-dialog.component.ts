@@ -38,13 +38,16 @@ export class SelectProductVariationsDialogComponent {
 		[key: string]: number
 	}[] = []
 
+	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	@Input() product: Product = null
+	@Input() child: boolean = false
+	@Input() maxTotalCount: number = 0
+	@Output() dismiss = new EventEmitter<void>()
 	@Output() primaryButtonClick = new EventEmitter<{
 		variationTree: {
 			[key: string]: number
 		}[]
 	}>()
-	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -97,20 +100,13 @@ export class SelectProductVariationsDialogComponent {
 
 	hide() {
 		this.visible = false
+		this.dismiss.emit()
 	}
 
-	addButtonClick(key: string, value: string) {
+	counterChange(key: string, value: string, count: number) {
 		this.variationTree[this.currentVariation][
 			(key ? key + "," : "") + value
-		]++
-	}
-
-	removeButtonClick(key: string, value: string) {
-		const currentVariationKey = (key ? key + "," : "") + value
-
-		if (this.variationTree[this.currentVariation][currentVariationKey] > 0) {
-			this.variationTree[this.currentVariation][currentVariationKey]--
-		}
+		] = count
 	}
 
 	cartesian(args: string[][]) {
@@ -216,6 +212,20 @@ export class SelectProductVariationsDialogComponent {
 		}
 
 		return count
+	}
+
+	isPlusButtonDisabled(
+		currentVariation: number,
+		currentTreeVariationItemCount: number,
+		previousTreeVariationItemCount: number
+	): boolean {
+		if (currentVariation === 0 && this.maxTotalCount > 0) {
+			return currentTreeVariationItemCount >= this.maxTotalCount
+		} else if (currentVariation === 0) {
+			return false
+		} else {
+			return currentTreeVariationItemCount >= previousTreeVariationItemCount
+		}
 	}
 
 	submit() {

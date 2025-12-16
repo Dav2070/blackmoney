@@ -9,7 +9,6 @@
 	box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 	padding: 16px;
 	box-sizing: border-box;
-	cursor: pointer;
 	transition: 200ms;
 
 	p {
@@ -17,13 +16,17 @@
 	}
 }
 
-.offer-order-item-card:hover {
+.offer-order-item-card.clickable {
+	cursor: pointer;
+}
+
+.offer-order-item-card.clickable:hover {
 	background-color: var(--dav-color-surface-hover);
 }
 
-.offer-order-item-card:focus,
-.offer-order-item-card:active,
-.offer-order-item-card.selected {
+.offer-order-item-card.clickable:focus,
+.offer-order-item-card.clickable:active,
+.offer-order-item-card.clickable.selected {
 	background-color: var(--dav-color-surface-focus);
 }
 

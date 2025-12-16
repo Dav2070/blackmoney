@@ -1,0 +1,19 @@
+<div class="counter-container slide-up-in-light">
+	<dav-icon-button
+		size="sm"
+		[disabled]="minusButtonDisabled"
+		(click)="minusButtonClick()"
+	>
+		<fa-icon [icon]="faMinus"></fa-icon>
+	</dav-icon-button>
+
+	<p>{{ count }} × {{ headline }}</p>
+
+	<dav-icon-button
+		size="sm"
+		[disabled]="plusButtonDisabled"
+		(click)="plusButtonClick()"
+	>
+		<fa-icon [icon]="faPlus"></fa-icon>
+	</dav-icon-button>
+</div>

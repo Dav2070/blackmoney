@@ -36,11 +36,13 @@
 					) {
 						<app-offer-order-item-card
 							[orderItem]="orderItem"
+							[clickable]="true"
 							(click)="transferItem(orderItem, bookedItems, activeBill)"
 						></app-offer-order-item-card>
 					} @else {
 						<app-order-item-card
 							[orderItem]="orderItem"
+							[clickable]="true"
 							(click)="transferItem(orderItem, bookedItems, activeBill)"
 							(contextmenu)="showContextMenu($event, orderItem, true)"
 						></app-order-item-card>
@@ -122,6 +124,7 @@
 								) {
 									<app-offer-order-item-card
 										[orderItem]="orderItem"
+										[clickable]="true"
 										(click)="
 											transferItem(
 												orderItem,
@@ -133,6 +136,7 @@
 								} @else {
 									<app-order-item-card
 										[orderItem]="orderItem"
+										[clickable]="true"
 										(click)="
 											transferItem(
 												orderItem,

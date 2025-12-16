@@ -1,6 +1,7 @@
 <li
 	class="offer-order-item-card slide-up-in-light"
 	[class.selected]="selectedOrderItemUuid === orderItem.uuid"
+	[class.clickable]="clickable"
 >
 	<div class="offer-order-item-card-id">
 		<p>#{{ orderItem.product.id }}</p>
@@ -44,24 +45,26 @@
 	@if (orderItem.orderItems.length > 0) {
 		<div class="offer-order-item-variations-separator"></div>
 
-		@for (orderItem of orderItem.orderItems; track orderItem.uuid) {
+		@for (subOrderItem of orderItem.orderItems; track subOrderItem.uuid) {
 			<div class="offer-order-item-card-product-name">
-				<p>- {{ orderItem.product.name }}</p>
+				<p>- {{ subOrderItem.product.name }}</p>
 			</div>
 
-			<div class="offer-order-item-card-variation-unit-price">
-				<p>
-					{{ orderItem.count }} ×
-					{{ formatPrice(orderItem.product.price) }}
-				</p>
-			</div>
+			@if (subOrderItem.orderItemVariations.length === 0) {
+				<div class="offer-order-item-card-variation-unit-price">
+					<p>
+						{{ subOrderItem.count }} ×
+						{{ formatPrice(calculateUnitPriceOfOrderItem(subOrderItem)) }}
+					</p>
+				</div>
+			}
 
 			@for (
-				variation of orderItem.orderItemVariations;
-				track variation.uuid
+				orderItemVariation of subOrderItem.orderItemVariations;
+				track orderItemVariation.uuid
 			) {
 				@for (
-					variationItem of variation.variationItems;
+					variationItem of orderItemVariation.variationItems;
 					track variationItem.uuid
 				) {
 					<div class="offer-order-item-card-variation-name">
@@ -69,12 +72,15 @@
 					</div>
 
 					<div class="offer-order-item-card-variation-unit-price">
-						@if (variationItem.additionalCost > 0) {
-							<p>
-								{{ variation.count }} ×
-								{{ formatPrice(variationItem.additionalCost) }}
-							</p>
-						}
+						<p>
+							{{ orderItemVariation.count }} ×
+							{{
+								formatPrice(
+									subOrderItem.product.price +
+										variationItem.additionalCost
+								)
+							}}
+						</p>
 					</div>
 				}
 			}

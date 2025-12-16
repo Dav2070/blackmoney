@@ -1,0 +1,130 @@
+<dav-dialog
+	#dialog
+	[visible]="visible"
+	maxWidth="800"
+	[hideBehindOverlay]="selectProductVariationsDialogVisible"
+	(dismiss)="dismiss()"
+>
+	<div class="container">
+		<div class="categories-container">
+			<h3>{{ locale.categoriesHeadline }}</h3>
+
+			<dav-sidenav>
+				@if (product?.type === "MENU") {
+					@for (
+						offerItem of product.offer.offerItems;
+						track offerItem.uuid
+					) {
+						<dav-sidenav-item
+							[value]="
+								offerItem.name + ' (' + offerItem.maxSelections + ')'
+							"
+							[active]="offerItem === selectedOfferItem"
+							[disabled]="offerItem.maxSelections <= 0"
+							(click)="selectOfferItem(offerItem)"
+						></dav-sidenav-item>
+					}
+				} @else {
+					@for (category of categories; track category.uuid) {
+						<dav-sidenav-item
+							[value]="category.name"
+							[active]="category === selectedCategory"
+							(click)="selectCategory(category)"
+						></dav-sidenav-item>
+					}
+				}
+			</dav-sidenav>
+		</div>
+
+		<div class="products-container">
+			<h3>{{ locale.productsHeadline }}</h3>
+
+			<div class="products-list">
+				@for (p of selectedProducts; track p.uuid) {
+					<dav-button
+						class="slide-up-in-light"
+						[disabled]="
+							product.type === 'MENU' &&
+							selectedOfferItem.maxSelections <= 0
+						"
+						(click)="selectProduct(p)"
+					>
+						{{ p.name }}
+					</dav-button>
+				}
+			</div>
+		</div>
+
+		<div class="selection-container">
+			<h3>{{ locale.selectionHeadline }}</h3>
+
+			<div class="selected-items-list">
+				@for (
+					orderItem of allItemHandler.getOrderItems();
+					track orderItem.uuid
+				) {
+					@if (orderItem.orderItemVariations.length > 0) {
+						@for (
+							variation of orderItem.orderItemVariations;
+							track variation.uuid
+						) {
+							<app-counter
+								[count]="variation.count"
+								[headline]="
+									getVariationHeadline(
+										orderItem.product.name,
+										variation
+									)
+								"
+								[plusButtonDisabled]="product.type === 'MENU'"
+								(change)="
+									variationCounterChange(orderItem, variation, $event)
+								"
+							></app-counter>
+						}
+					} @else {
+						<app-counter
+							[count]="orderItem.count"
+							[headline]="orderItem.product.name"
+							[plusButtonDisabled]="product.type === 'MENU'"
+							(change)="counterChange(orderItem, $event)"
+						></app-counter>
+					}
+				}
+			</div>
+
+			<div class="actions-container">
+				<dav-button
+					size="sm"
+					outline
+					color="primary"
+					(click)="visible = false"
+				>
+					{{ actionsLocale.cancel }}
+				</dav-button>
+
+				<dav-button
+					size="sm"
+					color="primary"
+					[disabled]="allItemHandler.isEmpty()"
+					(click)="submit()"
+				>
+					{{ actionsLocale.add }}
+				</dav-button>
+			</div>
+		</div>
+	</div>
+</dav-dialog>
+
+<app-select-product-variations-dialog
+	#selectProductVariationsDialog
+	[product]="selectedProduct"
+	[child]="true"
+	[maxTotalCount]="
+		product?.type === 'MENU' ? (selectedOfferItem?.maxSelections ?? 0) : 0
+	"
+	(dismiss)="dismissSelectProductVariationsDialog()"
+	(primaryButtonClick)="
+		selectProductVariationsDialogPrimaryButtonClick($event)
+	"
+></app-select-product-variations-dialog>

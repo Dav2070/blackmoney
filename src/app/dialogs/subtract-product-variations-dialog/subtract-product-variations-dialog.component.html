@@ -18,29 +18,13 @@
 					@let originalCount = getOriginalCount(key);
 
 					@if (originalCount > 0) {
-						<div class="variation-selection-container">
-							<dav-icon-button
-								size="sm"
-								[disabled]="currentCount === 0"
-								(click)="removeButtonClick(key)"
-							>
-								<fa-icon [icon]="faMinus"></fa-icon>
-							</dav-icon-button>
-
-							<p>
-								{{ currentCount }}
-								×
-								{{ getHeadlineForKey(key) }}
-							</p>
-
-							<dav-icon-button
-								size="sm"
-								[disabled]="currentCount >= originalCount"
-								(click)="addButtonClick(key)"
-							>
-								<fa-icon [icon]="faPlus"></fa-icon>
-							</dav-icon-button>
-						</div>
+						<app-counter
+							[count]="currentCount"
+							[headline]="getHeadlineForKey(key)"
+							[minusButtonDisabled]="currentCount === 0"
+							[plusButtonDisabled]="currentCount >= originalCount"
+							(change)="counterChange(key, $event)"
+						></app-counter>
 					}
 				}
 			</div>

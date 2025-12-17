@@ -22,7 +22,8 @@ import {
 	faNoteSticky,
 	faStar,
 	faSeat,
-	faUtensils
+	faUtensils,
+	faBurger
 } from "@fortawesome/pro-regular-svg-icons"
 import { BottomSheet } from "dav-ui-components"
 import { DataService } from "src/app/services/data-service"
@@ -43,6 +44,7 @@ import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-p
 import { SubtractProductVariationsDialogComponent } from "src/app/dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "src/app/dialogs/view-note-dialog/view-note-dialog.component"
+import { AddDiverseProductDialogComponent } from "src/app/dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
 import { digitKeyRegex, numpadKeyRegex } from "src/app/constants"
 import {
 	calculateTotalPriceOfOrderItem,
@@ -52,6 +54,7 @@ import {
 	formatPrice,
 	showToast
 } from "src/app/utils"
+import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { ApiService } from "src/app/services/api-service"
 
@@ -64,6 +67,7 @@ const mobileBreakpoint = 860
 })
 export class BookingPageComponent {
 	locale = this.localizationService.locale.bookingPage
+	dialogLocale = this.localizationService.locale.dialogs
 	faArrowRightArrowLeft = faArrowRightArrowLeft
 	faFileLines = faFileLines
 	faXmark = faXmark
@@ -76,11 +80,13 @@ export class BookingPageComponent {
 	faCupTogo = faCupTogo
 	faNoteSticky = faNoteSticky
 	faStar = faStar
+	faBurger = faBurger
 	faSeat = faSeat
 	faUtensils = faUtensils
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	formatPrice = formatPrice
 	OrderItemType = OrderItemType
+	priceCalculator = new PriceCalculator()
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 	selectedCategory: string = ""
@@ -159,6 +165,11 @@ export class BookingPageComponent {
 	//#region ViewNoteDialog
 	@ViewChild("viewNoteDialog")
 	viewNoteDialog: ViewNoteDialogComponent
+	//#endregion
+
+	//#region AddDiverseProductDialog
+	@ViewChild("addDiverseProductDialog")
+	addDiverseProductDialog: AddDiverseProductDialogComponent
 	//#endregion
 
 	constructor(
@@ -673,6 +684,9 @@ export class BookingPageComponent {
 			newItem.count = newItem.orderItemVariations.length
 			this.stagedItems.pushNewItem(newItem)
 		}
+
+		this.showTotal()
+		this.tmpAnzahl = undefined
 	}
 
 	subtractProductVariationsDialogPrimaryButtonClick(event: {
@@ -1254,60 +1268,33 @@ export class BookingPageComponent {
 		orderItems: OrderItem[]
 	}) {
 		if (this.selectedProduct.type === "MENU") {
-			let total = 0
-
-			// Durch alle ausgewählten Produkte gehen
-			for (const orderItem of event.orderItems) {
-				total += calculateTotalPriceOfOrderItem(orderItem)
-			}
-
-			const offer = this.selectedProduct.offer
-			let discount = 0
-
-			if (offer.offerType === "FIXED_PRICE") {
-				discount = offer.offerValue
-			} else if (
-				offer.offerType === "DISCOUNT" &&
-				offer.discountType === "PERCENTAGE"
-			) {
-				discount = total * (offer.offerValue / 100)
-			} else if (
-				offer.offerType === "DISCOUNT" &&
-				offer.discountType === "AMOUNT"
-			) {
-				discount = offer.offerValue
-			}
-
-			this.stagedItems.pushNewItem({
+			const menuOrderItem: OrderItem = {
 				uuid: crypto.randomUUID(),
 				type: OrderItemType.Menu,
 				count: 1,
 				order: null,
+				offer: this.selectedProduct.offer,
 				product: this.selectedProduct,
 				orderItems: event.orderItems,
-				orderItemVariations: [],
-				discount
-			})
-		} else {
-			let rabattFaktor = 0
-
-			if (
-				this.selectedProduct &&
-				this.selectedProduct.offer.discountType === "PERCENTAGE"
-			) {
-				rabattFaktor = this.selectedProduct.offer.offerValue / 100
+				orderItemVariations: []
 			}
 
+			const discount = this.priceCalculator.calculateDiscount(menuOrderItem)
+			menuOrderItem.discount = discount
+
+			this.stagedItems.pushNewItem(menuOrderItem)
+		} else {
 			for (const orderItem of event.orderItems) {
 				const processedItem: OrderItem = JSON.parse(
 					JSON.stringify(orderItem)
 				)
 
-				this.stagedItems.pushNewItem({
+				const specialOrderItem: OrderItem = {
 					uuid: crypto.randomUUID(),
 					type: OrderItemType.Special,
 					count: 1,
 					order: null,
+					offer: this.selectedProduct.offer,
 					product: {
 						id: this.selectedProduct.id,
 						uuid: this.selectedProduct.uuid,
@@ -1319,13 +1306,20 @@ export class BookingPageComponent {
 						offer: this.selectedProduct.offer
 					},
 					orderItems: [processedItem],
-					orderItemVariations: [],
-					discount: processedItem.product.price * rabattFaktor
-				})
+					orderItemVariations: []
+				}
+
+				// Use PriceCalculator to compute discount
+				const discount =
+					this.priceCalculator.calculateDiscount(specialOrderItem)
+				specialOrderItem.discount = discount
+
+				this.stagedItems.pushNewItem(specialOrderItem)
 			}
 		}
 
 		this.selectMenuSpecialProductsDialog.hide()
+		this.showTotal()
 	}
 
 	addNoteButtonClick() {
@@ -1364,6 +1358,31 @@ export class BookingPageComponent {
 			this.viewNoteDialog.showEditButton = false
 			this.viewNoteDialog.show()
 		}
+	}
+
+	addDiverseProductDialogPrimaryButtonClick(event: {
+		name: string
+		productType: string
+		price: number
+	}) {
+		const product = new Product()
+		product.id = 0
+		product.price = event.price
+		product.variations = []
+
+		if (event.productType === "diverse_speisen") {
+			product.type = "FOOD"
+			product.name = this.dialogLocale.addDiverseProductDialog.diverseFood
+		} else if (event.productType === "diverse_getraenke") {
+			product.type = "DRINK"
+			product.name = this.dialogLocale.addDiverseProductDialog.diverseDrinks
+		} else {
+			product.type = null
+			product.name = this.dialogLocale.addDiverseProductDialog.diverseCosts
+		}
+
+		// Add as order item with note
+		this.clickItem(product, event.name)
 	}
 
 	takeAwayButtonClick() {

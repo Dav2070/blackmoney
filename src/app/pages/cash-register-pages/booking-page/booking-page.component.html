@@ -307,10 +307,18 @@
 					<fa-icon [icon]="faStar" slot="icon-left"></fa-icon>
 					{{ locale.extras }}
 				</dav-button>
+
+				<dav-button
+					color="secondary"
+					text
+					(click)="addDiverseProductDialog.show()"
+				>
+					<fa-icon [icon]="faBurger" slot="icon-left"></fa-icon>
+					{{ locale.diverseProducts }}
+				</dav-button>
 			</div>
 		</div>
 	</div>
-
 	<div class="product-selection-container">
 		<div class="product-items">
 			@if (productsLoading) {
@@ -456,6 +464,11 @@
 	[orderItem]="selectedOrderItem"
 	(editButtonClick)="addNoteButtonClick()"
 ></app-view-note-dialog>
+
+<app-add-diverse-product-dialog
+	#addDiverseProductDialog
+	(primaryButtonClick)="addDiverseProductDialogPrimaryButtonClick($event)"
+></app-add-diverse-product-dialog>
 
 <dav-bottom-sheet
 	#bottomSheet

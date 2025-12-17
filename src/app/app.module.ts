@@ -71,6 +71,7 @@ import { SubtractProductVariationsDialogComponent } from "./dialogs/subtract-pro
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
+import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -158,6 +159,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		MoveMultipleProductsDialogComponent,
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,
+		AddDiverseProductDialogComponent,
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
 		// Pages

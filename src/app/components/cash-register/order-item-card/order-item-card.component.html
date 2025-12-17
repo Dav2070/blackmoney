@@ -36,6 +36,11 @@
 				{{ orderItem.count }} ×
 				{{ formatPrice(orderItem.product.price) }}
 			</p>
+		} @else if (orderItem.orderItemVariations.length > 0) {
+			<p>
+				{{ orderItem.count }} ×
+				{{ formatPrice(orderItem.product.price) }}
+			</p>
 		}
 	</div>
 
@@ -46,26 +51,25 @@
 	@if (orderItem.orderItemVariations.length > 0) {
 		<div class="order-item-variations-separator"></div>
 
-		@for (orderItemVariation of orderItem.orderItemVariations; track orderItemVariation.uuid) {
-			@for (
-				variationItem of orderItemVariation.variationItems;
-				track variationItem.uuid
-			) {
-				<div class="order-item-card-variation-name">
-					<p>- {{ variationItem.name }}</p>
-				</div>
+		@for (
+			orderItemVariation of orderItem.orderItemVariations;
+			track orderItemVariation.uuid
+		) {
+			<div class="order-item-card-variation-name">
+				<p>- {{ getCombinedVariationNames(orderItemVariation) }}</p>
+			</div>
 
-				<div class="order-item-card-variation-unit-price">
-					<p>
-						{{ orderItemVariation.count }} ×
-						{{
-							formatPrice(
-								orderItem.product.price + variationItem.additionalCost
-							)
-						}}
-					</p>
-				</div>
-			}
+			<div class="order-item-card-variation-unit-price">
+				<p>
+					{{ orderItemVariation.count }} ×
+					{{
+						formatPrice(
+							getTotalVariationPrice(orderItemVariation) +
+								orderItem.product.price
+						)
+					}}
+				</p>
+			</div>
 		}
 	}
 </li>

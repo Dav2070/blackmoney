@@ -28,7 +28,7 @@
 	</div>
 
 	<div class="offer-order-item-card-unit-price">
-		@if (orderItem.count > 1) {
+		@if (orderItem.count > 1 && orderItem.type !== "SPECIAL") {
 			<p>
 				{{ orderItem.count }} ×
 				{{ formatPrice(calculateUnitPriceOfOrderItem(orderItem)) }}
@@ -87,7 +87,7 @@
 		}
 	}
 
-	@if (orderItem.discount) {
+	@if (calculateDiscountOfOrderItem(orderItem) > 0) {
 		<div class="offer-order-item-variations-separator"></div>
 
 		<div class="offer-order-item-card-discount-name">
@@ -96,7 +96,7 @@
 
 		<div class="offer-order-item-card-variation-unit-price">
 			<p>
-				{{ "-" + formatPrice(orderItem.discount) }}
+				{{ "-" + formatPrice(calculateDiscountOfOrderItem(orderItem)) }}
 			</p>
 		</div>
 	}

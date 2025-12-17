@@ -2,16 +2,17 @@ import { OrderItem } from "src/app/models/OrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { ApiService } from "src/app/services/api-service"
 import {
-	calculateTotalPriceOfOrderItem,
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
+import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { Order } from "../../Order"
 import { OrderItemMerger } from "./order-item-merger"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
 	private readonly merger: OrderItemMerger
+	private readonly priceCalculator = new PriceCalculator()
 
 	constructor() {
 		this.merger = new OrderItemMerger(this.allPickedItems)
@@ -300,7 +301,7 @@ export class AllItemHandler {
 		let total = 0
 
 		for (const item of this.allPickedItems) {
-			total += calculateTotalPriceOfOrderItem(item)
+			total += this.priceCalculator.calculateTotalPrice(item)
 		}
 
 		return total

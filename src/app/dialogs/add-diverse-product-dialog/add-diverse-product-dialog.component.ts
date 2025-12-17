@@ -27,9 +27,13 @@ export class AddDiverseProductDialogComponent {
 	productType: string = "diverse_speisen"
 	price: number = 0
 	priceString: string = ""
+	categoryOptions: { key: string; value: string }[]
 
-	get categoryOptions() {
-		return [
+	constructor(
+		private localizationService: LocalizationService,
+		@Inject(PLATFORM_ID) private platformId: object
+	) {
+		this.categoryOptions = [
 			{
 				key: "diverse_speisen",
 				value: this.locale.food
@@ -44,11 +48,6 @@ export class AddDiverseProductDialogComponent {
 			}
 		]
 	}
-
-	constructor(
-		private localizationService: LocalizationService,
-		@Inject(PLATFORM_ID) private platformId: object
-	) {}
 
 	ngAfterViewInit() {
 		if (isPlatformBrowser(this.platformId)) {

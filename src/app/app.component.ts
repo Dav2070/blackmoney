@@ -112,24 +112,25 @@ export class AppComponent {
 				retrieveCompanyResponseData
 			)
 
-			let restaurant = this.dataService.company.restaurants[0]
+			if (this.dataService.company.restaurants.length > 0) {
+				let restaurant = this.dataService.company.restaurants[0]
 
-			if (this.dataService.company.restaurants.length > 1) {
-				const restaurantUuid = await this.settingsService.getRestaurant()
+				if (this.dataService.company.restaurants.length > 1) {
+					const restaurantUuid = await this.settingsService.getRestaurant()
 
-				if (restaurantUuid != null) {
-					restaurant = this.dataService.company.restaurants.find(
-						r => r.uuid == restaurantUuid
-					)
-				} else {
-					restaurant = this.dataService.company.restaurants[0]
+					if (restaurantUuid != null) {
+						restaurant = this.dataService.company.restaurants.find(
+							r => r.uuid == restaurantUuid
+						)
+					} else {
+						restaurant = this.dataService.company.restaurants[0]
+					}
 				}
-			}
 
-			// Retrieve the restaurant with rooms and users
-			const retrieveRestaurantResponse =
-				await this.apiService.retrieveRestaurant(
-					`
+				// Retrieve the restaurant with rooms and users
+				const retrieveRestaurantResponse =
+					await this.apiService.retrieveRestaurant(
+						`
 						uuid
 						name
 						users {
@@ -155,38 +156,42 @@ export class AppComponent {
 							}
 						}
 					`,
-					{
-						uuid: restaurant.uuid
-					}
+						{
+							uuid: restaurant.uuid
+						}
+					)
+
+				restaurant = convertRestaurantResourceToRestaurant(
+					retrieveRestaurantResponse.data.retrieveRestaurant
 				)
 
-			restaurant = convertRestaurantResourceToRestaurant(
-				retrieveRestaurantResponse.data.retrieveRestaurant
-			)
+				this.dataService.restaurant = restaurant
 
-			this.dataService.restaurant = restaurant
-
-			if (restaurant.users.length > 0 && accessToken != null) {
-				// Load the current user
-				let retrieveOwnUserResponse = await this.apiService.retrieveOwnUser(
-					`
+				if (restaurant.users.length > 0 && accessToken != null) {
+					// Load the current user
+					let retrieveOwnUserResponse =
+						await this.apiService.retrieveOwnUser(
+							`
 						uuid
 						name
 						role
 					`
-				)
+						)
 
-				if (
-					getGraphQLErrorCodes(retrieveOwnUserResponse).includes(
-						"NOT_AUTHENTICATED"
-					)
-				) {
-					// Remove the access token
-					this.authService.removeAccessToken()
-				} else if (retrieveOwnUserResponse.data?.retrieveOwnUser != null) {
-					this.dataService.user = convertUserResourceToUser(
-						retrieveOwnUserResponse.data.retrieveOwnUser
-					)
+					if (
+						getGraphQLErrorCodes(retrieveOwnUserResponse).includes(
+							"NOT_AUTHENTICATED"
+						)
+					) {
+						// Remove the access token
+						this.authService.removeAccessToken()
+					} else if (
+						retrieveOwnUserResponse.data?.retrieveOwnUser != null
+					) {
+						this.dataService.user = convertUserResourceToUser(
+							retrieveOwnUserResponse.data.retrieveOwnUser
+						)
+					}
 				}
 			}
 		}

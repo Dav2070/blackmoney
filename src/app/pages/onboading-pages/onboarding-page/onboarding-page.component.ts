@@ -23,6 +23,7 @@ export class OnboardingPageComponent {
 	ownerPassword: string = ""
 	employeeName: string = ""
 	employees: string[] = []
+	createOwnerLoading: boolean = false
 
 	constructor(
 		public dataService: DataService,
@@ -38,9 +39,9 @@ export class OnboardingPageComponent {
 
 		if (this.dataService.company == null) {
 			this.context = "createCompany"
-		} else if (this.dataService.restaurant.users.length === 0) {
+		} else if (this.dataService.restaurant?.users.length === 0) {
 			this.context = "createOwner"
-		} else if (this.dataService.restaurant.users.length === 1) {
+		} else if (this.dataService.restaurant?.users.length === 1) {
 			this.context = "createUsers"
 		}
 	}
@@ -95,8 +96,10 @@ export class OnboardingPageComponent {
 			this.context = "createOwner"
 		} else if (this.context === "createOwner") {
 			// TODO: Implement error handling
+			this.createOwnerLoading = true
+
 			const createOwnerResponse = await this.apiService.createOwner(`uuid`, {
-				companyUuid: this.companyUuid,
+				companyUuid: this.companyUuid || this.dataService.company?.uuid,
 				name: this.ownerName,
 				password: this.ownerPassword
 			})
@@ -113,7 +116,8 @@ export class OnboardingPageComponent {
 						}
 					`,
 					{
-						companyUuid: this.companyUuid,
+						companyUuid:
+							this.companyUuid || this.dataService.company?.uuid,
 						userName: this.ownerName,
 						password: this.ownerPassword,
 						registerUuid: "", // TODO: Implement register selection
@@ -137,6 +141,8 @@ export class OnboardingPageComponent {
 
 				this.context = "createUsers"
 			}
+
+			this.createOwnerLoading = false
 		} else if (this.context === "createUsers") {
 			this.router.navigate(["login"])
 		}

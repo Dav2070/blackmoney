@@ -52,7 +52,7 @@
 			<div class="continue-button-container">
 				<dav-button
 					size="sm"
-					[disabled]="ownerName.length < 2 || ownerPassword.length < 6"
+					[disabled]="ownerName.length < 2 || ownerPassword.length < 6 || createOwnerLoading"
 					outline
 					(click)="continueButtonClick()"
 				>

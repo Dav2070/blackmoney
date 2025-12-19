@@ -17,6 +17,25 @@ export const de = {
 		passwordConfirmationLabel: "Passwort bestätigen",
 		passwordConfirmationPlaceholder: "Wiederhole dein Passwort"
 	},
+	onboardingPage: {
+		createCompanySection: {
+			headline: "Wie heißt dein Restaurant?",
+			description: "Bitte gib den Namen deines Restaurants ein."
+		},
+		createOwnerSection: {
+			headline: "Erstelle deinen Admin-Zugang",
+			description:
+				"Gib deinen Namen und ein Passwort an, mit dem du dich anmelden kannst.<br />Damit kannst du später das Kassensystem verwalten und Einstellungen vornehmen.",
+			nameTextfieldPlaceholder: "Dein Name",
+			passwordTextfieldPlaceholder: "Dein Passwort"
+		},
+		createUsersSection: {
+			headline: "Füge deine Mitarbeiter hinzu",
+			description:
+				"Gib die Namen deiner Mitarbeiter an, damit sich jeder am Kassensystem anmelden kann.",
+			employeeNameTextfieldPlaceholder: "Name des Mitarbeiters"
+		}
+	},
 	userPage: {
 		headlines: [
 			"Willkommen zurück, {name}!",

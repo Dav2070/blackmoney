@@ -3,6 +3,7 @@ import { Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
+import { LocalizationService } from "src/app/services/localization-service"
 import { SettingsService } from "src/app/services/settings-service"
 import { convertUserResourceToUser, getSerialNumber } from "src/app/utils"
 
@@ -12,6 +13,8 @@ import { convertUserResourceToUser, getSerialNumber } from "src/app/utils"
 	standalone: false
 })
 export class OnboardingPageComponent {
+	locale = this.localizationService.locale.onboardingPage
+	actionsLocale = this.localizationService.locale.actions
 	context: "createCompany" | "createOwner" | "createUsers" = null
 	companyUuid: string = ""
 	restaurantUuid: string = ""
@@ -26,6 +29,7 @@ export class OnboardingPageComponent {
 		private apiService: ApiService,
 		private authService: AuthService,
 		private settingsService: SettingsService,
+		private localizationService: LocalizationService,
 		private router: Router
 	) {}
 

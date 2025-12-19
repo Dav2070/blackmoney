@@ -40,10 +40,10 @@ export class OnboardingPageComponent {
 
 		if (this.dataService.company == null) {
 			this.context = "createCompany"
-		} else if (this.dataService.restaurant?.users.length === 0) {
+		} else if (this.dataService.company.users.length === 0) {
 			this.context = "createOwner"
-		} else if (this.dataService.restaurant?.users.length === 1) {
-			this.context = "createUsers"
+		} else if (this.dataService.company.users.length > 0) {
+			this.router.navigate(["login"])
 		}
 	}
 

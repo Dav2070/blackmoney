@@ -93,6 +93,13 @@ export class AppComponent {
 						name
 					}
 				}
+				users {
+					total
+					items {
+						uuid
+						name
+					}
+				}
 			`
 		)
 
@@ -172,10 +179,10 @@ export class AppComponent {
 					let retrieveOwnUserResponse =
 						await this.apiService.retrieveOwnUser(
 							`
-						uuid
-						name
-						role
-					`
+								uuid
+								name
+								role
+							`
 						)
 
 					if (

@@ -249,9 +249,16 @@ export function convertCompanyResourceToCompany(
 		restaurants.push(convertRestaurantResourceToRestaurant(restaurant))
 	}
 
+	const users: User[] = []
+
+	for (const user of companyResource.users?.items ?? []) {
+		users.push(convertUserResourceToUser(user))
+	}
+
 	return {
 		uuid: companyResource.uuid,
 		name: companyResource.name,
+		users,
 		restaurants
 	}
 }

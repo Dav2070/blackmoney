@@ -88,7 +88,10 @@ export class LoginPageComponent {
 			retrieveCompanyResponse.data.retrieveCompany
 		)
 
-		if (this.company == null) {
+		if (this.company == null && retrieveCompanyResponse.errors == null) {
+			this.router.navigate(["onboarding"])
+			return
+		} else if (retrieveCompanyResponse.errors != null) {
 			this.router.navigate([""])
 			return
 		}

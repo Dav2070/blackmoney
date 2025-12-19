@@ -1,9 +1,55 @@
-<div class="container slide-up-in">
-	<div class="section-1-container">
-		<h1>Das moderne Kassensystem<br />für moderne Restaurants</h1>
+<div class="landing container slide-up-in">
+	<section class="hero" [class.dark]="dataService.darkTheme">
+		<div class="hero-content">
+			<h1>Das moderne Kassensystem<br />für moderne Restaurants</h1>
+			<p class="subtitle">
+				Alles, was dein Restaurant braucht, an einem Ort
+			</p>
 
+			<dav-button size="lg" (click)="navigateToLoginPage()">
+				Jetzt ausprobieren
+			</dav-button>
+		</div>
+	</section>
+
+	<section class="features" aria-label="Vorteile und Funktionen">
+		<div class="features-grid">
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">🖥️</div>
+				<h3>Passende Geräte</h3>
+				<p>
+					Bei uns bekommst du die Hardware für dein Restaurant: Kasse,
+					Bon-Drucker, Bezahl-Terminals und mehr.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">🧾</div>
+				<h3>Bestellen & Kassieren</h3>
+				<p>
+					Nimm Bestellungen deiner Gäste auf und kassiere schnell, sicher
+					und bequem.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">🧑‍🍳</div>
+				<h3>Druckerverwaltung</h3>
+				<p>
+					Drucke Bons und Rechnungen und schicke Notizen für bestellte
+					Produkte direkt in die Küche.
+				</p>
+			</article>
+		</div>
+	</section>
+
+	<section class="cta-secondary">
+		<h2>Bereit, loszulegen?</h2>
+		<p>
+			Teste unser Kassensystem und erlebe modernes Arbeiten im Restaurant.
+		</p>
 		<dav-button outline (click)="navigateToLoginPage()">
 			Jetzt ausprobieren
 		</dav-button>
-	</div>
+	</section>
 </div>

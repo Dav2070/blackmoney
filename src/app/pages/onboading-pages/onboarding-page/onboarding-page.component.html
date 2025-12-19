@@ -101,15 +101,24 @@
 					"
 					(change)="employeeNameChange($event)"
 				></dav-textfield>
+			</div>
 
+			<div
+				class="continue-button-container"
+				[class.loading]="createUserLoading"
+			>
 				<dav-button
-					[disabled]="employeeName.length < 2"
+					[disabled]="employeeName.length < 2 || createUserLoading"
 					size="sm"
 					outline
 					(click)="addEmployeeButtonClick()"
 				>
 					{{ actionsLocale.add }}
 				</dav-button>
+
+				@if (createUserLoading) {
+					<dav-progress-ring size="16"></dav-progress-ring>
+				}
 			</div>
 
 			@if (employees.length > 0) {

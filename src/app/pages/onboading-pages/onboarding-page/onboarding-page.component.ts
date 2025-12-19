@@ -25,6 +25,7 @@ export class OnboardingPageComponent {
 	employees: string[] = []
 	createCompanyLoading: boolean = false
 	createOwnerLoading: boolean = false
+	createUserLoading: boolean = false
 
 	constructor(
 		public dataService: DataService,
@@ -64,13 +65,18 @@ export class OnboardingPageComponent {
 	}
 
 	async addEmployeeButtonClick() {
+		this.createUserLoading = true
+
 		await this.apiService.createUser(`uuid`, {
 			companyUuid: this.companyUuid,
 			name: this.employeeName,
 			restaurants: [this.restaurantUuid]
 		})
+
 		this.employees.push(this.employeeName)
 		this.employeeName = ""
+
+		this.createUserLoading = false
 	}
 
 	async continueButtonClick() {

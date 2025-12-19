@@ -138,31 +138,31 @@ export class AppComponent {
 				const retrieveRestaurantResponse =
 					await this.apiService.retrieveRestaurant(
 						`
-						uuid
-						name
-						users {
-							total
-							items {
-								uuid
-								name
+							uuid
+							name
+							users {
+								total
+								items {
+									uuid
+									name
+								}
 							}
-						}
-						rooms {
-							total
-							items {
-								uuid
-								name
-								tables {
-									total
-									items {
-										uuid
-										name
-										seats
+							rooms {
+								total
+								items {
+									uuid
+									name
+									tables {
+										total
+										items {
+											uuid
+											name
+											seats
+										}
 									}
 								}
 							}
-						}
-					`,
+						`,
 						{
 							uuid: restaurant.uuid
 						}

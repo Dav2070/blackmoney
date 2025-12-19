@@ -354,7 +354,8 @@ export function convertUserResourceToUser(userResource: UserResource): User {
 	return {
 		uuid: userResource.uuid,
 		name: userResource.name,
-		role: userResource.role
+		role: userResource.role,
+		company: convertCompanyResourceToCompany(userResource.company)
 	}
 }
 

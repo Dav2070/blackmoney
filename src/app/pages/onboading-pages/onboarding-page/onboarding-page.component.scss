@@ -35,5 +35,13 @@
 }
 
 .continue-button-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 16px;
 	margin-top: 16px;
+}
+
+.continue-button-container.loading {
+	margin-left: 32px;
 }

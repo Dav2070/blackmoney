@@ -23,6 +23,7 @@ export class OnboardingPageComponent {
 	ownerPassword: string = ""
 	employeeName: string = ""
 	employees: string[] = []
+	createCompanyLoading: boolean = false
 	createOwnerLoading: boolean = false
 
 	constructor(
@@ -74,6 +75,8 @@ export class OnboardingPageComponent {
 
 	async continueButtonClick() {
 		if (this.context === "createCompany") {
+			this.createCompanyLoading = true
+
 			// TODO: Implement error handling
 			const createCompanyResponse = await this.apiService.createCompany(
 				`
@@ -89,6 +92,7 @@ export class OnboardingPageComponent {
 				}
 			)
 
+			this.createCompanyLoading = false
 			this.companyUuid = createCompanyResponse.data.createCompany.uuid
 			this.restaurantUuid =
 				createCompanyResponse.data.createCompany.restaurants.items[0].uuid
@@ -98,11 +102,27 @@ export class OnboardingPageComponent {
 			// TODO: Implement error handling
 			this.createOwnerLoading = true
 
-			const createOwnerResponse = await this.apiService.createOwner(`uuid`, {
-				companyUuid: this.companyUuid || this.dataService.company?.uuid,
-				name: this.ownerName,
-				password: this.ownerPassword
-			})
+			const createOwnerResponse = await this.apiService.createOwner(
+				`
+					uuid
+					company {
+						restaurants {
+							items {
+								registers {
+									items {
+										uuid
+									}
+								}
+							}
+						}
+					}
+				`,
+				{
+					companyUuid: this.companyUuid || this.dataService.company?.uuid,
+					name: this.ownerName,
+					password: this.ownerPassword
+				}
+			)
 
 			if (createOwnerResponse.errors == null) {
 				// Log in as the owner
@@ -120,7 +140,9 @@ export class OnboardingPageComponent {
 							this.companyUuid || this.dataService.company?.uuid,
 						userName: this.ownerName,
 						password: this.ownerPassword,
-						registerUuid: "", // TODO: Implement register selection
+						registerUuid:
+							createOwnerResponse.data.createOwner.company.restaurants
+								.items[0].registers.items[0].uuid,
 						registerClientSerialNumber: await getSerialNumber(
 							this.settingsService
 						)

@@ -11,15 +11,24 @@
 					placeholder="Café Salmonella"
 					(change)="restaurantNameChange($event)"
 				></dav-textfield>
+			</div>
 
+			<div
+				class="continue-button-container"
+				[class.loading]="createCompanyLoading"
+			>
 				<dav-button
-					[disabled]="restaurantName.length < 3"
+					[disabled]="restaurantName.length < 3 || createCompanyLoading"
 					size="sm"
 					outline
 					(click)="continueButtonClick()"
 				>
 					{{ actionsLocale.next }}
 				</dav-button>
+
+				@if (createCompanyLoading) {
+					<dav-progress-ring size="16"></dav-progress-ring>
+				}
 			</div>
 		</div>
 	</div>
@@ -35,7 +44,9 @@
 			<div class="input-container">
 				<dav-textfield
 					[value]="ownerName"
-					[placeholder]="locale.createOwnerSection.nameTextfieldPlaceholder"
+					[placeholder]="
+						locale.createOwnerSection.nameTextfieldPlaceholder
+					"
 					(change)="ownerNameChange($event)"
 				></dav-textfield>
 			</div>
@@ -43,21 +54,34 @@
 			<div class="input-container">
 				<dav-textfield
 					[value]="ownerPassword"
-					[placeholder]="locale.createOwnerSection.passwordTextfieldPlaceholder"
+					[placeholder]="
+						locale.createOwnerSection.passwordTextfieldPlaceholder
+					"
 					type="password"
 					(change)="ownerPasswordChange($event)"
 				></dav-textfield>
 			</div>
 
-			<div class="continue-button-container">
+			<div
+				class="continue-button-container"
+				[class.loading]="createOwnerLoading"
+			>
 				<dav-button
 					size="sm"
-					[disabled]="ownerName.length < 2 || ownerPassword.length < 6 || createOwnerLoading"
+					[disabled]="
+						ownerName.length < 2 ||
+						ownerPassword.length < 6 ||
+						createOwnerLoading
+					"
 					outline
 					(click)="continueButtonClick()"
 				>
 					{{ actionsLocale.next }}
 				</dav-button>
+
+				@if (createOwnerLoading) {
+					<dav-progress-ring size="16"></dav-progress-ring>
+				}
 			</div>
 		</div>
 	</div>
@@ -72,7 +96,9 @@
 			<div class="input-container">
 				<dav-textfield
 					[value]="employeeName"
-					[placeholder]="locale.createUsersSection.employeeNameTextfieldPlaceholder"
+					[placeholder]="
+						locale.createUsersSection.employeeNameTextfieldPlaceholder
+					"
 					(change)="employeeNameChange($event)"
 				></dav-textfield>
 
@@ -98,11 +124,7 @@
 			}
 
 			<div class="continue-button-container">
-				<dav-button
-					size="sm"
-					outline
-					(click)="continueButtonClick()"
-				>
+				<dav-button size="sm" outline (click)="continueButtonClick()">
 					{{ actionsLocale.next }}
 				</dav-button>
 			</div>

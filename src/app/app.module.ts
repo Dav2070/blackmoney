@@ -69,6 +69,7 @@ import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-pro
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
 import { AddCategoryDialogComponent } from "./dialogs/add-category-dialog/add-category-dialog.component"
+import { AddOfferDialogComponent } from "./dialogs/add-offer-dialog/add-offer-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -99,6 +100,7 @@ import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-ov
 import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
 import { ProductListComponent } from "./pages/landing-pages/products-overview-page/product-list/product-list.component"
+import { OfferListComponent } from "./pages/landing-pages/products-overview-page/offer-list/offer-list.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -167,6 +169,7 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
 		AddCategoryDialogComponent,
+		AddOfferDialogComponent,
 		AddVariationDialogComponent,
 		AddVariationItemDialogComponent,
 		EditVariationDialogComponent,
@@ -206,6 +209,7 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		OpeningTimePageComponent,
 		VariationsOverviewPageComponent,
 		ProductListComponent,
+		OfferListComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		ItemsTableComponent,

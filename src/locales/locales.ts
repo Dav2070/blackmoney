@@ -124,7 +124,8 @@ export const de = {
 		headline: "Produkte verwalten",
 		category: "Kategorien",
 		variations: "Variationen",
-		options: "Extras"
+		options: "Extras",
+		menus: "Menüs"
 	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}",
@@ -172,6 +173,52 @@ export const de = {
 	},
 	offerOrderItemCard: {
 		discount: "Rabatt"
+	},
+	offerList: {
+		options: "Optionen",
+		noOffers: "Keine Angebote vorhanden",
+		noItems: "Keine Items vorhanden"
+	},
+	addOfferDialog: {
+		headline: "Menü hinzufügen",
+		specialHeadline: "Special hinzufügen",
+		tab1: "Grunddaten",
+		tab2: "Menü-Items",
+		specialTab2: "Produkte",
+		tab3: "Verfügbarkeit",
+		basicData: "Grunddaten",
+		id: "ID",
+		name: "Name",
+		offerType: "Typ",
+		fixedPrice: "Festpreis",
+		discount: "Rabatt",
+		discountType: "Rabatttyp",
+		percentage: "Prozent",
+		amount: "Betrag",
+		price: "Preis (€)",
+		discountPercentage: "Rabatt (%)",
+		discountAmount: "Rabatt (€)",
+		takeaway: "Takeaway verfügbar",
+		offerItems: "Menü-Items",
+		addNewItem: "Neues Item hinzufügen",
+		itemName: "Item-Name (z.B. Vorspeise, Hauptgang)",
+		maxSelections: "Maximale Auswahl",
+		selectProducts: "Produkte auswählen",
+		selectedProducts: "Ausgewählte Produkte",
+		addItem: "Item hinzufügen",
+		availability: "Verfügbarkeit",
+		weekdays: "Wochentage",
+		selectAllDays: "Alle Tage auswählen",
+		startTime: "Startzeit (optional)",
+		endTime: "Endzeit (optional)",
+		previous: "Zurück",
+		next: "Weiter",
+		idRequired: "Bitte eine ID eingeben",
+		nameRequired: "Bitte einen Namen eingeben",
+		valueRequired: "Bitte einen Wert eingeben",
+		itemsRequired: "Bitte mindestens ein Item hinzufügen",
+		itemNameRequired: "Bitte einen Namen eingeben",
+		productsRequired: "Bitte mindestens ein Produkt auswählen"
 	},
 	dialogs: {
 		logoutDialog: {

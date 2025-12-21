@@ -4,10 +4,10 @@
 			backButtonVisible
 			addButtonVisible
 			(backButtonClick)="navigateBack()"
-			(addButtonClick)="showAddProductDialog()"
-		>
-			{{ category?.name || locale.headline }}
-		</dav-header>
+		(addButtonClick)="handleAddButtonClick()"
+	>
+		{{ category?.name || locale.headline }}
+	</dav-header>
 
 		<dav-tab-bar>
 			<dav-tab-bar-item
@@ -40,15 +40,39 @@
 			</dav-tab-bar-item>
 		</dav-tab-bar>
 
-		<!-- Produkt-Liste wird hier geladen -->
-		<app-product-list
-			*ngIf="category"
+		<!-- Menüs-Liste (wenn Tab menus aktiv) -->
+		<app-offer-list
+			*ngIf="activeTab === 'menus'"
+		[offers]="menus"
+		(editOffer)="showEditOfferDialog($event)"
+		(deleteOffer)="deleteOffer($event)"
+	></app-offer-list>
+
+	<!-- Specials-Liste (wenn Tab specials aktiv) -->
+	<app-offer-list
+		*ngIf="activeTab === 'specials'"
+		[offers]="specials"
+		(editOffer)="showEditSpecialDialog($event)"
+		(deleteOffer)="deleteSpecial($event)"
+	></app-offer-list>
+
+	<!-- Produkt-Liste wird hier geladen (für andere Tabs) -->
+	<app-product-list
+		*ngIf="category && activeTab !== 'menus' && activeTab !== 'specials'"
 			[category]="category"
 			[activeTab]="activeTab"
 			(editProduct)="showEditProductDialog($event)"
 		></app-product-list>
 	</div>
 </div>
+
+<!-- Add Offer Dialog -->
+<app-add-offer-dialog
+	#addOfferDialog
+	[loading]="addOfferDialogLoading"
+	[availableProducts]="availableProducts"
+	(primaryButtonClick)="addOfferDialogPrimaryButtonClick($event)"
+></app-add-offer-dialog>
 
 <app-add-product-dialog
 	#addProductDialog

@@ -332,39 +332,59 @@
 				<div class="time-fields">
 					<div class="dialog-formfield-container">
 						<dav-textfield
-							[value]="startTime"
-							[label]="locale.startTime"
-							[disabled]="loading"
-							type="time"
-							(change)="startTimeChange($any($event).detail.value)"
-						></dav-textfield>
-					</div>
+						[value]="startDate"
+						[label]="locale.startDate"
+						[disabled]="loading"
+						type="date"
+						(change)="startDateChange($any($event).detail.value)"
+					></dav-textfield>
+				</div>
 
-					<div class="dialog-formfield-container">
-						<dav-textfield
-							[value]="endTime"
-							[label]="locale.endTime"
-							[disabled]="loading"
-							type="time"
-							(change)="endTimeChange($any($event).detail.value)"
-						></dav-textfield>
-					</div>
+				<div class="dialog-formfield-container">
+					<dav-textfield
+						[value]="endDate"
+						[label]="locale.endDate"
+						[disabled]="loading"
+						type="date"
+						(change)="endDateChange($any($event).detail.value)"
+					></dav-textfield>
 				</div>
 			</div>
-		}
 
-		<!-- Navigation Buttons -->
-		<div class="navigation-buttons">
-			@if (currentTab > 0) {
-				<dav-button type="button" (click)="previousTab()">
-					{{ locale.previous }}
-				</dav-button>
-			}
-			@if (currentTab < 2) {
-				<dav-button type="button" (click)="nextTab()">
-					{{ locale.next }}
-				</dav-button>
-			}
+			<div class="time-fields">
+				<div class="dialog-formfield-container">
+					<dav-textfield
+					[value]="startTime"
+					[label]="locale.startTime"
+					[disabled]="loading"
+					type="time"
+					(change)="startTimeChange($any($event).detail.value)"
+				></dav-textfield>
+			</div>
+
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="endTime"
+					[label]="locale.endTime"
+					[disabled]="loading"
+					type="time"
+					(change)="endTimeChange($any($event).detail.value)"
+				></dav-textfield>
+			</div>
 		</div>
-	</form>
-</dav-dialog>
+	</div>
+}
+
+<!-- Navigation Buttons -->
+<div class="navigation-buttons">
+	@if (currentTab > 0) {
+		<dav-button type="button" (click)="previousTab()">
+			{{ locale.previous }}
+		</dav-button>
+	}
+	@if (currentTab < 2) {
+		<dav-button type="button" (click)="nextTab()">
+			{{ locale.next }}
+		</dav-button>
+	}
+</div>

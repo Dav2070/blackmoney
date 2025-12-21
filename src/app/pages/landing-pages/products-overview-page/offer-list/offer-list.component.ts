@@ -108,6 +108,47 @@ export class OfferListComponent {
 		return sortedWeekdays.map(day => weekdayMap[day]).join(", ")
 	}
 
+	formatAvailability(offer: any): string {
+		const parts: string[] = []
+
+		// Wochentage
+		if (offer?.weekdays?.length > 0) {
+			parts.push(this.formatWeekdays(offer.weekdays))
+		}
+
+		// Datum
+		if (offer?.startDate || offer?.endDate) {
+			const dateFormat = new Intl.DateTimeFormat('de-DE', { 
+				day: '2-digit', 
+				month: '2-digit', 
+				year: 'numeric' 
+			})
+			
+			if (offer.startDate && offer.endDate) {
+				const start = dateFormat.format(new Date(offer.startDate))
+				const end = dateFormat.format(new Date(offer.endDate))
+				parts.push(`${start} - ${end}`)
+			} else if (offer.startDate) {
+				parts.push(`ab ${dateFormat.format(new Date(offer.startDate))}`)
+			} else if (offer.endDate) {
+				parts.push(`bis ${dateFormat.format(new Date(offer.endDate))}`)
+			}
+		}
+
+		// Uhrzeit
+		if (offer?.startTime || offer?.endTime) {
+			if (offer.startTime && offer.endTime) {
+				parts.push(`${offer.startTime} - ${offer.endTime}`)
+			} else if (offer.startTime) {
+				parts.push(`ab ${offer.startTime}`)
+			} else if (offer.endTime) {
+				parts.push(`bis ${offer.endTime}`)
+			}
+		}
+
+		return parts.join(' • ')
+	}
+
 	trackByUuid(index: number, item: { uuid: string }) {
 		return item.uuid
 	}

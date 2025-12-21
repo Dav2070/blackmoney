@@ -67,6 +67,8 @@ export class AddOfferDialogComponent {
 
 	// Tab 3: Zeiten
 	selectedWeekdays: Weekday[] = []
+	startDate: string = ""
+	endDate: string = ""
 	startTime: string = ""
 	endTime: string = ""
 
@@ -134,6 +136,8 @@ export class AddOfferDialogComponent {
 		}
 		
 		this.selectedWeekdays = menu.offer?.weekdays || []
+		this.startDate = menu.offer?.startDate ? new Date(menu.offer.startDate).toISOString().split('T')[0] : ""
+		this.endDate = menu.offer?.endDate ? new Date(menu.offer.endDate).toISOString().split('T')[0] : ""
 		this.startTime = menu.offer?.startTime || ""
 		this.endTime = menu.offer?.endTime || ""
 		this.visible = true
@@ -162,6 +166,8 @@ export class AddOfferDialogComponent {
 		this.newItemNameError = ""
 		this.expandedCategories.clear()
 		this.selectedWeekdays = []
+		this.startDate = ""
+		this.endDate = ""
 		this.startTime = ""
 		this.endTime = ""
 	}
@@ -216,6 +222,8 @@ export class AddOfferDialogComponent {
 			discountType: this.offerType === "DISCOUNT" ? this.discountType : undefined,
 			offerValue: this.offerValue,
 			weekdays: this.selectedWeekdays,
+			startDate: this.startDate ? new Date(this.startDate) : undefined,
+			endDate: this.endDate ? new Date(this.endDate) : undefined,
 			startTime: this.startTime || undefined,
 			endTime: this.endTime || undefined,
 			offerItems: this.offerItems
@@ -384,6 +392,14 @@ export class AddOfferDialogComponent {
 
 	isWeekdaySelected(weekday: Weekday): boolean {
 		return this.selectedWeekdays.includes(weekday)
+	}
+
+	startDateChange(value: string) {
+		this.startDate = value
+	}
+
+	endDateChange(value: string) {
+		this.endDate = value
 	}
 
 	startTimeChange(value: string) {

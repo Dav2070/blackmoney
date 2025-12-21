@@ -209,6 +209,8 @@ export const de = {
 		availability: "Verfügbarkeit",
 		weekdays: "Wochentage",
 		selectAllDays: "Alle Tage auswählen",
+		startDate: "Startdatum (optional)",
+		endDate: "Enddatum (optional)",
 		startTime: "Startzeit (optional)",
 		endTime: "Endzeit (optional)",
 		previous: "Zurück",

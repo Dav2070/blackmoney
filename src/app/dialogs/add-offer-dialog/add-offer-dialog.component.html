@@ -136,10 +136,10 @@
 
 				<div class="dialog-formfield-container">
 					<dav-checkbox
-						[value]="takeaway"
-						[label]="locale.takeaway"
-						[disabled]="loading"
-						(change)="takeawayCheckboxChange($any($event).detail.value)"
+					[checked]="takeaway"
+					[label]="locale.takeaway"
+					[disabled]="loading"
+					(change)="takeawayCheckboxChange($any($event).detail.checked)"
 					></dav-checkbox>
 				</div>
 			</div>

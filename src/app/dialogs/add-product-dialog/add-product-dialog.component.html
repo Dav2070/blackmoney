@@ -50,15 +50,15 @@
 		<!-- Takeaway -->
 		<div class="dialog-formfield-container">
 			<dav-checkbox
-				[value]="takeaway"
-				label="Takeaway verfügbar"
+				[checked]="takeaway"
+				[label]="'Takeaway verfügbar'"
 				[disabled]="loading"
-				(change)="takeawayCheckboxChange($any($event).detail.value)"
+				(change)="takeawayCheckboxChange($any($event).detail.checked)"
 			></dav-checkbox>
 		</div>
 
-		<!-- Variationen -->
-		<div class="dialog-formfield-container">
+	<!-- Variationen -->
+	<div class="dialog-formfield-container">
 			<label class="variations-label">Variationen (Mehrfachauswahl)</label>
 			<div class="variations-selection">
 				<ng-container

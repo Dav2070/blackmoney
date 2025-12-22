@@ -4,7 +4,8 @@ import { Product } from "src/app/models/Product"
 import {
 	faTrash,
 	faChevronRight,
-	faChevronDown
+	faChevronDown,
+	faPencil
 } from "@fortawesome/free-solid-svg-icons"
 
 @Component({
@@ -17,6 +18,7 @@ export class OfferItemsComponent {
 	faTrash = faTrash
 	faChevronRight = faChevronRight
 	faChevronDown = faChevronDown
+	faPencil = faPencil
 
 	@Input() offerItems: OfferItem[] = []
 	@Input() availableProducts: Product[] = []
@@ -32,6 +34,7 @@ export class OfferItemsComponent {
 	newItemMaxSelections: number = 1
 	newItemProducts: Product[] = []
 	expandedCategories: Map<string, boolean> = new Map()
+	editingItem: OfferItem | null = null
 
 	newItemNameChange(value: string) {
 		this.newItemName = value
@@ -83,14 +86,23 @@ export class OfferItemsComponent {
 			return
 		}
 
-		const newItem: OfferItem = {
-			uuid: crypto.randomUUID(),
-			name: this.newItemName,
-			maxSelections: this.newItemMaxSelections,
-			products: [...this.newItemProducts]
+		if (this.editingItem) {
+			// Update existing item
+			this.editingItem.name = this.newItemName
+			this.editingItem.maxSelections = this.newItemMaxSelections
+			this.editingItem.products = [...this.newItemProducts]
+			this.editingItem = null
+		} else {
+			// Add new item
+			const newItem: OfferItem = {
+				uuid: crypto.randomUUID(),
+				name: this.newItemName,
+				maxSelections: this.newItemMaxSelections,
+				products: [...this.newItemProducts]
+			}
+			this.offerItems.push(newItem)
 		}
 
-		this.offerItems.push(newItem)
 		this.offerItemsChange.emit(this.offerItems)
 
 		// Reset
@@ -101,9 +113,28 @@ export class OfferItemsComponent {
 		this.errorsClear.emit()
 	}
 
+	editOfferItem(item: OfferItem) {
+		this.editingItem = item
+		this.newItemName = item.name
+		this.newItemMaxSelections = item.maxSelections
+		this.newItemProducts = [...item.products]
+		this.newItemNameError = ""
+	}
+
+	cancelEdit() {
+		this.editingItem = null
+		this.newItemName = ""
+		this.newItemMaxSelections = 1
+		this.newItemProducts = []
+		this.newItemNameError = ""
+	}
+
 	removeOfferItem(item: OfferItem) {
 		this.offerItems = this.offerItems.filter(i => i.uuid !== item.uuid)
 		this.offerItemsChange.emit(this.offerItems)
+		if (this.editingItem === item) {
+			this.cancelEdit()
+		}
 	}
 
 	getProductsByCategory(): {

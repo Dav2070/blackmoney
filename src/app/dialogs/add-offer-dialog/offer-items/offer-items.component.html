@@ -65,17 +65,7 @@
 				</div>
 			</div>
 
-			<!-- Ausgewählte Produkte anzeigen -->
-			@if (offerItems[0].products.length > 0) {
-				<div class="selected-products">
-					<h5>{{ locale.selectedProducts }}</h5>
-					<div class="item-products">
-						@for (product of offerItems[0].products; track product.uuid) {
-							<span class="product-chip">{{ product.name }}</span>
-						}
-					</div>
-				</div>
-			}
+			<!-- Keine "Ausgewählte Produkte" Anzeige mehr für Specials -->
 		}
 	} @else {
 		<!-- Menü Mode: Normale Item-Verwaltung -->
@@ -85,7 +75,7 @@
 		@if (offerItems.length > 0) {
 			<div class="items-list">
 				@for (item of offerItems; track item.uuid) {
-					<div class="item-card">
+					<div class="item-card" [class.editing]="editingItem === item">
 						<div class="item-header">
 							<div class="item-info">
 								<strong>{{ item.name }}</strong>
@@ -93,9 +83,22 @@
 									>Max. {{ item.maxSelections }} auswählbar</span
 								>
 							</div>
-							<dav-icon-button size="xs" (click)="removeOfferItem(item)">
-								<fa-icon [icon]="faTrash"></fa-icon>
-							</dav-icon-button>
+							<div class="item-actions">
+								<dav-icon-button
+									size="xs"
+									(click)="editOfferItem(item)"
+									[disabled]="loading"
+								>
+									<fa-icon [icon]="faChevronRight"></fa-icon>
+								</dav-icon-button>
+								<dav-icon-button
+									size="xs"
+									(click)="removeOfferItem(item)"
+									[disabled]="loading"
+								>
+									<fa-icon [icon]="faTrash"></fa-icon>
+								</dav-icon-button>
+							</div>
 						</div>
 						<div class="item-products">
 							@for (product of item.products; track product.uuid) {
@@ -109,7 +112,16 @@
 
 		<!-- Add New Item -->
 		<div class="add-item-section">
-			<h5>{{ locale.addNewItem }}</h5>
+			<h5>{{ editingItem ? locale.editItem : locale.addNewItem }}</h5>
+
+			@if (editingItem) {
+				<div class="edit-info">
+					<span>{{ locale.editingItemInfo }}</span>
+					<dav-button type="button" (click)="cancelEdit()">
+						{{ locale.cancel }}
+					</dav-button>
+				</div>
+			}
 
 			<div class="dialog-formfield-container">
 				<dav-textfield
@@ -187,7 +199,7 @@
 				[disabled]="loading"
 				(click)="addOfferItem()"
 			>
-				{{ locale.addItem }}
+				{{ editingItem ? locale.updateItem : locale.addItem }}
 			</dav-button>
 		</div>
 	}

@@ -6,3 +6,27 @@
 	background: var(--dav-color-surface-container);
 	border-radius: 8px;
 }
+
+.item-card {
+	&.editing {
+		border: 2px solid var(--dav-color-primary);
+		background: var(--dav-color-primary-container);
+	}
+}
+
+.item-actions {
+	display: flex;
+	gap: 8px;
+}
+
+.edit-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+	margin-bottom: 16px;
+	background: var(--dav-color-primary-container);
+	border-radius: 8px;
+	font-size: 0.875rem;
+	color: var(--dav-color-on-primary-container);
+}

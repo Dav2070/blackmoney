@@ -28,7 +28,9 @@
 									category.categoryName
 								}}</span>
 								<span class="category-count"
-									>({{ category.products.length }})</span
+									>({{
+										getSelectedCountInCategory(category.categoryUuid)
+									}})</span
 								>
 							</button>
 
@@ -169,7 +171,9 @@
 									category.categoryName
 								}}</span>
 								<span class="category-count"
-									>({{ category.products.length }})</span
+									>({{
+										getSelectedCountInCategory(category.categoryUuid)
+									}})</span
 								>
 							</button>
 							@if (isCategoryExpanded(category.categoryUuid)) {

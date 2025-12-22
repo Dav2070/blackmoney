@@ -175,4 +175,23 @@ export class OfferItemsComponent {
 	isCategoryExpanded(categoryUuid: string): boolean {
 		return this.expandedCategories.get(categoryUuid) || false
 	}
+
+	getSelectedCountInCategory(categoryUuid: string): number {
+		const category = this.getProductsByCategory().find(
+			c => c.categoryUuid === categoryUuid
+		)
+		if (!category) return 0
+
+		if (this.isSpecialMode && this.offerItems.length > 0) {
+			// Im Special-Modus: Zähle ausgewählte Produkte im ersten Item
+			return category.products.filter(product =>
+				this.offerItems[0].products.some(p => p.uuid === product.uuid)
+			).length
+		} else {
+			// Im Menü-Modus: Zähle ausgewählte Produkte im aktuellen neuen Item
+			return category.products.filter(product =>
+				this.newItemProducts.some(p => p.uuid === product.uuid)
+			).length
+		}
+	}
 }

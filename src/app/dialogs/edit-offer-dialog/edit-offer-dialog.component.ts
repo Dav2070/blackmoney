@@ -14,17 +14,17 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { Offer } from "src/app/models/Offer"
 import { OfferItem } from "src/app/models/OfferItem"
 import { Product } from "src/app/models/Product"
-import { OfferBasicData } from "./offer-basic-data/offer-basic-data.component"
-import { OfferAvailability } from "./offer-availability/offer-availability.component"
+import { OfferBasicData } from "../add-offer-dialog/offer-basic-data/offer-basic-data.component"
+import { OfferAvailability } from "../add-offer-dialog/offer-availability/offer-availability.component"
 
 @Component({
-	selector: "app-add-offer-dialog",
-	templateUrl: "./add-offer-dialog.component.html",
-	styleUrls: ["./add-offer-dialog.component.scss"],
+	selector: "app-edit-offer-dialog",
+	templateUrl: "./edit-offer-dialog.component.html",
+	styleUrls: ["./edit-offer-dialog.component.scss"],
 	standalone: false
 })
-export class AddOfferDialogComponent {
-	locale = this.localizationService.locale.addOfferDialog
+export class EditOfferDialogComponent {
+	locale = this.localizationService.locale.editOfferDialog
 	actionsLocale = this.localizationService.locale.actions
 
 	@Input() loading: boolean = false
@@ -86,22 +86,7 @@ export class AddOfferDialogComponent {
 		}
 	}
 
-	show() {
-		if (this.isSpecialMode && this.offerItems.length === 0) {
-			// Für Specials: Erstelle ein Standard-Item
-			this.offerItems = [
-				{
-					uuid: crypto.randomUUID(),
-					name: "Produkte",
-					maxSelections: 1,
-					products: []
-				}
-			]
-		}
-		this.visible = true
-	}
-
-	showWithData(menu: any) {
+	show(menu: any) {
 		this.basicData.id = menu.id
 		this.basicData.name = menu.name
 		this.basicData.offerValue = menu.price

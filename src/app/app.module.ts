@@ -70,6 +70,10 @@ import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialo
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
 import { AddCategoryDialogComponent } from "./dialogs/add-category-dialog/add-category-dialog.component"
 import { AddOfferDialogComponent } from "./dialogs/add-offer-dialog/add-offer-dialog.component"
+import { EditOfferDialogComponent } from "./dialogs/edit-offer-dialog/edit-offer-dialog.component"
+import { OfferBasicDataComponent } from "./dialogs/add-offer-dialog/offer-basic-data/offer-basic-data.component"
+import { OfferItemsComponent } from "./dialogs/add-offer-dialog/offer-items/offer-items.component"
+import { OfferAvailabilityComponent } from "./dialogs/add-offer-dialog/offer-availability/offer-availability.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -170,6 +174,10 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		EditContactInfoDialogComponent,
 		AddCategoryDialogComponent,
 		AddOfferDialogComponent,
+		EditOfferDialogComponent,
+		OfferBasicDataComponent,
+		OfferItemsComponent,
+		OfferAvailabilityComponent,
 		AddVariationDialogComponent,
 		AddVariationItemDialogComponent,
 		EditVariationDialogComponent,

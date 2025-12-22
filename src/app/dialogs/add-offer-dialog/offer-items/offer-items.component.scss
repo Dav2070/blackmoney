@@ -1,0 +1,8 @@
+@use "../add-offer-dialog.component.scss";
+
+.selected-products {
+	margin-top: 16px;
+	padding: 16px;
+	background: var(--dav-color-surface-container);
+	border-radius: 8px;
+}

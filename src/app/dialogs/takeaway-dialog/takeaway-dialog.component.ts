@@ -2,53 +2,64 @@ import {
 	Component,
 	Inject,
 	PLATFORM_ID,
-	AfterViewInit,
 	ElementRef,
 	ViewChild,
 	Output,
 	EventEmitter,
 	Input
 } from "@angular/core"
-import { isPlatformServer } from "@angular/common"
+import { isPlatformBrowser } from "@angular/common"
 import { Router } from "@angular/router"
 import {
 	faPlus,
 	faTrash,
 	faTruck,
 	faBagShopping,
-	faUtensils,
-	faArrowLeft
+	faUtensils
 } from "@fortawesome/pro-regular-svg-icons"
+import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Order } from "src/app/models/Order"
 import { TakeawayDetails } from "src/app/models/TakeawayDetails"
 import { AddTakeawayDialogComponent } from "src/app/dialogs/add-takeaway-dialog/add-takeaway-dialog.component"
-import { ViewTakeawayDialogComponent } from "src/app/dialogs/view-takeaway-dialog/view-takeaway-dialog.component"
 import { EditTakeawayDialogComponent } from "src/app/dialogs/edit-takeaway-dialog/edit-takeaway-dialog.component"
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { TakeawayFilterType } from "src/app/types"
+import { formatPrice } from "src/app/utils"
 
 @Component({
-	selector: "app-takeaway-sidenav",
-	templateUrl: "./takeaway-sidenav.component.html",
-	styleUrl: "./takeaway-sidenav.component.scss",
+	selector: "app-takeaway-dialog",
+	templateUrl: "./takeaway-dialog.component.html",
+	styleUrl: "./takeaway-dialog.component.scss",
 	standalone: false
 })
-export class TakeawaySidenavComponent implements AfterViewInit {
+export class TakeawayDialogComponent {
 	locale = this.localizationService.locale.tableOverviewPage
 	faPlus = faPlus
 	faTrash = faTrash
 	faTruck = faTruck
 	faBagShopping = faBagShopping
 	faUtensils = faUtensils
-	faArrowLeft = faArrowLeft
 	takeawayFilter: TakeawayFilterType = "ALL"
 	priceCalculator = new PriceCalculator()
+	formatPrice = formatPrice
+	visible: boolean = false
+	addTakeawayDialogVisible: boolean = false
+	editTakeawayDialogVisible: boolean = false
+	selectedOrder: Order = null
 
+	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	@Input() orders: Order[] = []
 	@Output() addOrder = new EventEmitter<TakeawayDetails>()
 	@Output() deleteOrderEvent = new EventEmitter<string>()
 	@Output() updateOrder = new EventEmitter<TakeawayDetails>()
+	@Output() navigateToOrderEvent = new EventEmitter<string>()
+
+	@ViewChild("addTakeawayDialog")
+	addTakeawayDialog: AddTakeawayDialogComponent
+
+	@ViewChild("editTakeawayDialog")
+	editTakeawayDialog: EditTakeawayDialogComponent
 
 	get filteredOrders(): Order[] {
 		if (this.takeawayFilter === "ALL") {
@@ -66,18 +77,6 @@ export class TakeawaySidenavComponent implements AfterViewInit {
 		return this.orders
 	}
 
-	@ViewChild("takeawaySidenav")
-	takeawaySidenav: ElementRef<any>
-
-	@ViewChild("addTakeawayDialog")
-	addTakeawayDialog: AddTakeawayDialogComponent
-
-	@ViewChild("viewTakeawayDialog")
-	viewTakeawayDialog: ViewTakeawayDialogComponent
-
-	@ViewChild("editTakeawayDialog")
-	editTakeawayDialog: EditTakeawayDialogComponent
-
 	constructor(
 		private router: Router,
 		private localizationService: LocalizationService,
@@ -85,39 +84,44 @@ export class TakeawaySidenavComponent implements AfterViewInit {
 	) {}
 
 	ngAfterViewInit() {
-		if (isPlatformServer(this.platformId)) return
-
-		if (this.takeawaySidenav) {
-			const sidenav = this.takeawaySidenav.nativeElement
-
-			sidenav.addEventListener("dismiss", () => {
-				sidenav.open = false
-			})
+		if (isPlatformBrowser(this.platformId)) {
+			document.body.appendChild(this.dialog.nativeElement)
 		}
 	}
 
-	open() {
-		if (this.takeawaySidenav) {
-			this.takeawaySidenav.nativeElement.open = true
+	ngOnDestroy() {
+		if (isPlatformBrowser(this.platformId)) {
+			document.body.removeChild(this.dialog.nativeElement)
 		}
 	}
 
-	closeSidenav() {
-		if (this.takeawaySidenav) {
-			this.takeawaySidenav.nativeElement.open = false
-		}
+	show() {
+		this.visible = true
+
+		setTimeout(() => {
+			if (this.orders.length > 0) {
+				this.selectedOrder = this.orders[0]
+			}
+		}, 200)
+	}
+
+	hide() {
+		this.visible = false
 	}
 
 	openAddDialog() {
+		this.addTakeawayDialogVisible = true
 		this.addTakeawayDialog.show()
 	}
 
 	handleAddDialogPrimaryClick(takeawayDetails: TakeawayDetails) {
+		this.addTakeawayDialogVisible = false
+		this.addTakeawayDialog.hide()
 		this.addOrder.emit(takeawayDetails)
 	}
 
 	getOrderTotalPrice(order: Order): number {
-		if (!order.orderItems || order.orderItems.length === 0) {
+		if (!order || !order.orderItems || order.orderItems.length === 0) {
 			return 0
 		}
 
@@ -136,19 +140,37 @@ export class TakeawaySidenavComponent implements AfterViewInit {
 		this.deleteOrderEvent.emit(orderUuid)
 	}
 
-	openViewDialog(order: Order) {
-		this.viewTakeawayDialog.show(order.takeawayDetails)
-	}
-
-	handleViewDialogEditClick(takeawayDetails: TakeawayDetails) {
-		this.editTakeawayDialog.show(takeawayDetails)
-	}
-
 	handleEditDialogPrimaryClick(updatedDetails: TakeawayDetails) {
+		this.editTakeawayDialogVisible = false
+		this.editTakeawayDialog.hide()
 		this.updateOrder.emit(updatedDetails)
 	}
 
-	navigateToOrder(orderUuid: string) {
-		this.router.navigate(["dashboard", "tables", orderUuid])
+	openEditDialog() {
+		if (this.selectedOrder) {
+			this.editTakeawayDialogVisible = true
+			this.editTakeawayDialog.show(this.selectedOrder.takeawayDetails)
+		}
+	}
+
+	dismissAddDialog() {
+		if (this.addTakeawayDialogVisible) {
+			this.addTakeawayDialogVisible = false
+			this.addTakeawayDialog.hide()
+		}
+	}
+
+	dismissEditDialog() {
+		if (this.editTakeawayDialogVisible) {
+			this.editTakeawayDialogVisible = false
+			this.editTakeawayDialog.hide()
+		}
+	}
+
+	navigateToOrder() {
+		if (this.selectedOrder) {
+			this.navigateToOrderEvent.emit(this.selectedOrder.uuid)
+			this.visible = false
+		}
 	}
 }

@@ -73,8 +73,8 @@ import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialo
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
 import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
 import { AddTakeawayDialogComponent } from "./dialogs/add-takeaway-dialog/add-takeaway-dialog.component"
-import { ViewTakeawayDialogComponent } from "./dialogs/view-takeaway-dialog/view-takeaway-dialog.component"
 import { EditTakeawayDialogComponent } from "./dialogs/edit-takeaway-dialog/edit-takeaway-dialog.component"
+import { TakeawayDialogComponent } from "./dialogs/takeaway-dialog/takeaway-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -94,7 +94,6 @@ import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-pag
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { CashRegisterPageComponent } from "./pages/cash-register-pages/cash-register-page/cash-register-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
-import { TakeawaySidenavComponent } from "./pages/cash-register-pages/table-overview-page/takeaway-sidenav/takeaway-sidenav.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
@@ -165,8 +164,8 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		ViewNoteDialogComponent,
 		AddDiverseProductDialogComponent,
 		AddTakeawayDialogComponent,
-		ViewTakeawayDialogComponent,
 		EditTakeawayDialogComponent,
+		TakeawayDialogComponent,
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
 		// Pages
@@ -187,7 +186,6 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		OnboardingPageComponent,
 		CashRegisterPageComponent,
 		TableOverviewPageComponent,
-		TakeawaySidenavComponent,
 		BookingPageComponent,
 		TransferPageComponent,
 		PaymentPageComponent,

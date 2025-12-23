@@ -3,6 +3,7 @@ import {
 	ElementRef,
 	EventEmitter,
 	Inject,
+	Input,
 	Output,
 	PLATFORM_ID,
 	ViewChild
@@ -21,7 +22,9 @@ import { TakeawayDetails } from "src/app/models/TakeawayDetails"
 export class EditTakeawayDialogComponent {
 	locale = this.localizationService.locale.dialogs.editTakeawayDialog
 	actionsLocale = this.localizationService.locale.actions
+	@Input() child: boolean = false
 	@Output() primaryButtonClick = new EventEmitter<TakeawayDetails>()
+	@Output() dismiss = new EventEmitter<void>()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
 	loading: boolean = false
@@ -76,6 +79,7 @@ export class EditTakeawayDialogComponent {
 
 	hide() {
 		this.visible = false
+		this.dismiss.emit()
 	}
 
 	isFormValid(): boolean {
@@ -131,7 +135,7 @@ export class EditTakeawayDialogComponent {
 		this.city = (event.target as HTMLInputElement).value
 	}
 
-	orderTypeChange(type: "delivery" | "pickUp" | "dineIn") {
-		this.orderType = type
+	orderTypeRadioGroupChange(event: CustomEvent) {
+		this.orderType = event.detail.value as "delivery" | "pickUp" | "dineIn"
 	}
 }

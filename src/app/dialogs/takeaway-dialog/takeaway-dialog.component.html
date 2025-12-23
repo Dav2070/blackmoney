@@ -1,0 +1,188 @@
+<dav-dialog
+	#dialog
+	[visible]="visible"
+	maxWidth="1000"
+	[hideBehindOverlay]="addTakeawayDialogVisible || editTakeawayDialogVisible"
+	(dismiss)="visible = false"
+>
+	<div class="container">
+		<div class="orders-list">
+			<div class="orders-list-header">
+				<h3>{{ locale.takeaway.headline }}</h3>
+				<dav-icon-button
+					size="sm"
+					[tooltip]="locale.takeaway.add"
+					(click)="openAddDialog()"
+				>
+					<fa-icon [icon]="faPlus"></fa-icon>
+				</dav-icon-button>
+			</div>
+
+			<div class="takeaway-filters">
+				<dav-icon-button
+					size="sm"
+					[tooltip]="locale.takeaway.filterAll"
+					[class.active]="takeawayFilter === 'ALL'"
+					(click)="setFilter('ALL')"
+				>
+					{{ locale.takeaway.filterAll }}
+				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[tooltip]="locale.takeaway.filterDelivery"
+					[class.active]="takeawayFilter === 'DELIVERY'"
+					(click)="setFilter('DELIVERY')"
+				>
+					<fa-icon [icon]="faTruck"></fa-icon>
+				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[tooltip]="locale.takeaway.filterPickUp"
+					[class.active]="takeawayFilter === 'PICKUP'"
+					(click)="setFilter('PICKUP')"
+				>
+					<fa-icon [icon]="faBagShopping"></fa-icon>
+				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[tooltip]="locale.takeaway.filterDineIn"
+					[class.active]="takeawayFilter === 'DINEIN'"
+					(click)="setFilter('DINEIN')"
+				>
+					<fa-icon [icon]="faUtensils"></fa-icon>
+				</dav-icon-button>
+			</div>
+
+			@if (filteredOrders.length === 0) {
+				<p class="no-orders-message">{{ locale.takeaway.noOrders }}</p>
+			} @else {
+				@for (order of filteredOrders; track order.uuid) {
+					<dav-card
+						clickable
+						(click)="selectedOrder = order"
+						[selected]="order === selectedOrder"
+					>
+						<div class="order-info">
+							<div class="order-info-details">
+								<p>{{ order.takeawayDetails.name }}</p>
+								<p>{{ order.takeawayDetails.phoneNumber }}</p>
+								<p>{{ formatPrice(getOrderTotalPrice(order)) }}</p>
+							</div>
+							<div class="order-info-icon">
+								@if (order.takeawayDetails.delivery) {
+									<fa-icon [icon]="faTruck"></fa-icon>
+								} @else if (order.takeawayDetails.pickUp) {
+									<fa-icon [icon]="faBagShopping"></fa-icon>
+								} @else if (order.takeawayDetails.dineIn) {
+									<fa-icon [icon]="faUtensils"></fa-icon>
+								}
+							</div>
+						</div>
+					</dav-card>
+				}
+			}
+		</div>
+
+		<div class="order-details">
+			<div class="order-details-header">
+				<div>
+					<h3>{{ selectedOrder?.takeawayDetails.name }}</h3>
+					<p class="order-phone">
+						{{ selectedOrder?.takeawayDetails.phoneNumber }}
+					</p>
+				</div>
+
+				<div class="order-type-badge">
+					@if (selectedOrder?.takeawayDetails.delivery) {
+						<fa-icon [icon]="faTruck"></fa-icon>
+						<span>Lieferung</span>
+					} @else if (selectedOrder?.takeawayDetails.pickUp) {
+						<fa-icon [icon]="faBagShopping"></fa-icon>
+						<span>Abholung</span>
+					} @else if (selectedOrder?.takeawayDetails.dineIn) {
+						<fa-icon [icon]="faUtensils"></fa-icon>
+						<span>Vor Ort</span>
+					}
+				</div>
+			</div>
+
+			@if (selectedOrder?.takeawayDetails.delivery) {
+				<div class="delivery-address">
+					<p>
+						{{ selectedOrder.takeawayDetails.addressLine1 }}
+						{{ selectedOrder.takeawayDetails.houseNumber }}
+					</p>
+					@if (selectedOrder.takeawayDetails.addressLine2) {
+						<p>{{ selectedOrder.takeawayDetails.addressLine2 }}</p>
+					}
+					<p>
+						{{ selectedOrder.takeawayDetails.postalCode }}
+						{{ selectedOrder.takeawayDetails.city }}
+					</p>
+				</div>
+			}
+
+			<div class="order-details-body">
+				<div class="order-items">
+					@for (
+						orderItem of selectedOrder?.orderItems;
+						track orderItem.uuid
+					) {
+						@if (
+							orderItem.type === "MENU" || orderItem.type === "SPECIAL"
+						) {
+							<app-offer-order-item-card
+								[orderItem]="orderItem"
+							></app-offer-order-item-card>
+						} @else {
+							<app-order-item-card
+								[orderItem]="orderItem"
+							></app-order-item-card>
+						}
+					}
+				</div>
+
+				<div class="separator"></div>
+
+				<div class="order-price-container">
+					<p>{{ formatPrice(getOrderTotalPrice(selectedOrder)) }}</p>
+				</div>
+			</div>
+
+			<div class="order-actions">
+				<dav-button
+					size="sm"
+					outline
+					(click)="openEditDialog()"
+					[disabled]="!selectedOrder"
+				>
+					{{ locale.takeaway.edit }}
+				</dav-button>
+				<dav-button
+					size="sm"
+					(click)="navigateToOrder()"
+					[disabled]="!selectedOrder"
+				>
+					Zur Bestellung
+				</dav-button>
+			</div>
+		</div>
+	</div>
+</dav-dialog>
+
+<app-add-takeaway-dialog
+	#addTakeawayDialog
+	[child]="true"
+	(primaryButtonClick)="handleAddDialogPrimaryClick($event)"
+	(dismiss)="dismissAddDialog()"
+></app-add-takeaway-dialog>
+
+<app-edit-takeaway-dialog
+	#editTakeawayDialog
+	[child]="true"
+	(primaryButtonClick)="handleEditDialogPrimaryClick($event)"
+	(dismiss)="dismissEditDialog()"
+></app-edit-takeaway-dialog>

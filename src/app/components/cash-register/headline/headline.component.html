@@ -13,15 +13,5 @@
 		{{ headline }}
 	</p>
 
-	@if (showTakeawayButton) {
-		<dav-icon-button
-			size="sm"
-			tooltip="Takeaway"
-			(click)="takeawayButtonClick.emit($event)"
-		>
-			<fa-icon [icon]="faCupTogo"></fa-icon>
-		</dav-icon-button>
-	}
-
 	<ng-content></ng-content>
 </div>

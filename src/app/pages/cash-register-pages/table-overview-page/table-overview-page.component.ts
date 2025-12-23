@@ -7,12 +7,13 @@ import {
 } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router } from "@angular/router"
+import { faCupTogo } from "@fortawesome/pro-regular-svg-icons"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Room } from "src/app/models/Room"
 import { Order } from "src/app/models/Order"
 import { TakeawayDetails } from "src/app/models/TakeawayDetails"
-import { TakeawaySidenavComponent } from "./takeaway-sidenav/takeaway-sidenav.component"
+import { TakeawayDialogComponent } from "src/app/dialogs/takeaway-dialog/takeaway-dialog.component"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Product } from "src/app/models/Product"
 import { OrderItemType } from "src/app/types"
@@ -24,13 +25,14 @@ import { OrderItemType } from "src/app/types"
 })
 export class TableOverviewPageComponent {
 	locale = this.localizationService.locale.tableOverviewPage
+	faCupTogo = faCupTogo
 	rooms: Room[] = []
 	selectedRoom: Room = null
 	roomsLoading: boolean = true
 	takeawayOrders: Order[] = []
 
-	@ViewChild("takeawaySidenav")
-	takeawaySidenav: TakeawaySidenavComponent
+	@ViewChild("takeawayDialog")
+	takeawayDialog: TakeawayDialogComponent
 
 	constructor(
 		private router: Router,
@@ -66,7 +68,7 @@ export class TableOverviewPageComponent {
 		const product1 = new Product()
 		product1.uuid = crypto.randomUUID()
 		product1.name = "Pizza Margherita"
-		product1.price = 8.5
+		product1.price = 850
 		product1.variations = []
 
 		const orderItem1: OrderItem = {
@@ -83,7 +85,7 @@ export class TableOverviewPageComponent {
 		const product2 = new Product()
 		product2.uuid = crypto.randomUUID()
 		product2.name = "Coca Cola 0.5l"
-		product2.price = 3.5
+		product2.price = 350
 		product2.variations = []
 
 		const orderItem2: OrderItem = {
@@ -121,7 +123,7 @@ export class TableOverviewPageComponent {
 		const product3 = new Product()
 		product3.uuid = crypto.randomUUID()
 		product3.name = "Cheeseburger"
-		product3.price = 12.9
+		product3.price = 1290
 		product3.variations = []
 
 		const orderItem3: OrderItem = {
@@ -179,7 +181,7 @@ export class TableOverviewPageComponent {
 		const product4 = new Product()
 		product4.uuid = crypto.randomUUID()
 		product4.name = "Pasta Carbonara"
-		product4.price = 11.5
+		product4.price = 1150
 		product4.variations = []
 
 		const orderItem4: OrderItem = {
@@ -196,7 +198,7 @@ export class TableOverviewPageComponent {
 		const product5 = new Product()
 		product5.uuid = crypto.randomUUID()
 		product5.name = "Tiramisu"
-		product5.price = 5.9
+		product5.price = 590
 		product5.variations = []
 
 		const orderItem5: OrderItem = {
@@ -213,7 +215,7 @@ export class TableOverviewPageComponent {
 		const product6 = new Product()
 		product6.uuid = crypto.randomUUID()
 		product6.name = "Mineralwasser 1l"
-		product6.price = 2.5
+		product6.price = 250
 		product6.variations = []
 
 		const orderItem6: OrderItem = {
@@ -251,7 +253,7 @@ export class TableOverviewPageComponent {
 		const product7 = new Product()
 		product7.uuid = crypto.randomUUID()
 		product7.name = "Wiener Schnitzel"
-		product7.price = 15.9
+		product7.price = 1590
 		product7.variations = []
 
 		const orderItem7: OrderItem = {
@@ -268,7 +270,7 @@ export class TableOverviewPageComponent {
 		const product8 = new Product()
 		product8.uuid = crypto.randomUUID()
 		product8.name = "Pommes Frites"
-		product8.price = 3.9
+		product8.price = 390
 		product8.variations = []
 
 		const orderItem8: OrderItem = {
@@ -323,10 +325,14 @@ export class TableOverviewPageComponent {
 		this.router.navigate(["dashboard", "tables", tableUuid])
 	}
 
-	toggleTakeawaySidenav() {
-		if (this.takeawaySidenav) {
-			this.takeawaySidenav.open()
+	toggleTakeawayDialog() {
+		if (this.takeawayDialog) {
+			this.takeawayDialog.show()
 		}
+	}
+
+	handleNavigateToOrder(orderUuid: string) {
+		this.router.navigate(["dashboard", "tables", orderUuid])
 	}
 
 	handleAddTakeawayOrder(takeawayDetails: TakeawayDetails) {

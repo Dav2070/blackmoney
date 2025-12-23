@@ -4,6 +4,7 @@
 	[primaryButtonText]="actionsLocale.save"
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
+	[child]="child"
 	maxWidth="500px"
 	[loading]="loading"
 	[primaryButtonDisabled]="!isFormValid()"
@@ -86,43 +87,25 @@
 		<!-- Order Type -->
 		<div class="dialog-formfield-container">
 			<label class="radio-group-label">{{ locale.orderType }}</label>
-			<div class="radio-group">
-				<label class="radio-label">
-					<input
-						type="radio"
-						name="orderType"
-						value="delivery"
-						[checked]="orderType === 'delivery'"
-						[disabled]="loading"
-						(change)="orderTypeChange('delivery')"
-					/>
-					<span>{{ locale.delivery }}</span>
-				</label>
+			<dav-radio-group (change)="orderTypeRadioGroupChange($event)">
+				<dav-radio-button
+					[label]="locale.delivery"
+					value="delivery"
+					[checked]="orderType === 'delivery'"
+				></dav-radio-button>
 
-				<label class="radio-label">
-					<input
-						type="radio"
-						name="orderType"
-						value="pickUp"
-						[checked]="orderType === 'pickUp'"
-						[disabled]="loading"
-						(change)="orderTypeChange('pickUp')"
-					/>
-					<span>{{ locale.pickUp }}</span>
-				</label>
+				<dav-radio-button
+					[label]="locale.pickUp"
+					value="pickUp"
+					[checked]="orderType === 'pickUp'"
+				></dav-radio-button>
 
-				<label class="radio-label">
-					<input
-						type="radio"
-						name="orderType"
-						value="dineIn"
-						[checked]="orderType === 'dineIn'"
-						[disabled]="loading"
-						(change)="orderTypeChange('dineIn')"
-					/>
-					<span>{{ locale.dineIn }}</span>
-				</label>
-			</div>
+				<dav-radio-button
+					[label]="locale.dineIn"
+					value="dineIn"
+					[checked]="orderType === 'dineIn'"
+				></dav-radio-button>
+			</dav-radio-group>
 		</div>
 	</form>
 </dav-dialog>

@@ -15,9 +15,7 @@ export class HeadlineComponent {
 
 	@Input() headline: string = ""
 	@Input() showBackButton: boolean = false
-	@Input() showTakeawayButton: boolean = false
 	@Output() backButtonClick = new EventEmitter()
-	@Output() takeawayButtonClick = new EventEmitter()
 
 	constructor(private localizationService: LocalizationService) {}
 }

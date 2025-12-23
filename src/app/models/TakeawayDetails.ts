@@ -6,8 +6,8 @@ export class TakeawayDetails {
 	houseNumber?: string
 	postalCode?: string
 	city?: string
-	delivery?: boolean
-	pickUp?: boolean
-	dineIn?: boolean
+	delivery: boolean
+	pickUp: boolean
+	dineIn: boolean
 	phoneNumber?: string
 }

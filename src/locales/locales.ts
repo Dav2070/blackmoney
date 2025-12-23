@@ -133,7 +133,7 @@ export const de = {
 			filterPickUp: "Abholung",
 			filterDineIn: "Vor Ort",
 			noOrders: "Keine Bestellungen",
-			details: "Details",
+			edit: "Bearbeiten",
 			delete: "Löschen"
 		}
 	},

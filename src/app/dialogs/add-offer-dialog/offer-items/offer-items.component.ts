@@ -145,13 +145,15 @@ export class OfferItemsComponent {
 		} else {
 			// Add new item - Deep copy der selectedVariations
 			const newSelectedVariations = new Map<string, Map<string, any[]>>()
-			this.newItemSelectedVariations.forEach((variationsMap, productUuid) => {
-				const newVariationsMap = new Map<string, any[]>()
-				variationsMap.forEach((items, variationUuid) => {
-					newVariationsMap.set(variationUuid, [...items])
-				})
-				newSelectedVariations.set(productUuid, newVariationsMap)
-			})
+			this.newItemSelectedVariations.forEach(
+				(variationsMap, productUuid) => {
+					const newVariationsMap = new Map<string, any[]>()
+					variationsMap.forEach((items, variationUuid) => {
+						newVariationsMap.set(variationUuid, [...items])
+					})
+					newSelectedVariations.set(productUuid, newVariationsMap)
+				}
+			)
 
 			const newItem: OfferItem = {
 				uuid: crypto.randomUUID(),
@@ -296,7 +298,9 @@ export class OfferItemsComponent {
 		if (index === -1) {
 			newSelectedItems = [...selectedItems, item]
 		} else {
-			newSelectedItems = selectedItems.filter((i: any) => i.uuid !== item.uuid)
+			newSelectedItems = selectedItems.filter(
+				(i: any) => i.uuid !== item.uuid
+			)
 		}
 
 		productVariations.set(variationUuid, newSelectedItems)

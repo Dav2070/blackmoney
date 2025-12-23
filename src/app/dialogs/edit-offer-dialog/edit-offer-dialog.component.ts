@@ -99,29 +99,39 @@ export class EditOfferDialogComponent {
 		if (this.offerItems.length > 0) {
 			this.offerItems.forEach(item => {
 				// Konvertiere selectedVariations von Object/JSON zu Map
-				if (item.selectedVariations && !(item.selectedVariations instanceof Map)) {
+				if (
+					item.selectedVariations &&
+					!(item.selectedVariations instanceof Map)
+				) {
 					const convertedMap = new Map<string, Map<string, any[]>>()
-					
+
 					// selectedVariations ist ein Object, konvertiere es zu Map
-					Object.entries(item.selectedVariations).forEach(([productUuid, variationsObj]: [string, any]) => {
-						const variationsMap = new Map<string, any[]>()
-						
-						if (variationsObj && typeof variationsObj === 'object') {
-							Object.entries(variationsObj).forEach(([variationUuid, items]: [string, any]) => {
-								variationsMap.set(variationUuid, Array.isArray(items) ? items : [])
-							})
+					Object.entries(item.selectedVariations).forEach(
+						([productUuid, variationsObj]: [string, any]) => {
+							const variationsMap = new Map<string, any[]>()
+
+							if (variationsObj && typeof variationsObj === "object") {
+								Object.entries(variationsObj).forEach(
+									([variationUuid, items]: [string, any]) => {
+										variationsMap.set(
+											variationUuid,
+											Array.isArray(items) ? items : []
+										)
+									}
+								)
+							}
+
+							convertedMap.set(productUuid, variationsMap)
 						}
-						
-						convertedMap.set(productUuid, variationsMap)
-					})
-					
+					)
+
 					item.selectedVariations = convertedMap
 				}
-				
+
 				if (!item.selectedVariations) {
 					item.selectedVariations = new Map()
 				}
-				
+
 				// Für jedes Produkt im Item: Initialisiere fehlende Variationen
 				item.products.forEach(product => {
 					if (product.variations && product.variations.length > 0) {
@@ -215,19 +225,22 @@ export class EditOfferDialogComponent {
 				products: item.products
 			}
 
-			if (item.selectedVariations && item.selectedVariations instanceof Map) {
+			if (
+				item.selectedVariations &&
+				item.selectedVariations instanceof Map
+			) {
 				const selectedVariationsObj: any = {}
-				
+
 				item.selectedVariations.forEach((variationsMap, productUuid) => {
 					const variationsObj: any = {}
-					
+
 					variationsMap.forEach((items, variationUuid) => {
 						variationsObj[variationUuid] = items
 					})
-					
+
 					selectedVariationsObj[productUuid] = variationsObj
 				})
-				
+
 				itemCopy.selectedVariations = selectedVariationsObj
 			} else {
 				itemCopy.selectedVariations = item.selectedVariations

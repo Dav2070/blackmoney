@@ -3,10 +3,8 @@ import {
 	OnInit,
 	ViewChild,
 	HostListener,
-	ElementRef
 } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { ContextMenu } from "dav-ui-components"
 import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"

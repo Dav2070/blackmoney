@@ -11,7 +11,6 @@ import {
 import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
-import { Offer } from "src/app/models/Offer"
 import { OfferItem } from "src/app/models/OfferItem"
 import { Product } from "src/app/models/Product"
 import { OfferBasicData } from "./offer-basic-data/offer-basic-data.component"

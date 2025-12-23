@@ -15,7 +15,6 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { Product } from "src/app/models/Product"
 import { Category } from "src/app/models/Category"
 import { Variation } from "src/app/models/Variation"
-import { VariationItem } from "src/app/models/VariationItem"
 import { ProductType } from "src/app/types"
 
 @Component({

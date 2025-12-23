@@ -48,7 +48,11 @@ export const de = {
 		generalSettings: "Allgemeine Einstellungen",
 		goToDashboard: "Zur Kasse",
 		manageEmployees: "Mitarbeiter verwalten",
-		manageRestaurants: "Restaurants verwalten"
+		manageRestaurants: "Restaurants verwalten",
+		manageReservations: "Reservierungen verwalten"
+	},
+	reservationsPage: {
+		title: "Reservierungen"
 	},
 	settingsPage: {
 		headline: "Allgemeine Einstellungen",

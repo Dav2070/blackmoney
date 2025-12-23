@@ -120,6 +120,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
+import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
 
 @NgModule({
 	declarations: [
@@ -189,6 +190,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		RoomPageComponent,
 		TableCombinationsPageComponent,
 		OpeningTimePageComponent,
+		ReservationsPageComponent,
 		//Settings-Pages
 		SettingsPageComponent,
 		MenuePageComponent,

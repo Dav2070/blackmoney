@@ -30,6 +30,7 @@ import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.com
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
+import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
 
 const routes: Routes = [
 	{
@@ -91,6 +92,10 @@ const routes: Routes = [
 			{
 				path: "user/employees/:uuid",
 				component: EmployeePageComponent
+			},
+			{
+				path: "user/reservations",
+				component: ReservationsPageComponent
 			},
 			{
 				path: "user/restaurants/:uuid/rooms",

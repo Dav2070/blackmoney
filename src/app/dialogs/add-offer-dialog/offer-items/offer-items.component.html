@@ -41,24 +41,26 @@
 										track product.uuid
 									) {
 										<div class="product-item">
-											<label class="product-checkbox">
-												<input
-													type="checkbox"
-													[checked]="
-														isProductSelectedForItem(
-															offerItems[0],
-															product
-														)
-													"
-													(change)="
-														toggleProductSelectionForItem(
-															offerItems[0],
-															product
-														)
-													"
-													[disabled]="loading"
-												/>
-												<span>{{ product.name }}</span>
+											<div class="product-header">
+												<label class="product-checkbox">
+													<input
+														type="checkbox"
+														[checked]="
+															isProductSelectedForItem(
+																offerItems[0],
+																product
+															)
+														"
+														(change)="
+															toggleProductSelectionForItem(
+																offerItems[0],
+																product
+															)
+														"
+														[disabled]="loading"
+													/>
+													<span>{{ product.name }}</span>
+												</label>
 												@if (
 													product.variations &&
 													product.variations.length > 0
@@ -73,7 +75,10 @@
 															)
 														"
 														(click)="
-															toggleProductExpanded(product.uuid)
+															toggleProductExpanded(
+																product.uuid,
+																$event
+															)
 														"
 													>
 														<fa-icon
@@ -85,7 +90,7 @@
 														></fa-icon>
 													</button>
 												}
-											</label>
+											</div>
 											@if (
 												isProductExpanded(product.uuid) &&
 												isProductSelectedForItem(
@@ -264,15 +269,17 @@
 										track product.uuid
 									) {
 										<div class="product-item">
-											<label class="product-checkbox">
-												<input
-													type="checkbox"
-													[checked]="isProductSelected(product)"
-													(change)="
-														toggleProductSelection(product)
-													"
-												/>
-												<span>{{ product.name }}</span>
+											<div class="product-header">
+												<label class="product-checkbox">
+													<input
+														type="checkbox"
+														[checked]="isProductSelected(product)"
+														(change)="
+															toggleProductSelection(product)
+														"
+													/>
+													<span>{{ product.name }}</span>
+												</label>
 												@if (
 													product.variations &&
 													product.variations.length > 0
@@ -284,7 +291,10 @@
 															!isProductSelected(product)
 														"
 														(click)="
-															toggleProductExpanded(product.uuid)
+															toggleProductExpanded(
+																product.uuid,
+																$event
+															)
 														"
 													>
 														<fa-icon
@@ -296,7 +306,7 @@
 														></fa-icon>
 													</button>
 												}
-											</label>
+											</div>
 											@if (
 												isProductExpanded(product.uuid) &&
 												isProductSelected(product)

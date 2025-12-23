@@ -37,12 +37,18 @@
 	gap: 8px;
 }
 
+.product-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	justify-content: space-between;
+}
+
 .product-checkbox {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	flex: 1;
-	justify-content: space-between;
 
 	span {
 		flex: 1;
@@ -52,11 +58,15 @@
 .expand-variations-btn {
 	background: none;
 	border: none;
-	padding: 4px;
+	padding: 8px;
+	margin: -4px;
 	cursor: pointer;
 	color: var(--dav-color-primary);
 	display: flex;
 	align-items: center;
+	position: relative;
+	z-index: 1;
+	flex-shrink: 0;
 
 	&:hover {
 		color: var(--dav-color-primary-dark);

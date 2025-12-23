@@ -238,7 +238,10 @@ export class OfferItemsComponent {
 		}
 	}
 
-	toggleProductExpanded(productUuid: string) {
+	toggleProductExpanded(productUuid: string, event?: Event) {
+		if (event) {
+			event.stopPropagation()
+		}
 		this.expandedProducts.set(
 			productUuid,
 			!this.expandedProducts.get(productUuid)

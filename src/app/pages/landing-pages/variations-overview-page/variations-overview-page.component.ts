@@ -9,8 +9,11 @@ import { ActivatedRoute, Router } from "@angular/router"
 import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
+import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
+import { ApiService } from "src/app/services/api-service"
 import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialog/add-variation-dialog.component"
+import { AddVariationItemDialogComponent } from "src/app/dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
 import { ContextMenu } from "dav-ui-components"
 import { EditVariationDialogComponent } from "src/app/dialogs/edit-variation-dialog/edit-variation-dialog.component"
 import { EditVariationItemDialogComponent } from "src/app/dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
@@ -30,32 +33,15 @@ export class VariationsOverviewPageComponent implements OnInit {
 
 	uuid: string = null
 	selectedVariation: Variation = null
-
-	variations: Variation[] = [
-		{
-			uuid: "1",
-			name: "Größe",
-			variationItems: [
-				{ id: 1, uuid: "1-1", name: "Klein", additionalCost: 0 },
-				{ id: 2, uuid: "1-2", name: "Mittel", additionalCost: 2 },
-				{ id: 3, uuid: "1-3", name: "Groß", additionalCost: 4 }
-			]
-		},
-		{
-			uuid: "2",
-			name: "Extras",
-			variationItems: [
-				{ id: 4, uuid: "2-1", name: "Extra Käse", additionalCost: 1.5 },
-				{ id: 5, uuid: "2-2", name: "Bacon", additionalCost: 2 }
-			]
-		}
-	]
+	variations: Variation[] = []
 
 	@ViewChild("addVariationDialog")
 	addVariationDialog: AddVariationDialogComponent
+	addVariationDialogLoading: boolean = false
 
 	@ViewChild("addVariationItemDialog")
-	addVariationItemDialog: any
+	addVariationItemDialog: AddVariationItemDialogComponent
+	addVariationItemDialogLoading: boolean = false
 
 	@ViewChild("variationContextMenu")
 	variationContextMenu!: ElementRef<ContextMenu>
@@ -64,9 +50,11 @@ export class VariationsOverviewPageComponent implements OnInit {
 
 	@ViewChild("editVariationDialog")
 	editVariationDialog: EditVariationDialogComponent
+	editVariationDialogLoading: boolean = false
 
 	@ViewChild("editVariationItemDialog")
 	editVariationItemDialog: EditVariationItemDialogComponent
+	editVariationItemDialogLoading: boolean = false
 
 	variationContextMenuVisible = false
 	variationContextMenuX = 0
@@ -80,13 +68,26 @@ export class VariationsOverviewPageComponent implements OnInit {
 	selectedVariationForItemContext: Variation = null
 
 	constructor(
-		private router: Router,
-		private localizationService: LocalizationService,
+		private readonly dataService: DataService,
+		private readonly localizationService: LocalizationService,
+		private readonly apiService: ApiService,
+		private readonly router: Router,
 		private readonly activatedRoute: ActivatedRoute
 	) {}
 
 	async ngOnInit() {
+		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
+
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+
+		// Load data
+		await this.loadData()
+	}
+
+	async loadData() {
+		// TODO: API - Load variations from backend
+		// Example: this.variations = await this.apiService.listVariations({ restaurantUuid: this.uuid })
+		this.variations = []
 	}
 
 	navigateBack() {
@@ -101,28 +102,49 @@ export class VariationsOverviewPageComponent implements OnInit {
 		name: string
 		variationItems: VariationItem[]
 	}) {
+		this.addVariationDialogLoading = true
+
+		// TODO: API - Create variation
+		// Example: const created = await this.apiService.createVariation({
+		//   restaurantUuid: this.uuid,
+		//   name: event.name,
+		//   variationItems: event.variationItems
+		// })
+
 		const newVariation: Variation = {
 			uuid: crypto.randomUUID(),
 			name: event.name,
 			variationItems: event.variationItems
 		}
 
-		this.variations.push(newVariation)
-		console.log("Added Variation:", newVariation)
+		this.variations = [...this.variations, newVariation]
+
+		this.addVariationDialogLoading = false
 		this.addVariationDialog.hide()
 	}
 
-	editVariation(variation: Variation) {
-		console.log("Edit Variation", variation)
-	}
-
 	deleteVariation(variation: Variation) {
+		const confirmed = confirm(
+			`Variation "${variation.name}" wirklich löschen?`
+		)
+		if (!confirmed) return
+
+		// TODO: API - Delete variation
+		// Example: await this.apiService.deleteVariation({ uuid: variation.uuid })
+
 		this.variations = this.variations.filter(v => v.uuid !== variation.uuid)
 	}
 
 	deleteVariationItem(variation: Variation, item: VariationItem) {
+		const confirmed = confirm(`Item "${item.name}" wirklich löschen?`)
+		if (!confirmed) return
+
+		// TODO: API - Delete variation item
+		// Example: await this.apiService.deleteVariationItem({ uuid: item.uuid })
+
 		const idx = this.variations.findIndex(v => v.uuid === variation.uuid)
 		if (idx === -1) return
+
 		const items = this.variations[idx].variationItems ?? []
 		this.variations[idx].variationItems = items.filter(
 			i => i.uuid !== item.uuid
@@ -140,6 +162,15 @@ export class VariationsOverviewPageComponent implements OnInit {
 	}) {
 		if (!this.selectedVariation) return
 
+		this.addVariationItemDialogLoading = true
+
+		// TODO: API - Create variation item
+		// Example: const created = await this.apiService.createVariationItem({
+		//   variationUuid: this.selectedVariation.uuid,
+		//   name: event.name,
+		//   additionalCost: event.additionalCost
+		// })
+
 		const newItem: VariationItem = {
 			id: Date.now(),
 			uuid: crypto.randomUUID(),
@@ -147,13 +178,15 @@ export class VariationsOverviewPageComponent implements OnInit {
 			additionalCost: event.additionalCost
 		}
 
-		// Item zur ausgewählten Variation hinzufügen
 		if (!this.selectedVariation.variationItems) {
 			this.selectedVariation.variationItems = []
 		}
-		this.selectedVariation.variationItems.push(newItem)
+		this.selectedVariation.variationItems = [
+			...this.selectedVariation.variationItems,
+			newItem
+		]
 
-		console.log("Added Item to", this.selectedVariation, newItem)
+		this.addVariationItemDialogLoading = false
 		this.addVariationItemDialog.hide()
 		this.selectedVariation = null
 	}
@@ -233,11 +266,29 @@ export class VariationsOverviewPageComponent implements OnInit {
 		name: string
 		variationItems: VariationItem[]
 	}) {
+		this.editVariationDialogLoading = true
+
+		// TODO: API - Update variation
+		// Example: const updated = await this.apiService.updateVariation({
+		//   uuid: event.uuid,
+		//   name: event.name,
+		//   variationItems: event.variationItems
+		// })
+
 		const idx = this.variations.findIndex(v => v.uuid === event.uuid)
 		if (idx !== -1) {
-			this.variations[idx].name = event.name
-			this.variations[idx].variationItems = event.variationItems
+			this.variations = [
+				...this.variations.slice(0, idx),
+				{
+					...this.variations[idx],
+					name: event.name,
+					variationItems: event.variationItems
+				},
+				...this.variations.slice(idx + 1)
+			]
 		}
+
+		this.editVariationDialogLoading = false
 		this.editVariationDialog.hide()
 	}
 
@@ -248,14 +299,37 @@ export class VariationsOverviewPageComponent implements OnInit {
 	}) {
 		if (!this.selectedVariationForItemContext) return
 
-		const item = this.selectedVariationForItemContext.variationItems.find(
-			i => i.uuid === event.uuid
-		)
-		if (item) {
-			item.name = event.name
-			item.additionalCost = event.additionalCost
+		this.editVariationItemDialogLoading = true
+
+		// TODO: API - Update variation item
+		// Example: const updated = await this.apiService.updateVariationItem({
+		//   uuid: event.uuid,
+		//   name: event.name,
+		//   additionalCost: event.additionalCost
+		// })
+
+		const itemIdx =
+			this.selectedVariationForItemContext.variationItems.findIndex(
+				i => i.uuid === event.uuid
+			)
+		if (itemIdx !== -1) {
+			this.selectedVariationForItemContext.variationItems = [
+				...this.selectedVariationForItemContext.variationItems.slice(
+					0,
+					itemIdx
+				),
+				{
+					...this.selectedVariationForItemContext.variationItems[itemIdx],
+					name: event.name,
+					additionalCost: event.additionalCost
+				},
+				...this.selectedVariationForItemContext.variationItems.slice(
+					itemIdx + 1
+				)
+			]
 		}
 
+		this.editVariationItemDialogLoading = false
 		this.editVariationItemDialog.hide()
 		this.selectedVariationForItemContext = null
 	}

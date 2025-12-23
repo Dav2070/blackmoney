@@ -76,25 +76,25 @@
 
 	<app-add-variation-dialog
 		#addVariationDialog
-		[loading]="false"
+		[loading]="addVariationDialogLoading"
 		(primaryButtonClick)="addVariationDialogPrimaryButtonClick($event)"
 	></app-add-variation-dialog>
 
 	<app-add-variation-item-dialog
 		#addVariationItemDialog
-		[loading]="false"
+		[loading]="addVariationItemDialogLoading"
 		(primaryButtonClick)="addVariationItemDialogPrimaryButtonClick($event)"
 	></app-add-variation-item-dialog>
 
 	<app-edit-variation-dialog
 		#editVariationDialog
-		[loading]="false"
+		[loading]="editVariationDialogLoading"
 		(primaryButtonClick)="editVariationDialogPrimaryButtonClick($event)"
 	></app-edit-variation-dialog>
 
 	<app-edit-variation-item-dialog
 		#editVariationItemDialog
-		[loading]="false"
+		[loading]="editVariationItemDialogLoading"
 		(primaryButtonClick)="editVariationItemDialogPrimaryButtonClick($event)"
 	></app-edit-variation-item-dialog>
 

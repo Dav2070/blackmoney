@@ -50,10 +50,10 @@ export class CategoryPageComponent implements OnInit {
 	uuid: string = null
 
 	constructor(
-		private apiService: ApiService,
-		private dataService: DataService,
-		private localizationService: LocalizationService,
-		private router: Router,
+		private readonly apiService: ApiService,
+		private readonly dataService: DataService,
+		private readonly localizationService: LocalizationService,
+		private readonly router: Router,
 		private readonly activatedRoute: ActivatedRoute
 	) {}
 
@@ -62,27 +62,14 @@ export class CategoryPageComponent implements OnInit {
 
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 
-		// Load categories from service/API
-		this.loadCategories()
+		// Load data
+		await this.loadData()
 	}
 
-	@HostListener("document:click", ["$event"])
-	documentClick(event: MouseEvent) {
-		if (
-			this.categoryContextMenuVisible &&
-			!this.categoryContextMenu.nativeElement.contains(event.target as Node)
-		) {
-			this.categoryContextMenuVisible = false
-		}
-	}
-
-	loadCategories() {
-		// TODO: Load from service
-		this.categories = [
-			{ uuid: "1", name: "Pizza", products: [] },
-			{ uuid: "2", name: "Pasta", products: [] },
-			{ uuid: "3", name: "Getränke", products: [] }
-		]
+	async loadData() {
+		// TODO: API - Load categories from backend
+		// Example: this.categories = await this.apiService.listCategories({ restaurantUuid: this.uuid })
+		this.categories = []
 	}
 
 	navigateBack() {
@@ -106,14 +93,23 @@ export class CategoryPageComponent implements OnInit {
 	}
 
 	async addCategoryDialogPrimaryButtonClick(event: { name: string }) {
+		this.addCategoryDialogLoading = true
+
+		// TODO: API - Create category
+		// Example: const created = await this.apiService.createCategory({
+		//   restaurantUuid: this.uuid,
+		//   name: event.name
+		// })
+
 		const newCategory: Category = {
 			uuid: crypto.randomUUID(),
 			name: event.name,
 			products: []
 		}
-		this.categories.push(newCategory)
+		this.categories = [...this.categories, newCategory]
+
+		this.addCategoryDialogLoading = false
 		this.addCategoryDialog.hide()
-		// TODO: Save to API
 	}
 
 	showCategoryContextMenu(event: Event, category: Category) {
@@ -136,12 +132,25 @@ export class CategoryPageComponent implements OnInit {
 	}
 
 	editCategoryDialogPrimaryButtonClick(event: { uuid: string; name: string }) {
+		this.editCategoryDialogLoading = true
+
+		// TODO: API - Update category
+		// Example: const updated = await this.apiService.updateCategory({
+		//   uuid: event.uuid,
+		//   name: event.name
+		// })
+
 		const idx = this.categories.findIndex(c => c.uuid === event.uuid)
 		if (idx !== -1) {
-			this.categories[idx].name = event.name
+			this.categories = [
+				...this.categories.slice(0, idx),
+				{ ...this.categories[idx], name: event.name },
+				...this.categories.slice(idx + 1)
+			]
 		}
+
+		this.editCategoryDialogLoading = false
 		this.editCategoryDialog.hide()
-		// TODO: Save to API
 	}
 
 	deleteSelectedCategory() {
@@ -151,7 +160,24 @@ export class CategoryPageComponent implements OnInit {
 	}
 
 	deleteCategory(category: Category) {
+		const confirmed = confirm(
+			`Kategorie "${category.name}" wirklich löschen?`
+		)
+		if (!confirmed) return
+
+		// TODO: API - Delete category
+		// Example: await this.apiService.deleteCategory({ uuid: category.uuid })
+
 		this.categories = this.categories.filter(c => c.uuid !== category.uuid)
-		// TODO: Delete via API
+	}
+
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		if (
+			this.categoryContextMenuVisible &&
+			!this.categoryContextMenu.nativeElement.contains(event.target as Node)
+		) {
+			this.categoryContextMenuVisible = false
+		}
 	}
 }

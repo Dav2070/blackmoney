@@ -5,31 +5,21 @@
 		</dav-header>
 
 		<div class="actions-container">
-			<div class="actions-container">
-				<dav-icon-card
-					[text]="locale.category"
-					[href]="'/user/restaurants/' + uuid + '/menu/product/category'"
-					(click)="navigateToCategoryPage($event)"
-				>
-					<fa-icon [icon]="faPen"></fa-icon>
-				</dav-icon-card>
+			<dav-icon-card
+				[text]="locale.category"
+				[href]="'/user/restaurants/' + uuid + '/menu/product/category'"
+				(click)="navigateToCategoryPage($event)"
+			>
+				<fa-icon [icon]="faTags"></fa-icon>
+			</dav-icon-card>
 
-				<dav-icon-card
-					[text]="locale.variations"
-					[href]="'/user/restaurants/' + uuid + '/menu/product/variations'"
-					(click)="navigateToVariationsPage($event)"
-				>
-					<fa-icon [icon]="faPen"></fa-icon>
-				</dav-icon-card>
-
-				<dav-icon-card
-					[text]="locale.options"
-					[href]="'/user/restaurants/' + uuid + '/menu/menus'"
-					(click)="navigateToOptionsPage($event)"
-				>
-					<fa-icon [icon]="faPen"></fa-icon>
-				</dav-icon-card>
-			</div>
+			<dav-icon-card
+				[text]="locale.variations"
+				[href]="'/user/restaurants/' + uuid + '/menu/product/variations'"
+				(click)="navigateToVariationsPage($event)"
+			>
+				<fa-icon [icon]="faSplit"></fa-icon>
+			</dav-icon-card>
 		</div>
 	</div>
 </div>

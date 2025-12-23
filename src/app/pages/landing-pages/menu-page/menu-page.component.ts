@@ -1,6 +1,6 @@
 import { Component } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen } from "@fortawesome/pro-regular-svg-icons"
+import { faTags, faSplit } from "@fortawesome/pro-regular-svg-icons"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 
@@ -13,7 +13,8 @@ import { LocalizationService } from "src/app/services/localization-service"
 export class MenuPageComponent {
 	locale = this.localizationService.locale.productPage
 	errorsLocale = this.localizationService.locale.errors
-	faPen = faPen
+	faTags = faTags
+	faSplit = faSplit
 	uuid: string = null
 
 	constructor(
@@ -54,18 +55,6 @@ export class MenuPageComponent {
 			this.uuid,
 			"menu",
 			"variations"
-		])
-	}
-
-	navigateToOptionsPage(event: MouseEvent) {
-		event.preventDefault()
-
-		this.router.navigate([
-			"user",
-			"restaurants",
-			this.uuid,
-			"menu",
-			"options"
 		])
 	}
 }

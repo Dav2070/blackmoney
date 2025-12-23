@@ -73,7 +73,7 @@ export class AddTakeawayDialogComponent {
 	}
 
 	isFormValid(): boolean {
-		return this.name.trim().length > 0 && this.phoneNumber.trim().length > 0
+		return this.name.trim().length > 0
 	}
 
 	submit() {

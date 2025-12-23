@@ -1,6 +1,6 @@
 <div class="products-list">
-	<ng-container *ngIf="products?.length > 0; else emptyState">
-		<ng-container *ngFor="let product of products; trackBy: trackByUuid">
+	@if (products?.length > 0) {
+		@for (product of products; track product.uuid) {
 			<dav-card class="product-card">
 				<div class="product-header">
 					<div class="header-content">
@@ -25,23 +25,19 @@
 						<span class="price">{{
 							product.price / 100 | currency: "EUR" : "symbol" : "1.2-2"
 						}}</span>
-						<ng-container *ngIf="product.takeaway">
+						@if (product.takeaway) {
 							<span class="badge takeaway">Takeaway</span>
-						</ng-container>
+						}
 					</div>
 
-					<ng-container
-						*ngIf="product.variations?.length > 0; else noVariations"
-					>
+					@if (product.variations?.length > 0) {
 						<div class="variations-section">
 							<strong>Variationen:</strong>
 							<div class="variation-chips">
-								<ng-container
-									*ngFor="
-										let variation of product.variations;
-										trackBy: trackByUuid
-									"
-								>
+								@for (
+									variation of product.variations;
+									track variation.uuid
+								) {
 									<div
 										class="variation-chip"
 										(mouseenter)="
@@ -53,26 +49,23 @@
 											variation.name
 										}}</span>
 									</div>
-								</ng-container>
+								}
 							</div>
 						</div>
-					</ng-container>
-					<ng-template #noVariations>
+					} @else {
 						<p class="no-variations">Keine Variationen</p>
-					</ng-template>
+					}
 				</div>
 			</dav-card>
-		</ng-container>
-	</ng-container>
-
-	<ng-template #emptyState>
+		}
+	} @else {
 		<div class="empty-state">
 			<p>Keine Produkte für {{ category?.name }}.</p>
 		</div>
-	</ng-template>
+	}
 
 	<!-- Variation Tooltip Overlay -->
-	<ng-container *ngIf="variationTooltipVisible">
+	@if (variationTooltipVisible) {
 		<div
 			class="variation-tooltip-overlay"
 			[style.left.px]="variationTooltipX"
@@ -82,9 +75,7 @@
 		>
 			<strong>{{ variationTooltipTitle }}</strong>
 			<div class="variation-tooltip-items">
-				<ng-container
-					*ngFor="let item of variationTooltipItems; trackBy: trackByUuid"
-				>
+				@for (item of variationTooltipItems; track item.uuid) {
 					<div class="variation-item">
 						<span>{{ item.name }}</span>
 						<span class="variation-price">
@@ -94,10 +85,10 @@
 							}}
 						</span>
 					</div>
-				</ng-container>
+				}
 			</div>
 		</div>
-	</ng-container>
+	}
 
 	<!-- Context Menu -->
 	<dav-context-menu

@@ -95,7 +95,6 @@ export class ProductListComponent implements OnInit {
 	}
 
 	deleteProduct(product: Product) {
-		console.log("Delete product:", product)
 		const confirmed = confirm(`Produkt "${product.name}" wirklich löschen?`)
 		if (!confirmed) return
 		this.products = this.products.filter(p => p.uuid !== product.uuid)

@@ -1,6 +1,6 @@
 <div class="offers-list">
-	<ng-container *ngIf="offers?.length > 0; else emptyState">
-		<ng-container *ngFor="let offer of offers; trackBy: trackByUuid">
+	@if (offers?.length > 0) {
+		@for (offer of offers; track offer.uuid) {
 			<dav-card class="offer-card">
 				<div class="offer-header">
 					<div class="header-content">
@@ -23,56 +23,50 @@
 				<div class="offer-content">
 					<div class="offer-meta">
 						<span class="price">{{ offer.price | currency: "EUR" }}</span>
-						<ng-container *ngIf="offer.takeaway">
+						@if (offer.takeaway) {
 							<span class="badge takeaway">Takeaway</span>
-						</ng-container>
+						}
 					</div>
 
 					<div class="offer-weekdays">
-					{{ formatAvailability(offer.offer) }}
-				</div>
+						{{ formatAvailability(offer.offer) }}
+					</div>
 
 					<!-- Offer Items -->
 					<div class="offer-items">
-						<ng-container
-							*ngIf="offer.offer?.offerItems?.length > 0; else noItems"
-						>
-							<ng-container
-								*ngFor="let item of offer.offer.offerItems; trackBy: trackByUuid"
-							>
+						@if (offer.offer?.offerItems?.length > 0) {
+							@for (item of offer.offer.offerItems; track item.uuid) {
 								<div class="offer-item">
 									<div class="item-header">
 										<h4>{{ item.name }}</h4>
 										<span class="max-selections"
-											>(max. {{ item.maxSelections }} auswählbar)</span
+											>(max.
+											{{ item.maxSelections }} auswählbar)</span
 										>
 									</div>
 
 									<div class="item-products">
-										<ng-container
-											*ngFor="let product of item.products; trackBy: trackByUuid"
-										>
+										@for (
+											product of item.products;
+											track product.uuid
+										) {
 											<div class="product-chip">
 												{{ product.name }}
 											</div>
-										</ng-container>
+										}
 									</div>
 								</div>
-							</ng-container>
-						</ng-container>
-
-						<ng-template #noItems>
+							}
+						} @else {
 							<p class="no-items">{{ locale.noItems }}</p>
-						</ng-template>
+						}
 					</div>
 				</div>
 			</dav-card>
-		</ng-container>
-	</ng-container>
-
-	<ng-template #emptyState>
+		}
+	} @else {
 		<p class="no-offers">{{ locale.noOffers }}</p>
-	</ng-template>
+	}
 </div>
 
 <!-- Offer Context Menu -->
@@ -82,11 +76,17 @@
 	[posX]="contextMenuX"
 	[posY]="contextMenuY"
 >
-	<dav-context-menu-item [value]="actionsLocale.edit" (click)="editSelectedOffer()">
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="editSelectedOffer()"
+	>
 		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
 	</dav-context-menu-item>
 
-	<dav-context-menu-item [value]="actionsLocale.delete" (click)="deleteSelectedOffer()">
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="deleteSelectedOffer()"
+	>
 		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
 	</dav-context-menu-item>
 </dav-context-menu>

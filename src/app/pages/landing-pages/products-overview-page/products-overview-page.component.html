@@ -41,28 +41,30 @@
 		</dav-tab-bar>
 
 		<!-- Menüs-Liste (wenn Tab menus aktiv) -->
-		<app-offer-list
-			*ngIf="activeTab === 'menus'"
-			[offers]="menus"
-			(editOffer)="showEditOfferDialog($event)"
-			(deleteOffer)="deleteOffer($event)"
-		></app-offer-list>
+		@if (activeTab === "menus") {
+			<app-offer-list
+				[offers]="menus"
+				(editOffer)="showEditOfferDialog($event)"
+				(deleteOffer)="deleteOffer($event)"
+			></app-offer-list>
+		}
 
 		<!-- Specials-Liste (wenn Tab specials aktiv) -->
-		<app-offer-list
-			*ngIf="activeTab === 'specials'"
-			[offers]="specials"
-			(editOffer)="showEditSpecialDialog($event)"
-			(deleteOffer)="deleteSpecial($event)"
-		></app-offer-list>
+		@if (activeTab === "specials") {
+			<app-offer-list
+				[offers]="specials"
+				(editOffer)="showEditOfferDialog($event)"
+				(deleteOffer)="deleteOffer($event)"
+			></app-offer-list>
+		}
 
-		<!-- Produkt-Liste wird hier geladen (für andere Tabs) -->
-		<app-product-list
-			*ngIf="category && activeTab !== 'menus' && activeTab !== 'specials'"
-			[category]="category"
-			[activeTab]="activeTab"
-			(editProduct)="showEditProductDialog($event)"
-		></app-product-list>
+		@if (category && activeTab !== "menus" && activeTab !== "specials") {
+			<app-product-list
+				[category]="category"
+				[activeTab]="activeTab"
+				(editProduct)="showEditProductDialog($event)"
+			></app-product-list>
+		}
 	</div>
 </div>
 

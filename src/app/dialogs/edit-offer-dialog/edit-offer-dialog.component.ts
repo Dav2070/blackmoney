@@ -98,11 +98,13 @@ export class EditOfferDialogComponent {
 		// Konvertiere selectedVariations von Object zu Map und initialisiere fehlende Variationen
 		if (this.offerItems.length > 0) {
 			this.offerItems.forEach(item => {
-				// Konvertiere selectedVariations von Object/JSON zu Map
-				if (
-					item.selectedVariations &&
-					!(item.selectedVariations instanceof Map)
-				) {
+				// Initialisiere selectedVariations falls nicht vorhanden
+				if (!item.selectedVariations) {
+					item.selectedVariations = new Map()
+				}
+
+				// Konvertiere selectedVariations von Object/JSON zu Map falls nötig
+				if (!(item.selectedVariations instanceof Map)) {
 					const convertedMap = new Map<string, Map<string, any[]>>()
 
 					// selectedVariations ist ein Object, konvertiere es zu Map
@@ -128,23 +130,18 @@ export class EditOfferDialogComponent {
 					item.selectedVariations = convertedMap
 				}
 
-				if (!item.selectedVariations) {
-					item.selectedVariations = new Map()
-				}
-
-				// Für jedes Produkt im Item: Initialisiere fehlende Variationen
+				// Für jedes Produkt: Initialisiere fehlende selectedVariations mit allen VariationItems
 				item.products.forEach(product => {
 					if (product.variations && product.variations.length > 0) {
-						// Nur initialisieren, wenn noch keine selectedVariations für dieses Produkt existieren
-						if (!item.selectedVariations!.has(product.uuid)) {
+						if (!item.selectedVariations.has(product.uuid)) {
+							// Kein Eintrag für dieses Produkt -> initialisiere mit allen Items
 							const variationsMap = new Map<string, any[]>()
 							product.variations.forEach(variation => {
-								// Initialisiere mit allen VariationItems
 								variationsMap.set(variation.uuid, [
 									...variation.variationItems
 								])
 							})
-							item.selectedVariations!.set(product.uuid, variationsMap)
+							item.selectedVariations.set(product.uuid, variationsMap)
 						}
 					}
 				})

@@ -182,17 +182,55 @@ export class OfferItemsComponent {
 		this.newItemMaxSelections = item.maxSelections
 		this.newItemProducts = [...item.products]
 
-		// Deep copy der selectedVariations Map
+		// Deep copy der selectedVariations Map mit Konvertierung von Object zu Map falls nötig
 		this.newItemSelectedVariations = new Map()
 		if (item.selectedVariations) {
-			item.selectedVariations.forEach((variationsMap, productUuid) => {
-				const newVariationsMap = new Map<string, any[]>()
-				variationsMap.forEach((items, variationUuid) => {
-					newVariationsMap.set(variationUuid, [...items])
+			// Falls selectedVariations noch ein Object ist, konvertiere zu Map
+			if (!(item.selectedVariations instanceof Map)) {
+				Object.entries(item.selectedVariations).forEach(
+					([productUuid, variationsObj]: [string, any]) => {
+						const variationsMap = new Map<string, any[]>()
+
+						if (variationsObj && typeof variationsObj === "object") {
+							Object.entries(variationsObj).forEach(
+								([variationUuid, items]: [string, any]) => {
+									variationsMap.set(
+										variationUuid,
+										Array.isArray(items) ? [...items] : []
+									)
+								}
+							)
+						}
+
+						this.newItemSelectedVariations.set(productUuid, variationsMap)
+					}
+				)
+			} else {
+				// Bereits eine Map, einfach kopieren
+				item.selectedVariations.forEach((variationsMap, productUuid) => {
+					const newVariationsMap = new Map<string, any[]>()
+					variationsMap.forEach((items, variationUuid) => {
+						newVariationsMap.set(variationUuid, [...items])
+					})
+					this.newItemSelectedVariations.set(productUuid, newVariationsMap)
 				})
-				this.newItemSelectedVariations.set(productUuid, newVariationsMap)
-			})
+			}
 		}
+
+		// Für jedes Produkt: Wenn keine selectedVariations existieren, initialisiere mit allen VariationItems
+		this.newItemProducts.forEach(product => {
+			if (product.variations && product.variations.length > 0) {
+				if (!this.newItemSelectedVariations.has(product.uuid)) {
+					const variationsMap = new Map<string, any[]>()
+					product.variations.forEach(variation => {
+						variationsMap.set(variation.uuid, [
+							...variation.variationItems
+						])
+					})
+					this.newItemSelectedVariations.set(product.uuid, variationsMap)
+				}
+			}
+		})
 
 		this.newItemNameError = ""
 	}
@@ -288,8 +326,12 @@ export class OfferItemsComponent {
 
 	// Variation Item Toggle für Menü-Modus
 	toggleVariationItem(productUuid: string, variationUuid: string, item: any) {
-		const productVariations = this.newItemSelectedVariations.get(productUuid)
-		if (!productVariations) return
+		let productVariations = this.newItemSelectedVariations.get(productUuid)
+		if (!productVariations) {
+			// Initialisiere selectedVariations für dieses Produkt
+			productVariations = new Map<string, any[]>()
+			this.newItemSelectedVariations.set(productUuid, productVariations)
+		}
 
 		const selectedItems = productVariations.get(variationUuid) || []
 		const index = selectedItems.findIndex((i: any) => i.uuid === item.uuid)
@@ -329,8 +371,12 @@ export class OfferItemsComponent {
 			item.selectedVariations = new Map()
 		}
 
-		const productVariations = item.selectedVariations.get(productUuid)
-		if (!productVariations) return
+		let productVariations = item.selectedVariations.get(productUuid)
+		if (!productVariations) {
+			// Initialisiere selectedVariations für dieses Produkt
+			productVariations = new Map<string, any[]>()
+			item.selectedVariations.set(productUuid, productVariations)
+		}
 
 		const selectedItems = productVariations.get(variationUuid) || []
 		const index = selectedItems.findIndex(

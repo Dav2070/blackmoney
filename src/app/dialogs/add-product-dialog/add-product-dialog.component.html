@@ -57,16 +57,11 @@
 			></dav-checkbox>
 		</div>
 
-	<!-- Variationen -->
-	<div class="dialog-formfield-container">
+		<!-- Variationen -->
+		<div class="dialog-formfield-container">
 			<label class="variations-label">Variationen (Mehrfachauswahl)</label>
 			<div class="variations-selection">
-				<ng-container
-					*ngFor="
-						let variation of availableVariations;
-						trackBy: trackByUuid
-					"
-				>
+				@for (variation of availableVariations; track variation.uuid) {
 					<div class="variation-container">
 						<div
 							class="variation-header"
@@ -96,31 +91,28 @@
 						</div>
 
 						<!-- VariationItems ausklappbar -->
-						<div
-							class="variation-items-list"
-							*ngIf="isVariationExpanded(variation.uuid)"
-						>
-							<ng-container
-								*ngFor="
-									let item of variation.variationItems;
-									trackBy: trackByUuid
-								"
-							>
-								<div class="variation-item">
-									<span class="item-name"
-										>{{ item.name }} (ID: {{ item.id }})</span
-									>
-									<span class="item-price">
-										+{{
-											item.additionalCost / 100
-												| currency: "EUR" : "symbol" : "1.2-2"
-										}}
-									</span>
-								</div>
-							</ng-container>
-						</div>
+						@if (isVariationExpanded(variation.uuid)) {
+							<div class="variation-items-list">
+								@for (
+									item of variation.variationItems;
+									track item.uuid
+								) {
+									<div class="variation-item">
+										<span class="item-name"
+											>{{ item.name }} (ID: {{ item.id }})</span
+										>
+										<span class="item-price">
+											+{{
+												item.additionalCost / 100
+													| currency: "EUR" : "symbol" : "1.2-2"
+											}}
+										</span>
+									</div>
+								}
+							</div>
+						}
 					</div>
-				</ng-container>
+				}
 			</div>
 		</div>
 	</form>

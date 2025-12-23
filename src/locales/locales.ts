@@ -123,7 +123,19 @@ export const de = {
 	},
 	tableOverviewPage: {
 		headline: "Tischübersicht",
-		table: "Tisch {name}"
+		table: "Tisch {name}",
+		takeaway: {
+			headline: "Grab & Go",
+			close: "Schließen",
+			add: "Hinzufügen",
+			filterAll: "Alle",
+			filterDelivery: "Lieferung",
+			filterPickUp: "Abholung",
+			filterDineIn: "Vor Ort",
+			noOrders: "Keine Bestellungen",
+			details: "Details",
+			delete: "Löschen"
+		}
 	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}",
@@ -318,6 +330,44 @@ export const de = {
 			food: "Speisen",
 			drinks: "Getränke",
 			otherCosts: "Andere Kosten"
+		},
+		addTakeawayDialog: {
+			headline: "Außer Haus Bestellung",
+			name: "Name",
+			phoneNumber: "Telefonnummer",
+			addressLine1: "Straße",
+			addressLine2: "Adresszusatz",
+			houseNumber: "Hausnummer",
+			postalCode: "PLZ",
+			city: "Stadt",
+			orderType: "Bestellart",
+			delivery: "Lieferung",
+			pickUp: "Abholung",
+			dineIn: "Vor Ort"
+		},
+		viewTakeawayDialog: {
+			headline: "Bestelldetails",
+			name: "Name",
+			phoneNumber: "Telefonnummer",
+			address: "Adresse",
+			orderType: "Bestellart",
+			delivery: "Lieferung",
+			pickUp: "Abholung",
+			dineIn: "Vor Ort"
+		},
+		editTakeawayDialog: {
+			headline: "Bestellung bearbeiten",
+			name: "Name",
+			phoneNumber: "Telefonnummer",
+			addressLine1: "Straße",
+			addressLine2: "Adresszusatz",
+			houseNumber: "Hausnummer",
+			postalCode: "PLZ",
+			city: "Stadt",
+			orderType: "Bestellart",
+			delivery: "Lieferung",
+			pickUp: "Abholung",
+			dineIn: "Vor Ort"
 		}
 	},
 	actions: {

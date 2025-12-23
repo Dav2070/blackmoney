@@ -1,0 +1,38 @@
+.dialog-formfield-row {
+	display: flex;
+	gap: 12px;
+}
+
+.dialog-formfield-container {
+	margin-bottom: 16px;
+
+	.form-label {
+		display: block;
+		margin: 0 0 8px 0;
+		font-size: 14px;
+		font-weight: 400;
+		color: var(--dav-color-on-surface);
+	}
+
+	.radio-group {
+		display: flex;
+		flex-direction: row;
+		gap: 16px;
+	}
+
+	.radio-label {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		cursor: pointer;
+
+		input[type="radio"] {
+			cursor: pointer;
+		}
+
+		span {
+			color: var(--dav-color-on-surface);
+			font-size: 14px;
+		}
+	}
+}

@@ -3,7 +3,9 @@
 		<app-headline
 			[headline]="locale.headline"
 			[showBackButton]="true"
+			[showTakeawayButton]="true"
 			(backButtonClick)="navigateToUserPage()"
+			(takeawayButtonClick)="toggleTakeawaySidenav()"
 		></app-headline>
 
 		@if (selectedRoom != null) {
@@ -45,4 +47,148 @@
 			}
 		</dav-sidenav>
 	</div>
+
+	<dav-sidenav #takeawaySidenav mode="over">
+		<div class="takeaway-header">
+			<dav-icon-button
+				size="sm"
+				[tooltip]="locale.takeaway.close"
+				(click)="closeTakeawaySidenav()"
+			>
+				<fa-icon [icon]="faArrowLeft"></fa-icon>
+			</dav-icon-button>
+			<h2>{{ locale.takeaway.headline }}</h2>
+			<dav-icon-button
+				size="sm"
+				[tooltip]="locale.takeaway.add"
+				(click)="openAddTakeawayDialog()"
+			>
+				<fa-icon [icon]="faPlus"></fa-icon>
+			</dav-icon-button>
+		</div>
+
+		<div class="takeaway-filters">
+			<dav-icon-button
+				size="sm"
+				[tooltip]="locale.takeaway.filterAll"
+				[class.active]="takeawayFilter === 'all'"
+				(click)="setTakeawayFilter('all')"
+			>
+				{{ locale.takeaway.filterAll }}
+			</dav-icon-button>
+
+			<dav-icon-button
+				size="sm"
+				[tooltip]="locale.takeaway.filterDelivery"
+				[class.active]="takeawayFilter === 'delivery'"
+				(click)="setTakeawayFilter('delivery')"
+			>
+				<fa-icon [icon]="faTruck"></fa-icon>
+			</dav-icon-button>
+
+			<dav-icon-button
+				size="sm"
+				[tooltip]="locale.takeaway.filterPickUp"
+				[class.active]="takeawayFilter === 'pickUp'"
+				(click)="setTakeawayFilter('pickUp')"
+			>
+				<fa-icon [icon]="faBagShopping"></fa-icon>
+			</dav-icon-button>
+
+			<dav-icon-button
+				size="sm"
+				[tooltip]="locale.takeaway.filterDineIn"
+				[class.active]="takeawayFilter === 'dineIn'"
+				(click)="setTakeawayFilter('dineIn')"
+			>
+				<fa-icon [icon]="faUtensils"></fa-icon>
+			</dav-icon-button>
+		</div>
+
+		<div class="takeaway-orders-container">
+			@if (filteredTakeawayOrders.length === 0) {
+				<p class="no-orders-message">{{ locale.takeaway.noOrders }}</p>
+			} @else {
+				@for (order of filteredTakeawayOrders; track order.uuid) {
+					<dav-card
+						class="takeaway-order-card clickable"
+						(click)="navigateToOrderPage($event, order.uuid)"
+					>
+						<div class="order-header">
+							<h3 class="order-name">
+								{{ order.takeawayDetails.name }}
+							</h3>
+							<span class="order-price"
+								>{{ getOrderTotalPrice(order).toFixed(2) }} €</span
+							>
+						</div>
+
+						<div class="order-content">
+							@if (order.takeawayDetails.delivery) {
+								<dav-icon-button
+									class="order-type"
+									(click)="
+										openViewTakeawayDialog(order);
+										$event.stopPropagation()
+									"
+								>
+									<fa-icon [icon]="faTruck"></fa-icon>
+								</dav-icon-button>
+							} @else if (order.takeawayDetails.pickUp) {
+								<dav-icon-button
+									class="order-type"
+									(click)="
+										openViewTakeawayDialog(order);
+										$event.stopPropagation()
+									"
+								>
+									<fa-icon [icon]="faBagShopping"></fa-icon>
+								</dav-icon-button>
+							} @else if (order.takeawayDetails.dineIn) {
+								<dav-icon-button
+									class="order-type"
+									(click)="
+										openViewTakeawayDialog(order);
+										$event.stopPropagation()
+									"
+								>
+									<fa-icon [icon]="faUtensils"></fa-icon>
+								</dav-icon-button>
+							}
+						</div>
+
+						<div class="order-footer">
+							<span class="order-time">--:--</span>
+							<dav-icon-button
+								size="sm"
+								[tooltip]="locale.takeaway.delete"
+								(click)="
+									deleteTakeawayOrder(order.uuid);
+									$event.stopPropagation();
+									$event.preventDefault()
+								"
+							>
+								<fa-icon [icon]="faTrash"></fa-icon>
+							</dav-icon-button>
+						</div>
+					</dav-card>
+				}
+			}
+		</div>
+	</dav-sidenav>
 </div>
+
+<app-add-takeaway-dialog
+	#addTakeawayDialog
+	(primaryButtonClick)="addTakeawayDialogPrimaryButtonClick($event)"
+></app-add-takeaway-dialog>
+
+<app-view-takeaway-dialog
+	#viewTakeawayDialog
+	(editButtonClick)="viewTakeawayDialogEditButtonClick($event)"
+></app-view-takeaway-dialog>
+
+<app-edit-takeaway-dialog
+	#editTakeawayDialog
+	(primaryButtonClick)="editTakeawayDialogPrimaryButtonClick($event)"
+></app-edit-takeaway-dialog>

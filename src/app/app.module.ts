@@ -72,6 +72,9 @@ import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-pro
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
 import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
+import { AddTakeawayDialogComponent } from "./dialogs/add-takeaway-dialog/add-takeaway-dialog.component"
+import { ViewTakeawayDialogComponent } from "./dialogs/view-takeaway-dialog/view-takeaway-dialog.component"
+import { EditTakeawayDialogComponent } from "./dialogs/edit-takeaway-dialog/edit-takeaway-dialog.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -160,6 +163,9 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,
 		AddDiverseProductDialogComponent,
+		AddTakeawayDialogComponent,
+		ViewTakeawayDialogComponent,
+		EditTakeawayDialogComponent,
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
 		// Pages

@@ -1,0 +1,123 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.add"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="500px"
+	[loading]="loading"
+	[primaryButtonDisabled]="!isFormValid()"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Name -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="name"
+				[label]="locale.name"
+				[disabled]="loading"
+				(change)="nameTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Phone Number -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="phoneNumber"
+				[label]="locale.phoneNumber"
+				[disabled]="loading"
+				(change)="phoneNumberTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Address Line 1 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="addressLine1"
+				[label]="locale.addressLine1"
+				[disabled]="loading"
+				(change)="addressLine1TextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Address Line 2 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="addressLine2"
+				[label]="locale.addressLine2"
+				[disabled]="loading"
+				(change)="addressLine2TextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- House Number and Postal Code -->
+		<div class="dialog-formfield-row">
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="houseNumber"
+					[label]="locale.houseNumber"
+					[disabled]="loading"
+					(change)="houseNumberTextfieldChange($event)"
+				></dav-textfield>
+			</div>
+
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="postalCode"
+					[label]="locale.postalCode"
+					[disabled]="loading"
+					(change)="postalCodeTextfieldChange($event)"
+				></dav-textfield>
+			</div>
+		</div>
+
+		<!-- City -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="city"
+				[label]="locale.city"
+				[disabled]="loading"
+				(change)="cityTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Order Type -->
+		<div class="dialog-formfield-container">
+			<label class="form-label">{{ locale.orderType }}</label>
+			<div class="radio-group">
+				<label class="radio-label">
+					<input
+						type="radio"
+						name="orderType"
+						value="delivery"
+						[checked]="orderType === 'delivery'"
+						(change)="orderTypeChange('delivery')"
+					/>
+					<span>{{ locale.delivery }}</span>
+				</label>
+				<label class="radio-label">
+					<input
+						type="radio"
+						name="orderType"
+						value="pickUp"
+						[checked]="orderType === 'pickUp'"
+						(change)="orderTypeChange('pickUp')"
+					/>
+					<span>{{ locale.pickUp }}</span>
+				</label>
+				<label class="radio-label">
+					<input
+						type="radio"
+						name="orderType"
+						value="dineIn"
+						[checked]="orderType === 'dineIn'"
+						(change)="orderTypeChange('dineIn')"
+					/>
+					<span>{{ locale.dineIn }}</span>
+				</label>
+			</div>
+		</div>
+	</form>
+</dav-dialog>

@@ -25,3 +25,97 @@
 	height: 34px;
 	border-radius: 20px;
 }
+
+.takeaway-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px;
+	margin-bottom: 8px;
+
+	h2 {
+		margin: 0;
+		font-size: 20px;
+		font-weight: 500;
+		color: var(--dav-color-on-surface);
+		flex: 1;
+	}
+}
+
+.takeaway-filters {
+	display: flex;
+	gap: 8px;
+	padding: 0 16px 16px 16px;
+	justify-content: center;
+
+	dav-icon-button {
+		&.active {
+			--dav-icon-button-color: var(--dav-color-primary);
+		}
+	}
+}
+
+.takeaway-orders-container {
+	overflow-y: auto;
+	max-height: calc(100vh - 140px);
+	padding-bottom: 16px;
+}
+
+.no-orders-message {
+	padding: 16px;
+	text-align: center;
+	color: var(--dav-color-on-surface-variant);
+	font-size: 14px;
+	font-style: italic;
+	margin: 0;
+}
+
+.takeaway-order-card {
+	display: block;
+	margin: 0 8px 8px 8px;
+	width: calc(100% - 16px);
+	box-sizing: border-box;
+
+	&.clickable {
+		cursor: pointer;
+	}
+
+	.order-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 8px;
+	}
+
+	.order-name {
+		margin: 0;
+		font-size: 16px;
+		font-weight: 500;
+		color: var(--dav-color-on-surface);
+	}
+
+	.order-price {
+		font-size: 16px;
+		font-weight: 500;
+		color: var(--dav-color-on-surface);
+	}
+
+	.order-content {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 16px 0;
+	}
+
+	.order-footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 8px;
+	}
+
+	.order-time {
+		font-size: 12px;
+		color: var(--dav-color-on-surface-variant);
+	}
+}

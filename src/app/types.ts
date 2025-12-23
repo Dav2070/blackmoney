@@ -207,7 +207,7 @@ export enum OrderItemType {
 	Special = "SPECIAL"
 }
 
-export type TakeawayFilterType = "all" | "delivery" | "pickUp" | "dineIn"
+export type TakeawayFilterType = "ALL" | "DELIVERY" | "PICKUP" | "DINEIN"
 
 export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"

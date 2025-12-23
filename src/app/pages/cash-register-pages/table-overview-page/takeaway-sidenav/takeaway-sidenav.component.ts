@@ -42,7 +42,7 @@ export class TakeawaySidenavComponent implements AfterViewInit {
 	faBagShopping = faBagShopping
 	faUtensils = faUtensils
 	faArrowLeft = faArrowLeft
-	takeawayFilter: TakeawayFilterType = "all"
+	takeawayFilter: TakeawayFilterType = "ALL"
 	priceCalculator = new PriceCalculator()
 
 	@Input() orders: Order[] = []
@@ -51,16 +51,16 @@ export class TakeawaySidenavComponent implements AfterViewInit {
 	@Output() updateOrder = new EventEmitter<TakeawayDetails>()
 
 	get filteredOrders(): Order[] {
-		if (this.takeawayFilter === "all") {
+		if (this.takeawayFilter === "ALL") {
 			return this.orders
 		}
-		if (this.takeawayFilter === "delivery") {
+		if (this.takeawayFilter === "DELIVERY") {
 			return this.orders.filter(o => o.takeawayDetails.delivery)
 		}
-		if (this.takeawayFilter === "pickUp") {
+		if (this.takeawayFilter === "PICKUP") {
 			return this.orders.filter(o => o.takeawayDetails.pickUp)
 		}
-		if (this.takeawayFilter === "dineIn") {
+		if (this.takeawayFilter === "DINEIN") {
 			return this.orders.filter(o => o.takeawayDetails.dineIn)
 		}
 		return this.orders

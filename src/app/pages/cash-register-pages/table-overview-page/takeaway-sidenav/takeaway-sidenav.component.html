@@ -21,8 +21,8 @@
 		<dav-icon-button
 			size="sm"
 			[tooltip]="locale.takeaway.filterAll"
-			[class.active]="takeawayFilter === 'all'"
-			(click)="setFilter('all')"
+			[class.active]="takeawayFilter === 'ALL'"
+			(click)="setFilter('ALL')"
 		>
 			{{ locale.takeaway.filterAll }}
 		</dav-icon-button>
@@ -30,8 +30,8 @@
 		<dav-icon-button
 			size="sm"
 			[tooltip]="locale.takeaway.filterDelivery"
-			[class.active]="takeawayFilter === 'delivery'"
-			(click)="setFilter('delivery')"
+			[class.active]="takeawayFilter === 'DELIVERY'"
+			(click)="setFilter('DELIVERY')"
 		>
 			<fa-icon [icon]="faTruck"></fa-icon>
 		</dav-icon-button>
@@ -39,8 +39,8 @@
 		<dav-icon-button
 			size="sm"
 			[tooltip]="locale.takeaway.filterPickUp"
-			[class.active]="takeawayFilter === 'pickUp'"
-			(click)="setFilter('pickUp')"
+			[class.active]="takeawayFilter === 'PICKUP'"
+			(click)="setFilter('PICKUP')"
 		>
 			<fa-icon [icon]="faBagShopping"></fa-icon>
 		</dav-icon-button>
@@ -48,8 +48,8 @@
 		<dav-icon-button
 			size="sm"
 			[tooltip]="locale.takeaway.filterDineIn"
-			[class.active]="takeawayFilter === 'dineIn'"
-			(click)="setFilter('dineIn')"
+			[class.active]="takeawayFilter === 'DINEIN'"
+			(click)="setFilter('DINEIN')"
 		>
 			<fa-icon [icon]="faUtensils"></fa-icon>
 		</dav-icon-button>

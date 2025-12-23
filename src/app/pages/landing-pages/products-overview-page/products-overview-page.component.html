@@ -74,6 +74,14 @@
 	(primaryButtonClick)="addOfferDialogPrimaryButtonClick($event)"
 ></app-add-offer-dialog>
 
+<!-- Edit Offer Dialog -->
+<app-edit-offer-dialog
+	#editOfferDialog
+	[loading]="editOfferDialogLoading"
+	[availableProducts]="availableProducts"
+	(primaryButtonClick)="editOfferDialogPrimaryButtonClick($event)"
+></app-edit-offer-dialog>
+
 <app-add-product-dialog
 	#addProductDialog
 	[loading]="addProductDialogLoading"

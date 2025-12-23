@@ -16,6 +16,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { AddProductDialogComponent } from "src/app/dialogs/add-product-dialog/add-product-dialog.component"
 import { EditProductDialogComponent } from "src/app/dialogs/edit-product-dialog/edit-product-dialog.component"
 import { AddOfferDialogComponent } from "src/app/dialogs/add-offer-dialog/add-offer-dialog.component"
+import { EditOfferDialogComponent } from "src/app/dialogs/edit-offer-dialog/edit-offer-dialog.component"
 import { ProductType } from "src/app/types"
 
 @Component({
@@ -55,6 +56,10 @@ export class ProductsOverviewPageComponent implements OnInit {
 	@ViewChild("addOfferDialog")
 	addOfferDialog!: AddOfferDialogComponent
 	addOfferDialogLoading: boolean = false
+
+	@ViewChild("editOfferDialog")
+	editOfferDialog!: EditOfferDialogComponent
+	editOfferDialogLoading: boolean = false
 	editingMenu: Product | null = null
 	editingSpecial: Product | null = null
 
@@ -1252,14 +1257,58 @@ export class ProductsOverviewPageComponent implements OnInit {
 
 	showEditOfferDialog(menu: Product) {
 		this.editingMenu = menu
-		this.addOfferDialog.isSpecialMode = false
-		this.addOfferDialog.showWithData(menu)
+		this.editOfferDialog.isSpecialMode = false
+		this.editOfferDialog.show(menu)
 	}
 
 	showEditSpecialDialog(special: Product) {
 		this.editingSpecial = special
-		this.addOfferDialog.isSpecialMode = true
-		this.addOfferDialog.showWithData(special)
+		this.editOfferDialog.isSpecialMode = true
+		this.editOfferDialog.show(special)
+	}
+
+	editOfferDialogPrimaryButtonClick(data: {
+		id: number
+		name: string
+		price: number
+		takeaway: boolean
+		offer: any
+	}) {
+		if (this.editingSpecial) {
+			// Special aktualisieren
+			const index = this.specials.findIndex(
+				s => s.uuid === this.editingSpecial!.uuid
+			)
+			if (index !== -1) {
+				this.specials[index] = {
+					...this.specials[index],
+					id: data.id,
+					name: data.name,
+					price: data.price,
+					takeaway: data.takeaway,
+					offer: data.offer
+				}
+			}
+			this.editingSpecial = null
+		} else if (this.editingMenu) {
+			// Menü aktualisieren
+			const index = this.menus.findIndex(
+				m => m.uuid === this.editingMenu!.uuid
+			)
+			if (index !== -1) {
+				this.menus[index] = {
+					...this.menus[index],
+					id: data.id,
+					name: data.name,
+					price: data.price,
+					takeaway: data.takeaway,
+					offer: data.offer
+				}
+			}
+			this.editingMenu = null
+		}
+		this.editOfferDialog.hide()
+		// TODO: Save to API
 	}
 
 	deleteOffer(menu: Product) {

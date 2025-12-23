@@ -121,22 +121,44 @@ export class OfferItemsComponent {
 		}
 
 		if (this.editingItem) {
-			// Update existing item
+			// Update existing item - Deep copy der selectedVariations
 			this.editingItem.name = this.newItemName
 			this.editingItem.maxSelections = this.newItemMaxSelections
 			this.editingItem.products = [...this.newItemProducts]
-			this.editingItem.selectedVariations = new Map(
-				this.newItemSelectedVariations
+
+			// Deep copy der selectedVariations zurück ins Item
+			this.editingItem.selectedVariations = new Map()
+			this.newItemSelectedVariations.forEach(
+				(variationsMap, productUuid) => {
+					const newVariationsMap = new Map<string, any[]>()
+					variationsMap.forEach((items, variationUuid) => {
+						newVariationsMap.set(variationUuid, [...items])
+					})
+					this.editingItem!.selectedVariations!.set(
+						productUuid,
+						newVariationsMap
+					)
+				}
 			)
+
 			this.editingItem = null
 		} else {
-			// Add new item
+			// Add new item - Deep copy der selectedVariations
+			const newSelectedVariations = new Map<string, Map<string, any[]>>()
+			this.newItemSelectedVariations.forEach((variationsMap, productUuid) => {
+				const newVariationsMap = new Map<string, any[]>()
+				variationsMap.forEach((items, variationUuid) => {
+					newVariationsMap.set(variationUuid, [...items])
+				})
+				newSelectedVariations.set(productUuid, newVariationsMap)
+			})
+
 			const newItem: OfferItem = {
 				uuid: crypto.randomUUID(),
 				name: this.newItemName,
 				maxSelections: this.newItemMaxSelections,
 				products: [...this.newItemProducts],
-				selectedVariations: new Map(this.newItemSelectedVariations)
+				selectedVariations: newSelectedVariations
 			}
 			this.offerItems.push(newItem)
 		}
@@ -157,9 +179,19 @@ export class OfferItemsComponent {
 		this.newItemName = item.name
 		this.newItemMaxSelections = item.maxSelections
 		this.newItemProducts = [...item.products]
-		this.newItemSelectedVariations = item.selectedVariations
-			? new Map(item.selectedVariations)
-			: new Map()
+
+		// Deep copy der selectedVariations Map
+		this.newItemSelectedVariations = new Map()
+		if (item.selectedVariations) {
+			item.selectedVariations.forEach((variationsMap, productUuid) => {
+				const newVariationsMap = new Map<string, any[]>()
+				variationsMap.forEach((items, variationUuid) => {
+					newVariationsMap.set(variationUuid, [...items])
+				})
+				this.newItemSelectedVariations.set(productUuid, newVariationsMap)
+			})
+		}
+
 		this.newItemNameError = ""
 	}
 
@@ -260,13 +292,14 @@ export class OfferItemsComponent {
 		const selectedItems = productVariations.get(variationUuid) || []
 		const index = selectedItems.findIndex((i: any) => i.uuid === item.uuid)
 
+		let newSelectedItems: any[]
 		if (index === -1) {
-			selectedItems.push(item)
+			newSelectedItems = [...selectedItems, item]
 		} else {
-			selectedItems.splice(index, 1)
+			newSelectedItems = selectedItems.filter((i: any) => i.uuid !== item.uuid)
 		}
 
-		productVariations.set(variationUuid, selectedItems)
+		productVariations.set(variationUuid, newSelectedItems)
 	}
 
 	isVariationItemSelected(
@@ -300,13 +333,16 @@ export class OfferItemsComponent {
 			(i: any) => i.uuid === variationItem.uuid
 		)
 
+		let newSelectedItems: any[]
 		if (index === -1) {
-			selectedItems.push(variationItem)
+			newSelectedItems = [...selectedItems, variationItem]
 		} else {
-			selectedItems.splice(index, 1)
+			newSelectedItems = selectedItems.filter(
+				(i: any) => i.uuid !== variationItem.uuid
+			)
 		}
 
-		productVariations.set(variationUuid, selectedItems)
+		productVariations.set(variationUuid, newSelectedItems)
 		this.offerItemsChange.emit(this.offerItems)
 	}
 

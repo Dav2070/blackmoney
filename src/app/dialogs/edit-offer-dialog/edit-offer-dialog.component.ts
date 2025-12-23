@@ -95,23 +95,47 @@ export class EditOfferDialogComponent {
 		this.basicData.discountType = menu.offer?.discountType || "PERCENTAGE"
 		this.offerItems = menu.offer?.offerItems || []
 
-		// Initialisiere selectedVariations für alle Produkte mit Variationen
+		// Konvertiere selectedVariations von Object zu Map und initialisiere fehlende Variationen
 		if (this.offerItems.length > 0) {
 			this.offerItems.forEach(item => {
+				// Konvertiere selectedVariations von Object/JSON zu Map
+				if (item.selectedVariations && !(item.selectedVariations instanceof Map)) {
+					const convertedMap = new Map<string, Map<string, any[]>>()
+					
+					// selectedVariations ist ein Object, konvertiere es zu Map
+					Object.entries(item.selectedVariations).forEach(([productUuid, variationsObj]: [string, any]) => {
+						const variationsMap = new Map<string, any[]>()
+						
+						if (variationsObj && typeof variationsObj === 'object') {
+							Object.entries(variationsObj).forEach(([variationUuid, items]: [string, any]) => {
+								variationsMap.set(variationUuid, Array.isArray(items) ? items : [])
+							})
+						}
+						
+						convertedMap.set(productUuid, variationsMap)
+					})
+					
+					item.selectedVariations = convertedMap
+				}
+				
 				if (!item.selectedVariations) {
 					item.selectedVariations = new Map()
 				}
-				// Für jedes Produkt im Item
+				
+				// Für jedes Produkt im Item: Initialisiere fehlende Variationen
 				item.products.forEach(product => {
 					if (product.variations && product.variations.length > 0) {
-						const variationsMap = new Map<string, any[]>()
-						product.variations.forEach(variation => {
-							// Initialisiere mit allen VariationItems
-							variationsMap.set(variation.uuid, [
-								...variation.variationItems
-							])
-						})
-						item.selectedVariations!.set(product.uuid, variationsMap)
+						// Nur initialisieren, wenn noch keine selectedVariations für dieses Produkt existieren
+						if (!item.selectedVariations!.has(product.uuid)) {
+							const variationsMap = new Map<string, any[]>()
+							product.variations.forEach(variation => {
+								// Initialisiere mit allen VariationItems
+								variationsMap.set(variation.uuid, [
+									...variation.variationItems
+								])
+							})
+							item.selectedVariations!.set(product.uuid, variationsMap)
+						}
 					}
 				})
 			})
@@ -183,6 +207,36 @@ export class EditOfferDialogComponent {
 		}
 	}
 
+	// Hilfsfunktion: Konvertiere Maps zu Plain Objects für Serialisierung
+	convertMapsToObjects(offerItems: OfferItem[]): any[] {
+		return offerItems.map(item => {
+			const itemCopy: any = {
+				...item,
+				products: item.products
+			}
+
+			if (item.selectedVariations && item.selectedVariations instanceof Map) {
+				const selectedVariationsObj: any = {}
+				
+				item.selectedVariations.forEach((variationsMap, productUuid) => {
+					const variationsObj: any = {}
+					
+					variationsMap.forEach((items, variationUuid) => {
+						variationsObj[variationUuid] = items
+					})
+					
+					selectedVariationsObj[productUuid] = variationsObj
+				})
+				
+				itemCopy.selectedVariations = selectedVariationsObj
+			} else {
+				itemCopy.selectedVariations = item.selectedVariations
+			}
+
+			return itemCopy
+		})
+	}
+
 	submit() {
 		// Validierung
 		if (!this.basicData.id || this.basicData.id <= 0) {
@@ -232,7 +286,7 @@ export class EditOfferDialogComponent {
 				: undefined,
 			startTime: this.availabilityData.startTime || undefined,
 			endTime: this.availabilityData.endTime || undefined,
-			offerItems: this.offerItems
+			offerItems: this.convertMapsToObjects(this.offerItems)
 		}
 
 		this.primaryButtonClick.emit({

@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, HostListener, ElementRef } from "@angular/core"
+import {
+	Component,
+	OnInit,
+	ViewChild,
+	HostListener,
+	ElementRef
+} from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { ContextMenu } from "dav-ui-components"
 import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
@@ -436,7 +442,26 @@ export class ProductsOverviewPageComponent implements OnInit {
 				name: "Tagessuppe",
 				price: 5.5,
 				category: categoryVorspeisen,
-				variations: []
+				variations: [
+					{
+						uuid: "var-soup-1",
+						name: "Größe",
+						variationItems: [
+							{
+								id: 1,
+								uuid: "var-item-soup-1",
+								name: "Klein",
+								additionalCost: 0
+							},
+							{
+								id: 2,
+								uuid: "var-item-soup-2",
+								name: "Groß",
+								additionalCost: 2.0
+							}
+						]
+					}
+				]
 			},
 			{
 				id: 2,
@@ -445,7 +470,32 @@ export class ProductsOverviewPageComponent implements OnInit {
 				name: "Gemischter Salat",
 				price: 6.9,
 				category: categoryVorspeisen,
-				variations: []
+				variations: [
+					{
+						uuid: "var-salad-1",
+						name: "Dressing",
+						variationItems: [
+							{
+								id: 3,
+								uuid: "var-item-salad-1",
+								name: "Essig & Öl",
+								additionalCost: 0
+							},
+							{
+								id: 4,
+								uuid: "var-item-salad-2",
+								name: "Joghurt",
+								additionalCost: 0
+							},
+							{
+								id: 5,
+								uuid: "var-item-salad-3",
+								name: "Honig-Senf",
+								additionalCost: 0.5
+							}
+						]
+					}
+				]
 			},
 			{
 				id: 8,
@@ -463,7 +513,56 @@ export class ProductsOverviewPageComponent implements OnInit {
 				name: "Schnitzel mit Pommes",
 				price: 12.9,
 				category: categoryHauptgerichte,
-				variations: []
+				variations: [
+					{
+						uuid: "var-schnitzel-1",
+						name: "Art",
+						variationItems: [
+							{
+								id: 6,
+								uuid: "var-item-schnitzel-1",
+								name: "Wiener Art",
+								additionalCost: 0
+							},
+							{
+								id: 7,
+								uuid: "var-item-schnitzel-2",
+								name: "Jägerschnitzel",
+								additionalCost: 1.5
+							},
+							{
+								id: 8,
+								uuid: "var-item-schnitzel-3",
+								name: "Zigeunerschnitzel",
+								additionalCost: 1.5
+							}
+						]
+					},
+					{
+						uuid: "var-schnitzel-2",
+						name: "Beilage",
+						variationItems: [
+							{
+								id: 9,
+								uuid: "var-item-schnitzel-4",
+								name: "Pommes",
+								additionalCost: 0
+							},
+							{
+								id: 10,
+								uuid: "var-item-schnitzel-5",
+								name: "Reis",
+								additionalCost: 0
+							},
+							{
+								id: 11,
+								uuid: "var-item-schnitzel-6",
+								name: "Salat",
+								additionalCost: 1.0
+							}
+						]
+					}
+				]
 			},
 			{
 				id: 4,
@@ -481,7 +580,26 @@ export class ProductsOverviewPageComponent implements OnInit {
 				name: "Gegrillter Lachs",
 				price: 14.9,
 				category: categoryHauptgerichte,
-				variations: []
+				variations: [
+					{
+						uuid: "var-lachs-1",
+						name: "Garstufe",
+						variationItems: [
+							{
+								id: 12,
+								uuid: "var-item-lachs-1",
+								name: "Medium",
+								additionalCost: 0
+							},
+							{
+								id: 13,
+								uuid: "var-item-lachs-2",
+								name: "Durch",
+								additionalCost: 0
+							}
+						]
+					}
+				]
 			},
 			{
 				id: 9,
@@ -526,7 +644,32 @@ export class ProductsOverviewPageComponent implements OnInit {
 				name: "Cola 0,4l",
 				price: 3.5,
 				category: categoryGetraenke,
-				variations: []
+				variations: [
+					{
+						uuid: "var-cola-1",
+						name: "Typ",
+						variationItems: [
+							{
+								id: 14,
+								uuid: "var-item-cola-1",
+								name: "Normal",
+								additionalCost: 0
+							},
+							{
+								id: 15,
+								uuid: "var-item-cola-2",
+								name: "Zero",
+								additionalCost: 0
+							},
+							{
+								id: 16,
+								uuid: "var-item-cola-3",
+								name: "Light",
+								additionalCost: 0
+							}
+						]
+					}
+				]
 			},
 			{
 				id: 11,
@@ -553,7 +696,32 @@ export class ProductsOverviewPageComponent implements OnInit {
 				name: "Pommes Frites",
 				price: 3.5,
 				category: categoryBeilagen,
-				variations: []
+				variations: [
+					{
+						uuid: "var-pommes-1",
+						name: "Dip",
+						variationItems: [
+							{
+								id: 17,
+								uuid: "var-item-pommes-1",
+								name: "Ketchup",
+								additionalCost: 0
+							},
+							{
+								id: 18,
+								uuid: "var-item-pommes-2",
+								name: "Mayo",
+								additionalCost: 0
+							},
+							{
+								id: 19,
+								uuid: "var-item-pommes-3",
+								name: "Aioli",
+								additionalCost: 0.5
+							}
+						]
+					}
+				]
 			},
 			{
 				id: 15,
@@ -611,7 +779,26 @@ export class ProductsOverviewPageComponent implements OnInit {
 									type: "FOOD",
 									name: "Tagessuppe",
 									price: 5.5,
-									variations: []
+									variations: [
+										{
+											uuid: "var-soup-1",
+											name: "Größe",
+											variationItems: [
+												{
+													id: 1,
+													uuid: "var-item-soup-1",
+													name: "Klein",
+													additionalCost: 0
+												},
+												{
+													id: 2,
+													uuid: "var-item-soup-2",
+													name: "Groß",
+													additionalCost: 2.0
+												}
+											]
+										}
+									]
 								},
 								{
 									id: 2,
@@ -619,7 +806,32 @@ export class ProductsOverviewPageComponent implements OnInit {
 									type: "FOOD",
 									name: "Gemischter Salat",
 									price: 6.9,
-									variations: []
+									variations: [
+										{
+											uuid: "var-salad-1",
+											name: "Dressing",
+											variationItems: [
+												{
+													id: 3,
+													uuid: "var-item-salad-1",
+													name: "Essig & Öl",
+													additionalCost: 0
+												},
+												{
+													id: 4,
+													uuid: "var-item-salad-2",
+													name: "Joghurt",
+													additionalCost: 0
+												},
+												{
+													id: 5,
+													uuid: "var-item-salad-3",
+													name: "Honig-Senf",
+													additionalCost: 0.5
+												}
+											]
+										}
+									]
 								}
 							]
 						},
@@ -634,7 +846,56 @@ export class ProductsOverviewPageComponent implements OnInit {
 									type: "FOOD",
 									name: "Schnitzel mit Pommes",
 									price: 12.9,
-									variations: []
+									variations: [
+										{
+											uuid: "var-schnitzel-1",
+											name: "Art",
+											variationItems: [
+												{
+													id: 6,
+													uuid: "var-item-schnitzel-1",
+													name: "Wiener Art",
+													additionalCost: 0
+												},
+												{
+													id: 7,
+													uuid: "var-item-schnitzel-2",
+													name: "Jägerschnitzel",
+													additionalCost: 1.5
+												},
+												{
+													id: 8,
+													uuid: "var-item-schnitzel-3",
+													name: "Zigeunerschnitzel",
+													additionalCost: 1.5
+												}
+											]
+										},
+										{
+											uuid: "var-schnitzel-2",
+											name: "Beilage",
+											variationItems: [
+												{
+													id: 9,
+													uuid: "var-item-schnitzel-4",
+													name: "Pommes",
+													additionalCost: 0
+												},
+												{
+													id: 10,
+													uuid: "var-item-schnitzel-5",
+													name: "Reis",
+													additionalCost: 0
+												},
+												{
+													id: 11,
+													uuid: "var-item-schnitzel-6",
+													name: "Salat",
+													additionalCost: 1.0
+												}
+											]
+										}
+									]
 								},
 								{
 									id: 4,
@@ -650,7 +911,26 @@ export class ProductsOverviewPageComponent implements OnInit {
 									type: "FOOD",
 									name: "Gegrillter Lachs",
 									price: 14.9,
-									variations: []
+									variations: [
+										{
+											uuid: "var-lachs-1",
+											name: "Garstufe",
+											variationItems: [
+												{
+													id: 12,
+													uuid: "var-item-lachs-1",
+													name: "Medium",
+													additionalCost: 0
+												},
+												{
+													id: 13,
+													uuid: "var-item-lachs-2",
+													name: "Durch",
+													additionalCost: 0
+												}
+											]
+										}
+									]
 								}
 							]
 						},
@@ -728,7 +1008,32 @@ export class ProductsOverviewPageComponent implements OnInit {
 									type: "DRINK",
 									name: "Cola 0,4l",
 									price: 3.5,
-									variations: []
+									variations: [
+										{
+											uuid: "var-cola-1",
+											name: "Typ",
+											variationItems: [
+												{
+													id: 14,
+													uuid: "var-item-cola-1",
+													name: "Normal",
+													additionalCost: 0
+												},
+												{
+													id: 15,
+													uuid: "var-item-cola-2",
+													name: "Zero",
+													additionalCost: 0
+												},
+												{
+													id: 16,
+													uuid: "var-item-cola-3",
+													name: "Light",
+													additionalCost: 0
+												}
+											]
+										}
+									]
 								},
 								{
 									id: 11,
@@ -762,7 +1067,13 @@ export class ProductsOverviewPageComponent implements OnInit {
 					uuid: "offer-2",
 					offerType: "FIXED_PRICE",
 					offerValue: 9.9,
-					weekdays: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
+					weekdays: [
+						"MONDAY",
+						"TUESDAY",
+						"WEDNESDAY",
+						"THURSDAY",
+						"FRIDAY"
+					],
 					startTime: "17:00",
 					endTime: "19:00",
 					offerItems: [
@@ -777,7 +1088,32 @@ export class ProductsOverviewPageComponent implements OnInit {
 									type: "DRINK",
 									name: "Cola 0,4l",
 									price: 3.5,
-									variations: []
+									variations: [
+										{
+											uuid: "var-cola-special-1",
+											name: "Typ",
+											variationItems: [
+												{
+													id: 14,
+													uuid: "var-item-cola-special-1",
+													name: "Normal",
+													additionalCost: 0
+												},
+												{
+													id: 15,
+													uuid: "var-item-cola-special-2",
+													name: "Zero",
+													additionalCost: 0
+												},
+												{
+													id: 16,
+													uuid: "var-item-cola-special-3",
+													name: "Light",
+													additionalCost: 0
+												}
+											]
+										}
+									]
 								},
 								{
 									id: 11,
@@ -793,7 +1129,32 @@ export class ProductsOverviewPageComponent implements OnInit {
 									type: "FOOD",
 									name: "Pommes Frites",
 									price: 4.5,
-									variations: []
+									variations: [
+										{
+											uuid: "var-pommes-1",
+											name: "Dip",
+											variationItems: [
+												{
+													id: 17,
+													uuid: "var-item-pommes-1",
+													name: "Ketchup",
+													additionalCost: 0
+												},
+												{
+													id: 18,
+													uuid: "var-item-pommes-2",
+													name: "Mayo",
+													additionalCost: 0
+												},
+												{
+													id: 19,
+													uuid: "var-item-pommes-3",
+													name: "Aioli",
+													additionalCost: 0.5
+												}
+											]
+										}
+									]
 								}
 							]
 						}
@@ -824,7 +1185,9 @@ export class ProductsOverviewPageComponent implements OnInit {
 			// Special-Modus
 			if (this.editingSpecial) {
 				// Bestehendes Special aktualisieren
-				const index = this.specials.findIndex(s => s.uuid === this.editingSpecial!.uuid)
+				const index = this.specials.findIndex(
+					s => s.uuid === this.editingSpecial!.uuid
+				)
 				if (index !== -1) {
 					this.specials[index] = {
 						...this.specials[index],
@@ -854,7 +1217,9 @@ export class ProductsOverviewPageComponent implements OnInit {
 			// Menü-Modus
 			if (this.editingMenu) {
 				// Bestehendes Menü aktualisieren
-				const index = this.menus.findIndex(m => m.uuid === this.editingMenu!.uuid)
+				const index = this.menus.findIndex(
+					m => m.uuid === this.editingMenu!.uuid
+				)
 				if (index !== -1) {
 					this.menus[index] = {
 						...this.menus[index],

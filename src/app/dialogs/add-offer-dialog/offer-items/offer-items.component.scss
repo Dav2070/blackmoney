@@ -30,3 +30,82 @@
 	font-size: 0.875rem;
 	color: var(--dav-color-on-primary-container);
 }
+
+.product-item {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.product-checkbox {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1;
+	justify-content: space-between;
+
+	span {
+		flex: 1;
+	}
+}
+
+.expand-variations-btn {
+	background: none;
+	border: none;
+	padding: 4px;
+	cursor: pointer;
+	color: var(--dav-color-primary);
+	display: flex;
+	align-items: center;
+
+	&:hover {
+		color: var(--dav-color-primary-dark);
+	}
+
+	&.disabled {
+		opacity: 0.3;
+		cursor: default;
+		pointer-events: none;
+	}
+}
+
+.variations-list {
+	margin-left: 32px;
+	padding: 12px;
+	background: var(--dav-color-surface-variant);
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.variation-group {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.variation-name {
+	margin: 0;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--dav-color-on-surface-variant);
+}
+
+.variation-items-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 8px;
+}
+
+.variation-item-checkbox {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 0.875rem;
+	cursor: pointer;
+
+	input[type="checkbox"] {
+		cursor: pointer;
+	}
+}

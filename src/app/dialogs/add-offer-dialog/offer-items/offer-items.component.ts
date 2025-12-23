@@ -34,7 +34,10 @@ export class OfferItemsComponent {
 	newItemMaxSelections: number = 1
 	newItemProducts: Product[] = []
 	expandedCategories: Map<string, boolean> = new Map()
+	expandedProducts: Map<string, boolean> = new Map()
 	editingItem: OfferItem | null = null
+	// productUuid -> variationUuid -> VariationItem[]
+	newItemSelectedVariations: Map<string, Map<string, any[]>> = new Map()
 
 	newItemNameChange(value: string) {
 		this.newItemName = value
@@ -51,8 +54,21 @@ export class OfferItemsComponent {
 		const index = this.newItemProducts.findIndex(p => p.uuid === product.uuid)
 		if (index === -1) {
 			this.newItemProducts.push(product)
+			// Initialisiere alle Variationen mit allen VariationItems
+			if (product.variations && product.variations.length > 0) {
+				const variationsMap = new Map<string, any[]>()
+				product.variations.forEach(variation => {
+					variationsMap.set(variation.uuid, [...variation.variationItems])
+				})
+				this.newItemSelectedVariations.set(product.uuid, variationsMap)
+				// Automatisch aufklappen
+				this.expandedProducts.set(product.uuid, true)
+			}
 		} else {
 			this.newItemProducts.splice(index, 1)
+			this.newItemSelectedVariations.delete(product.uuid)
+			// Zuklappen beim Abwählen
+			this.expandedProducts.set(product.uuid, false)
 		}
 	}
 
@@ -65,8 +81,26 @@ export class OfferItemsComponent {
 		const index = item.products.findIndex(p => p.uuid === product.uuid)
 		if (index === -1) {
 			item.products.push(product)
+			// Initialisiere alle Variationen mit allen VariationItems
+			if (product.variations && product.variations.length > 0) {
+				if (!item.selectedVariations) {
+					item.selectedVariations = new Map()
+				}
+				const variationsMap = new Map<string, any[]>()
+				product.variations.forEach(variation => {
+					variationsMap.set(variation.uuid, [...variation.variationItems])
+				})
+				item.selectedVariations.set(product.uuid, variationsMap)
+				// Automatisch aufklappen
+				this.expandedProducts.set(product.uuid, true)
+			}
 		} else {
 			item.products.splice(index, 1)
+			if (item.selectedVariations) {
+				item.selectedVariations.delete(product.uuid)
+			}
+			// Zuklappen beim Abwählen
+			this.expandedProducts.set(product.uuid, false)
 		}
 		this.offerItemsChange.emit(this.offerItems)
 	}
@@ -91,6 +125,9 @@ export class OfferItemsComponent {
 			this.editingItem.name = this.newItemName
 			this.editingItem.maxSelections = this.newItemMaxSelections
 			this.editingItem.products = [...this.newItemProducts]
+			this.editingItem.selectedVariations = new Map(
+				this.newItemSelectedVariations
+			)
 			this.editingItem = null
 		} else {
 			// Add new item
@@ -98,7 +135,8 @@ export class OfferItemsComponent {
 				uuid: crypto.randomUUID(),
 				name: this.newItemName,
 				maxSelections: this.newItemMaxSelections,
-				products: [...this.newItemProducts]
+				products: [...this.newItemProducts],
+				selectedVariations: new Map(this.newItemSelectedVariations)
 			}
 			this.offerItems.push(newItem)
 		}
@@ -109,6 +147,7 @@ export class OfferItemsComponent {
 		this.newItemName = ""
 		this.newItemMaxSelections = 1
 		this.newItemProducts = []
+		this.newItemSelectedVariations = new Map()
 		this.newItemNameError = ""
 		this.errorsClear.emit()
 	}
@@ -118,6 +157,9 @@ export class OfferItemsComponent {
 		this.newItemName = item.name
 		this.newItemMaxSelections = item.maxSelections
 		this.newItemProducts = [...item.products]
+		this.newItemSelectedVariations = item.selectedVariations
+			? new Map(item.selectedVariations)
+			: new Map()
 		this.newItemNameError = ""
 	}
 
@@ -126,6 +168,7 @@ export class OfferItemsComponent {
 		this.newItemName = ""
 		this.newItemMaxSelections = 1
 		this.newItemProducts = []
+		this.newItemSelectedVariations = new Map()
 		this.newItemNameError = ""
 	}
 
@@ -193,5 +236,89 @@ export class OfferItemsComponent {
 				this.newItemProducts.some(p => p.uuid === product.uuid)
 			).length
 		}
+	}
+
+	toggleProductExpanded(productUuid: string) {
+		this.expandedProducts.set(
+			productUuid,
+			!this.expandedProducts.get(productUuid)
+		)
+	}
+
+	isProductExpanded(productUuid: string): boolean {
+		return this.expandedProducts.get(productUuid) || false
+	}
+
+	// Variation Item Toggle für Menü-Modus
+	toggleVariationItem(productUuid: string, variationUuid: string, item: any) {
+		const productVariations = this.newItemSelectedVariations.get(productUuid)
+		if (!productVariations) return
+
+		const selectedItems = productVariations.get(variationUuid) || []
+		const index = selectedItems.findIndex((i: any) => i.uuid === item.uuid)
+
+		if (index === -1) {
+			selectedItems.push(item)
+		} else {
+			selectedItems.splice(index, 1)
+		}
+
+		productVariations.set(variationUuid, selectedItems)
+	}
+
+	isVariationItemSelected(
+		productUuid: string,
+		variationUuid: string,
+		item: any
+	): boolean {
+		const productVariations = this.newItemSelectedVariations.get(productUuid)
+		if (!productVariations) return false
+
+		const selectedItems = productVariations.get(variationUuid) || []
+		return selectedItems.some((i: any) => i.uuid === item.uuid)
+	}
+
+	// Variation Item Toggle für Special-Modus
+	toggleVariationItemForItem(
+		item: OfferItem,
+		productUuid: string,
+		variationUuid: string,
+		variationItem: any
+	) {
+		if (!item.selectedVariations) {
+			item.selectedVariations = new Map()
+		}
+
+		const productVariations = item.selectedVariations.get(productUuid)
+		if (!productVariations) return
+
+		const selectedItems = productVariations.get(variationUuid) || []
+		const index = selectedItems.findIndex(
+			(i: any) => i.uuid === variationItem.uuid
+		)
+
+		if (index === -1) {
+			selectedItems.push(variationItem)
+		} else {
+			selectedItems.splice(index, 1)
+		}
+
+		productVariations.set(variationUuid, selectedItems)
+		this.offerItemsChange.emit(this.offerItems)
+	}
+
+	isVariationItemSelectedForItem(
+		item: OfferItem,
+		productUuid: string,
+		variationUuid: string,
+		variationItem: any
+	): boolean {
+		if (!item.selectedVariations) return false
+
+		const productVariations = item.selectedVariations.get(productUuid)
+		if (!productVariations) return false
+
+		const selectedItems = productVariations.get(variationUuid) || []
+		return selectedItems.some((i: any) => i.uuid === variationItem.uuid)
 	}
 }

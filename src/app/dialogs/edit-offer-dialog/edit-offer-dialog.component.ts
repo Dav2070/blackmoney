@@ -95,6 +95,28 @@ export class EditOfferDialogComponent {
 		this.basicData.discountType = menu.offer?.discountType || "PERCENTAGE"
 		this.offerItems = menu.offer?.offerItems || []
 
+		// Initialisiere selectedVariations für alle Produkte mit Variationen
+		if (this.offerItems.length > 0) {
+			this.offerItems.forEach(item => {
+				if (!item.selectedVariations) {
+					item.selectedVariations = new Map()
+				}
+				// Für jedes Produkt im Item
+				item.products.forEach(product => {
+					if (product.variations && product.variations.length > 0) {
+						const variationsMap = new Map<string, any[]>()
+						product.variations.forEach(variation => {
+							// Initialisiere mit allen VariationItems
+							variationsMap.set(variation.uuid, [
+								...variation.variationItems
+							])
+						})
+						item.selectedVariations!.set(product.uuid, variationsMap)
+					}
+				})
+			})
+		}
+
 		// Für Specials: Stelle sicher, dass ein Standard-Item existiert
 		if (this.isSpecialMode && this.offerItems.length === 0) {
 			this.offerItems = [
@@ -102,7 +124,8 @@ export class EditOfferDialogComponent {
 					uuid: crypto.randomUUID(),
 					name: "Produkte",
 					maxSelections: 1,
-					products: []
+					products: [],
+					selectedVariations: new Map()
 				}
 			]
 		}

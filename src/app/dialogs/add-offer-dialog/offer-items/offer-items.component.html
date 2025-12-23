@@ -40,25 +40,106 @@
 										product of category.products;
 										track product.uuid
 									) {
-										<label class="product-checkbox">
-											<input
-												type="checkbox"
-												[checked]="
-													isProductSelectedForItem(
-														offerItems[0],
-														product
-													)
-												"
-												(change)="
-													toggleProductSelectionForItem(
-														offerItems[0],
-														product
-													)
-												"
-												[disabled]="loading"
-											/>
-											<span>{{ product.name }}</span>
-										</label>
+										<div class="product-item">
+											<label class="product-checkbox">
+												<input
+													type="checkbox"
+													[checked]="
+														isProductSelectedForItem(
+															offerItems[0],
+															product
+														)
+													"
+													(change)="
+														toggleProductSelectionForItem(
+															offerItems[0],
+															product
+														)
+													"
+													[disabled]="loading"
+												/>
+												<span>{{ product.name }}</span>
+												@if (
+													product.variations &&
+													product.variations.length > 0
+												) {
+													<button
+														type="button"
+														class="expand-variations-btn"
+														[class.disabled]="
+															!isProductSelectedForItem(
+																offerItems[0],
+																product
+															)
+														"
+														(click)="
+															toggleProductExpanded(product.uuid)
+														"
+													>
+														<fa-icon
+															[icon]="
+																isProductExpanded(product.uuid)
+																	? faChevronDown
+																	: faChevronRight
+															"
+														></fa-icon>
+													</button>
+												}
+											</label>
+											@if (
+												isProductExpanded(product.uuid) &&
+												isProductSelectedForItem(
+													offerItems[0],
+													product
+												)
+											) {
+												<div class="variations-list">
+													@for (
+														variation of product.variations;
+														track variation.uuid
+													) {
+														<div class="variation-group">
+															<h5 class="variation-name">
+																{{ variation.name }}
+															</h5>
+															<div class="variation-items-grid">
+																@for (
+																	item of variation.variationItems;
+																	track item.uuid
+																) {
+																	<label
+																		class="variation-item-checkbox"
+																	>
+																		<input
+																			type="checkbox"
+																			[checked]="
+																				isVariationItemSelectedForItem(
+																					offerItems[0],
+																					product.uuid,
+																					variation.uuid,
+																					item
+																				)
+																			"
+																			(change)="
+																				toggleVariationItemForItem(
+																					offerItems[0],
+																					product.uuid,
+																					variation.uuid,
+																					item
+																				)
+																			"
+																		/>
+																		<span>{{
+																			item.name
+																		}}</span>
+																	</label>
+																}
+															</div>
+														</div>
+													}
+												</div>
+											}
+										</div>
 									}
 								</div>
 							}
@@ -182,14 +263,89 @@
 										product of category.products;
 										track product.uuid
 									) {
-										<label class="product-checkbox">
-											<input
-												type="checkbox"
-												[checked]="isProductSelected(product)"
-												(change)="toggleProductSelection(product)"
-											/>
-											<span>{{ product.name }}</span>
-										</label>
+										<div class="product-item">
+											<label class="product-checkbox">
+												<input
+													type="checkbox"
+													[checked]="isProductSelected(product)"
+													(change)="
+														toggleProductSelection(product)
+													"
+												/>
+												<span>{{ product.name }}</span>
+												@if (
+													product.variations &&
+													product.variations.length > 0
+												) {
+													<button
+														type="button"
+														class="expand-variations-btn"
+														[class.disabled]="
+															!isProductSelected(product)
+														"
+														(click)="
+															toggleProductExpanded(product.uuid)
+														"
+													>
+														<fa-icon
+															[icon]="
+																isProductExpanded(product.uuid)
+																	? faChevronDown
+																	: faChevronRight
+															"
+														></fa-icon>
+													</button>
+												}
+											</label>
+											@if (
+												isProductExpanded(product.uuid) &&
+												isProductSelected(product)
+											) {
+												<div class="variations-list">
+													@for (
+														variation of product.variations;
+														track variation.uuid
+													) {
+														<div class="variation-group">
+															<h5 class="variation-name">
+																{{ variation.name }}
+															</h5>
+															<div class="variation-items-grid">
+																@for (
+																	item of variation.variationItems;
+																	track item.uuid
+																) {
+																	<label
+																		class="variation-item-checkbox"
+																	>
+																		<input
+																			type="checkbox"
+																			[checked]="
+																				isVariationItemSelected(
+																					product.uuid,
+																					variation.uuid,
+																					item
+																				)
+																			"
+																			(change)="
+																				toggleVariationItem(
+																					product.uuid,
+																					variation.uuid,
+																					item
+																				)
+																			"
+																		/>
+																		<span>{{
+																			item.name
+																		}}</span>
+																	</label>
+																}
+															</div>
+														</div>
+													}
+												</div>
+											}
+										</div>
 									}
 								</div>
 							}

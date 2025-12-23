@@ -1,0 +1,91 @@
+<dav-dialog
+	#dialog
+	[headline]="isSpecialMode ? locale.specialHeadline : locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="700"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Tab Navigation -->
+		<dav-tab-bar>
+			<dav-tab-bar-item
+				id="tab-grunddaten"
+				[active]="currentTab === 0"
+				(click)="currentTab = 0"
+			>
+				{{ locale.tab1 }}
+			</dav-tab-bar-item>
+			<dav-tab-bar-item
+				id="tab-menu-items"
+				[active]="currentTab === 1"
+				(click)="currentTab = 1"
+			>
+				{{ locale.tab2 }}
+			</dav-tab-bar-item>
+			<dav-tab-bar-item
+				id="tab-verfuegbarkeit"
+				[active]="currentTab === 2"
+				(click)="currentTab = 2"
+			>
+				{{ locale.tab3 }}
+			</dav-tab-bar-item>
+		</dav-tab-bar>
+
+		<!-- Tab 1: Grunddaten -->
+		@if (currentTab === 0) {
+			<app-offer-basic-data
+				[data]="basicData"
+				[loading]="loading"
+				[locale]="locale"
+				[idError]="idError"
+				[nameError]="nameError"
+				[offerValueError]="offerValueError"
+				(dataChange)="onBasicDataChange($event)"
+				(errorsClear)="onErrorsClear()"
+			></app-offer-basic-data>
+		}
+
+		<!-- Tab 2: OfferItems -->
+		@if (currentTab === 1) {
+			<app-offer-items
+				[offerItems]="offerItems"
+				[availableProducts]="availableProducts"
+				[loading]="loading"
+				[locale]="locale"
+				[isSpecialMode]="isSpecialMode"
+				[newItemNameError]="newItemNameError"
+				(offerItemsChange)="onOfferItemsChange($event)"
+				(errorsClear)="onErrorsClear()"
+			></app-offer-items>
+		}
+
+		<!-- Tab 3: Zeiten -->
+		@if (currentTab === 2) {
+			<app-offer-availability
+				[data]="availabilityData"
+				[loading]="loading"
+				[locale]="locale"
+				(dataChange)="onAvailabilityChange($event)"
+			></app-offer-availability>
+		}
+
+		<!-- Navigation Buttons -->
+		<div class="navigation-buttons">
+			@if (currentTab > 0) {
+				<dav-button type="button" (click)="previousTab()">
+					{{ locale.previous }}
+				</dav-button>
+			}
+			@if (currentTab < 2) {
+				<dav-button type="button" (click)="nextTab()">
+					{{ locale.next }}
+				</dav-button>
+			}
+		</div>
+	</form>
+</dav-dialog>

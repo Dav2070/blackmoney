@@ -1,0 +1,83 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="600"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Variation Name -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="name"
+				[label]="locale.name"
+				[disabled]="loading"
+				[errorMessage]="nameError"
+				(change)="nameTextfieldChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+
+		<div class="separator"></div>
+
+		<!-- Variation Items Section -->
+		<div class="items-section">
+			<h4>{{ locale.variationItems }}</h4>
+
+			<!-- Existing Items -->
+			@if (variationItems.length > 0) {
+				<div class="items-list">
+					@for (item of variationItems; track item.uuid) {
+						<div class="item-row">
+							<span class="item-name">{{ item.name }}</span>
+							<span class="item-cost">{{
+								item.additionalCost | currency: "EUR"
+							}}</span>
+							<dav-icon-button
+								size="xs"
+								(click)="removeVariationItem(item)"
+							>
+								<fa-icon [icon]="faTrash"></fa-icon>
+							</dav-icon-button>
+						</div>
+					}
+				</div>
+			}
+
+			<!-- Add New Item -->
+			<div class="add-item-section">
+				<div class="add-item-fields">
+					<dav-textfield
+						[value]="newItemName"
+						[label]="locale.itemName"
+						[disabled]="loading"
+						[errorMessage]="newItemNameError"
+						(change)="newItemNameChange($any($event).detail.value)"
+					></dav-textfield>
+
+					<dav-textfield
+						[value]="newItemCost.toString()"
+						[label]="locale.itemCost"
+						[disabled]="loading"
+						[errorMessage]="newItemCostError"
+						type="number"
+						step="0.01"
+						(change)="newItemCostChange($any($event).detail.value)"
+					></dav-textfield>
+				</div>
+
+				<dav-button
+					type="button"
+					[disabled]="loading"
+					(click)="addVariationItem()"
+				>
+					{{ locale.addItem }}
+				</dav-button>
+			</div>
+		</div>
+	</form>
+</dav-dialog>

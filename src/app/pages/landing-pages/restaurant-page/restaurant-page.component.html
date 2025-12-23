@@ -138,6 +138,14 @@
 			<div class="image-preview" *ngIf="imageDataUrl">
 				<img [src]="imageDataUrl" />
 			</div> -->
+
+			<dav-icon-card
+				[text]="locale.manageMenu"
+				[href]="'/user/restaurants/' + uuid + '/menu'"
+				(click)="navigateToMenuPage($event)"
+			>
+				<fa-icon [icon]="faMap"></fa-icon>
+			</dav-icon-card>
 		</div>
 	</div>
 </div>

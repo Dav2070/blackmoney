@@ -9,7 +9,8 @@ export class Product {
 	type: ProductType
 	name: string
 	price: number
-	category: Category
+	category?: Category
 	variations: Variation[]
 	offer?: Offer
+	takeaway?: boolean
 }

@@ -94,6 +94,7 @@ import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-pag
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { CashRegisterPageComponent } from "./pages/cash-register-pages/cash-register-page/cash-register-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
+import { TakeawaySidenavComponent } from "./pages/cash-register-pages/table-overview-page/takeaway-sidenav/takeaway-sidenav.component"
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
@@ -186,6 +187,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		OnboardingPageComponent,
 		CashRegisterPageComponent,
 		TableOverviewPageComponent,
+		TakeawaySidenavComponent,
 		BookingPageComponent,
 		TransferPageComponent,
 		PaymentPageComponent,

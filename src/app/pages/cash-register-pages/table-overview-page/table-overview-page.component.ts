@@ -2,80 +2,35 @@ import {
 	Component,
 	Inject,
 	PLATFORM_ID,
-	AfterViewInit,
 	ElementRef,
 	ViewChild
 } from "@angular/core"
 import { isPlatformServer } from "@angular/common"
 import { Router } from "@angular/router"
-import {
-	faPlus,
-	faTrash,
-	faTruck,
-	faBagShopping,
-	faUtensils,
-	faArrowLeft
-} from "@fortawesome/pro-regular-svg-icons"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Room } from "src/app/models/Room"
 import { Order } from "src/app/models/Order"
 import { TakeawayDetails } from "src/app/models/TakeawayDetails"
-import { AddTakeawayDialogComponent } from "src/app/dialogs/add-takeaway-dialog/add-takeaway-dialog.component"
-import { ViewTakeawayDialogComponent } from "src/app/dialogs/view-takeaway-dialog/view-takeaway-dialog.component"
-import { EditTakeawayDialogComponent } from "src/app/dialogs/edit-takeaway-dialog/edit-takeaway-dialog.component"
-import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
+import { TakeawaySidenavComponent } from "./takeaway-sidenav/takeaway-sidenav.component"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Product } from "src/app/models/Product"
-import { OrderItemType, TakeawayFilterType } from "src/app/types"
+import { OrderItemType } from "src/app/types"
 
 @Component({
 	templateUrl: "./table-overview-page.component.html",
 	styleUrl: "./table-overview-page.component.scss",
 	standalone: false
 })
-export class TableOverviewPageComponent implements AfterViewInit {
+export class TableOverviewPageComponent {
 	locale = this.localizationService.locale.tableOverviewPage
 	rooms: Room[] = []
 	selectedRoom: Room = null
 	roomsLoading: boolean = true
-	faPlus = faPlus
-	faTrash = faTrash
-	faTruck = faTruck
-	faBagShopping = faBagShopping
-	faUtensils = faUtensils
-	faArrowLeft = faArrowLeft
 	takeawayOrders: Order[] = []
-	takeawayFilter: TakeawayFilterType = "all"
-	priceCalculator = new PriceCalculator()
-
-	get filteredTakeawayOrders(): Order[] {
-		if (this.takeawayFilter === "all") {
-			return this.takeawayOrders
-		}
-		if (this.takeawayFilter === "delivery") {
-			return this.takeawayOrders.filter(o => o.takeawayDetails.delivery)
-		}
-		if (this.takeawayFilter === "pickUp") {
-			return this.takeawayOrders.filter(o => o.takeawayDetails.pickUp)
-		}
-		if (this.takeawayFilter === "dineIn") {
-			return this.takeawayOrders.filter(o => o.takeawayDetails.dineIn)
-		}
-		return this.takeawayOrders
-	}
 
 	@ViewChild("takeawaySidenav")
-	takeawaySidenav: ElementRef<any>
-
-	@ViewChild("addTakeawayDialog")
-	addTakeawayDialog: AddTakeawayDialogComponent
-
-	@ViewChild("viewTakeawayDialog")
-	viewTakeawayDialog: ViewTakeawayDialogComponent
-
-	@ViewChild("editTakeawayDialog")
-	editTakeawayDialog: EditTakeawayDialogComponent
+	takeawaySidenav: TakeawaySidenavComponent
 
 	constructor(
 		private router: Router,
@@ -359,18 +314,6 @@ export class TableOverviewPageComponent implements AfterViewInit {
 		}
 	}
 
-	ngAfterViewInit() {
-		if (isPlatformServer(this.platformId)) return
-
-		if (this.takeawaySidenav) {
-			const sidenav = this.takeawaySidenav.nativeElement
-
-			sidenav.addEventListener("dismiss", () => {
-				sidenav.open = false
-			})
-		}
-	}
-
 	navigateToUserPage() {
 		this.router.navigate(["user"])
 	}
@@ -380,27 +323,13 @@ export class TableOverviewPageComponent implements AfterViewInit {
 		this.router.navigate(["dashboard", "tables", tableUuid])
 	}
 
-	navigateToOrderPage(event: MouseEvent, orderUuid: string) {
-		this.router.navigate(["dashboard", "tables", orderUuid])
-	}
-
 	toggleTakeawaySidenav() {
 		if (this.takeawaySidenav) {
-			this.takeawaySidenav.nativeElement.open = true
+			this.takeawaySidenav.open()
 		}
 	}
 
-	closeTakeawaySidenav() {
-		if (this.takeawaySidenav) {
-			this.takeawaySidenav.nativeElement.open = false
-		}
-	}
-
-	openAddTakeawayDialog() {
-		this.addTakeawayDialog.show()
-	}
-
-	addTakeawayDialogPrimaryButtonClick(takeawayDetails: TakeawayDetails) {
+	handleAddTakeawayOrder(takeawayDetails: TakeawayDetails) {
 		const order = new Order()
 		order.uuid = crypto.randomUUID()
 		order.takeawayDetails = takeawayDetails
@@ -413,37 +342,13 @@ export class TableOverviewPageComponent implements AfterViewInit {
 		this.router.navigate(["dashboard", "tables", order.uuid])
 	}
 
-	getOrderTotalPrice(order: Order): number {
-		if (!order.orderItems || order.orderItems.length === 0) {
-			return 0
-		}
-
-		let total = 0
-		for (const orderItem of order.orderItems) {
-			total += this.priceCalculator.calculateTotalPrice(orderItem)
-		}
-		return total
-	}
-
-	setTakeawayFilter(filter: TakeawayFilterType) {
-		this.takeawayFilter = filter
-	}
-
-	deleteTakeawayOrder(orderUuid: string) {
+	handleDeleteTakeawayOrder(orderUuid: string) {
 		this.takeawayOrders = this.takeawayOrders.filter(
 			order => order.uuid !== orderUuid
 		)
 	}
 
-	openViewTakeawayDialog(order: Order) {
-		this.viewTakeawayDialog.show(order.takeawayDetails)
-	}
-
-	viewTakeawayDialogEditButtonClick(takeawayDetails: TakeawayDetails) {
-		this.editTakeawayDialog.show(takeawayDetails)
-	}
-
-	editTakeawayDialogPrimaryButtonClick(updatedDetails: TakeawayDetails) {
+	handleUpdateTakeawayOrder(updatedDetails: TakeawayDetails) {
 		const order = this.takeawayOrders.find(
 			o => o.takeawayDetails.uuid === updatedDetails.uuid
 		)

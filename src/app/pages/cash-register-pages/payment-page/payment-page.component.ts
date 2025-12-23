@@ -17,7 +17,7 @@ import { AllItemHandler } from "src/app/models/cash-register/order-item-handling
 import { OrderItem } from "src/app/models/OrderItem"
 import { Table } from "src/app/models/Table"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
-import { calculateTotalPriceOfOrderItem } from "src/app/utils"
+import { calculateTotalPriceOfOrderItem, formatPrice } from "src/app/utils"
 import { AddProductVariationInput, PaymentMethod } from "src/app/types"
 
 @Component({
@@ -141,7 +141,7 @@ export class PaymentPageComponent {
 
 	//Berechnet den Preis aller Items eines Tisches
 	showTotal(bookedItems: AllItemHandler) {
-		return bookedItems.calculateTotal().toFixed(2).replace(".", ",") + " €"
+		return formatPrice(bookedItems.calculateTotal())
 	}
 
 	addBill() {
@@ -152,11 +152,11 @@ export class PaymentPageComponent {
 	calculateTotalBills() {
 		let tmpTotal = 0
 
-		for (let bill of this.bills) {
+		for (const bill of this.bills) {
 			tmpTotal += bill.calculateTotal()
 		}
 
-		return tmpTotal.toFixed(2).replace(".", ",") + " €"
+		return formatPrice(tmpTotal)
 	}
 
 	setActiveBill(bill: AllItemHandler) {

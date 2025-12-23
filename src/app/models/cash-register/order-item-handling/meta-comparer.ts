@@ -29,14 +29,20 @@ export class MetaComparer {
 			existing.type === OrderItemType.Menu &&
 			incoming.type === OrderItemType.Menu
 		) {
-			const aSubs = existing.orderItems ?? []
-			const bSubs = incoming.orderItems ?? []
+			const aSubs = existing.orderItems
+			const bSubs = incoming.orderItems
+
 			return this.areOrderItemsArrayEqualForMerge(
 				aSubs,
 				bSubs,
 				existing.count,
 				incoming.count
 			)
+		}
+
+		//Zusatz Vergleich für Diverse Artikel
+		if (!this.isDiversOrderItemMetaEqual(existing, incoming)) {
+			return false
 		}
 
 		return true
@@ -194,5 +200,17 @@ export class MetaComparer {
 			bCopy.splice(idx, 1)
 		}
 		return bCopy.length === 0
+	}
+
+	// Comparison for miscellaneous items: price and name is relevant
+	private isDiversOrderItemMetaEqual(
+		existing: OrderItem,
+		incoming: OrderItem
+	): boolean {
+		if (existing.product.id == 0 && incoming.product.id == 0) {
+			if (existing.product.price !== incoming.product.price) return false
+			if (existing.product.name !== incoming.product.name) return false
+		}
+		return true
 	}
 }

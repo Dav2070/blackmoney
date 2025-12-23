@@ -3,6 +3,7 @@ import { Router } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { AuthService } from "src/app/services/auth-service"
 import { DataService } from "src/app/services/data-service"
+import { LocalizationService } from "src/app/services/localization-service"
 import { SettingsService } from "src/app/services/settings-service"
 import { convertUserResourceToUser, getSerialNumber } from "src/app/utils"
 
@@ -12,6 +13,8 @@ import { convertUserResourceToUser, getSerialNumber } from "src/app/utils"
 	standalone: false
 })
 export class OnboardingPageComponent {
+	locale = this.localizationService.locale.onboardingPage
+	actionsLocale = this.localizationService.locale.actions
 	context: "createCompany" | "createOwner" | "createUsers" = null
 	companyUuid: string = ""
 	restaurantUuid: string = ""
@@ -20,12 +23,16 @@ export class OnboardingPageComponent {
 	ownerPassword: string = ""
 	employeeName: string = ""
 	employees: string[] = []
+	createCompanyLoading: boolean = false
+	createOwnerLoading: boolean = false
+	createUserLoading: boolean = false
 
 	constructor(
 		public dataService: DataService,
 		private apiService: ApiService,
 		private authService: AuthService,
 		private settingsService: SettingsService,
+		private localizationService: LocalizationService,
 		private router: Router
 	) {}
 
@@ -34,10 +41,10 @@ export class OnboardingPageComponent {
 
 		if (this.dataService.company == null) {
 			this.context = "createCompany"
-		} else if (this.dataService.restaurant.users.length === 0) {
+		} else if (this.dataService.company.users.length === 0) {
 			this.context = "createOwner"
-		} else if (this.dataService.restaurant.users.length === 1) {
-			this.context = "createUsers"
+		} else if (this.dataService.company.users.length > 0) {
+			this.router.navigate(["login"])
 		}
 	}
 
@@ -58,17 +65,24 @@ export class OnboardingPageComponent {
 	}
 
 	async addEmployeeButtonClick() {
+		this.createUserLoading = true
+
 		await this.apiService.createUser(`uuid`, {
 			companyUuid: this.companyUuid,
 			name: this.employeeName,
 			restaurants: [this.restaurantUuid]
 		})
+
 		this.employees.push(this.employeeName)
 		this.employeeName = ""
+
+		this.createUserLoading = false
 	}
 
 	async continueButtonClick() {
 		if (this.context === "createCompany") {
+			this.createCompanyLoading = true
+
 			// TODO: Implement error handling
 			const createCompanyResponse = await this.apiService.createCompany(
 				`
@@ -84,6 +98,7 @@ export class OnboardingPageComponent {
 				}
 			)
 
+			this.createCompanyLoading = false
 			this.companyUuid = createCompanyResponse.data.createCompany.uuid
 			this.restaurantUuid =
 				createCompanyResponse.data.createCompany.restaurants.items[0].uuid
@@ -91,11 +106,29 @@ export class OnboardingPageComponent {
 			this.context = "createOwner"
 		} else if (this.context === "createOwner") {
 			// TODO: Implement error handling
-			const createOwnerResponse = await this.apiService.createOwner(`uuid`, {
-				companyUuid: this.companyUuid,
-				name: this.ownerName,
-				password: this.ownerPassword
-			})
+			this.createOwnerLoading = true
+
+			const createOwnerResponse = await this.apiService.createOwner(
+				`
+					uuid
+					company {
+						restaurants {
+							items {
+								registers {
+									items {
+										uuid
+									}
+								}
+							}
+						}
+					}
+				`,
+				{
+					companyUuid: this.companyUuid || this.dataService.company?.uuid,
+					name: this.ownerName,
+					password: this.ownerPassword
+				}
+			)
 
 			if (createOwnerResponse.errors == null) {
 				// Log in as the owner
@@ -109,10 +142,13 @@ export class OnboardingPageComponent {
 						}
 					`,
 					{
-						companyUuid: this.companyUuid,
+						companyUuid:
+							this.companyUuid || this.dataService.company?.uuid,
 						userName: this.ownerName,
 						password: this.ownerPassword,
-						registerUuid: "", // TODO: Implement register selection
+						registerUuid:
+							createOwnerResponse.data.createOwner.company.restaurants
+								.items[0].registers.items[0].uuid,
 						registerClientSerialNumber: await getSerialNumber(
 							this.settingsService
 						)
@@ -133,6 +169,8 @@ export class OnboardingPageComponent {
 
 				this.context = "createUsers"
 			}
+
+			this.createOwnerLoading = false
 		} else if (this.context === "createUsers") {
 			this.router.navigate(["login"])
 		}

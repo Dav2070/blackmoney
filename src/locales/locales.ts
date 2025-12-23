@@ -17,6 +17,25 @@ export const de = {
 		passwordConfirmationLabel: "Passwort bestätigen",
 		passwordConfirmationPlaceholder: "Wiederhole dein Passwort"
 	},
+	onboardingPage: {
+		createCompanySection: {
+			headline: "Wie heißt dein Restaurant?",
+			description: "Bitte gib den Namen deines Restaurants ein."
+		},
+		createOwnerSection: {
+			headline: "Erstelle deinen Admin-Zugang",
+			description:
+				"Gib deinen Namen und ein Passwort an, mit dem du dich anmelden kannst.<br />Damit kannst du später das Kassensystem verwalten und Einstellungen vornehmen.",
+			nameTextfieldPlaceholder: "Dein Name",
+			passwordTextfieldPlaceholder: "Dein Passwort"
+		},
+		createUsersSection: {
+			headline: "Füge deine Mitarbeiter hinzu",
+			description:
+				"Gib die Namen deiner Mitarbeiter an, damit sich jeder am Kassensystem anmelden kann.",
+			employeeNameTextfieldPlaceholder: "Name des Mitarbeiters"
+		}
+	},
 	userPage: {
 		headlines: [
 			"Willkommen zurück, {name}!",
@@ -141,6 +160,7 @@ export const de = {
 		notes: "Notizen",
 		course: "Gang",
 		extras: "Extras",
+		diverseProducts: "Diverse Produkte",
 		addProduct: "Produkt hinzufügen",
 		showBills: "Rechnungen anzeigen",
 		sendOrderToastText: "Bestellung wurde erfolgreich abgeschickt."
@@ -393,8 +413,16 @@ export const de = {
 		selectProductDialog: {
 			headline: "Produkt hinzufügen"
 		},
+		selectMenuSpecialProductsDialog: {
+			categoriesHeadline: "Kategorien",
+			productsHeadline: "Produkte",
+			selectionHeadline: "Auswahl"
+		},
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"
+		},
+		subtractProductVariationsDialog: {
+			headline: "Variationen entfernen"
 		},
 		moveMultipleProductsDialog: {
 			headline: "Mehrere verschieben"
@@ -405,6 +433,18 @@ export const de = {
 		},
 		viewNoteDialog: {
 			headline: "Deine Notiz"
+		},
+		addDiverseProductDialog: {
+			headline: "Diverses Produkt buchen",
+			name: "Produktname",
+			art: "Art",
+			price: "Preis",
+			diverseFood: "Diverse Speise",
+			diverseDrinks: "Diverse Getränke",
+			diverseCosts: "Diverse Kosten",
+			food: "Speisen",
+			drinks: "Getränke",
+			otherCosts: "Andere Kosten"
 		},
 		addCategoryDialog: {
 			headline: "Kategorie hinzufügen",

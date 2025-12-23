@@ -1,0 +1,92 @@
+<dav-dialog
+	#dialog
+	[visible]="visible"
+	maxWidth="800"
+	(dismiss)="visible = false"
+>
+	<div class="container">
+		<div class="bills-list">
+			@for (order of orders; track order.uuid) {
+				<dav-card
+					clickable
+					(click)="selectedOrder = order"
+					[selected]="order === selectedOrder"
+				>
+					<div class="bill-info">
+						<div class="bill-info-details">
+							<p>Tisch {{ order.table.name }}</p>
+							<p>{{ order.paidAt.toLocaleDateString("de-DE") }}</p>
+							<p>
+								{{
+									order.paidAt.toLocaleTimeString([], {
+										hour: "2-digit",
+										minute: "2-digit"
+									})
+								}}
+								Uhr
+							</p>
+							<p>{{ formatPrice(calculateTotalPriceOfOrder(order)) }}</p>
+						</div>
+						<div class="bill-info-icon">
+							<fa-icon
+								[icon]="
+									order.paymentMethod === 'CARD'
+										? faCreditCard
+										: faMoneyBill1Wave
+								"
+							></fa-icon>
+						</div>
+					</div>
+				</dav-card>
+			}
+		</div>
+
+		<div class="bill-details">
+			<div class="bill-details-header">
+				<div>
+					<h3>Tisch {{ selectedOrder?.table.name }}</h3>
+				</div>
+
+				<div class="bill-details-paid-at">
+					<p>
+						{{ selectedOrder?.paidAt.toLocaleTimeString("de-DE") }} —
+						{{ selectedOrder?.paidAt.toLocaleDateString("de-DE") }}
+					</p>
+				</div>
+			</div>
+			<div class="bill-details-body">
+				<div class="bill-items">
+					@for (
+						orderItem of selectedOrder?.orderItems ?? [];
+						track orderItem.uuid
+					) {
+						@if (
+							orderItem.type === "MENU" || orderItem.type === "SPECIAL"
+						) {
+							<app-offer-order-item-card
+								[orderItem]="orderItem"
+							></app-offer-order-item-card>
+						} @else {
+							<app-order-item-card
+								[orderItem]="orderItem"
+							></app-order-item-card>
+						}
+					}
+				</div>
+
+				<div class="separator"></div>
+
+				<div class="bill-price-container">
+					<p>
+						{{ formatPrice(calculateTotalPriceOfOrder(selectedOrder)) }}
+					</p>
+				</div>
+			</div>
+			<div class="bill-actions">
+				<dav-button size="sm" outline (click)="visible = false">
+					{{ actionsLocale.close }}
+				</dav-button>
+			</div>
+		</div>
+	</div>
+</dav-dialog>

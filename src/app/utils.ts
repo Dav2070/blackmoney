@@ -98,41 +98,60 @@ export async function loadRegisterClient(
 	dataService.registerClientPromiseHolder.Resolve()
 }
 
-export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): string {
+export function calculateTotalPriceOfOrder(order: Order): number {
+	if (order == null) return 0
+	let totalPrice = 0
+
+	for (const orderItem of order.orderItems) {
+		totalPrice += calculateTotalPriceOfOrderItem(orderItem)
+	}
+
+	return totalPrice
+}
+
+export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
+	if (orderItem == null) return 0
+	let unitPrice = 0
+
 	if (
 		orderItem.type === OrderItemType.Menu ||
 		orderItem.type === OrderItemType.Special
 	) {
-		let total = 0
+		for (const item of orderItem.orderItems) {
+			const subItemUnitPrice = calculateUnitPriceOfOrderItem(item)
 
-		total += -orderItem.discount * orderItem.count
-
-		for (let item of orderItem.orderItems) {
-			total += item.product.price * item.count
-
-			if (item.orderItemVariations) {
-				for (const variation of item.orderItemVariations) {
-					for (const variationItem of variation.variationItems) {
-						total += variationItem.additionalCost * variation.count
-					}
-				}
+			if (item.orderItemVariations.length === 0) {
+				unitPrice += subItemUnitPrice * item.count
+			} else {
+				unitPrice += subItemUnitPrice
 			}
 		}
-
-		return (total / 100).toFixed(2).replace(".", ",")
 	} else {
-		let total = 0
+		unitPrice =
+			orderItem.orderItemVariations.length === 0
+				? orderItem.product.price
+				: 0
 
-		for (let variation of orderItem.orderItemVariations) {
-			for (let variationItem of variation.variationItems) {
-				total += variation.count * variationItem.additionalCost
+		for (const variation of orderItem.orderItemVariations) {
+			for (const variationItem of variation.variationItems) {
+				unitPrice +=
+					(orderItem.product.price + variationItem.additionalCost) *
+					variation.count
 			}
 		}
-
-		return ((total + orderItem.product.price * orderItem.count) / 100)
-			.toFixed(2)
-			.replace(".", ",")
 	}
+
+	return unitPrice - (orderItem.discount ?? 0)
+}
+
+export function calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {
+	if (orderItem == null) return 0
+
+	return calculateUnitPriceOfOrderItem(orderItem) * orderItem.count
+}
+
+export function formatPrice(priceInCents: number): string {
+	return (priceInCents / 100).toFixed(2).replace(".", ",") + " €"
 }
 
 export function getGraphQLErrorCodes(
@@ -230,9 +249,16 @@ export function convertCompanyResourceToCompany(
 		restaurants.push(convertRestaurantResourceToRestaurant(restaurant))
 	}
 
+	const users: User[] = []
+
+	for (const user of companyResource.users?.items ?? []) {
+		users.push(convertUserResourceToUser(user))
+	}
+
 	return {
 		uuid: companyResource.uuid,
 		name: companyResource.name,
+		users,
 		restaurants
 	}
 }
@@ -335,7 +361,8 @@ export function convertUserResourceToUser(userResource: UserResource): User {
 	return {
 		uuid: userResource.uuid,
 		name: userResource.name,
-		role: userResource.role
+		role: userResource.role,
+		company: convertCompanyResourceToCompany(userResource.company)
 	}
 }
 

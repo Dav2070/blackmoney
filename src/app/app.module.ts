@@ -42,6 +42,7 @@ import { HeaderComponent } from "./components/cash-register/header/header.compon
 import { HeadlineComponent } from "./components/cash-register/headline/headline.component"
 import { OrderItemCardComponent } from "./components/cash-register/order-item-card/order-item-card.component"
 import { OfferOrderItemCardComponent } from "./components/cash-register/offer-order-item-card/offer-order-item-card.component"
+import { CounterComponent } from "./components/cash-register/counter/counter.component"
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
@@ -63,11 +64,15 @@ import { AddPrintRuleDialogComponent } from "./dialogs/add-print-rule-dialog/add
 import { EditPrintRuleDialogComponent } from "./dialogs/edit-print-rule-dialog/edit-print-rule-dialog.component"
 import { DeletePrintRuleDialogComponent } from "./dialogs/delete-print-rule-dialog/delete-print-rule-dialog.component"
 import { ResetPasswordDialogComponent } from "./dialogs/reset-password-dialog/reset-password-dialog.component"
+import { BillsOverviewDialogComponent } from "./dialogs/bills-overview-dialog/bills-overview-dialog.component"
 import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
+import { SelectMenuSpecialProductsDialogComponent } from "./dialogs/select-menu-special-products-dialog/select-menu-special-products-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { SubtractProductVariationsDialogComponent } from "./dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
+import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
 import { AddCategoryDialogComponent } from "./dialogs/add-category-dialog/add-category-dialog.component"
 import { AddOfferDialogComponent } from "./dialogs/add-offer-dialog/add-offer-dialog.component"
 import { EditOfferDialogComponent } from "./dialogs/edit-offer-dialog/edit-offer-dialog.component"
@@ -145,6 +150,7 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		HeadlineComponent,
 		OrderItemCardComponent,
 		OfferOrderItemCardComponent,
+		CounterComponent,
 		// Dialog
 		LogoutDialogComponent,
 		EditRegisterClientNameDialogComponent,
@@ -165,11 +171,15 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		EditPrintRuleDialogComponent,
 		DeletePrintRuleDialogComponent,
 		ResetPasswordDialogComponent,
+		BillsOverviewDialogComponent,
 		SelectProductDialogComponent,
+		SelectMenuSpecialProductsDialogComponent,
 		SelectProductVariationsDialogComponent,
+		SubtractProductVariationsDialogComponent,
 		MoveMultipleProductsDialogComponent,
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,
+		AddDiverseProductDialogComponent,
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
 		AddCategoryDialogComponent,

@@ -5,12 +5,14 @@ import {
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
+import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { Order } from "../../Order"
 import { OrderItemMerger } from "./order-item-merger"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
 	private readonly merger: OrderItemMerger
+	private readonly priceCalculator = new PriceCalculator()
 
 	constructor() {
 		this.merger = new OrderItemMerger(this.allPickedItems)
@@ -132,7 +134,7 @@ export class AllItemHandler {
 		const incoming = { ...pickedItem } // Kopie zum Schutz vor Seiteneffekten
 
 		// Suche Merge-Ziel (gibt undefined zurück, wenn keines vorhanden)
-		const target = this.merger.findMergeTarget(incoming)
+		const target = this.merger.findMergeTarget(incoming, this.allPickedItems)
 
 		if (target) {
 			// Match gefunden -> zusammenführen; wenn Merge fehlschlägt -> einfügen
@@ -295,9 +297,14 @@ export class AllItemHandler {
 		return this.allPickedItems.length === 0
 	}
 
-	// TODO: Funktionalität implementieren
 	calculateTotal() {
-		return 0.1
+		let total = 0
+
+		for (const item of this.allPickedItems) {
+			total += this.priceCalculator.calculateTotalPrice(item)
+		}
+
+		return total
 	}
 
 	transferAllItems(AllItemHandlerTarget: AllItemHandler) {

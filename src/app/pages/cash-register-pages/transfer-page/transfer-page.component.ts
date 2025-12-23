@@ -17,7 +17,7 @@ import { OrderItem } from "src/app/models/OrderItem"
 import { Room } from "src/app/models/Room"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { Order } from "src/app/models/Order"
-import { calculateTotalPriceOfOrderItem } from "src/app/utils"
+import { calculateTotalPriceOfOrderItem, formatPrice } from "src/app/utils"
 
 @Component({
 	templateUrl: "./transfer-page.component.html",
@@ -164,7 +164,7 @@ export class TransferPageComponent {
 
 	//Berechnet den Preis aller Items eines Tisches
 	showTotal(bookedItems: AllItemHandler) {
-		return bookedItems.calculateTotal().toFixed(2).replace(".", ",") + " €"
+		return formatPrice(bookedItems.calculateTotal())
 	}
 
 	transferItem(

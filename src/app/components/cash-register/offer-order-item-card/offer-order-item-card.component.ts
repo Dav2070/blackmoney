@@ -6,7 +6,8 @@ import {
 } from "@fortawesome/pro-solid-svg-icons"
 import { OrderItem } from "src/app/models/OrderItem"
 import { LocalizationService } from "src/app/services/localization-service"
-import { calculateTotalPriceOfOrderItem } from "src/app/utils"
+import { formatPrice } from "src/app/utils"
+import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 
 @Component({
 	selector: "app-offer-order-item-card",
@@ -16,17 +17,33 @@ import { calculateTotalPriceOfOrderItem } from "src/app/utils"
 })
 export class OfferOrderItemCardComponent {
 	locale = this.localizationService.locale.offerOrderItemCard
-	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
+	formatPrice = formatPrice
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo
 	faUtensils = faUtensils
 	@Input() orderItem: OrderItem = null
 	@Input() selectedOrderItemUuid: string = null
+	@Input() clickable: boolean = false
 	@Output() noteIconClick = new EventEmitter<{
 		orderItem: OrderItem
 	}>()
 
+	private priceCalculator = new PriceCalculator()
+
 	constructor(private localizationService: LocalizationService) {}
+
+	calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
+		const totalPrice = this.priceCalculator.calculateTotalPrice(orderItem)
+		return totalPrice / orderItem.count
+	}
+
+	calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {
+		return this.priceCalculator.calculateTotalPrice(orderItem)
+	}
+
+	calculateDiscountOfOrderItem(orderItem: OrderItem): number {
+		return this.priceCalculator.calculateDiscount(orderItem)
+	}
 
 	onNoteIconClick(event: Event) {
 		event.stopPropagation()

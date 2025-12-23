@@ -55,6 +55,7 @@ export interface UserResource {
 	uuid: string
 	name: string
 	role: UserRole
+	company: CompanyResource
 }
 
 export interface RoomResource {

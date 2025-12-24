@@ -53,13 +53,13 @@
 			}
 		</dav-sidenav>
 	</div>
-
-	<app-takeaway-dialog
-		#takeawayDialog
-		[orders]="takeawayOrders"
-		(addOrder)="handleAddTakeawayOrder($event)"
-		(deleteOrderEvent)="handleDeleteTakeawayOrder($event)"
-		(updateOrder)="handleUpdateTakeawayOrder($event)"
-		(navigateToOrderEvent)="handleNavigateToOrder($event)"
-	></app-takeaway-dialog>
 </div>
+
+<app-takeaway-dialog
+	#takeawayDialog
+	[orders]="takeawayOrders"
+	(addOrder)="handleAddTakeawayOrder($event)"
+	(deleteOrderEvent)="handleDeleteTakeawayOrder($event)"
+	(updateOrder)="handleUpdateTakeawayOrder($event)"
+	(navigateToOrderEvent)="handleNavigateToOrder($event)"
+></app-takeaway-dialog>

@@ -10,7 +10,8 @@ import {
 	faCashRegister,
 	faShop,
 	faAddressCard,
-	faClock
+	faClock,
+	faMap
 } from "@fortawesome/pro-regular-svg-icons"
 import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
@@ -36,6 +37,7 @@ export class RestaurantPageComponent {
 	faShop = faShop
 	faAddressCard = faAddressCard
 	faClock = faClock
+	faMap = faMap
 	uuid: string = null
 	name: string = ""
 	nameError: string = ""
@@ -146,6 +148,12 @@ export class RestaurantPageComponent {
 		event.preventDefault()
 
 		this.router.navigate(["user", "restaurants", this.uuid, "openingTime"])
+	}
+
+	navigateToMenuPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "restaurants", this.uuid, "menu"])
 	}
 
 	showEditRestaurantNameDialog() {

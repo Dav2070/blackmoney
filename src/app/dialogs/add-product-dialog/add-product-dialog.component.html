@@ -1,0 +1,119 @@
+<dav-dialog
+	#dialog
+	[headline]="dialogHeadline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Produkt-ID -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="productId"
+				label="Produkt-ID"
+				type="number"
+				[disabled]="loading"
+				[errorMessage]="idError"
+				(change)="productIdTextfieldChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+
+		<!-- Produktname -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="name"
+				label="Produktname"
+				[disabled]="loading"
+				[errorMessage]="nameError"
+				(change)="nameTextfieldChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+
+		<!-- Preis -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="price"
+				label="Preis (€)"
+				type="number"
+				step="0.01"
+				[disabled]="loading"
+				[errorMessage]="priceError"
+				(change)="priceTextfieldChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+
+		<!-- Takeaway -->
+		<div class="dialog-formfield-container">
+			<dav-checkbox
+				[checked]="takeaway"
+				[label]="'Takeaway verfügbar'"
+				[disabled]="loading"
+				(change)="takeawayCheckboxChange($any($event).detail.checked)"
+			></dav-checkbox>
+		</div>
+
+		<!-- Variationen -->
+		<div class="dialog-formfield-container">
+			<label class="variations-label">Variationen (Mehrfachauswahl)</label>
+			<div class="variations-selection">
+				@for (variation of availableVariations; track variation.uuid) {
+					<div class="variation-container">
+						<div
+							class="variation-header"
+							[class.selected]="isVariationSelected(variation.uuid)"
+							(click)="toggleVariationSelection(variation.uuid)"
+						>
+							<dav-checkbox
+								[value]="isVariationSelected(variation.uuid)"
+								[label]="variation.name"
+								[disabled]="loading"
+								(click)="$event.stopPropagation()"
+							></dav-checkbox>
+							<dav-icon-button
+								size="xs"
+								(click)="
+									toggleVariationExpansion($event, variation.uuid)
+								"
+							>
+								<fa-icon
+									[icon]="
+										isVariationExpanded(variation.uuid)
+											? faChevronUp
+											: faChevronDown
+									"
+								></fa-icon>
+							</dav-icon-button>
+						</div>
+
+						<!-- VariationItems ausklappbar -->
+						@if (isVariationExpanded(variation.uuid)) {
+							<div class="variation-items-list">
+								@for (
+									item of variation.variationItems;
+									track item.uuid
+								) {
+									<div class="variation-item">
+										<span class="item-name"
+											>{{ item.name }} (ID: {{ item.id }})</span
+										>
+										<span class="item-price">
+											+{{
+												item.additionalCost / 100
+													| currency: "EUR" : "symbol" : "1.2-2"
+											}}
+										</span>
+									</div>
+								}
+							</div>
+						}
+					</div>
+				}
+			</div>
+		</div>
+	</form>
+</dav-dialog>

@@ -31,6 +31,11 @@ import { TableCombinationsPageComponent } from "./pages/landing-pages/table-comb
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
 import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
+import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
+import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
+import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
+import { ProductListComponent } from "./pages/landing-pages/products-overview-page/product-list/product-list.component"
+import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 
 const routes: Routes = [
 	{
@@ -112,6 +117,29 @@ const routes: Routes = [
 			{
 				path: "user/restaurants/:uuid/openingTime",
 				component: OpeningTimePageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu",
+				component: MenuPageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu/categories",
+				component: CategoriesPageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu/categories/:categoryuuid",
+				component: ProductsOverviewPageComponent,
+				children: [
+					{ path: "", redirectTo: "food", pathMatch: "full" },
+					{ path: "food", component: ProductListComponent },
+					{ path: "drinks", component: ProductListComponent }, // später durch DrinksListComponent ersetzen
+					{ path: "specials", component: ProductListComponent }, // später durch SpecialsListComponent ersetzen
+					{ path: "menus", component: ProductListComponent } // später durch MenusListComponent ersetzen
+				]
+			},
+			{
+				path: "user/restaurants/:uuid/menu/variations",
+				component: VariationsOverviewPageComponent
 			}
 		]
 	},
@@ -139,7 +167,7 @@ const routes: Routes = [
 				path: "tables/:uuid1/:uuid2",
 				component: TransferPageComponent
 			},
-			//Settings-Pages
+			//Settings-Pages (alt)
 			{
 				path: "settings",
 				component: SettingsPageComponent

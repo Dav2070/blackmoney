@@ -162,7 +162,7 @@ const routes: Routes = [
 				path: "tables/:uuid1/:uuid2",
 				component: TransferPageComponent
 			},
-			//Settings-Pages
+			//Settings-Pages (alt)
 			{
 				path: "settings",
 				component: SettingsPageComponent

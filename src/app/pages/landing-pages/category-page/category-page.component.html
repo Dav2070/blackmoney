@@ -9,7 +9,11 @@
 			{{ locale.headline }}
 		</dav-header>
 
-		@if (categories.length > 0) {
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else if (categories.length === 0) {
+			<p class="no-categories-message">{{ locale.noCategories }}</p>
+		} @else {
 			@for (category of categories; track category.uuid) {
 				<dav-card>
 					<div class="category-card-container">
@@ -30,8 +34,6 @@
 					</div>
 				</dav-card>
 			}
-		} @else {
-			<p class="no-categories">{{ locale.noCategories }}</p>
 		}
 	</div>
 </div>

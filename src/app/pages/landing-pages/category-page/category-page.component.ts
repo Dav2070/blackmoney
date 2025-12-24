@@ -48,6 +48,7 @@ export class CategoryPageComponent implements OnInit {
 
 	categories: Category[] = []
 	uuid: string = null
+	loading: boolean = true
 
 	constructor(
 		private readonly apiService: ApiService,
@@ -70,6 +71,7 @@ export class CategoryPageComponent implements OnInit {
 		// TODO: API - Load categories from backend
 		// Example: this.categories = await this.apiService.listCategories({ restaurantUuid: this.uuid })
 		this.categories = []
+		this.loading = false
 	}
 
 	navigateBack() {

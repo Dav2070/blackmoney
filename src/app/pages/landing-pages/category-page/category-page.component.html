@@ -1,0 +1,75 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			addButtonVisible
+			backButtonVisible
+			(addButtonClick)="showAddCategoryDialog()"
+			(backButtonClick)="navigateBack()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		@if (categories.length > 0) {
+			@for (category of categories; track category.uuid) {
+				<dav-card>
+					<div class="category-card-container">
+						<div
+							class="category-card-content"
+							(click)="navigateToProducts($event, category)"
+						>
+							<p>{{ category.name }}</p>
+						</div>
+
+						<dav-icon-button
+							size="xs"
+							[tooltip]="locale.options"
+							(click)="showCategoryContextMenu($event, category)"
+						>
+							<fa-icon [icon]="faEllipsis"></fa-icon>
+						</dav-icon-button>
+					</div>
+				</dav-card>
+			}
+		} @else {
+			<p class="no-categories">{{ locale.noCategories }}</p>
+		}
+	</div>
+</div>
+
+<!-- Category Context Menu -->
+<dav-context-menu
+	#categoryContextMenu
+	[visible]="categoryContextMenuVisible"
+	[posX]="categoryContextMenuX"
+	[posY]="categoryContextMenuY"
+>
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="editSelectedCategory()"
+	>
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="deleteSelectedCategory()"
+	>
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>
+
+<app-add-category-dialog
+	#addCategoryDialog
+	[loading]="addCategoryDialogLoading"
+	[nameError]="addCategoryDialogNameError"
+	(primaryButtonClick)="addCategoryDialogPrimaryButtonClick($event)"
+	(clearErrors)="addCategoryDialogNameError = ''"
+></app-add-category-dialog>
+
+<app-edit-category-dialog
+	#editCategoryDialog
+	[loading]="editCategoryDialogLoading"
+	[nameError]="editCategoryDialogNameError"
+	(primaryButtonClick)="editCategoryDialogPrimaryButtonClick($event)"
+	(clearErrors)="editCategoryDialogNameError = ''"
+></app-edit-category-dialog>

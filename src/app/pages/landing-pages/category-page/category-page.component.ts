@@ -1,0 +1,183 @@
+import {
+	Component,
+	OnInit,
+	ViewChild,
+	ElementRef,
+	HostListener
+} from "@angular/core"
+import { ActivatedRoute, Router } from "@angular/router"
+import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
+import { Category } from "src/app/models/Category"
+import { ApiService } from "src/app/services/api-service"
+import { DataService } from "src/app/services/data-service"
+import { LocalizationService } from "src/app/services/localization-service"
+import { AddCategoryDialogComponent } from "src/app/dialogs/add-category-dialog/add-category-dialog.component"
+import { EditCategoryDialogComponent } from "src/app/dialogs/edit-category-dialog/edit-category-dialog.component"
+import { ContextMenu } from "dav-ui-components"
+
+@Component({
+	selector: "app-category-page",
+	templateUrl: "./category-page.component.html",
+	styleUrls: ["./category-page.component.scss"],
+	standalone: false
+})
+export class CategoryPageComponent implements OnInit {
+	@ViewChild("addCategoryDialog")
+	addCategoryDialog!: AddCategoryDialogComponent
+	addCategoryDialogLoading: boolean = false
+	addCategoryDialogNameError: string = ""
+
+	@ViewChild("editCategoryDialog")
+	editCategoryDialog!: EditCategoryDialogComponent
+	editCategoryDialogLoading: boolean = false
+	editCategoryDialogNameError: string = ""
+
+	// Context Menu
+	categoryContextMenuVisible: boolean = false
+	categoryContextMenuX: number = 0
+	categoryContextMenuY: number = 0
+	selectedCategoryForContext: Category = null
+	@ViewChild("categoryContextMenu")
+	categoryContextMenu: ElementRef<ContextMenu>
+
+	locale = this.localizationService.locale.categoryPage
+	actionsLocale = this.localizationService.locale.actions
+	faPen = faPen
+	faTrash = faTrash
+	faEllipsis = faEllipsis
+
+	categories: Category[] = []
+	uuid: string = null
+
+	constructor(
+		private readonly apiService: ApiService,
+		private readonly dataService: DataService,
+		private readonly localizationService: LocalizationService,
+		private readonly router: Router,
+		private readonly activatedRoute: ActivatedRoute
+	) {}
+
+	async ngOnInit() {
+		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
+
+		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+
+		// Load data
+		await this.loadData()
+	}
+
+	async loadData() {
+		// TODO: API - Load categories from backend
+		// Example: this.categories = await this.apiService.listCategories({ restaurantUuid: this.uuid })
+		this.categories = []
+	}
+
+	navigateBack() {
+		this.router.navigate(["user", "restaurants", this.uuid, "menu"])
+	}
+
+	navigateToProducts(event: Event, category: Category) {
+		event.stopPropagation()
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.uuid,
+			"menu",
+			"category",
+			category.uuid
+		])
+	}
+
+	showAddCategoryDialog() {
+		this.addCategoryDialog.show()
+	}
+
+	async addCategoryDialogPrimaryButtonClick(event: { name: string }) {
+		this.addCategoryDialogLoading = true
+
+		// TODO: API - Create category
+		// Example: const created = await this.apiService.createCategory({
+		//   restaurantUuid: this.uuid,
+		//   name: event.name
+		// })
+
+		const newCategory: Category = {
+			uuid: crypto.randomUUID(),
+			name: event.name,
+			products: []
+		}
+		this.categories = [...this.categories, newCategory]
+
+		this.addCategoryDialogLoading = false
+		this.addCategoryDialog.hide()
+	}
+
+	showCategoryContextMenu(event: Event, category: Category) {
+		const detail = (event as CustomEvent).detail
+		this.selectedCategoryForContext = category
+
+		if (this.categoryContextMenuVisible) {
+			this.categoryContextMenuVisible = false
+		} else {
+			this.categoryContextMenuX = detail.contextMenuPosition.x
+			this.categoryContextMenuY = detail.contextMenuPosition.y
+			this.categoryContextMenuVisible = true
+		}
+	}
+
+	editSelectedCategory() {
+		if (!this.selectedCategoryForContext) return
+		this.editCategoryDialog.show(this.selectedCategoryForContext)
+		this.categoryContextMenuVisible = false
+	}
+
+	editCategoryDialogPrimaryButtonClick(event: { uuid: string; name: string }) {
+		this.editCategoryDialogLoading = true
+
+		// TODO: API - Update category
+		// Example: const updated = await this.apiService.updateCategory({
+		//   uuid: event.uuid,
+		//   name: event.name
+		// })
+
+		const idx = this.categories.findIndex(c => c.uuid === event.uuid)
+		if (idx !== -1) {
+			this.categories = [
+				...this.categories.slice(0, idx),
+				{ ...this.categories[idx], name: event.name },
+				...this.categories.slice(idx + 1)
+			]
+		}
+
+		this.editCategoryDialogLoading = false
+		this.editCategoryDialog.hide()
+	}
+
+	deleteSelectedCategory() {
+		if (!this.selectedCategoryForContext) return
+		this.deleteCategory(this.selectedCategoryForContext)
+		this.categoryContextMenuVisible = false
+	}
+
+	deleteCategory(category: Category) {
+		const confirmed = confirm(
+			`Kategorie "${category.name}" wirklich löschen?`
+		)
+		if (!confirmed) return
+
+		// TODO: API - Delete category
+		// Example: await this.apiService.deleteCategory({ uuid: category.uuid })
+
+		this.categories = this.categories.filter(c => c.uuid !== category.uuid)
+	}
+
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		if (
+			this.categoryContextMenuVisible &&
+			!this.categoryContextMenu.nativeElement.contains(event.target as Node)
+		) {
+			this.categoryContextMenuVisible = false
+		}
+	}
+}

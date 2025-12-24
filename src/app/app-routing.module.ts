@@ -30,6 +30,11 @@ import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.com
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
+import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
+import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
+import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
+import { ProductListComponent } from "./pages/landing-pages/products-overview-page/product-list/product-list.component"
+import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 
 const routes: Routes = [
 	{
@@ -107,6 +112,29 @@ const routes: Routes = [
 			{
 				path: "user/restaurants/:uuid/openingTime",
 				component: OpeningTimePageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu",
+				component: MenuPageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu/category",
+				component: CategoryPageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu/category/:categoryuuid",
+				component: ProductsOverviewPageComponent,
+				children: [
+					{ path: "", redirectTo: "food", pathMatch: "full" },
+					{ path: "food", component: ProductListComponent },
+					{ path: "drinks", component: ProductListComponent }, // später durch DrinksListComponent ersetzen
+					{ path: "specials", component: ProductListComponent }, // später durch SpecialsListComponent ersetzen
+					{ path: "menus", component: ProductListComponent } // später durch MenusListComponent ersetzen
+				]
+			},
+			{
+				path: "user/restaurants/:uuid/menu/variations",
+				component: VariationsOverviewPageComponent
 			}
 		]
 	},

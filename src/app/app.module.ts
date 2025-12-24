@@ -25,6 +25,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar"
 import { MatDialogModule } from "@angular/material/dialog"
 import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 import { MatRadioModule } from "@angular/material/radio"
+import { MatButtonToggleModule } from "@angular/material/button-toggle"
 
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
@@ -75,6 +76,12 @@ import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-
 import { AddTakeawayDialogComponent } from "./dialogs/add-takeaway-dialog/add-takeaway-dialog.component"
 import { EditTakeawayDialogComponent } from "./dialogs/edit-takeaway-dialog/edit-takeaway-dialog.component"
 import { TakeawayDialogComponent } from "./dialogs/takeaway-dialog/takeaway-dialog.component"
+import { AddCategoryDialogComponent } from "./dialogs/add-category-dialog/add-category-dialog.component"
+import { AddOfferDialogComponent } from "./dialogs/add-offer-dialog/add-offer-dialog.component"
+import { EditOfferDialogComponent } from "./dialogs/edit-offer-dialog/edit-offer-dialog.component"
+import { OfferBasicDataComponent } from "./dialogs/add-offer-dialog/offer-basic-data/offer-basic-data.component"
+import { OfferItemsComponent } from "./dialogs/add-offer-dialog/offer-items/offer-items.component"
+import { OfferAvailabilityComponent } from "./dialogs/add-offer-dialog/offer-availability/offer-availability.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -100,6 +107,12 @@ import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/p
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
+import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
+import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
+import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
+import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
+import { ProductListComponent } from "./pages/landing-pages/products-overview-page/product-list/product-list.component"
+import { OfferListComponent } from "./pages/landing-pages/products-overview-page/offer-list/offer-list.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -122,7 +135,14 @@ import { EmployeeManagementComponent } from "./pages/settings-pages/employee-man
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
-import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
+import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
+import { AddVariationDialogComponent } from "./dialogs/add-variation-dialog/add-variation-dialog.component"
+import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
+import { EditVariationDialogComponent } from "./dialogs/edit-variation-dialog/edit-variation-dialog.component"
+import { EditVariationItemDialogComponent } from "./dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
+import { EditCategoryDialogComponent } from "./dialogs/edit-category-dialog/edit-category-dialog.component"
+import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-product-dialog.component"
+import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-product-dialog.component"
 
 @NgModule({
 	declarations: [
@@ -168,6 +188,19 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		TakeawayDialogComponent,
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
+		AddCategoryDialogComponent,
+		AddOfferDialogComponent,
+		EditOfferDialogComponent,
+		OfferBasicDataComponent,
+		OfferItemsComponent,
+		OfferAvailabilityComponent,
+		AddVariationDialogComponent,
+		AddVariationItemDialogComponent,
+		EditVariationDialogComponent,
+		EditVariationItemDialogComponent,
+		EditCategoryDialogComponent,
+		AddProductDialogComponent,
+		EditProductDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
@@ -189,16 +222,22 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		BookingPageComponent,
 		TransferPageComponent,
 		PaymentPageComponent,
+		ProductsOverviewPageComponent,
+		CategoryPageComponent,
+		MenuPageComponent,
 		//Landing-Pages
 		PrintersPageComponent,
 		RoomsPageComponent,
 		RoomPageComponent,
 		TableCombinationsPageComponent,
 		OpeningTimePageComponent,
+		VariationsOverviewPageComponent,
+		ProductListComponent,
+		OfferListComponent,
 		//Settings-Pages
 		SettingsPageComponent,
-		MenuePageComponent,
 		ItemsTableComponent,
+		MenuePageComponent,
 		VariationsTableComponent,
 		RestaurantOverviewComponent,
 		RoomManagementComponent,
@@ -233,6 +272,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		MatSlideToggleModule,
 		MatRadioModule,
 		MatTooltipModule,
+		MatButtonToggleModule,
 		//ServiceWorker
 		ServiceWorkerModule.register("ngsw-worker.js", {
 			enabled: !isDevMode(),

@@ -129,7 +129,10 @@ export class AddTakeawayDialogComponent {
 		this.city = (event.target as HTMLInputElement).value
 	}
 
-	orderTypeRadioGroupChange(event: CustomEvent) {
-		this.orderType = event.detail.value as "delivery" | "pickUp" | "dineIn"
+	orderTypeRadioGroupChange(event: Event) {
+		this.orderType = (event as CustomEvent).detail.value as
+			| "delivery"
+			| "pickUp"
+			| "dineIn"
 	}
 }

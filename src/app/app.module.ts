@@ -109,7 +109,7 @@ import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.com
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
 import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
-import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
+import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
 import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
 import { ProductListComponent } from "./pages/landing-pages/products-overview-page/product-list/product-list.component"
 import { OfferListComponent } from "./pages/landing-pages/products-overview-page/offer-list/offer-list.component"
@@ -223,7 +223,7 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		TransferPageComponent,
 		PaymentPageComponent,
 		ProductsOverviewPageComponent,
-		CategoryPageComponent,
+		CategoriesPageComponent,
 		MenuPageComponent,
 		//Landing-Pages
 		PrintersPageComponent,

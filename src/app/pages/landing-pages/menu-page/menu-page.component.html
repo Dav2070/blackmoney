@@ -7,15 +7,15 @@
 		<div class="actions-container">
 			<dav-icon-card
 				[text]="locale.category"
-				[href]="'/user/restaurants/' + uuid + '/menu/product/category'"
-				(click)="navigateToCategoryPage($event)"
+				[href]="'/user/restaurants/' + uuid + '/menu/categories'"
+				(click)="navigateToCategoriesPage($event)"
 			>
 				<fa-icon [icon]="faTags"></fa-icon>
 			</dav-icon-card>
 
 			<dav-icon-card
 				[text]="locale.variations"
-				[href]="'/user/restaurants/' + uuid + '/menu/product/variations'"
+				[href]="'/user/restaurants/' + uuid + '/menu/variations'"
 				(click)="navigateToVariationsPage($event)"
 			>
 				<fa-icon [icon]="faSplit"></fa-icon>

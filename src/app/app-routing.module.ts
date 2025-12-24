@@ -31,7 +31,7 @@ import { TableCombinationsPageComponent } from "./pages/landing-pages/table-comb
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
 import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
-import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
+import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
 import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
 import { ProductListComponent } from "./pages/landing-pages/products-overview-page/product-list/product-list.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
@@ -118,11 +118,11 @@ const routes: Routes = [
 				component: MenuPageComponent
 			},
 			{
-				path: "user/restaurants/:uuid/menu/category",
-				component: CategoryPageComponent
+				path: "user/restaurants/:uuid/menu/categories",
+				component: CategoriesPageComponent
 			},
 			{
-				path: "user/restaurants/:uuid/menu/category/:categoryuuid",
+				path: "user/restaurants/:uuid/menu/categories/:categoryuuid",
 				component: ProductsOverviewPageComponent,
 				children: [
 					{ path: "", redirectTo: "food", pathMatch: "full" },

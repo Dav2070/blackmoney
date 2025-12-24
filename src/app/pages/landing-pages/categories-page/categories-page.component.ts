@@ -1,6 +1,5 @@
 import {
 	Component,
-	OnInit,
 	ViewChild,
 	ElementRef,
 	HostListener
@@ -16,12 +15,11 @@ import { EditCategoryDialogComponent } from "src/app/dialogs/edit-category-dialo
 import { ContextMenu } from "dav-ui-components"
 
 @Component({
-	selector: "app-category-page",
-	templateUrl: "./category-page.component.html",
-	styleUrls: ["./category-page.component.scss"],
+	templateUrl: "./categories-page.component.html",
+	styleUrls: ["./categories-page.component.scss"],
 	standalone: false
 })
-export class CategoryPageComponent implements OnInit {
+export class CategoriesPageComponent {
 	@ViewChild("addCategoryDialog")
 	addCategoryDialog!: AddCategoryDialogComponent
 	addCategoryDialogLoading: boolean = false

@@ -34,7 +34,7 @@ export class MenuPageComponent {
 		this.router.navigate(["user", "restaurants", this.uuid])
 	}
 
-	navigateToCategoryPage(event: MouseEvent) {
+	navigateToCategoriesPage(event: MouseEvent) {
 		event.preventDefault()
 
 		this.router.navigate([
@@ -42,7 +42,7 @@ export class MenuPageComponent {
 			"restaurants",
 			this.uuid,
 			"menu",
-			"category"
+			"categories"
 		])
 	}
 

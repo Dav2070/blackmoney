@@ -121,7 +121,7 @@ export class ProductsOverviewPageComponent implements OnInit {
 			"restaurants",
 			this.uuid,
 			"menu",
-			"category"
+			"categories"
 		])
 	}
 

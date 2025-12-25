@@ -1,18 +1,14 @@
-import {
-	Component,
-	ViewChild,
-	ElementRef,
-	HostListener
-} from "@angular/core"
+import { Component, ViewChild, ElementRef, HostListener } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
+import { ContextMenu } from "dav-ui-components"
 import { Category } from "src/app/models/Category"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { AddCategoryDialogComponent } from "src/app/dialogs/add-category-dialog/add-category-dialog.component"
 import { EditCategoryDialogComponent } from "src/app/dialogs/edit-category-dialog/edit-category-dialog.component"
-import { ContextMenu } from "dav-ui-components"
+import { convertCategoryResourceToCategory } from "src/app/utils"
 
 @Component({
 	templateUrl: "./categories-page.component.html",
@@ -66,9 +62,26 @@ export class CategoriesPageComponent {
 	}
 
 	async loadData() {
-		// TODO: API - Load categories from backend
-		// Example: this.categories = await this.apiService.listCategories({ restaurantUuid: this.uuid })
 		this.categories = []
+		this.loading = true
+
+		const listCategoriesResponse = await this.apiService.listCategories(
+			`
+				items {
+					uuid
+					name
+				}
+			`,
+			{ restaurantUuid: this.uuid }
+		)
+
+		if (listCategoriesResponse.data != null) {
+			for (const category of listCategoriesResponse.data.listCategories
+				.items) {
+				this.categories.push(convertCategoryResourceToCategory(category))
+			}
+		}
+
 		this.loading = false
 	}
 
@@ -83,7 +96,7 @@ export class CategoriesPageComponent {
 			"restaurants",
 			this.uuid,
 			"menu",
-			"category",
+			"categories",
 			category.uuid
 		])
 	}

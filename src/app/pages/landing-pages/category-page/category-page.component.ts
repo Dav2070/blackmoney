@@ -1,6 +1,5 @@
 import {
 	Component,
-	OnInit,
 	ViewChild,
 	HostListener,
 } from "@angular/core"
@@ -19,12 +18,11 @@ import { EditOfferDialogComponent } from "src/app/dialogs/edit-offer-dialog/edit
 import { ProductType } from "src/app/types"
 
 @Component({
-	selector: "app-products-overview-page",
-	standalone: false,
-	templateUrl: "./products-overview-page.component.html",
-	styleUrl: "./products-overview-page.component.scss"
+	templateUrl: "./category-page.component.html",
+	styleUrl: "./category-page.component.scss",
+	standalone: false
 })
-export class ProductsOverviewPageComponent implements OnInit {
+export class CategoryPageComponent {
 	locale = this.localizationService.locale.productPage
 	actionsLocale = this.localizationService.locale.actions
 	errorsLocale = this.localizationService.locale.errors
@@ -32,7 +30,8 @@ export class ProductsOverviewPageComponent implements OnInit {
 	faTrash = faTrash
 	faEllipsis = faEllipsis
 
-	uuid: string = null
+	restaurantUuid: string = null
+	categoryUuid: string = null
 	activeTab = "food"
 	category: Category = null
 	availableVariations: Variation[] = []
@@ -71,7 +70,8 @@ export class ProductsOverviewPageComponent implements OnInit {
 	) {}
 
 	async ngOnInit() {
-		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+		this.restaurantUuid = this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
+		this.categoryUuid = this.activatedRoute.snapshot.paramMap.get("categoryUuid")
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
 		// TODO: API - Load variations from backend
@@ -119,7 +119,7 @@ export class ProductsOverviewPageComponent implements OnInit {
 		this.router.navigate([
 			"user",
 			"restaurants",
-			this.uuid,
+			this.restaurantUuid,
 			"menu",
 			"categories"
 		])

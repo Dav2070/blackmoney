@@ -20,7 +20,6 @@ import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-ov
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
-import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
@@ -157,11 +156,6 @@ const routes: Routes = [
 			{
 				path: "tables/:uuid1/:uuid2",
 				component: TransferPageComponent
-			},
-			//Settings-Pages (alt)
-			{
-				path: "settings",
-				component: SettingsPageComponent
 			}
 		]
 	}

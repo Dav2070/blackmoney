@@ -36,7 +36,6 @@ import { AppRoutingModule } from "./app-routing.module"
 
 // Components
 import { AppComponent } from "./app.component"
-import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { HeadlineComponent } from "./components/cash-register/headline/headline.component"
 import { OrderItemCardComponent } from "./components/cash-register/order-item-card/order-item-card.component"
@@ -121,12 +120,9 @@ import { SettingsService } from "./services/settings-service"
 import { LocalizationService } from "./services/localization-service"
 
 import { ServiceWorkerModule } from "@angular/service-worker"
-import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
-import { ItemsTableComponent } from "./components/settings/items-table/items-table.component"
 import { MatTableModule } from "@angular/material/table"
 import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
-import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
 import { MatTooltipModule } from "@angular/material/tooltip"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
@@ -144,7 +140,6 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 	declarations: [
 		// Components
 		AppComponent,
-		SettingsBarComponent,
 		HeaderComponent,
 		HeadlineComponent,
 		OrderItemCardComponent,
@@ -229,11 +224,7 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		OpeningTimePageComponent,
 		VariationsOverviewPageComponent,
 		ProductListComponent,
-		OfferListComponent,
-		//Settings-Pages
-		SettingsPageComponent,
-		ItemsTableComponent,
-		VariationsTableComponent
+		OfferListComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

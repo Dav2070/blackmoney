@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Apollo, ApolloBase, gql } from "apollo-angular"
-import { ErrorPolicy, ApolloLink } from "@apollo/client/core"
+import { ErrorPolicy } from "@apollo/client/core"
 import {
 	List,
+	ApolloResult,
 	RoomResource,
 	CategoryResource,
 	CompanyResource,
@@ -51,7 +52,7 @@ export class ApiService {
 			registerUuid: string
 			registerClientSerialNumber: string
 		}
-	): Promise<ApolloLink.Result<{ login: SessionResource }>> {
+	): Promise<ApolloResult<{ login: SessionResource }>> {
 		return await this.davAuthApollo
 			.mutate<{ login: SessionResource }>({
 				mutation: gql`
@@ -81,7 +82,7 @@ export class ApiService {
 
 	async retrieveOwnUser(
 		queryData: string
-	): Promise<ApolloLink.Result<{ retrieveOwnUser: UserResource }>> {
+	): Promise<ApolloResult<{ retrieveOwnUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveOwnUser: UserResource }>({
 				query: gql`
@@ -99,7 +100,7 @@ export class ApiService {
 	async retrieveUser(
 		queryData: string,
 		variables: { uuid: string }
-	): Promise<ApolloLink.Result<{ retrieveUser: UserResource }>> {
+	): Promise<ApolloResult<{ retrieveUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveUser: UserResource }>({
 				query: gql`
@@ -122,7 +123,7 @@ export class ApiService {
 			name: string
 			password: string
 		}
-	): Promise<ApolloLink.Result<{ createOwner: UserResource }>> {
+	): Promise<ApolloResult<{ createOwner: UserResource }>> {
 		return await this.davAuthApollo
 			.mutate<{ createOwner: UserResource }>({
 				mutation: gql`
@@ -154,7 +155,7 @@ export class ApiService {
 			role?: UserRole
 			restaurants: string[]
 		}
-	): Promise<ApolloLink.Result<{ createUser: UserResource }>> {
+	): Promise<ApolloResult<{ createUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createUser: UserResource }>({
 				mutation: gql`
@@ -186,7 +187,7 @@ export class ApiService {
 			uuid: string
 			password: string
 		}
-	): Promise<ApolloLink.Result<{ setPasswordForUser: UserResource }>> {
+	): Promise<ApolloResult<{ setPasswordForUser: UserResource }>> {
 		return await this.davAuthApollo
 			.mutate<{
 				setPasswordForUser: UserResource
@@ -215,7 +216,7 @@ export class ApiService {
 		variables: {
 			uuid: string
 		}
-	): Promise<ApolloLink.Result<{ resetPasswordOfUser: UserResource }>> {
+	): Promise<ApolloResult<{ resetPasswordOfUser: UserResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{
 				resetPasswordOfUser: UserResource
@@ -235,7 +236,7 @@ export class ApiService {
 
 	async retrieveCompany(
 		queryData: string
-	): Promise<ApolloLink.Result<{ retrieveCompany: CompanyResource }>> {
+	): Promise<ApolloResult<{ retrieveCompany: CompanyResource }>> {
 		return await this.davAuthApollo
 			.query<{ retrieveCompany: CompanyResource }>({
 				query: gql`
@@ -253,7 +254,7 @@ export class ApiService {
 	async createCompany(
 		queryData: string,
 		variables: { name: string }
-	): Promise<ApolloLink.Result<{ createCompany: CompanyResource }>> {
+	): Promise<ApolloResult<{ createCompany: CompanyResource }>> {
 		return await this.davAuthApollo
 			.mutate<{ createCompany: CompanyResource }>({
 				mutation: gql`
@@ -272,7 +273,7 @@ export class ApiService {
 	async retrieveRestaurant(
 		queryData: string,
 		variables: { uuid: string }
-	): Promise<ApolloLink.Result<{ retrieveRestaurant: RestaurantResource }>> {
+	): Promise<ApolloResult<{ retrieveRestaurant: RestaurantResource }>> {
 		return await this.davAuthApollo
 			.query<{
 				retrieveRestaurant: RestaurantResource
@@ -301,7 +302,7 @@ export class ApiService {
 			line2?: string
 			postalCode?: string
 		}
-	): Promise<ApolloLink.Result<{ updateRestaurant: RestaurantResource }>> {
+	): Promise<ApolloResult<{ updateRestaurant: RestaurantResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ updateRestaurant: RestaurantResource }>({
 				mutation: gql`
@@ -336,7 +337,7 @@ export class ApiService {
 	async retrieveRegister(
 		queryData: string,
 		variables: { uuid: string }
-	): Promise<ApolloLink.Result<{ retrieveRegister: RegisterResource }>> {
+	): Promise<ApolloResult<{ retrieveRegister: RegisterResource }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveRegister: RegisterResource }>({
 				query: gql`
@@ -358,7 +359,7 @@ export class ApiService {
 			restaurantUuid: string
 			name: string
 		}
-	): Promise<ApolloLink.Result<{ createRegister: RegisterResource }>> {
+	): Promise<ApolloResult<{ createRegister: RegisterResource }>> {
 		return await this.davAuthApollo
 			.mutate<{
 				createRegister: RegisterResource
@@ -386,7 +387,7 @@ export class ApiService {
 		queryData: string,
 		variables: { uuid: string }
 	): Promise<
-		ApolloLink.Result<{ retrieveRegisterClient: RegisterClientResource }>
+		ApolloResult<{ retrieveRegisterClient: RegisterClientResource }>
 	> {
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveRegisterClient: RegisterClientResource }>({
@@ -410,7 +411,7 @@ export class ApiService {
 			serialNumber: string
 		}
 	): Promise<
-		ApolloLink.Result<{
+		ApolloResult<{
 			retrieveRegisterClientBySerialNumber: RegisterClientResource
 		}>
 	> {
@@ -443,9 +444,7 @@ export class ApiService {
 			uuid: string
 			name?: string
 		}
-	): Promise<
-		ApolloLink.Result<{ updateRegisterClient: RegisterClientResource }>
-	> {
+	): Promise<ApolloResult<{ updateRegisterClient: RegisterClientResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{
 				updateRegisterClient: RegisterClientResource
@@ -476,7 +475,7 @@ export class ApiService {
 			query: string
 			exclude?: string[]
 		}
-	): Promise<ApolloLink.Result<{ searchPrinters: List<PrinterResource> }>> {
+	): Promise<ApolloResult<{ searchPrinters: List<PrinterResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ searchPrinters: List<PrinterResource> }>({
 				query: gql`
@@ -507,7 +506,7 @@ export class ApiService {
 			name: string
 			ipAddress: string
 		}
-	): Promise<ApolloLink.Result<{ createPrinter: PrinterResource }>> {
+	): Promise<ApolloResult<{ createPrinter: PrinterResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{
 				createPrinter: PrinterResource
@@ -540,7 +539,7 @@ export class ApiService {
 			name: string
 			ipAddress: string
 		}
-	): Promise<ApolloLink.Result<{ updatePrinter: PrinterResource }>> {
+	): Promise<ApolloResult<{ updatePrinter: PrinterResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ updatePrinter: PrinterResource }>({
 				mutation: gql`
@@ -575,7 +574,7 @@ export class ApiService {
 			productUuids?: string[]
 		}
 	): Promise<
-		ApolloLink.Result<{
+		ApolloResult<{
 			createPrintRule: PrintRuleResource
 		}>
 	> {
@@ -618,7 +617,7 @@ export class ApiService {
 			categoryUuids?: string[]
 			productUuids?: string[]
 		}
-	): Promise<ApolloLink.Result<{ updatePrintRule: PrintRuleResource }>> {
+	): Promise<ApolloResult<{ updatePrintRule: PrintRuleResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ updatePrintRule: PrintRuleResource }>({
 				mutation: gql`
@@ -647,7 +646,7 @@ export class ApiService {
 	async deletePrintRule(
 		queryData: string,
 		variables: { uuid: string }
-	): Promise<ApolloLink.Result<{ deletePrintRule: PrintRuleResource }>> {
+	): Promise<ApolloResult<{ deletePrintRule: PrintRuleResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ deletePrintRule: PrintRuleResource }>({
 				mutation: gql`
@@ -668,7 +667,7 @@ export class ApiService {
 		variables: {
 			uuid: string
 		}
-	): Promise<ApolloLink.Result<{ retrieveRoom: RoomResource }>> {
+	): Promise<ApolloResult<{ retrieveRoom: RoomResource }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveRoom: RoomResource }>({
 				query: gql`
@@ -689,7 +688,7 @@ export class ApiService {
 		variables: {
 			restaurantUuid: string
 		}
-	): Promise<ApolloLink.Result<{ listRooms: List<RoomResource> }>> {
+	): Promise<ApolloResult<{ listRooms: List<RoomResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ listRooms: List<RoomResource> }>({
 				query: gql`
@@ -708,7 +707,7 @@ export class ApiService {
 	async createRoom(
 		queryData: string,
 		variables: { restaurantUuid: string; name: string }
-	): Promise<ApolloLink.Result<{ createRoom: RoomResource }>> {
+	): Promise<ApolloResult<{ createRoom: RoomResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createRoom: RoomResource }>({
 				mutation: gql`
@@ -733,7 +732,7 @@ export class ApiService {
 	async updateRoom(
 		queryData: string,
 		variables: { uuid: string; name: string }
-	): Promise<ApolloLink.Result<{ updateRoom: RoomResource }>> {
+	): Promise<ApolloResult<{ updateRoom: RoomResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ updateRoom: RoomResource }>({
 				mutation: gql`
@@ -758,7 +757,7 @@ export class ApiService {
 	async deleteRoom(
 		queryData: string,
 		variables: { uuid: string }
-	): Promise<ApolloLink.Result<{ deleteRoom: RoomResource }>> {
+	): Promise<ApolloResult<{ deleteRoom: RoomResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ deleteRoom: RoomResource }>({
 				mutation: gql`
@@ -777,7 +776,7 @@ export class ApiService {
 	async createTable(
 		queryData: string,
 		variables: { roomUuid: string; name: number; seats: number }
-	): Promise<ApolloLink.Result<{ createTable: TableResource }>> {
+	): Promise<ApolloResult<{ createTable: TableResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createTable: TableResource }>({
 				mutation: gql`
@@ -804,7 +803,7 @@ export class ApiService {
 	async updateTable(
 		queryData: string,
 		variables: { uuid: string; seats?: number }
-	): Promise<ApolloLink.Result<{ updateTable: TableResource }>> {
+	): Promise<ApolloResult<{ updateTable: TableResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ updateTable: TableResource }>({
 				mutation: gql`
@@ -829,7 +828,7 @@ export class ApiService {
 	async deleteTable(
 		queryData: string,
 		variables: { uuid: string }
-	): Promise<ApolloLink.Result<{ deleteTable: TableResource }>> {
+	): Promise<ApolloResult<{ deleteTable: TableResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ deleteTable: TableResource }>({
 				mutation: gql`
@@ -848,7 +847,7 @@ export class ApiService {
 	async retrieveCategory(
 		queryData: string,
 		variables: { uuid: string }
-	): Promise<ApolloLink.Result<{ retrieveCategory: CategoryResource }>> {
+	): Promise<ApolloResult<{ retrieveCategory: CategoryResource }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveCategory: CategoryResource }>({
 				query: gql`
@@ -871,7 +870,7 @@ export class ApiService {
 			query: string
 			exclude?: string[]
 		}
-	): Promise<ApolloLink.Result<{ searchCategories: List<CategoryResource> }>> {
+	): Promise<ApolloResult<{ searchCategories: List<CategoryResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ searchCategories: List<CategoryResource> }>({
 				query: gql`
@@ -900,12 +899,40 @@ export class ApiService {
 		variables: {
 			restaurantUuid: string
 		}
-	): Promise<ApolloLink.Result<{ listCategories: List<CategoryResource> }>> {
+	): Promise<ApolloResult<{ listCategories: List<CategoryResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ listCategories: List<CategoryResource> }>({
 				query: gql`
 					query ListCategories($restaurantUuid: String!) {
 						listCategories(restaurantUuid: $restaurantUuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updateCategory(
+		queryData: string,
+		variables: {
+			uuid: string
+			name?: string
+		}
+	): Promise<ApolloResult<{ updateCategory: CategoryResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateCategory: CategoryResource }>({
+				mutation: gql`
+					mutation UpdateCategory(
+						$uuid: String!
+						$name: String
+					) {
+						updateCategory(
+							uuid: $uuid
+							name: $name
+						) {
 							${queryData}
 						}
 					}
@@ -923,7 +950,7 @@ export class ApiService {
 			query: string
 			exclude?: string[]
 		}
-	): Promise<ApolloLink.Result<{ searchProducts: List<CategoryResource> }>> {
+	): Promise<ApolloResult<{ searchProducts: List<CategoryResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ searchProducts: List<CategoryResource> }>({
 				query: gql`
@@ -950,7 +977,7 @@ export class ApiService {
 	async retrieveTable(
 		queryData: string,
 		variables: { uuid: string; paid?: boolean }
-	): Promise<ApolloLink.Result<{ retrieveTable: TableResource }>> {
+	): Promise<ApolloResult<{ retrieveTable: TableResource }>> {
 		let paidParam = queryData.includes("paid") ? "$paid: Boolean" : ""
 
 		return await this.blackmoneyAuthApollo
@@ -986,7 +1013,7 @@ export class ApiService {
 				}[]
 			}[]
 		}
-	): Promise<ApolloLink.Result<{ updateOrder: OrderResource }>> {
+	): Promise<ApolloResult<{ updateOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ updateOrder: OrderResource }>({
 				mutation: gql`
@@ -1014,7 +1041,7 @@ export class ApiService {
 			uuid: string
 			products: AddProductsInput[]
 		}
-	): Promise<ApolloLink.Result<{ addProductsToOrder: OrderResource }>> {
+	): Promise<ApolloResult<{ addProductsToOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ addProductsToOrder: OrderResource }>({
 				mutation: gql`
@@ -1045,7 +1072,7 @@ export class ApiService {
 				count: number
 			}[]
 		}
-	): Promise<ApolloLink.Result<{ removeProductsFromOrder: OrderResource }>> {
+	): Promise<ApolloResult<{ removeProductsFromOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ removeProductsFromOrder: OrderResource }>({
 				mutation: gql`
@@ -1077,7 +1104,7 @@ export class ApiService {
 				count: number
 			}[]
 		}
-	): Promise<ApolloLink.Result<{ updateOrderItem: OrderResource }>> {
+	): Promise<ApolloResult<{ updateOrderItem: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ updateOrderItem: OrderResource }>({
 				mutation: gql`
@@ -1108,7 +1135,7 @@ export class ApiService {
 			billUuid: string
 			paymentMethod: PaymentMethod
 		}
-	): Promise<ApolloLink.Result<{ completeOrder: OrderResource }>> {
+	): Promise<ApolloResult<{ completeOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ completeOrder: OrderResource }>({
 				mutation: gql`
@@ -1135,7 +1162,7 @@ export class ApiService {
 	async listOrders(
 		queryData: string,
 		variables: { completed?: boolean }
-	): Promise<ApolloLink.Result<{ listOrders: List<OrderResource> }>> {
+	): Promise<ApolloResult<{ listOrders: List<OrderResource> }>> {
 		return await this.blackmoneyAuthApollo
 			.query<{ listOrders: List<OrderResource> }>({
 				query: gql`
@@ -1154,7 +1181,7 @@ export class ApiService {
 	async createOrder(
 		queryData: string,
 		variables: { tableUuid: string }
-	): Promise<ApolloLink.Result<{ createOrder: OrderResource }>> {
+	): Promise<ApolloResult<{ createOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createOrder: OrderResource }>({
 				mutation: gql`
@@ -1177,7 +1204,7 @@ export class ApiService {
 	async createBill(
 		queryData: string,
 		variables: { registerClientUuid: string }
-	): Promise<ApolloLink.Result<{ createBill: BillResource }>> {
+	): Promise<ApolloResult<{ createBill: BillResource }>> {
 		return await this.blackmoneyAuthApollo
 			.mutate<{ createBill: BillResource }>({
 				mutation: gql`

@@ -296,8 +296,8 @@ export class BookingPageComponent {
 			{ uuid: this.dataService.restaurant.uuid }
 		)
 
-		if (retrieveRestaurantResponse.errors != null) {
-			console.error(retrieveRestaurantResponse.errors)
+		if (retrieveRestaurantResponse.error != null) {
+			console.error(retrieveRestaurantResponse.error)
 			return
 		}
 

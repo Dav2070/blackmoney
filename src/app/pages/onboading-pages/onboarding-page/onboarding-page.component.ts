@@ -130,7 +130,7 @@ export class OnboardingPageComponent {
 				}
 			)
 
-			if (createOwnerResponse.errors == null) {
+			if (createOwnerResponse.error == null) {
 				// Log in as the owner
 				const loginResponse = await this.apiService.login(
 					`

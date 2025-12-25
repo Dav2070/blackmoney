@@ -1,5 +1,4 @@
 import { Router } from "@angular/router"
-import { ApolloLink } from "@apollo/client"
 import FingerprintJS from "@fingerprintjs/fingerprintjs"
 import { Toast } from "dav-ui-components"
 import { ApiService } from "./services/api-service"
@@ -27,6 +26,7 @@ import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
 import {
+	ApolloResult,
 	CategoryResource,
 	CompanyResource,
 	RestaurantResource,
@@ -153,25 +153,21 @@ export function formatPrice(priceInCents: number): string {
 	return (priceInCents / 100).toFixed(2).replace(".", ",") + " €"
 }
 
-export function getGraphQLErrorCodes(
-	response: ApolloLink.Result<any>
-): ErrorCode[] {
-	if (response.errors == null) {
+export function getGraphQLErrorCodes(response: ApolloResult<any>): ErrorCode[] {
+	if (response.error == null) {
 		return []
 	}
 
 	const errorCodes: ErrorCode[] = []
 
-	for (let error of response.errors) {
+	for (const error of response.error?.errors ?? []) {
 		if (error.extensions == null) continue
 
-		if (error.extensions["code"] === "VALIDATION_FAILED") {
-			const validationErrors = error.extensions["errors"] as
-				| string[]
-				| undefined
+		if (error.extensions.code === "VALIDATION_FAILED") {
+			const validationErrors = error.extensions.errors
 
 			if (validationErrors != null) {
-				for (let validationError of validationErrors) {
+				for (const validationError of validationErrors) {
 					errorCodes.push(validationError as ErrorCode)
 				}
 			}

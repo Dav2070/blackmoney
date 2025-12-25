@@ -1,3 +1,4 @@
+import { Apollo } from "apollo-angular"
 import * as ErrorCodes from "./errorCodes"
 
 export interface List<T> {
@@ -9,6 +10,10 @@ export enum Theme {
 	System = "system",
 	Light = "light",
 	Dark = "dark"
+}
+
+export type ApolloResult<T> = Apollo.MutateResult<T> & {
+	error?: { errors?: { extensions?: { code?: string; errors?: string[] } }[] }
 }
 
 export interface SessionResource {

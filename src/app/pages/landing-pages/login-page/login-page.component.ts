@@ -89,12 +89,12 @@ export class LoginPageComponent {
 		)
 
 		if (
-			(this.company == null && retrieveCompanyResponse.errors == null) ||
+			(this.company == null && retrieveCompanyResponse.error == null) ||
 			this.company.restaurants.length === 0
 		) {
 			this.router.navigate(["onboarding"])
 			return
-		} else if (retrieveCompanyResponse.errors != null) {
+		} else if (retrieveCompanyResponse.error != null) {
 			this.router.navigate([""])
 			return
 		}

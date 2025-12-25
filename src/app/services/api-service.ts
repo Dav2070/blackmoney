@@ -845,6 +845,25 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async retrieveCategory(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloQueryResult<{ retrieveCategory: CategoryResource }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ retrieveCategory: CategoryResource }>({
+				query: gql`
+					query RetrieveCategory($uuid: String!) {
+						retrieveCategory(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async searchCategories(
 		queryData: string,
 		variables: {

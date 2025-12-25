@@ -20,21 +20,16 @@ import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-ov
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
-import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
-import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
-import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
-import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
-import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
 import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
-import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
+import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
 import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
-import { ProductListComponent } from "./pages/landing-pages/products-overview-page/product-list/product-list.component"
+import { ProductListComponent } from "./pages/landing-pages/category-page/product-list/product-list.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 
 const routes: Routes = [
@@ -127,8 +122,8 @@ const routes: Routes = [
 				component: CategoriesPageComponent
 			},
 			{
-				path: "user/restaurants/:uuid/menu/categories/:categoryuuid",
-				component: ProductsOverviewPageComponent,
+				path: "user/restaurants/:restaurantUuid/menu/categories/:categoryUuid",
+				component: CategoryPageComponent,
 				children: [
 					{ path: "", redirectTo: "food", pathMatch: "full" },
 					{ path: "food", component: ProductListComponent },
@@ -166,27 +161,6 @@ const routes: Routes = [
 			{
 				path: "tables/:uuid1/:uuid2",
 				component: TransferPageComponent
-			},
-			//Settings-Pages (alt)
-			{
-				path: "settings",
-				component: SettingsPageComponent
-			},
-			{
-				path: "settings/menue",
-				component: MenuePageComponent
-			},
-			{
-				path: "settings/restaurant",
-				component: RestaurantOverviewComponent
-			},
-			{
-				path: "settings/rooms",
-				component: RoomManagementComponent
-			},
-			{
-				path: "settings/employees",
-				component: EmployeeManagementComponent
 			}
 		]
 	}

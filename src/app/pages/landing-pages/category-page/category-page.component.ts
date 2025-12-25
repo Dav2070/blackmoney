@@ -1,6 +1,5 @@
 import {
 	Component,
-	OnInit,
 	ViewChild,
 	HostListener,
 } from "@angular/core"
@@ -17,14 +16,14 @@ import { EditProductDialogComponent } from "src/app/dialogs/edit-product-dialog/
 import { AddOfferDialogComponent } from "src/app/dialogs/add-offer-dialog/add-offer-dialog.component"
 import { EditOfferDialogComponent } from "src/app/dialogs/edit-offer-dialog/edit-offer-dialog.component"
 import { ProductType } from "src/app/types"
+import { convertCategoryResourceToCategory } from "src/app/utils"
 
 @Component({
-	selector: "app-products-overview-page",
-	standalone: false,
-	templateUrl: "./products-overview-page.component.html",
-	styleUrl: "./products-overview-page.component.scss"
+	templateUrl: "./category-page.component.html",
+	styleUrl: "./category-page.component.scss",
+	standalone: false
 })
-export class ProductsOverviewPageComponent implements OnInit {
+export class CategoryPageComponent {
 	locale = this.localizationService.locale.productPage
 	actionsLocale = this.localizationService.locale.actions
 	errorsLocale = this.localizationService.locale.errors
@@ -32,7 +31,8 @@ export class ProductsOverviewPageComponent implements OnInit {
 	faTrash = faTrash
 	faEllipsis = faEllipsis
 
-	uuid: string = null
+	restaurantUuid: string = null
+	categoryUuid: string = null
 	activeTab = "food"
 	category: Category = null
 	availableVariations: Variation[] = []
@@ -71,16 +71,28 @@ export class ProductsOverviewPageComponent implements OnInit {
 	) {}
 
 	async ngOnInit() {
-		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
+		this.restaurantUuid = this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
+		this.categoryUuid = this.activatedRoute.snapshot.paramMap.get("categoryUuid")
 		await this.dataService.davUserPromiseHolder.AwaitResult()
+
+		// Load category with products from backend
+		const retrieveCategoryResponse = await this.apiService.retrieveCategory(
+			`
+				uuid
+				name
+			`,
+			{ uuid: this.categoryUuid }
+		)
+
+		if (retrieveCategoryResponse.data != null) {
+			this.category = convertCategoryResourceToCategory(
+				retrieveCategoryResponse.data.retrieveCategory
+			)
+		}
 
 		// TODO: API - Load variations from backend
 		// Example: this.availableVariations = await this.apiService.retrieveVariations(...)
 		this.availableVariations = []
-
-		// TODO: API - Load category with products from backend
-		// Example: this.category = await this.apiService.retrieveCategory(this.uuid)
-		this.category = null
 
 		// TODO: API - Load available products for offer dialogs
 		// Example: this.availableProducts = await this.apiService.retrieveProducts(...)
@@ -119,9 +131,9 @@ export class ProductsOverviewPageComponent implements OnInit {
 		this.router.navigate([
 			"user",
 			"restaurants",
-			this.uuid,
+			this.restaurantUuid,
 			"menu",
-			"category"
+			"categories"
 		])
 	}
 

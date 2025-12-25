@@ -36,8 +36,6 @@ import { AppRoutingModule } from "./app-routing.module"
 
 // Components
 import { AppComponent } from "./app.component"
-import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
-import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { HeadlineComponent } from "./components/cash-register/headline/headline.component"
 import { OrderItemCardComponent } from "./components/cash-register/order-item-card/order-item-card.component"
@@ -110,11 +108,11 @@ import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
-import { ProductsOverviewPageComponent } from "./pages/landing-pages/products-overview-page/products-overview-page.component"
+import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
 import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
-import { ProductListComponent } from "./pages/landing-pages/products-overview-page/product-list/product-list.component"
-import { OfferListComponent } from "./pages/landing-pages/products-overview-page/offer-list/offer-list.component"
+import { ProductListComponent } from "./pages/landing-pages/category-page/product-list/product-list.component"
+import { OfferListComponent } from "./pages/landing-pages/category-page/offer-list/offer-list.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -124,16 +122,10 @@ import { SettingsService } from "./services/settings-service"
 import { LocalizationService } from "./services/localization-service"
 
 import { ServiceWorkerModule } from "@angular/service-worker"
-import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
-import { ItemsTableComponent } from "./components/settings/items-table/items-table.component"
 import { MatTableModule } from "@angular/material/table"
 import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
-import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
-import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { MatTooltipModule } from "@angular/material/tooltip"
-import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
-import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
@@ -151,7 +143,6 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 	declarations: [
 		// Components
 		AppComponent,
-		SettingsBarComponent,
 		HeaderComponent,
 		HeadlineComponent,
 		OrderItemCardComponent,
@@ -227,7 +218,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		BookingPageComponent,
 		TransferPageComponent,
 		PaymentPageComponent,
-		ProductsOverviewPageComponent,
+		CategoryPageComponent,
 		CategoriesPageComponent,
 		MenuPageComponent,
 		//Landing-Pages
@@ -239,15 +230,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		ReservationsPageComponent,
 		VariationsOverviewPageComponent,
 		ProductListComponent,
-		OfferListComponent,
-		//Settings-Pages
-		SettingsPageComponent,
-		ItemsTableComponent,
-		MenuePageComponent,
-		VariationsTableComponent,
-		RestaurantOverviewComponent,
-		RoomManagementComponent,
-		EmployeeManagementComponent
+		OfferListComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

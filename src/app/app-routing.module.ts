@@ -20,7 +20,6 @@ import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-ov
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
-import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
@@ -165,10 +164,6 @@ const routes: Routes = [
 			{
 				path: "settings",
 				component: SettingsPageComponent
-			},
-			{
-				path: "settings/menue",
-				component: MenuePageComponent
 			},
 			{
 				path: "settings/restaurant",

@@ -36,7 +36,6 @@ import { AppRoutingModule } from "./app-routing.module"
 
 // Components
 import { AppComponent } from "./app.component"
-import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
 import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { HeadlineComponent } from "./components/cash-register/headline/headline.component"
@@ -236,7 +235,6 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		//Settings-Pages
 		SettingsPageComponent,
 		ItemsTableComponent,
-		MenuePageComponent,
 		VariationsTableComponent,
 		RestaurantOverviewComponent,
 		RoomManagementComponent

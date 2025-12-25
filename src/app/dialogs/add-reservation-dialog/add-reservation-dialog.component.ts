@@ -15,6 +15,16 @@ import { Room } from "src/app/models/Room"
 import { LocalizationService } from "src/app/services/localization-service"
 import { TimeSlotSuggestion } from "src/app/types"
 
+export interface AddReservationData {
+	name: string
+	numberOfPeople: number
+	phoneNumber: string
+	email: string
+	reservationDate: string
+	reservationTime: string
+	tableUuid: string
+}
+
 @Component({
 	selector: "app-add-reservation-dialog",
 	templateUrl: "./add-reservation-dialog.component.html",
@@ -54,7 +64,7 @@ export class AddReservationDialogComponent {
 	@Input() loading: boolean = false
 	@Input() rooms: Room[] = []
 
-	@Output() primaryButtonClick = new EventEmitter()
+	@Output() primaryButtonClick = new EventEmitter<AddReservationData>()
 	@Output() clearErrors = new EventEmitter()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 

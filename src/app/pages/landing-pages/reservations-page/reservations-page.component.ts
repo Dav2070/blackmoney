@@ -5,8 +5,14 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { ReservationDetails } from "src/app/models/ReservationDetails"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
-import { AddReservationDialogComponent } from "src/app/dialogs/add-reservation-dialog/add-reservation-dialog.component"
-import { EditReservationDialogComponent } from "src/app/dialogs/edit-reservation-dialog/edit-reservation-dialog.component"
+import {
+	AddReservationDialogComponent,
+	AddReservationData
+} from "src/app/dialogs/add-reservation-dialog/add-reservation-dialog.component"
+import {
+	EditReservationDialogComponent,
+	EditReservationData
+} from "src/app/dialogs/edit-reservation-dialog/edit-reservation-dialog.component"
 import {
 	faCheckCircle,
 	faChevronLeft,
@@ -261,7 +267,7 @@ export class ReservationsPageComponent {
 		this.addReservationDialog.show()
 	}
 
-	addReservationDialogPrimaryButtonClick(event: any) {
+	addReservationDialogPrimaryButtonClick(event: AddReservationData) {
 		// TODO: API-Call zum Erstellen der Reservierung
 		console.log("New reservation:", event)
 
@@ -288,7 +294,7 @@ export class ReservationsPageComponent {
 		}
 	}
 
-	editReservationDialogPrimaryButtonClick(event: any) {
+	editReservationDialogPrimaryButtonClick(event: EditReservationData) {
 		// TODO: API-Call zum Aktualisieren der Reservierung
 		console.log("Updated reservation:", event)
 

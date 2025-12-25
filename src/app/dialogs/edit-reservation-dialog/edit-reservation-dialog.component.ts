@@ -16,6 +16,17 @@ import { ReservationDetails } from "src/app/models/ReservationDetails"
 import { LocalizationService } from "src/app/services/localization-service"
 import { TimeSlotSuggestion } from "src/app/types"
 
+export interface EditReservationData {
+	uuid: string
+	name: string
+	numberOfPeople: number
+	phoneNumber: string
+	email: string
+	reservationDate: string
+	reservationTime: string
+	tableUuid: string
+}
+
 @Component({
 	selector: "app-edit-reservation-dialog",
 	templateUrl: "./edit-reservation-dialog.component.html",
@@ -59,7 +70,7 @@ export class EditReservationDialogComponent {
 	@Input() loading: boolean = false
 	@Input() rooms: Room[] = []
 
-	@Output() primaryButtonClick = new EventEmitter()
+	@Output() primaryButtonClick = new EventEmitter<EditReservationData>()
 	@Output() clearErrors = new EventEmitter()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 

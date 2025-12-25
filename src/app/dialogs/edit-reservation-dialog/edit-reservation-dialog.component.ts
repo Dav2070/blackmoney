@@ -36,6 +36,7 @@ export class EditReservationDialogComponent {
 	email: string = ""
 	reservationDate: string = ""
 	reservationTime: string = ""
+	dateError: string = ""
 
 	// Tab 2: Verfügbarkeit (nur wenn Zeit/Personen geändert wurden)
 	isAvailable: boolean = false
@@ -148,6 +149,9 @@ export class EditReservationDialogComponent {
 
 	reservationDateTextfieldChange(event: Event) {
 		this.reservationDate = (event as CustomEvent).detail.value
+		this.dateError = this.isDateInFuture()
+			? ""
+			: this.localizationService.locale.errors.dateInPast
 		this.clearErrors.emit()
 	}
 
@@ -155,6 +159,15 @@ export class EditReservationDialogComponent {
 		this.reservationTime = (event as CustomEvent).detail.value
 		this.checkTimeOrPeopleChanged()
 		this.clearErrors.emit()
+	}
+
+	isDateInFuture(): boolean {
+		if (!this.reservationDate) return false
+		const today = new Date()
+		today.setHours(0, 0, 0, 0)
+		const resDate = new Date(this.reservationDate)
+		resDate.setHours(0, 0, 0, 0)
+		return resDate >= today
 	}
 
 	checkTimeOrPeopleChanged() {
@@ -280,7 +293,8 @@ export class EditReservationDialogComponent {
 			this.name.length > 0 &&
 			this.numberOfPeople > 0 &&
 			this.reservationDate.length > 0 &&
-			this.reservationTime.length > 0
+			this.reservationTime.length > 0 &&
+			this.isDateInFuture()
 		)
 	}
 

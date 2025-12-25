@@ -31,6 +31,7 @@ export class AddReservationDialogComponent {
 	numberOfPeople: number = 2
 	reservationDate: string = ""
 	reservationTime: string = ""
+	dateError: string = ""
 
 	// Tab 2: Verfügbarkeit
 	isAvailable: boolean = false
@@ -107,12 +108,24 @@ export class AddReservationDialogComponent {
 
 	reservationDateTextfieldChange(event: Event) {
 		this.reservationDate = (event as CustomEvent).detail.value
+		this.dateError = this.isDateInFuture()
+			? ""
+			: this.localizationService.locale.errors.dateInPast
 		this.clearErrors.emit()
 	}
 
 	reservationTimeTextfieldChange(event: Event) {
 		this.reservationTime = (event as CustomEvent).detail.value
 		this.clearErrors.emit()
+	}
+
+	isDateInFuture(): boolean {
+		if (!this.reservationDate) return false
+		const today = new Date()
+		today.setHours(0, 0, 0, 0)
+		const resDate = new Date(this.reservationDate)
+		resDate.setHours(0, 0, 0, 0)
+		return resDate >= today
 	}
 
 	nameTextfieldChange(event: Event) {
@@ -232,7 +245,8 @@ export class AddReservationDialogComponent {
 		return (
 			this.numberOfPeople > 0 &&
 			this.reservationDate.length > 0 &&
-			this.reservationTime.length > 0
+			this.reservationTime.length > 0 &&
+			this.isDateInFuture()
 		)
 	}
 

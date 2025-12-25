@@ -621,6 +621,7 @@ export const de = {
 		seatsInvalid: "Die Anzahl der Sitzplätze ist ungültig.",
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
+		dateInPast: "Datum darf nicht in der Vergangenheit liegen",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
 	}
 }

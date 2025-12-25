@@ -45,7 +45,7 @@
 						[label]="locale.reservationDate"
 						type="date"
 						[disabled]="loading"
-						[errorMessage]="reservationDateError"
+						[errorMessage]="dateError || reservationDateError"
 						(change)="reservationDateTextfieldChange($event)"
 					></dav-textfield>
 				</div>

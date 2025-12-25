@@ -52,7 +52,8 @@ export const de = {
 		manageReservations: "Reservierungen verwalten"
 	},
 	reservationsPage: {
-		title: "Reservierungen"
+		headline: "Reservierungen",
+		add: "Reservierung hinzufügen"
 	},
 	settingsPage: {
 		headline: "Allgemeine Einstellungen",
@@ -333,6 +334,48 @@ export const de = {
 			headline: "Mitarbeiter hinzufügen",
 			name: "Name des Mitarbeiters",
 			assignedRestaurants: "Zugeordnete Restaurants"
+		},
+		addReservationDialog: {
+			headline: "Reservierung hinzufügen",
+			tab1: "Wunsch",
+			tab2: "Verfügbarkeit",
+			tab3: "Details",
+			desiredTimeHeadline: "Gewünschte Reservierungszeit",
+			availableHeadline: "Verfügbar!",
+			notAvailableHeadline: "Nicht verfügbar",
+			contactDetailsHeadline: "Kontaktinformationen",
+			assignedTable: "Zugewiesener Tisch",
+			name: "Name",
+			numberOfPeople: "Personenanzahl",
+			phoneNumber: "Telefonnummer (optional)",
+			email: "E-Mail (optional)",
+			reservationDate: "Datum",
+			reservationTime: "Uhrzeit",
+			table: "Tisch",
+			noTables: "Keine Tische verfügbar",
+			previous: "Zurück",
+			next: "Weiter",
+			timeSuffix: "Uhr"
+		},
+		editReservationDialog: {
+			headline: "Reservierung bearbeiten",
+			tab1: "Details",
+			tab2: "Verfügbarkeit",
+			detailsHeadline: "Reservierungsdetails",
+			availableHeadline: "Verfügbar!",
+			notAvailableHeadline: "Nicht verfügbar",
+			assignedTable: "Zugewiesener Tisch",
+			changeNotice:
+				"Hinweis: Änderungen an Personenanzahl oder Uhrzeit erfordern eine erneute Verfügbarkeitsprüfung.",
+			name: "Name",
+			numberOfPeople: "Personenanzahl",
+			phoneNumber: "Telefonnummer (optional)",
+			email: "E-Mail (optional)",
+			reservationDate: "Datum",
+			reservationTime: "Uhrzeit",
+			previous: "Zurück",
+			next: "Weiter",
+			timeSuffix: "Uhr"
 		},
 		addRegisterDialog: {
 			headline: "Kasse hinzufügen",

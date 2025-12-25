@@ -50,6 +50,8 @@ import { EditRegisterClientNameDialogComponent } from "./dialogs/edit-register-c
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
+import { AddReservationDialogComponent } from "./dialogs/add-reservation-dialog/add-reservation-dialog.component"
+import { EditReservationDialogComponent } from "./dialogs/edit-reservation-dialog/edit-reservation-dialog.component"
 import { AddRegisterDialogComponent } from "./dialogs/add-register-dialog/add-register-dialog.component"
 import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
@@ -161,6 +163,8 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,
+		AddReservationDialogComponent,
+		EditReservationDialogComponent,
 		AddRegisterDialogComponent,
 		AddPrinterDialogComponent,
 		EditPrinterDialogComponent,

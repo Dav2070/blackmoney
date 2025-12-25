@@ -240,3 +240,13 @@ export type ErrorCode =
 	| typeof ErrorCodes.ipAddressInvalid
 	| typeof ErrorCodes.tableNameInvalid
 	| typeof ErrorCodes.seatsInvalid
+
+export interface TimeSlotSuggestion {
+	time: string
+	availableSeats: number
+	table: {
+		uuid: string
+		name: number
+		seats: number
+	}
+}

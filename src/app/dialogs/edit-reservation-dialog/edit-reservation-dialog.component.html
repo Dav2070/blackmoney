@@ -1,0 +1,191 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="600"
+	[loading]="loading"
+	[primaryButtonDisabled]="!isFormValid"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Tab Navigation -->
+		<dav-tab-bar>
+			<dav-tab-bar-item [active]="currentTab === 0" (click)="currentTab = 0">
+				{{ locale.tab1 }}
+			</dav-tab-bar-item>
+			@if (showTab2) {
+				<dav-tab-bar-item
+					[active]="currentTab === 1"
+					[disabled]="!isTab1Valid"
+					(click)="isTab1Valid && (currentTab = 1)"
+				>
+					{{ locale.tab2 }}
+				</dav-tab-bar-item>
+			}
+		</dav-tab-bar>
+
+		<!-- Tab 1: Details -->
+		@if (currentTab === 0) {
+			<div class="tab-content">
+				<h4>{{ locale.detailsHeadline }}</h4>
+
+				<!-- Name -->
+				<div class="dialog-formfield-container">
+					<dav-textfield
+						[value]="name"
+						[label]="locale.name"
+						[disabled]="loading"
+						[errorMessage]="nameError"
+						(change)="nameTextfieldChange($event)"
+					></dav-textfield>
+				</div>
+
+				<!-- Number of People -->
+				<div class="dialog-formfield-container">
+					<dav-textfield
+						[value]="numberOfPeople"
+						[label]="locale.numberOfPeople"
+						type="number"
+						min="1"
+						[disabled]="loading"
+						[errorMessage]="numberOfPeopleError"
+						(change)="numberOfPeopleTextfieldChange($event)"
+					></dav-textfield>
+				</div>
+
+				<!-- Phone Number (optional) -->
+				<div class="dialog-formfield-container">
+					<dav-textfield
+						[value]="phoneNumber"
+						[label]="locale.phoneNumber"
+						type="tel"
+						[disabled]="loading"
+						[errorMessage]="phoneNumberError"
+						(change)="phoneNumberTextfieldChange($event)"
+					></dav-textfield>
+				</div>
+
+				<!-- Email (optional) -->
+				<div class="dialog-formfield-container">
+					<dav-textfield
+						[value]="email"
+						[label]="locale.email"
+						type="email"
+						[disabled]="loading"
+						[errorMessage]="emailError"
+						(change)="emailTextfieldChange($event)"
+					></dav-textfield>
+				</div>
+
+				<!-- Reservation Date -->
+				<div class="dialog-formfield-container">
+					<dav-textfield
+						[value]="reservationDate"
+						[label]="locale.reservationDate"
+						type="date"
+						[disabled]="loading"
+						[errorMessage]="reservationDateError"
+						(change)="reservationDateTextfieldChange($event)"
+					></dav-textfield>
+				</div>
+
+				<!-- Reservation Time -->
+				<div class="dialog-formfield-container">
+					<dav-textfield
+						[value]="reservationTime"
+						[label]="locale.reservationTime"
+						type="time"
+						[disabled]="loading"
+						[errorMessage]="reservationTimeError"
+						(change)="reservationTimeTextfieldChange($event)"
+					></dav-textfield>
+				</div>
+
+				@if (timeOrPeopleChanged) {
+					<div class="change-notice">
+						<p>{{ locale.changeNotice }}</p>
+					</div>
+				}
+			</div>
+		}
+
+		<!-- Tab 2: Verfügbarkeit (nur wenn Zeit/Personen geändert wurden) -->
+		@if (currentTab === 1 && showTab2) {
+			<div class="tab-content">
+				@if (isAvailable) {
+					<!-- Verfügbar -->
+					<div class="availability-success">
+						<h4>{{ locale.availableHeadline }}</h4>
+						<p class="availability-message">
+							{{ reservationTime }} {{ locale.timeSuffix }} ist
+							verfügbar.
+						</p>
+						@if (assignedTable) {
+							<p class="assigned-table">
+								<strong>{{ locale.assignedTable }}:</strong> Tisch
+								{{ assignedTable.name }} ({{ assignedTable.seats }}
+								Plätze)
+							</p>
+						}
+					</div>
+				} @else {
+					<!-- Nicht verfügbar - Alternative Vorschläge -->
+					<div class="availability-alternatives">
+						<h4>{{ locale.notAvailableHeadline }}</h4>
+						<p class="availability-message">
+							Leider ist {{ reservationTime }}
+							{{ locale.timeSuffix }} nicht verfügbar. Wählen Sie eine
+							der folgenden Alternativen:
+						</p>
+
+						<div class="time-slots-list">
+							@for (
+								timeSlot of alternativeTimeSlots;
+								track timeSlot.time
+							) {
+								<dav-card
+									clickable
+									class="time-slot-card"
+									[selected]="
+										selectedAlternativeTime === timeSlot.time
+									"
+									(click)="selectAlternativeTime(timeSlot)"
+								>
+									<div class="time-slot-card-container">
+										<div class="time-slot-time">
+											{{ timeSlot.time }} {{ locale.timeSuffix }}
+										</div>
+									</div>
+								</dav-card>
+							}
+						</div>
+					</div>
+				}
+			</div>
+		}
+
+		<!-- Navigation Buttons -->
+		@if (showTab2) {
+			<div class="navigation-buttons">
+				@if (currentTab > 0) {
+					<dav-button type="button" (click)="previousTab()">
+						{{ locale.previous }}
+					</dav-button>
+				}
+				@if (currentTab < 1) {
+					<dav-button
+						type="button"
+						(click)="nextTab()"
+						[disabled]="!isTab1Valid"
+					>
+						{{ locale.next }}
+					</dav-button>
+				}
+			</div>
+		}
+	</form>
+</dav-dialog>

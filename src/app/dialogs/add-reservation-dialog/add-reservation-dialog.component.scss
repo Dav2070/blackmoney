@@ -1,0 +1,106 @@
+.tab-content {
+	margin-top: 24px;
+
+	h4 {
+		margin: 0 0 16px 0;
+		font-size: 18px;
+		font-weight: 600;
+	}
+}
+
+.dialog-formfield-container {
+	margin-bottom: 20px;
+
+	h5 {
+		margin: 0 0 12px 0;
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--dav-color-on-surface);
+	}
+}
+
+.error-message {
+	color: var(--dav-color-error);
+	font-size: 14px;
+	margin: 4px 0 8px 0;
+}
+
+.no-tables-message {
+	color: var(--dav-color-on-surface-variant);
+	font-style: italic;
+	font-size: 14px;
+	margin: 8px 0;
+}
+
+dav-tree {
+	margin-top: 8px;
+}
+
+.availability-success,
+.availability-alternatives {
+	padding: 16px;
+	border-radius: 8px;
+
+	.availability-message {
+		font-size: 15px;
+		color: var(--dav-color-on-surface);
+		margin: 8px 0 16px 0;
+		line-height: 1.5;
+	}
+
+	.assigned-table {
+		font-size: 14px;
+		color: var(--dav-color-on-surface-variant);
+		margin: 12px 0 0 0;
+	}
+}
+
+.availability-success {
+	background: var(--dav-color-success-container);
+
+	h4 {
+		color: var(--dav-color-on-success-container);
+	}
+}
+
+.availability-alternatives {
+	background: var(--dav-color-surface-variant);
+}
+
+.time-slots-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.time-slot-card {
+	width: 100%;
+}
+
+.time-slot-card-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	padding: 8px 0;
+}
+
+.time-slot-time {
+	font-size: 18px;
+	line-height: 1.5;
+	color: var(--dav-color-on-surface);
+	font-weight: 500;
+}
+
+.navigation-buttons {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	margin-top: 24px;
+	padding-top: 16px;
+	border-top: 1px solid var(--dav-color-outline-variant);
+
+	dav-button {
+		flex: 1;
+	}
+}

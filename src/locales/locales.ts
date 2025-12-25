@@ -564,8 +564,7 @@ export const de = {
 		},
 		editCategoryDialog: {
 			headline: "Kategorie bearbeiten",
-			name: "Name",
-			nameRequired: "Name ist erforderlich"
+			name: "Name"
 		},
 		addVariationDialog: {
 			headline: "Variation hinzufügen",

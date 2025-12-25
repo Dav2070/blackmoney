@@ -11,12 +11,17 @@ import { Variation } from "src/app/models/Variation"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
+import { EditCategoryDialogComponent } from "src/app/dialogs/edit-category-dialog/edit-category-dialog.component"
 import { AddProductDialogComponent } from "src/app/dialogs/add-product-dialog/add-product-dialog.component"
 import { EditProductDialogComponent } from "src/app/dialogs/edit-product-dialog/edit-product-dialog.component"
 import { AddOfferDialogComponent } from "src/app/dialogs/add-offer-dialog/add-offer-dialog.component"
 import { EditOfferDialogComponent } from "src/app/dialogs/edit-offer-dialog/edit-offer-dialog.component"
+import * as ErrorCodes from "src/app/errorCodes"
 import { ProductType } from "src/app/types"
-import { convertCategoryResourceToCategory } from "src/app/utils"
+import {
+	convertCategoryResourceToCategory,
+	getGraphQLErrorCodes
+} from "src/app/utils"
 
 @Component({
 	templateUrl: "./category-page.component.html",
@@ -39,6 +44,11 @@ export class CategoryPageComponent {
 	menus: Product[] = []
 	specials: Product[] = []
 	availableProducts: Product[] = []
+
+	@ViewChild("editCategoryDialog")
+	editCategoryDialog!: EditCategoryDialogComponent
+	editCategoryDialogLoading: boolean = false
+	editCategoryDialogNameError: string = ""
 
 	@ViewChild("addProductDialog")
 	addProductDialog: AddProductDialogComponent
@@ -71,8 +81,10 @@ export class CategoryPageComponent {
 	) {}
 
 	async ngOnInit() {
-		this.restaurantUuid = this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
-		this.categoryUuid = this.activatedRoute.snapshot.paramMap.get("categoryUuid")
+		this.restaurantUuid =
+			this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
+		this.categoryUuid =
+			this.activatedRoute.snapshot.paramMap.get("categoryUuid")
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
 		// Load category with products from backend
@@ -157,6 +169,62 @@ export class CategoryPageComponent {
 			this.showAddSpecialDialog()
 		} else {
 			this.showAddProductDialog()
+		}
+	}
+
+	handleEditButtonClick() {
+		this.editCategoryDialog.show()
+	}
+
+	async editCategoryDialogPrimaryButtonClick(event: { name: string }) {
+		const name = event.name.trim()
+
+		if (name.length === 0) {
+			this.editCategoryDialogNameError = this.errorsLocale.nameMissing
+			return
+		}
+
+		this.editCategoryDialogLoading = true
+
+		const updateCategoryResponse = await this.apiService.updateCategory(
+			`
+				uuid
+				name
+			`,
+			{
+				uuid: this.category.uuid,
+				name
+			}
+		)
+
+		this.editCategoryDialogLoading = false
+
+		if (updateCategoryResponse.data?.updateCategory != null) {
+			const responseData = convertCategoryResourceToCategory(
+				updateCategoryResponse.data.updateCategory
+			)
+			this.category.name = responseData.name
+			this.editCategoryDialog.hide()
+		} else {
+			const errors = getGraphQLErrorCodes(updateCategoryResponse)
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.editCategoryDialogNameError =
+							this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.editCategoryDialogNameError =
+							this.errorsLocale.nameTooLong
+						break
+					default:
+						this.editCategoryDialogNameError =
+							this.errorsLocale.unexpectedError
+						break
+				}
+			}
 		}
 	}
 

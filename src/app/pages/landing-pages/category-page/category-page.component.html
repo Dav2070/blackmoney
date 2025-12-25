@@ -3,8 +3,10 @@
 		<dav-header
 			backButtonVisible
 			addButtonVisible
+			editButtonVisible
 			(backButtonClick)="navigateBack()"
 			(addButtonClick)="handleAddButtonClick()"
+			(editButtonClick)="handleEditButtonClick()"
 		>
 			{{ category?.name || locale.headline }}
 		</dav-header>
@@ -67,6 +69,15 @@
 		}
 	</div>
 </div>
+
+<app-edit-category-dialog
+	#editCategoryDialog
+	[category]="category"
+	[loading]="editCategoryDialogLoading"
+	[nameError]="editCategoryDialogNameError"
+	(primaryButtonClick)="editCategoryDialogPrimaryButtonClick($event)"
+	(clearErrors)="editCategoryDialogNameError = ''"
+></app-edit-category-dialog>
 
 <!-- Add Offer Dialog -->
 <app-add-offer-dialog

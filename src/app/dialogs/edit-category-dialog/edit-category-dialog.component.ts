@@ -23,17 +23,14 @@ export class EditCategoryDialogComponent {
 	locale = this.localizationService.locale.dialogs.editCategoryDialog
 	actionsLocale = this.localizationService.locale.actions
 
+	@Input() category: Category = null
 	@Input() loading: boolean = false
 	@Input() nameError: string = ""
-	@Output() primaryButtonClick = new EventEmitter<{
-		uuid: string
-		name: string
-	}>()
+	@Output() primaryButtonClick = new EventEmitter<{ name: string }>()
 	@Output() clearErrors = new EventEmitter()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
 	visible: boolean = false
-	category: Category = null
 	name: string = ""
 
 	constructor(
@@ -53,9 +50,8 @@ export class EditCategoryDialogComponent {
 		}
 	}
 
-	show(category: Category) {
-		this.category = category
-		this.name = category.name
+	show() {
+		this.name = this.category.name
 		this.visible = true
 	}
 
@@ -71,13 +67,7 @@ export class EditCategoryDialogComponent {
 	}
 
 	submit() {
-		if (!this.name.trim()) {
-			this.nameError = this.locale.nameRequired
-			return
-		}
-
 		this.primaryButtonClick.emit({
-			uuid: this.category.uuid,
 			name: this.name
 		})
 	}

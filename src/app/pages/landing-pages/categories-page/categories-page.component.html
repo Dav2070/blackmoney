@@ -46,13 +46,6 @@
 	[posY]="categoryContextMenuY"
 >
 	<dav-context-menu-item
-		[value]="actionsLocale.edit"
-		(click)="editSelectedCategory()"
-	>
-		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
-	</dav-context-menu-item>
-
-	<dav-context-menu-item
 		[value]="actionsLocale.delete"
 		(click)="deleteSelectedCategory()"
 	>
@@ -67,11 +60,3 @@
 	(primaryButtonClick)="addCategoryDialogPrimaryButtonClick($event)"
 	(clearErrors)="addCategoryDialogNameError = ''"
 ></app-add-category-dialog>
-
-<app-edit-category-dialog
-	#editCategoryDialog
-	[loading]="editCategoryDialogLoading"
-	[nameError]="editCategoryDialogNameError"
-	(primaryButtonClick)="editCategoryDialogPrimaryButtonClick($event)"
-	(clearErrors)="editCategoryDialogNameError = ''"
-></app-edit-category-dialog>

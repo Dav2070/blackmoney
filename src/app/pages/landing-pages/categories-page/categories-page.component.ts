@@ -1,13 +1,12 @@
 import { Component, ViewChild, ElementRef, HostListener } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
+import { faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 import { Category } from "src/app/models/Category"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { AddCategoryDialogComponent } from "src/app/dialogs/add-category-dialog/add-category-dialog.component"
-import { EditCategoryDialogComponent } from "src/app/dialogs/edit-category-dialog/edit-category-dialog.component"
 import { convertCategoryResourceToCategory } from "src/app/utils"
 
 @Component({
@@ -21,11 +20,6 @@ export class CategoriesPageComponent {
 	addCategoryDialogLoading: boolean = false
 	addCategoryDialogNameError: string = ""
 
-	@ViewChild("editCategoryDialog")
-	editCategoryDialog!: EditCategoryDialogComponent
-	editCategoryDialogLoading: boolean = false
-	editCategoryDialogNameError: string = ""
-
 	// Context Menu
 	categoryContextMenuVisible: boolean = false
 	categoryContextMenuX: number = 0
@@ -36,7 +30,6 @@ export class CategoriesPageComponent {
 
 	locale = this.localizationService.locale.categoryPage
 	actionsLocale = this.localizationService.locale.actions
-	faPen = faPen
 	faTrash = faTrash
 	faEllipsis = faEllipsis
 
@@ -136,34 +129,6 @@ export class CategoriesPageComponent {
 			this.categoryContextMenuY = detail.contextMenuPosition.y
 			this.categoryContextMenuVisible = true
 		}
-	}
-
-	editSelectedCategory() {
-		if (!this.selectedCategoryForContext) return
-		this.editCategoryDialog.show(this.selectedCategoryForContext)
-		this.categoryContextMenuVisible = false
-	}
-
-	editCategoryDialogPrimaryButtonClick(event: { uuid: string; name: string }) {
-		this.editCategoryDialogLoading = true
-
-		// TODO: API - Update category
-		// Example: const updated = await this.apiService.updateCategory({
-		//   uuid: event.uuid,
-		//   name: event.name
-		// })
-
-		const idx = this.categories.findIndex(c => c.uuid === event.uuid)
-		if (idx !== -1) {
-			this.categories = [
-				...this.categories.slice(0, idx),
-				{ ...this.categories[idx], name: event.name },
-				...this.categories.slice(idx + 1)
-			]
-		}
-
-		this.editCategoryDialogLoading = false
-		this.editCategoryDialog.hide()
 	}
 
 	deleteSelectedCategory() {

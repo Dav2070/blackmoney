@@ -131,7 +131,6 @@ import { VariationsTableComponent } from "./components/settings/variations-table
 import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { MatTooltipModule } from "@angular/material/tooltip"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
-import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
@@ -240,8 +239,7 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		MenuePageComponent,
 		VariationsTableComponent,
 		RestaurantOverviewComponent,
-		RoomManagementComponent,
-		EmployeeManagementComponent
+		RoomManagementComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

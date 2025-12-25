@@ -48,7 +48,19 @@ export const de = {
 		generalSettings: "Allgemeine Einstellungen",
 		goToDashboard: "Zur Kasse",
 		manageEmployees: "Mitarbeiter verwalten",
-		manageRestaurants: "Restaurants verwalten"
+		manageRestaurants: "Restaurants verwalten",
+		manageReservations: "Reservierungen verwalten"
+	},
+	reservationsPage: {
+		headline: "Reservierungen",
+		add: "Reservierung hinzufügen",
+		noReservationsMessage: "Keine Reservierungen vorhanden",
+		personSingular: "Person",
+		personPlural: "Personen",
+		tablePrefix: "Tisch",
+		checkedInText: "Eingecheckt",
+		checkInText: "Check-in",
+		optionsTooltip: "Optionen"
 	},
 	settingsPage: {
 		headline: "Allgemeine Einstellungen",
@@ -330,6 +342,55 @@ export const de = {
 			name: "Name des Mitarbeiters",
 			assignedRestaurants: "Zugeordnete Restaurants"
 		},
+		addReservationDialog: {
+			headline: "Reservierung hinzufügen",
+			tab1: "Wunsch",
+			tab2: "Verfügbarkeit",
+			tab3: "Details",
+			desiredTimeHeadline: "Gewünschte Reservierungszeit",
+			availableHeadline: "Verfügbar!",
+			notAvailableHeadline: "Nicht verfügbar",
+			notAvailableMessage:
+				"Leider ist {time} {suffix} nicht verfügbar. Wählen Sie eine der folgenden Alternativen:",
+			availableMessage:
+				"{time} {suffix} ist verfügbar. Bitte tragen Sie die Informationen zur Reservierung ein.",
+			contactDetailsHeadline: "Kontaktinformationen",
+			assignedTable: "Zugewiesener Tisch",
+			seatsText: "Plätze",
+			name: "Name",
+			numberOfPeople: "Personenanzahl",
+			phoneNumber: "Telefonnummer (optional)",
+			email: "E-Mail (optional)",
+			reservationDate: "Datum",
+			reservationTime: "Uhrzeit",
+			table: "Tisch",
+			noTables: "Keine Tische verfügbar",
+			previous: "Zurück",
+			next: "Weiter",
+			timeSuffix: "Uhr"
+		},
+		editReservationDialog: {
+			headline: "Reservierung bearbeiten",
+			tab1: "Details",
+			tab2: "Verfügbarkeit",
+			detailsHeadline: "Reservierungsdetails",
+			availableHeadline: "Verfügbar!",
+			notAvailableHeadline: "Nicht verfügbar",
+			assignedTable: "Zugewiesener Tisch",
+			changeNotice:
+				"Hinweis: Änderungen an Personenanzahl oder Uhrzeit erfordern eine erneute Verfügbarkeitsprüfung.",
+			availableMessage: "{time} {suffix} ist verfügbar.",
+			seatsText: "Plätze",
+			name: "Name",
+			numberOfPeople: "Personenanzahl",
+			phoneNumber: "Telefonnummer (optional)",
+			email: "E-Mail (optional)",
+			reservationDate: "Datum",
+			reservationTime: "Uhrzeit",
+			previous: "Zurück",
+			next: "Weiter",
+			timeSuffix: "Uhr"
+		},
 		addRegisterDialog: {
 			headline: "Kasse hinzufügen",
 			name: "Name"
@@ -574,6 +635,7 @@ export const de = {
 		seatsInvalid: "Die Anzahl der Sitzplätze ist ungültig.",
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
+		dateInPast: "Datum darf nicht in der Vergangenheit liegen",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
 	}
 }

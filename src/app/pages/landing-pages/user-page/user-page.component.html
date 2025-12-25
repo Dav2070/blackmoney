@@ -51,6 +51,14 @@
 				>
 					<fa-icon [icon]="faShop"></fa-icon>
 				</dav-icon-card>
+
+				<dav-icon-card
+					[text]="locale.manageReservations"
+					href="user/reservations"
+					(click)="navigateToReservationsPage($event)"
+				>
+					<fa-icon [icon]="faCalendarCheck"></fa-icon>
+				</dav-icon-card>
 			}
 		</div>
 	</div>

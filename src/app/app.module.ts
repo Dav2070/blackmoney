@@ -48,6 +48,8 @@ import { EditRegisterClientNameDialogComponent } from "./dialogs/edit-register-c
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
+import { AddReservationDialogComponent } from "./dialogs/add-reservation-dialog/add-reservation-dialog.component"
+import { EditReservationDialogComponent } from "./dialogs/edit-reservation-dialog/edit-reservation-dialog.component"
 import { AddRegisterDialogComponent } from "./dialogs/add-register-dialog/add-register-dialog.component"
 import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
@@ -135,6 +137,7 @@ import { EditVariationItemDialogComponent } from "./dialogs/edit-variation-item-
 import { EditCategoryDialogComponent } from "./dialogs/edit-category-dialog/edit-category-dialog.component"
 import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-product-dialog.component"
 import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-product-dialog.component"
+import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
 
 @NgModule({
 	declarations: [
@@ -151,6 +154,8 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,
+		AddReservationDialogComponent,
+		EditReservationDialogComponent,
 		AddRegisterDialogComponent,
 		AddPrinterDialogComponent,
 		EditPrinterDialogComponent,
@@ -222,6 +227,7 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		RoomPageComponent,
 		TableCombinationsPageComponent,
 		OpeningTimePageComponent,
+		ReservationsPageComponent,
 		VariationsOverviewPageComponent,
 		ProductListComponent,
 		OfferListComponent

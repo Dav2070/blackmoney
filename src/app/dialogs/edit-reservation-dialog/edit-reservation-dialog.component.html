@@ -121,14 +121,17 @@
 					<div class="availability-success">
 						<h4>{{ locale.availableHeadline }}</h4>
 						<p class="availability-message">
-							{{ reservationTime }} {{ locale.timeSuffix }} ist
-							verfügbar.
+							{{
+								locale.availableMessage
+									.replace("{time}", reservationTime)
+									.replace("{suffix}", locale.timeSuffix)
+							}}
 						</p>
 						@if (assignedTable) {
 							<p class="assigned-table">
 								<strong>{{ locale.assignedTable }}:</strong> Tisch
 								{{ assignedTable.name }} ({{ assignedTable.seats }}
-								Plätze)
+								{{ locale.seatsText }})
 							</p>
 						}
 					</div>

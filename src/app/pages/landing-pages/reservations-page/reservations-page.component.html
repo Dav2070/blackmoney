@@ -41,7 +41,7 @@
 				<dav-progress-ring size="24"></dav-progress-ring>
 			} @else if (filteredReservations.length === 0) {
 				<p class="no-reservations-message">
-					Keine Reservierungen vorhanden
+					{{ locale.noReservationsMessage }}
 				</p>
 			} @else {
 				@for (reservation of filteredReservations; track reservation.uuid) {
@@ -62,12 +62,13 @@
 										{{ reservation.numberOfPeople }}
 										{{
 											reservation.numberOfPeople === 1
-												? "Person"
-												: "Personen"
+												? locale.personSingular
+												: locale.personPlural
 										}}
 									</div>
 									<div class="reservation-table">
-										Tisch {{ reservation.table.name }}
+										{{ locale.tablePrefix }}
+										{{ reservation.table.name }}
 									</div>
 								</div>
 							</div>
@@ -94,13 +95,15 @@
 								>
 									<fa-icon [icon]="faCheckCircle"></fa-icon>
 									{{
-										reservation.checkedIn ? "Eingecheckt" : "Check-in"
+										reservation.checkedIn
+											? locale.checkedInText
+											: locale.checkInText
 									}}
 								</dav-button>
 
 								<dav-icon-button
 									size="xs"
-									[tooltip]="'Optionen'"
+									[tooltip]="locale.optionsTooltip"
 									(click)="showReservationOptions($event, reservation)"
 								>
 									<fa-icon [icon]="faEllipsis"></fa-icon>

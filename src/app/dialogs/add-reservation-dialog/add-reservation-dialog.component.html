@@ -85,15 +85,17 @@
 					<div class="availability-success">
 						<h4>{{ locale.availableHeadline }}</h4>
 						<p class="availability-message">
-							{{ reservationTime }} {{ locale.timeSuffix }} ist
-							verfügbar. Bitte tragen Sie die Informationen zur
-							Reservierung ein.
+							{{
+								locale.availableMessage
+									.replace("{time}", reservationTime)
+									.replace("{suffix}", locale.timeSuffix)
+							}}
 						</p>
 						@if (assignedTable) {
 							<p class="assigned-table">
 								<strong>{{ locale.assignedTable }}:</strong> Tisch
 								{{ assignedTable.name }} ({{ assignedTable.seats }}
-								Plätze)
+								{{ locale.seatsText }})
 							</p>
 						}
 					</div>
@@ -102,9 +104,11 @@
 					<div class="availability-alternatives">
 						<h4>{{ locale.notAvailableHeadline }}</h4>
 						<p class="availability-message">
-							Leider ist {{ reservationTime }}
-							{{ locale.timeSuffix }} nicht verfügbar. Wählen Sie eine
-							der folgenden Alternativen:
+							{{
+								locale.notAvailableMessage
+									.replace("{time}", reservationTime)
+									.replace("{suffix}", locale.timeSuffix)
+							}}
 						</p>
 
 						<div class="time-slots-list">

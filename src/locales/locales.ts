@@ -53,7 +53,14 @@ export const de = {
 	},
 	reservationsPage: {
 		headline: "Reservierungen",
-		add: "Reservierung hinzufügen"
+		add: "Reservierung hinzufügen",
+		noReservationsMessage: "Keine Reservierungen vorhanden",
+		personSingular: "Person",
+		personPlural: "Personen",
+		tablePrefix: "Tisch",
+		checkedInText: "Eingecheckt",
+		checkInText: "Check-in",
+		optionsTooltip: "Optionen"
 	},
 	settingsPage: {
 		headline: "Allgemeine Einstellungen",
@@ -343,8 +350,13 @@ export const de = {
 			desiredTimeHeadline: "Gewünschte Reservierungszeit",
 			availableHeadline: "Verfügbar!",
 			notAvailableHeadline: "Nicht verfügbar",
+			notAvailableMessage:
+				"Leider ist {time} {suffix} nicht verfügbar. Wählen Sie eine der folgenden Alternativen:",
+			availableMessage:
+				"{time} {suffix} ist verfügbar. Bitte tragen Sie die Informationen zur Reservierung ein.",
 			contactDetailsHeadline: "Kontaktinformationen",
 			assignedTable: "Zugewiesener Tisch",
+			seatsText: "Plätze",
 			name: "Name",
 			numberOfPeople: "Personenanzahl",
 			phoneNumber: "Telefonnummer (optional)",
@@ -367,6 +379,8 @@ export const de = {
 			assignedTable: "Zugewiesener Tisch",
 			changeNotice:
 				"Hinweis: Änderungen an Personenanzahl oder Uhrzeit erfordern eine erneute Verfügbarkeitsprüfung.",
+			availableMessage: "{time} {suffix} ist verfügbar.",
+			seatsText: "Plätze",
 			name: "Name",
 			numberOfPeople: "Personenanzahl",
 			phoneNumber: "Telefonnummer (optional)",

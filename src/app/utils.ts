@@ -1,6 +1,5 @@
 import { Router } from "@angular/router"
-import { ApolloQueryResult } from "@apollo/client"
-import { MutationResult } from "apollo-angular"
+import { ApolloLink } from "@apollo/client"
 import FingerprintJS from "@fingerprintjs/fingerprintjs"
 import { Toast } from "dav-ui-components"
 import { ApiService } from "./services/api-service"
@@ -155,7 +154,7 @@ export function formatPrice(priceInCents: number): string {
 }
 
 export function getGraphQLErrorCodes(
-	response: ApolloQueryResult<any> | MutationResult<any>
+	response: ApolloLink.Result<any>
 ): ErrorCode[] {
 	if (response.errors == null) {
 		return []

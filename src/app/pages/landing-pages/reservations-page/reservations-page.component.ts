@@ -7,11 +7,13 @@ import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
 import { AddReservationDialogComponent } from "src/app/dialogs/add-reservation-dialog/add-reservation-dialog.component"
 import { EditReservationDialogComponent } from "src/app/dialogs/edit-reservation-dialog/edit-reservation-dialog.component"
-import { faEllipsis, faTrash, faPen } from "@fortawesome/free-solid-svg-icons"
 import {
 	faCheckCircle,
 	faChevronLeft,
-	faChevronRight
+	faChevronRight,
+	faEllipsis,
+	faTrash,
+	faPen
 } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 

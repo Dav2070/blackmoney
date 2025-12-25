@@ -16,6 +16,7 @@ import { EditProductDialogComponent } from "src/app/dialogs/edit-product-dialog/
 import { AddOfferDialogComponent } from "src/app/dialogs/add-offer-dialog/add-offer-dialog.component"
 import { EditOfferDialogComponent } from "src/app/dialogs/edit-offer-dialog/edit-offer-dialog.component"
 import { ProductType } from "src/app/types"
+import { convertCategoryResourceToCategory } from "src/app/utils"
 
 @Component({
 	templateUrl: "./category-page.component.html",
@@ -74,13 +75,24 @@ export class CategoryPageComponent {
 		this.categoryUuid = this.activatedRoute.snapshot.paramMap.get("categoryUuid")
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
+		// Load category with products from backend
+		const retrieveCategoryResponse = await this.apiService.retrieveCategory(
+			`
+				uuid
+				name
+			`,
+			{ uuid: this.categoryUuid }
+		)
+
+		if (retrieveCategoryResponse.data != null) {
+			this.category = convertCategoryResourceToCategory(
+				retrieveCategoryResponse.data.retrieveCategory
+			)
+		}
+
 		// TODO: API - Load variations from backend
 		// Example: this.availableVariations = await this.apiService.retrieveVariations(...)
 		this.availableVariations = []
-
-		// TODO: API - Load category with products from backend
-		// Example: this.category = await this.apiService.retrieveCategory(this.uuid)
-		this.category = null
 
 		// TODO: API - Load available products for offer dialogs
 		// Example: this.availableProducts = await this.apiService.retrieveProducts(...)

@@ -21,7 +21,6 @@ import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/b
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
 import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
-import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
@@ -164,10 +163,6 @@ const routes: Routes = [
 			{
 				path: "settings",
 				component: SettingsPageComponent
-			},
-			{
-				path: "settings/restaurant",
-				component: RestaurantOverviewComponent
 			},
 			{
 				path: "settings/rooms",

@@ -127,7 +127,6 @@ import { MatTableModule } from "@angular/material/table"
 import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
-import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { MatTooltipModule } from "@angular/material/tooltip"
 import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
@@ -236,7 +235,6 @@ import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-p
 		SettingsPageComponent,
 		ItemsTableComponent,
 		VariationsTableComponent,
-		RestaurantOverviewComponent,
 		RoomManagementComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -14,44 +14,18 @@
 		} @else if (categories.length === 0) {
 			<p class="no-categories-message">{{ locale.noCategories }}</p>
 		} @else {
-			@for (category of categories; track category.uuid) {
-				<dav-card>
-					<div class="category-card-container">
-						<div
-							class="category-card-content"
-							(click)="navigateToProducts($event, category)"
-						>
-							<p>{{ category.name }}</p>
-						</div>
-
-						<dav-icon-button
-							size="xs"
-							[tooltip]="locale.options"
-							(click)="showCategoryContextMenu($event, category)"
-						>
-							<fa-icon [icon]="faEllipsis"></fa-icon>
-						</dav-icon-button>
-					</div>
-				</dav-card>
-			}
+			<dav-list>
+				@for (category of categories; track category.uuid) {
+					<dav-list-item
+						[headline]="category.name"
+						[href]="'/user/restaurants/' + uuid + '/menu/categories/' + category.uuid"
+						(click)="navigateToProducts($event, category)"
+					></dav-list-item>
+				}
+			</dav-list>
 		}
 	</div>
 </div>
-
-<!-- Category Context Menu -->
-<dav-context-menu
-	#categoryContextMenu
-	[visible]="categoryContextMenuVisible"
-	[posX]="categoryContextMenuX"
-	[posY]="categoryContextMenuY"
->
-	<dav-context-menu-item
-		[value]="actionsLocale.delete"
-		(click)="deleteSelectedCategory()"
-	>
-		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
-	</dav-context-menu-item>
-</dav-context-menu>
 
 <app-add-category-dialog
 	#addCategoryDialog

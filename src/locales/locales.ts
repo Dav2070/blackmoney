@@ -158,10 +158,9 @@ export const de = {
 		offers: "Angebote",
 		menu: "Menüs"
 	},
-	categoryPage: {
+	categoriesPage: {
 		headline: "Deine Kategorien",
-		noCategories: "Keine Kategorien vorhanden",
-		options: "Weitere Optionen"
+		noCategories: "Keine Kategorien vorhanden"
 	},
 	productPage: {
 		headline: "Produkte verwalten",

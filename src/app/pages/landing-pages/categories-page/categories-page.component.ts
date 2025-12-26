@@ -1,7 +1,5 @@
-import { Component, ViewChild, ElementRef, HostListener } from "@angular/core"
+import { Component, ViewChild } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
-import { ContextMenu } from "dav-ui-components"
 import { Category } from "src/app/models/Category"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
@@ -20,18 +18,8 @@ export class CategoriesPageComponent {
 	addCategoryDialogLoading: boolean = false
 	addCategoryDialogNameError: string = ""
 
-	// Context Menu
-	categoryContextMenuVisible: boolean = false
-	categoryContextMenuX: number = 0
-	categoryContextMenuY: number = 0
-	selectedCategoryForContext: Category = null
-	@ViewChild("categoryContextMenu")
-	categoryContextMenu: ElementRef<ContextMenu>
-
-	locale = this.localizationService.locale.categoryPage
+	locale = this.localizationService.locale.categoriesPage
 	actionsLocale = this.localizationService.locale.actions
-	faTrash = faTrash
-	faEllipsis = faEllipsis
 
 	categories: Category[] = []
 	uuid: string = null
@@ -83,7 +71,8 @@ export class CategoriesPageComponent {
 	}
 
 	navigateToProducts(event: Event, category: Category) {
-		event.stopPropagation()
+		event.preventDefault()
+
 		this.router.navigate([
 			"user",
 			"restaurants",
@@ -116,46 +105,5 @@ export class CategoriesPageComponent {
 
 		this.addCategoryDialogLoading = false
 		this.addCategoryDialog.hide()
-	}
-
-	showCategoryContextMenu(event: Event, category: Category) {
-		const detail = (event as CustomEvent).detail
-		this.selectedCategoryForContext = category
-
-		if (this.categoryContextMenuVisible) {
-			this.categoryContextMenuVisible = false
-		} else {
-			this.categoryContextMenuX = detail.contextMenuPosition.x
-			this.categoryContextMenuY = detail.contextMenuPosition.y
-			this.categoryContextMenuVisible = true
-		}
-	}
-
-	deleteSelectedCategory() {
-		if (!this.selectedCategoryForContext) return
-		this.deleteCategory(this.selectedCategoryForContext)
-		this.categoryContextMenuVisible = false
-	}
-
-	deleteCategory(category: Category) {
-		const confirmed = confirm(
-			`Kategorie "${category.name}" wirklich löschen?`
-		)
-		if (!confirmed) return
-
-		// TODO: API - Delete category
-		// Example: await this.apiService.deleteCategory({ uuid: category.uuid })
-
-		this.categories = this.categories.filter(c => c.uuid !== category.uuid)
-	}
-
-	@HostListener("document:click", ["$event"])
-	documentClick(event: MouseEvent) {
-		if (
-			this.categoryContextMenuVisible &&
-			!this.categoryContextMenu.nativeElement.contains(event.target as Node)
-		) {
-			this.categoryContextMenuVisible = false
-		}
 	}
 }

@@ -9,7 +9,6 @@
 	box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 	padding: 16px;
 	box-sizing: border-box;
-	cursor: pointer;
 	transition: 200ms;
 
 	p {
@@ -17,14 +16,23 @@
 	}
 }
 
-.order-item-card:hover {
+.order-item-card.clickable {
+	cursor: pointer;
+}
+
+.order-item-card.clickable:hover {
 	background-color: var(--dav-color-surface-hover);
 }
 
-.order-item-card:focus,
-.order-item-card:active,
-.order-item-card.selected {
+.order-item-card.clickable:focus,
+.order-item-card.clickable:active,
+.order-item-card.clickable.selected {
 	background-color: var(--dav-color-surface-focus);
+}
+
+.order-item-card-id {
+	display: flex;
+	align-items: center;
 }
 
 .order-item-card-unit-price > p {

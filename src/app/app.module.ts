@@ -25,6 +25,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar"
 import { MatDialogModule } from "@angular/material/dialog"
 import { MatSlideToggleModule } from "@angular/material/slide-toggle"
 import { MatRadioModule } from "@angular/material/radio"
+import { MatButtonToggleModule } from "@angular/material/button-toggle"
 
 // Apollo
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
@@ -35,19 +36,20 @@ import { AppRoutingModule } from "./app-routing.module"
 
 // Components
 import { AppComponent } from "./app.component"
-import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
-import { SettingsBarComponent } from "./components/settings/settings-bar/settings-bar.component"
 import { HeaderComponent } from "./components/cash-register/header/header.component"
 import { HeadlineComponent } from "./components/cash-register/headline/headline.component"
 import { OrderItemCardComponent } from "./components/cash-register/order-item-card/order-item-card.component"
 import { OfferOrderItemCardComponent } from "./components/cash-register/offer-order-item-card/offer-order-item-card.component"
+import { CounterComponent } from "./components/cash-register/counter/counter.component"
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
-import { EditDeviceNameDialogComponent } from "./dialogs/edit-device-name-dialog/edit-device-name-dialog.component"
+import { EditRegisterClientNameDialogComponent } from "./dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
+import { AddReservationDialogComponent } from "./dialogs/add-reservation-dialog/add-reservation-dialog.component"
+import { EditReservationDialogComponent } from "./dialogs/edit-reservation-dialog/edit-reservation-dialog.component"
 import { AddRegisterDialogComponent } from "./dialogs/add-register-dialog/add-register-dialog.component"
 import { AddPrinterDialogComponent } from "./dialogs/add-printer-dialog/add-printer-dialog.component"
 import { EditPrinterDialogComponent } from "./dialogs/edit-printer-dialog/edit-printer-dialog.component"
@@ -58,12 +60,28 @@ import { AddTableDialogComponent } from "./dialogs/add-table-dialog/add-table-di
 import { EditTableDialogComponent } from "./dialogs/edit-table-dialog/edit-table-dialog.component"
 import { DeleteTableDialogComponent } from "./dialogs/delete-table-dialog/delete-table-dialog.component"
 import { SelectTableDialogComponent } from "./dialogs/select-table-dialog/select-table-dialog.component"
+import { AddPrintRuleDialogComponent } from "./dialogs/add-print-rule-dialog/add-print-rule-dialog.component"
+import { EditPrintRuleDialogComponent } from "./dialogs/edit-print-rule-dialog/edit-print-rule-dialog.component"
+import { DeletePrintRuleDialogComponent } from "./dialogs/delete-print-rule-dialog/delete-print-rule-dialog.component"
 import { ResetPasswordDialogComponent } from "./dialogs/reset-password-dialog/reset-password-dialog.component"
+import { BillsOverviewDialogComponent } from "./dialogs/bills-overview-dialog/bills-overview-dialog.component"
 import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
+import { SelectMenuSpecialProductsDialogComponent } from "./dialogs/select-menu-special-products-dialog/select-menu-special-products-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { SubtractProductVariationsDialogComponent } from "./dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
+import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
+import { AddTakeawayDialogComponent } from "./dialogs/add-takeaway-dialog/add-takeaway-dialog.component"
+import { EditTakeawayDialogComponent } from "./dialogs/edit-takeaway-dialog/edit-takeaway-dialog.component"
+import { TakeawayDialogComponent } from "./dialogs/takeaway-dialog/takeaway-dialog.component"
+import { AddCategoryDialogComponent } from "./dialogs/add-category-dialog/add-category-dialog.component"
+import { AddOfferDialogComponent } from "./dialogs/add-offer-dialog/add-offer-dialog.component"
+import { EditOfferDialogComponent } from "./dialogs/edit-offer-dialog/edit-offer-dialog.component"
+import { OfferBasicDataComponent } from "./dialogs/add-offer-dialog/offer-basic-data/offer-basic-data.component"
+import { OfferItemsComponent } from "./dialogs/add-offer-dialog/offer-items/offer-items.component"
+import { OfferAvailabilityComponent } from "./dialogs/add-offer-dialog/offer-availability/offer-availability.component"
 
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
@@ -75,6 +93,7 @@ import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page
 import { RestaurantPageComponent } from "./pages/landing-pages/restaurant-page/restaurant-page.component"
 import { RegistersPageComponent } from "./pages/landing-pages/registers-page/registers-page.component"
 import { RegisterPageComponent } from "./pages/landing-pages/register-page/register-page.component"
+import { RegisterClientPageComponent } from "./pages/landing-pages/register-client-page/register-client-page.component"
 import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/employees-page.component"
 import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
@@ -88,6 +107,12 @@ import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/p
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
+import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
+import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
+import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
+import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
+import { ProductListComponent } from "./pages/landing-pages/category-page/product-list/product-list.component"
+import { OfferListComponent } from "./pages/landing-pages/category-page/offer-list/offer-list.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -97,39 +122,42 @@ import { SettingsService } from "./services/settings-service"
 import { LocalizationService } from "./services/localization-service"
 
 import { ServiceWorkerModule } from "@angular/service-worker"
-import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
-import { ItemsTableComponent } from "./components/settings/items-table/items-table.component"
 import { MatTableModule } from "@angular/material/table"
 import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
-import { VariationsTableComponent } from "./components/settings/variations-table/variations-table.component"
-import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
 import { MatTooltipModule } from "@angular/material/tooltip"
-import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
-import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
-import { MenuTableComponent } from "./components/settings/menu-table/menu-table.component"
-import { SpecialsTableComponent } from "./components/settings/specials-table/specials-table.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
-import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
+import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
+import { AddVariationDialogComponent } from "./dialogs/add-variation-dialog/add-variation-dialog.component"
+import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
+import { EditVariationDialogComponent } from "./dialogs/edit-variation-dialog/edit-variation-dialog.component"
+import { EditVariationItemDialogComponent } from "./dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
+import { EditCategoryDialogComponent } from "./dialogs/edit-category-dialog/edit-category-dialog.component"
+import { DeleteCategoryDialogComponent } from "./dialogs/delete-category-dialog/delete-category-dialog.component"
+import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-product-dialog.component"
+import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-product-dialog.component"
+import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
 import { EditOpeningTimeDialogComponent } from "./dialogs/edit-opening-time-dialog/edit-opening-time-dialog.component"
 
 @NgModule({
 	declarations: [
 		// Components
 		AppComponent,
-		SettingsBarComponent,
 		HeaderComponent,
 		HeadlineComponent,
 		OrderItemCardComponent,
 		OfferOrderItemCardComponent,
+		CounterComponent,
 		// Dialog
 		LogoutDialogComponent,
-		EditDeviceNameDialogComponent,
+		EditRegisterClientNameDialogComponent,
 		EditRestaurantNameDialogComponent,
 		EditAddressDialogComponent,
 		AddEmployeeDialogComponent,
+		AddReservationDialogComponent,
+		EditReservationDialogComponent,
 		AddRegisterDialogComponent,
 		AddPrinterDialogComponent,
 		EditPrinterDialogComponent,
@@ -140,14 +168,38 @@ import { EditOpeningTimeDialogComponent } from "./dialogs/edit-opening-time-dial
 		EditTableDialogComponent,
 		DeleteTableDialogComponent,
 		SelectTableDialogComponent,
+		AddPrintRuleDialogComponent,
+		EditPrintRuleDialogComponent,
+		DeletePrintRuleDialogComponent,
 		ResetPasswordDialogComponent,
+		BillsOverviewDialogComponent,
 		SelectProductDialogComponent,
+		SelectMenuSpecialProductsDialogComponent,
 		SelectProductVariationsDialogComponent,
+		SubtractProductVariationsDialogComponent,
 		MoveMultipleProductsDialogComponent,
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,
+		AddDiverseProductDialogComponent,
+		AddTakeawayDialogComponent,
+		EditTakeawayDialogComponent,
+		TakeawayDialogComponent,
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
+		AddCategoryDialogComponent,
+		AddOfferDialogComponent,
+		EditOfferDialogComponent,
+		OfferBasicDataComponent,
+		OfferItemsComponent,
+		OfferAvailabilityComponent,
+		AddVariationDialogComponent,
+		AddVariationItemDialogComponent,
+		EditVariationDialogComponent,
+		EditVariationItemDialogComponent,
+		EditCategoryDialogComponent,
+		DeleteCategoryDialogComponent,
+		AddProductDialogComponent,
+		EditProductDialogComponent,
 		EditOpeningTimeDialogComponent,
 		// Pages
 		LandingPageComponent,
@@ -159,6 +211,7 @@ import { EditOpeningTimeDialogComponent } from "./dialogs/edit-opening-time-dial
 		RestaurantPageComponent,
 		RegistersPageComponent,
 		RegisterPageComponent,
+		RegisterClientPageComponent,
 		EmployeesPageComponent,
 		EmployeePageComponent,
 		LoginPageComponent,
@@ -169,22 +222,19 @@ import { EditOpeningTimeDialogComponent } from "./dialogs/edit-opening-time-dial
 		BookingPageComponent,
 		TransferPageComponent,
 		PaymentPageComponent,
+		CategoryPageComponent,
+		CategoriesPageComponent,
+		MenuPageComponent,
 		//Landing-Pages
 		PrintersPageComponent,
 		RoomsPageComponent,
 		RoomPageComponent,
 		TableCombinationsPageComponent,
 		OpeningTimePageComponent,
-		//Settings-Pages
-		SettingsPageComponent,
-		MenuePageComponent,
-		ItemsTableComponent,
-		VariationsTableComponent,
-		RestaurantOverviewComponent,
-		RoomManagementComponent,
-		EmployeeManagementComponent,
-		MenuTableComponent,
-		SpecialsTableComponent
+		ReservationsPageComponent,
+		VariationsOverviewPageComponent,
+		ProductListComponent,
+		OfferListComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],
@@ -215,6 +265,7 @@ import { EditOpeningTimeDialogComponent } from "./dialogs/edit-opening-time-dial
 		MatSlideToggleModule,
 		MatRadioModule,
 		MatTooltipModule,
+		MatButtonToggleModule,
 		//ServiceWorker
 		ServiceWorkerModule.register("ngsw-worker.js", {
 			enabled: !isDevMode(),

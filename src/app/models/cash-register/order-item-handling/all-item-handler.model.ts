@@ -1,17 +1,18 @@
 import { OrderItem } from "src/app/models/OrderItem"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
-import { Variation } from "src/app/models/Variation"
 import { ApiService } from "src/app/services/api-service"
 import {
 	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder
 } from "src/app/utils"
+import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { Order } from "../../Order"
 import { OrderItemMerger } from "./order-item-merger"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
-	private merger: OrderItemMerger
+	private readonly merger: OrderItemMerger
+	private readonly priceCalculator = new PriceCalculator()
 
 	constructor() {
 		this.merger = new OrderItemMerger(this.allPickedItems)
@@ -28,49 +29,84 @@ export class AllItemHandler {
 	): Promise<Order> {
 		let order = await apiService.retrieveTable(
 			`
-                orders(paid: $paid) {
-                    total
-                    items {
-                        uuid
-                        totalPrice
-                        bill {
-                            uuid
-                        }
-                        orderItems {
-                            total
-                            items {
-                                uuid
-                                count
-                                order {
-                                    uuid
-                                }
-                                product {
-                                    id
-                                    uuid
-                                    name
-                                    price
-                                }
-                                orderItemVariations {
-                                    total
-                                    items {
-                                        uuid
-                                        count
-                                        variationItems {
-                                            total
-                                            items {
-                                                id
-                                                uuid
-                                                name
-                                                additionalCost
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            `,
+				orders(paid: $paid) {
+					total
+					items {
+						uuid
+						totalPrice
+						bill {
+							uuid
+						}
+						orderItems {
+							total
+							items {
+								uuid
+								count
+								type
+								discount
+								order {
+									uuid
+								}
+								product {
+									id
+									uuid
+									name
+									price
+								}
+								orderItemVariations {
+									total
+									items {
+										uuid
+										count
+										variationItems {
+											total
+											items {
+												id
+												uuid
+												name
+												additionalCost
+											}
+										}
+									}
+								}
+								orderItems {
+									items {
+										uuid
+										count
+										type
+										discount
+										notes
+										takeAway
+										course
+										product {
+											id
+											uuid
+											name
+											type
+											price
+											variations {
+												total
+												items {
+													uuid
+													name
+													variationItems {
+														total
+														items {
+															uuid
+															name
+															additionalCost
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			`,
 			{
 				uuid: tableUuid,
 				paid: false
@@ -98,11 +134,11 @@ export class AllItemHandler {
 		const incoming = { ...pickedItem } // Kopie zum Schutz vor Seiteneffekten
 
 		// Suche Merge-Ziel (gibt undefined zurück, wenn keines vorhanden)
-		const target = this.merger.findMergeTarget(incoming)
+		const target = this.merger.findMergeTarget(incoming, this.allPickedItems)
 
 		if (target) {
 			// Match gefunden -> zusammenführen; wenn Merge fehlschlägt -> einfügen
-			const merged = this.merger.mergeIntoExisting(target, incoming)
+			this.merger.mergeIntoExisting(target, incoming)
 		} else {
 			// Kein Match -> neues Item einfügen
 			this.insertAtIndex(incoming, index)
@@ -261,9 +297,14 @@ export class AllItemHandler {
 		return this.allPickedItems.length === 0
 	}
 
-	// TODO: Funktionalität implementieren
 	calculateTotal() {
-		return 0.1
+		let total = 0
+
+		for (const item of this.allPickedItems) {
+			total += this.priceCalculator.calculateTotalPrice(item)
+		}
+
+		return total
 	}
 
 	transferAllItems(AllItemHandlerTarget: AllItemHandler) {
@@ -314,6 +355,6 @@ export class AllItemHandler {
 	// Klont ein OrderItem sauber (statt JSON.stringify/parse überall)
 	cloneOrderItem<T extends OrderItem>(item: T): T {
 		// tiefer Klon: Produkte/Variationen/Subitems klonen
-		return JSON.parse(JSON.stringify(item)) as T
+		return structuredClone(item)
 	}
 }

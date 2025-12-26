@@ -11,9 +11,9 @@ export class OrderItem {
 	order: Order
 	offer?: Offer
 	product: Product
-	orderItems?: OrderItem[]
-	orderItemVariations?: OrderItemVariation[]
-	note?: string
+	orderItems: OrderItem[]
+	orderItemVariations: OrderItemVariation[]
+	notes?: string
 	discount?: number
 	takeAway?: boolean
 	course?: number

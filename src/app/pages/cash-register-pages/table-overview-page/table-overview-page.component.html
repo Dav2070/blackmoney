@@ -4,7 +4,15 @@
 			[headline]="locale.headline"
 			[showBackButton]="true"
 			(backButtonClick)="navigateToUserPage()"
-		></app-headline>
+		>
+			<dav-icon-button
+				size="sm"
+				tooltip="Takeaway"
+				(click)="toggleTakeawayDialog()"
+			>
+				<fa-icon [icon]="faCupTogo"></fa-icon>
+			</dav-icon-button>
+		</app-headline>
 
 		@if (selectedRoom != null) {
 			@for (table of selectedRoom.tables; track table.uuid) {
@@ -46,3 +54,12 @@
 		</dav-sidenav>
 	</div>
 </div>
+
+<app-takeaway-dialog
+	#takeawayDialog
+	[orders]="takeawayOrders"
+	(addOrder)="handleAddTakeawayOrder($event)"
+	(deleteOrderEvent)="handleDeleteTakeawayOrder($event)"
+	(updateOrder)="handleUpdateTakeawayOrder($event)"
+	(navigateToOrderEvent)="handleNavigateToOrder($event)"
+></app-takeaway-dialog>

@@ -1,0 +1,113 @@
+<div class="products-list">
+	@if (products?.length > 0) {
+		@for (product of products; track product.uuid) {
+			<dav-card class="product-card">
+				<div class="product-header">
+					<div class="header-content">
+						<h3>{{ product.name }}</h3>
+						<span class="product-id">ID: {{ product.id }}</span>
+					</div>
+					<div class="product-actions">
+						<dav-icon-button
+							size="xs"
+							[tooltip]="'Optionen'"
+							(click)="showProductContextMenu($event, product)"
+						>
+							<fa-icon [icon]="faEllipsis"></fa-icon>
+						</dav-icon-button>
+					</div>
+				</div>
+
+				<div class="separator"></div>
+
+				<div class="product-content">
+					<div class="product-meta">
+						<span class="price">{{
+							product.price / 100 | currency: "EUR" : "symbol" : "1.2-2"
+						}}</span>
+						@if (product.takeaway) {
+							<span class="badge takeaway">Takeaway</span>
+						}
+					</div>
+
+					@if (product.variations?.length > 0) {
+						<div class="variations-section">
+							<strong>Variationen:</strong>
+							<div class="variation-chips">
+								@for (
+									variation of product.variations;
+									track variation.uuid
+								) {
+									<div
+										class="variation-chip"
+										(mouseenter)="
+											showVariationTooltip($event, variation)
+										"
+										(mouseleave)="scheduleHideVariationTooltip()"
+									>
+										<span class="variation-badge">{{
+											variation.name
+										}}</span>
+									</div>
+								}
+							</div>
+						</div>
+					} @else {
+						<p class="no-variations">Keine Variationen</p>
+					}
+				</div>
+			</dav-card>
+		}
+	} @else {
+		<div class="empty-state">
+			<p>Keine Produkte für {{ category?.name }}.</p>
+		</div>
+	}
+
+	<!-- Variation Tooltip Overlay -->
+	@if (variationTooltipVisible) {
+		<div
+			class="variation-tooltip-overlay"
+			[style.left.px]="variationTooltipX"
+			[style.top.px]="variationTooltipY"
+			(mouseenter)="keepTooltipOpen()"
+			(mouseleave)="scheduleHideVariationTooltip()"
+		>
+			<strong>{{ variationTooltipTitle }}</strong>
+			<div class="variation-tooltip-items">
+				@for (item of variationTooltipItems; track item.uuid) {
+					<div class="variation-item">
+						<span>{{ item.name }}</span>
+						<span class="variation-price">
+							+{{
+								item.additionalCost / 100
+									| currency: "EUR" : "symbol" : "1.2-2"
+							}}
+						</span>
+					</div>
+				}
+			</div>
+		</div>
+	}
+
+	<!-- Context Menu -->
+	<dav-context-menu
+		#productContextMenu
+		[visible]="contextMenuVisible"
+		[posX]="contextMenuX"
+		[posY]="contextMenuY"
+	>
+		<dav-context-menu-item
+			[value]="'Bearbeiten'"
+			(click)="editSelectedProduct()"
+		>
+			<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+		</dav-context-menu-item>
+		<dav-context-menu-item
+			[value]="'Löschen'"
+			(click)="deleteSelectedProduct()"
+		>
+			<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+		</dav-context-menu-item>
+	</dav-context-menu>
+</div>

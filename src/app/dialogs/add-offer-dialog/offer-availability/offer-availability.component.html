@@ -1,0 +1,70 @@
+<div class="tab-content">
+	<h4>{{ locale.availability }}</h4>
+
+	<div class="dialog-formfield-container">
+		<label class="form-label">{{ locale.weekdays }}</label>
+		<div class="weekdays-grid">
+			@for (weekday of weekdayOptions; track weekday.value) {
+				<label class="weekday-checkbox">
+					<input
+						type="checkbox"
+						[checked]="isWeekdaySelected(weekday.value)"
+						(change)="toggleWeekday(weekday.value)"
+					/>
+					<span>{{ weekday.label }}</span>
+				</label>
+			}
+			<button
+				type="button"
+				class="select-all-button"
+				(click)="selectAllWeekdays()"
+			>
+				{{ locale.selectAllDays }}
+			</button>
+		</div>
+	</div>
+
+	<div class="time-fields">
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="data.startDate"
+				[label]="locale.startDate"
+				[disabled]="loading"
+				type="date"
+				(change)="startDateChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="data.endDate"
+				[label]="locale.endDate"
+				[disabled]="loading"
+				type="date"
+				(change)="endDateChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+	</div>
+
+	<div class="time-fields">
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="data.startTime"
+				[label]="locale.startTime"
+				[disabled]="loading"
+				type="time"
+				(change)="startTimeChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="data.endTime"
+				[label]="locale.endTime"
+				[disabled]="loading"
+				type="time"
+				(change)="endTimeChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+	</div>
+</div>

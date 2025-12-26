@@ -1,0 +1,152 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			addButtonVisible
+			[tooltip]="locale.add"
+			backButtonVisible
+			(addButtonClick)="showAddReservationDialog()"
+			(backButtonClick)="navigateBack()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		<div class="date-navigation">
+			<dav-icon-button size="sm" (click)="previousDay()">
+				<fa-icon [icon]="faChevronLeft"></fa-icon>
+			</dav-icon-button>
+
+			<div class="date-selector">
+				<button class="date-label" (click)="toggleCalendar()" type="button">
+					{{ getDateLabel() }}
+				</button>
+
+				@if (showCalendar) {
+					<div class="calendar-popover">
+						<dav-textfield
+							[value]="getFormattedDateForInput()"
+							type="date"
+							(change)="onDateChange($event)"
+						></dav-textfield>
+					</div>
+				}
+			</div>
+
+			<dav-icon-button size="sm" (click)="nextDay()">
+				<fa-icon [icon]="faChevronRight"></fa-icon>
+			</dav-icon-button>
+		</div>
+
+		<div class="content">
+			@if (loading) {
+				<dav-progress-ring size="24"></dav-progress-ring>
+			} @else if (filteredReservations.length === 0) {
+				<p class="no-reservations-message">
+					{{ locale.noReservationsMessage }}
+				</p>
+			} @else {
+				@for (reservation of filteredReservations; track reservation.uuid) {
+					<dav-card class="reservation-card">
+						<div class="reservation-card-container">
+							<div class="reservation-info-section">
+								<div class="reservation-header">
+									<div class="reservation-name">
+										<strong>{{ reservation.name }}</strong>
+									</div>
+									<div class="reservation-time">
+										{{ reservation.reservationTime }}
+									</div>
+								</div>
+
+								<div class="reservation-details">
+									<div class="reservation-people">
+										{{ reservation.numberOfPeople }}
+										{{
+											reservation.numberOfPeople === 1
+												? locale.personSingular
+												: locale.personPlural
+										}}
+									</div>
+									<div class="reservation-table">
+										{{ locale.tablePrefix }}
+										{{ reservation.table.name }}
+									</div>
+								</div>
+							</div>
+
+							<div class="reservation-actions-section">
+								<div class="reservation-contact">
+									@if (reservation.phoneNumber) {
+										<p class="contact-item">
+											{{ reservation.phoneNumber }}
+										</p>
+									}
+									@if (reservation.email) {
+										<p class="contact-item">
+											{{ reservation.email }}
+										</p>
+									}
+								</div>
+
+								<dav-button
+									[outline]="!reservation.checkedIn"
+									size="sm"
+									class="check-in-button"
+									(click)="toggleCheckedIn(reservation)"
+								>
+									<fa-icon [icon]="faCheckCircle"></fa-icon>
+									{{
+										reservation.checkedIn
+											? locale.checkedInText
+											: locale.checkInText
+									}}
+								</dav-button>
+
+								<dav-icon-button
+									size="xs"
+									[tooltip]="locale.optionsTooltip"
+									(click)="showReservationOptions($event, reservation)"
+								>
+									<fa-icon [icon]="faEllipsis"></fa-icon>
+								</dav-icon-button>
+							</div>
+						</div>
+					</dav-card>
+				}
+			}
+		</div>
+	</div>
+</div>
+
+<app-add-reservation-dialog
+	#addReservationDialog
+	[rooms]="rooms"
+	(primaryButtonClick)="addReservationDialogPrimaryButtonClick($event)"
+></app-add-reservation-dialog>
+
+<app-edit-reservation-dialog
+	#editReservationDialog
+	[rooms]="rooms"
+	(primaryButtonClick)="editReservationDialogPrimaryButtonClick($event)"
+></app-edit-reservation-dialog>
+
+<!-- Reservation context menu -->
+<dav-context-menu
+	#reservationContextMenu
+	[visible]="reservationContextMenuVisible"
+	[posX]="reservationContextMenuX"
+	[posY]="reservationContextMenuY"
+>
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="editSelectedReservation()"
+	>
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="deleteSelectedReservation()"
+	>
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

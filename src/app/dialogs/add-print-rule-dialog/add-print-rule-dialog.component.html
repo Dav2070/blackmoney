@@ -1,0 +1,113 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.add"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	[loading]="loading"
+	[primaryButtonDisabled]="
+		selectedPrinters.length === 0 ||
+		(selectedPrintRuleType === 'categories' &&
+			selectedCategories.length === 0) ||
+		(selectedPrintRuleType === 'products' && selectedProducts.length === 0)
+	"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<div class="container">
+		<div>
+			<p>{{ locale.typeSubhead }}</p>
+
+			<dav-radio-group (change)="radioGroupChange($event)">
+				<dav-radio-button
+					[label]="locale.bills"
+					value="bills"
+					checked
+				></dav-radio-button>
+
+				<dav-radio-button
+					[label]="locale.foodAndDrinks"
+					value="foodAndDrinks"
+				></dav-radio-button>
+
+				<dav-radio-button
+					[label]="locale.drinks"
+					value="drinks"
+				></dav-radio-button>
+
+				<dav-radio-button
+					[label]="locale.food"
+					value="food"
+				></dav-radio-button>
+
+				<dav-radio-button
+					[label]="locale.categories"
+					value="categories"
+				></dav-radio-button>
+
+				<div class="category-search-container">
+					<dav-search-textfield
+						[label]="locale.selectCategories"
+						[searchResults]="categories"
+						(change)="categoriesSearchTextfieldChange($event)"
+						(select)="categoriesSearchTextfieldSelect($event)"
+						[disabled]="selectedPrintRuleType !== 'categories'"
+					></dav-search-textfield>
+
+					<div class="selected-categories-container">
+						@for (category of selectedCategories; track category.key) {
+							<dav-badge (click)="removeSelectedCategory(category.key)">
+								{{ category.value }}
+							</dav-badge>
+						}
+					</div>
+				</div>
+
+				<dav-radio-button
+					[label]="locale.products"
+					value="products"
+				></dav-radio-button>
+
+				<div class="product-search-container">
+					<dav-search-textfield
+						[label]="locale.selectProducts"
+						[searchResults]="products"
+						(change)="productsSearchTextfieldChange($event)"
+						(select)="productsSearchTextfieldSelect($event)"
+						[disabled]="selectedPrintRuleType !== 'products'"
+					></dav-search-textfield>
+
+					<div class="selected-products-container">
+						@for (product of selectedProducts; track product.key) {
+							<dav-badge (click)="removeSelectedProduct(product.key)">
+								{{ product.value }}
+							</dav-badge>
+						}
+					</div>
+				</div>
+			</dav-radio-group>
+		</div>
+
+		<div>
+			<p>{{ locale.printersSubhead }}</p>
+
+			<div class="printer-search-container">
+				<dav-search-textfield
+					[label]="locale.selectPrinters"
+					[searchResults]="printers"
+					(change)="printersSearchtextfieldChange($event)"
+					(select)="printersSearchTextfieldSelect($event)"
+				></dav-search-textfield>
+
+				<div class="selected-printers-container">
+					@for (printer of selectedPrinters; track printer.key) {
+						<dav-badge (click)="removeSelectedPrinter(printer.key)">
+							{{ printer.value }}
+						</dav-badge>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</dav-dialog>

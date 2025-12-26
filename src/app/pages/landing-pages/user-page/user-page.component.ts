@@ -6,7 +6,8 @@ import {
 	faArrowRightFromBracket,
 	faCashRegister,
 	faUsers,
-	faShop
+	faShop,
+	faCalendarCheck
 } from "@fortawesome/pro-regular-svg-icons"
 import { LogoutDialogComponent } from "src/app/dialogs/logout-dialog/logout-dialog.component"
 import { DataService } from "src/app/services/data-service"
@@ -27,6 +28,7 @@ export class UserPageComponent {
 	faCashRegister = faCashRegister
 	faUsers = faUsers
 	faShop = faShop
+	faCalendarCheck = faCalendarCheck
 	@ViewChild("logoutDialog")
 	logoutDialog: LogoutDialogComponent
 	title = ""
@@ -84,5 +86,11 @@ export class UserPageComponent {
 		event.preventDefault()
 
 		this.router.navigate(["user", "restaurants"])
+	}
+
+	navigateToReservationsPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "reservations"])
 	}
 }

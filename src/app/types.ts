@@ -1,3 +1,4 @@
+import { Apollo } from "apollo-angular"
 import * as ErrorCodes from "./errorCodes"
 
 export interface List<T> {
@@ -9,6 +10,10 @@ export enum Theme {
 	System = "system",
 	Light = "light",
 	Dark = "dark"
+}
+
+export type ApolloResult<T> = Apollo.MutateResult<T> & {
+	error?: { errors?: { extensions?: { code?: string; errors?: string[] } }[] }
 }
 
 export interface SessionResource {
@@ -48,12 +53,14 @@ export interface RegisterClientResource {
 	uuid: string
 	name: string
 	serialNumber: string
+	printRules: List<PrintRuleResource>
 }
 
 export interface UserResource {
 	uuid: string
 	name: string
 	role: UserRole
+	company: CompanyResource
 }
 
 export interface RoomResource {
@@ -75,6 +82,15 @@ export interface PrinterResource {
 	ipAddress: string
 }
 
+export interface PrintRuleResource {
+	uuid: string
+	type: PrintRuleType
+	productType?: ProductType
+	printers: List<PrinterResource>
+	categories: List<CategoryResource>
+	products: List<ProductResource>
+}
+
 export interface MenuResource {
 	uuid: string
 	categories: List<CategoryResource>
@@ -84,7 +100,6 @@ export interface MenuResource {
 export interface OfferResource {
 	id: number
 	uuid: string
-	name: string
 	offerType: OfferType
 	discountType?: DiscountType
 	offerValue: number
@@ -93,6 +108,7 @@ export interface OfferResource {
 	startTime?: string
 	endTime?: string
 	weekdays: Weekday[]
+	product?: ProductResource
 	offerItems: List<OfferItemResource>
 }
 
@@ -106,9 +122,11 @@ export interface OfferItemResource {
 export interface ProductResource {
 	id: number
 	uuid: string
+	type: ProductType
 	name: string
 	price: number
 	category: CategoryResource
+	offer?: OfferResource
 	variations: List<VariationResource>
 }
 
@@ -129,7 +147,6 @@ export interface VariationItemResource {
 export interface CategoryResource {
 	uuid: string
 	name: string
-	type: CategoryType
 	products: List<ProductResource>
 }
 
@@ -151,8 +168,13 @@ export interface OrderItemResource {
 	uuid: string
 	count: number
 	type: OrderItemType
+	discount: number
+	notes?: string
+	takeAway: boolean
+	course?: number
 	order: OrderResource
 	product: ProductResource
+	orderItems: List<OrderItemResource>
 	orderItemVariations: List<OrderItemVariationResource>
 }
 
@@ -165,7 +187,9 @@ export interface OrderItemVariationResource {
 export interface AddProductsInput {
 	uuid: string
 	count: number
+	discount?: number
 	variations?: AddProductVariationInput[]
+	orderItems?: AddProductOrderItemInput[]
 }
 
 export interface AddProductVariationInput {
@@ -173,14 +197,22 @@ export interface AddProductVariationInput {
 	count: number
 }
 
+export interface AddProductOrderItemInput {
+	productUuid: string
+	count: number
+}
+
 export type UserRole = "OWNER" | "ADMIN" | "USER"
-export type CategoryType = "FOOD" | "DRINK"
+export type ProductType = "FOOD" | "DRINK" | "SPECIAL" | "MENU"
+export type PrintRuleType = "BILLS" | "PRODUCT_TYPE" | "CATEGORIES" | "PRODUCTS"
 
 export enum OrderItemType {
 	Product = "PRODUCT",
 	Menu = "MENU",
 	Special = "SPECIAL"
 }
+
+export type TakeawayFilterType = "ALL" | "DELIVERY" | "PICKUP" | "DINEIN"
 
 export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
@@ -213,3 +245,13 @@ export type ErrorCode =
 	| typeof ErrorCodes.ipAddressInvalid
 	| typeof ErrorCodes.tableNameInvalid
 	| typeof ErrorCodes.seatsInvalid
+
+export interface TimeSlotSuggestion {
+	time: string
+	availableSeats: number
+	table: {
+		uuid: string
+		name: number
+		seats: number
+	}
+}

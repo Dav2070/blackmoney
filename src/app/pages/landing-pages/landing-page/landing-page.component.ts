@@ -50,7 +50,10 @@ export class LandingPageComponent {
 
 	async navigateToUserPage() {
 		if (!this.dataService.dav.isLoggedIn) {
-			Dav.ShowLoginPage(environment.davApiKey, window.location.origin)
+			Dav.ShowLoginPage(
+				environment.davApiKey,
+				`${window.location.origin}/login`
+			)
 		} else if ((await this.authService.getAccessToken()) != null) {
 			this.router.navigate(["user"])
 		} else {

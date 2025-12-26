@@ -88,12 +88,18 @@ export class LoginPageComponent {
 			retrieveCompanyResponse.data.retrieveCompany
 		)
 
-		if (this.company == null) {
+		if (
+			(this.company == null && retrieveCompanyResponse.error == null) ||
+			this.company.restaurants.length === 0
+		) {
+			this.router.navigate(["onboarding"])
+			return
+		} else if (retrieveCompanyResponse.error != null) {
 			this.router.navigate([""])
 			return
 		}
 
-		for (let restaurant of this.company.restaurants) {
+		for (const restaurant of this.company.restaurants) {
 			this.restaurantDropdownOptions.push({
 				key: restaurant.uuid,
 				value: restaurant.name,
@@ -105,7 +111,7 @@ export class LoginPageComponent {
 
 		if (defaultRestaurantUuid != null) {
 			// Find the default restaurant
-			let defaultRestaurant = this.company.restaurants.find(
+			const defaultRestaurant = this.company.restaurants.find(
 				r => r.uuid === defaultRestaurantUuid
 			)
 

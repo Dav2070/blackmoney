@@ -89,6 +89,7 @@
 
 <app-delete-table-dialog
 	#deleteTableDialog
+	[loading]="deleteTableDialogLoading"
 	[name]="deleteTableDialogName"
 	(primaryButtonClick)="deleteTableDialogPrimaryButtonClick()"
 ></app-delete-table-dialog>

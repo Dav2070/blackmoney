@@ -1,0 +1,110 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			editButtonVisible
+			(backButtonClick)="navigateBack()"
+			(editButtonClick)="showEditRegisterClientNameDialog()"
+		>
+			{{ registerClient?.name ?? registerClient?.serialNumber }}
+		</dav-header>
+
+		<div>
+			<dav-header
+				size="sm"
+				addButtonVisible
+				(addButtonClick)="showAddPrintRuleDialog()"
+			>
+				{{ locale.printRulesHeadline }}
+			</dav-header>
+
+			@if (registerClient?.printRules != null) {
+				<div class="print-rules-list">
+					@for (
+						printRule of printRules;
+						track printRule.uuid
+					) {
+						<dav-card>
+							<div class="print-rule-card-container">
+								<p [innerHTML]="getTextForPrintRule(printRule)"></p>
+
+								<div>
+									<dav-icon-button
+										size="xs"
+										[tooltip]="locale.options"
+										(click)="showPrintRuleItemContextMenu($event, printRule)"
+									>
+										<fa-icon [icon]="faEllipsis"></fa-icon>
+									</dav-icon-button>
+								</div>
+
+								<div class="print-rule-printers-list">
+									@for (
+										printer of printRule.printers;
+										track printer.uuid
+									) {
+										<dav-badge>{{ printer.name }}</dav-badge>
+									}
+								</div>
+							</div>
+						</dav-card>
+					}
+				</div>
+			}
+		</div>
+	</div>
+</div>
+
+<app-edit-register-client-name-dialog
+	#editRegisterClientNameDialog
+	[name]="editRegisterClientNameDialogName"
+	[nameError]="editRegisterClientNameDialogNameError"
+	[loading]="editRegisterClientNameDialogLoading"
+	(primaryButtonClick)="editRegisterClientNameDialogPrimaryButtonClick($event)"
+></app-edit-register-client-name-dialog>
+
+<app-add-print-rule-dialog
+	#addPrintRuleDialog
+	[loading]="addPrintRuleDialogLoading"
+	[restaurantUuid]="restaurantUuid"
+	(primaryButtonClick)="addPrintRuleDialogPrimaryButtonClick($event)"
+></app-add-print-rule-dialog>
+
+<app-edit-print-rule-dialog
+	#editPrintRuleDialog
+	[loading]="editPrintRuleDialogLoading"
+	[restaurantUuid]="restaurantUuid"
+	[printRuleType]="editPrintRuleDialogPrintRuleType"
+	[productType]="editPrintRuleDialogProductType"
+	[selectedPrinters]="editPrintRuleDialogSelectedPrinters"
+	[selectedCategories]="editPrintRuleDialogSelectedCategories"
+	[selectedProducts]="editPrintRuleDialogSelectedProducts"
+	(primaryButtonClick)="editPrintRuleDialogPrimaryButtonClick($event)"
+></app-edit-print-rule-dialog>
+
+<app-delete-print-rule-dialog
+	#deletePrintRuleDialog
+	[loading]="deletePrintRuleDialogLoading"
+	(primaryButtonClick)="deletePrintRuleDialogPrimaryButtonClick()"
+></app-delete-print-rule-dialog>
+
+<dav-context-menu
+	#printRuleItemContextMenu
+	[visible]="printRuleItemContextMenuVisible"
+	[posX]="printRuleItemContextMenuPositionX"
+	[posY]="printRuleItemContextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="showEditPrintRuleDialog()"
+	>
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="showDeletePrintRuleDialog()"
+	>
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

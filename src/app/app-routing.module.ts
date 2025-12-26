@@ -9,6 +9,7 @@ import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page
 import { RestaurantPageComponent } from "./pages/landing-pages/restaurant-page/restaurant-page.component"
 import { RegistersPageComponent } from "./pages/landing-pages/registers-page/registers-page.component"
 import { RegisterPageComponent } from "./pages/landing-pages/register-page/register-page.component"
+import { RegisterClientPageComponent } from "./pages/landing-pages/register-client-page/register-client-page.component"
 import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/employees-page.component"
 import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
@@ -19,16 +20,17 @@ import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-ov
 import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
 import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
-import { MenuePageComponent } from "./pages/settings-pages/menue-page/menue-page.component"
-import { SettingsPageComponent } from "./pages/settings-pages/settings-page/settings-page.component"
-import { RestaurantOverviewComponent } from "./pages/settings-pages/restaurant-overview/restaurant-overview.component"
-import { RoomManagementComponent } from "./pages/settings-pages/room-management/room-management.component"
-import { EmployeeManagementComponent } from "./pages/settings-pages/employee-management/employee-management.component"
 import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
 import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
 import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
+import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
+import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
+import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
+import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
+import { ProductListComponent } from "./pages/landing-pages/category-page/product-list/product-list.component"
+import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 
 const routes: Routes = [
 	{
@@ -80,12 +82,20 @@ const routes: Routes = [
 				component: RegisterPageComponent
 			},
 			{
+				path: "user/restaurants/:restaurantUuid/registers/:registerUuid/clients/:registerClientUuid",
+				component: RegisterClientPageComponent
+			},
+			{
 				path: "user/employees",
 				component: EmployeesPageComponent
 			},
 			{
 				path: "user/employees/:uuid",
 				component: EmployeePageComponent
+			},
+			{
+				path: "user/reservations",
+				component: ReservationsPageComponent
 			},
 			{
 				path: "user/restaurants/:uuid/rooms",
@@ -102,6 +112,29 @@ const routes: Routes = [
 			{
 				path: "user/restaurants/:uuid/openingTime",
 				component: OpeningTimePageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu",
+				component: MenuPageComponent
+			},
+			{
+				path: "user/restaurants/:uuid/menu/categories",
+				component: CategoriesPageComponent
+			},
+			{
+				path: "user/restaurants/:restaurantUuid/menu/categories/:categoryUuid",
+				component: CategoryPageComponent,
+				children: [
+					{ path: "", redirectTo: "food", pathMatch: "full" },
+					{ path: "food", component: ProductListComponent },
+					{ path: "drinks", component: ProductListComponent }, // später durch DrinksListComponent ersetzen
+					{ path: "specials", component: ProductListComponent }, // später durch SpecialsListComponent ersetzen
+					{ path: "menus", component: ProductListComponent } // später durch MenusListComponent ersetzen
+				]
+			},
+			{
+				path: "user/restaurants/:uuid/menu/variations",
+				component: VariationsOverviewPageComponent
 			}
 		]
 	},
@@ -128,27 +161,6 @@ const routes: Routes = [
 			{
 				path: "tables/:uuid1/:uuid2",
 				component: TransferPageComponent
-			},
-			//Settings-Pages
-			{
-				path: "settings",
-				component: SettingsPageComponent
-			},
-			{
-				path: "settings/menue",
-				component: MenuePageComponent
-			},
-			{
-				path: "settings/restaurant",
-				component: RestaurantOverviewComponent
-			},
-			{
-				path: "settings/rooms",
-				component: RoomManagementComponent
-			},
-			{
-				path: "settings/employees",
-				component: EmployeeManagementComponent
 			}
 		]
 	}

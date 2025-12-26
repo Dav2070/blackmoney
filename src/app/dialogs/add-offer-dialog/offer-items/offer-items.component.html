@@ -1,0 +1,376 @@
+<div class="tab-content">
+	@if (isSpecialMode) {
+		<!-- Special Mode: Nur Produktauswahl für das eine Item -->
+		<h4>{{ locale.selectProducts }}</h4>
+
+		@if (offerItems.length > 0) {
+			<div class="dialog-formfield-container">
+				<div class="categories-list">
+					@for (
+						category of getProductsByCategory();
+						track category.categoryUuid
+					) {
+						<div class="category-section">
+							<button
+								type="button"
+								class="category-header"
+								(click)="toggleCategory(category.categoryUuid)"
+							>
+								<fa-icon
+									[icon]="
+										isCategoryExpanded(category.categoryUuid)
+											? faChevronDown
+											: faChevronRight
+									"
+									class="chevron-icon"
+								></fa-icon>
+								<span class="category-name">{{
+									category.categoryName
+								}}</span>
+								<span class="category-count"
+									>({{
+										getSelectedCountInCategory(category.categoryUuid)
+									}})</span
+								>
+							</button>
+
+							@if (isCategoryExpanded(category.categoryUuid)) {
+								<div class="products-grid">
+									@for (
+										product of category.products;
+										track product.uuid
+									) {
+										<div class="product-item">
+											<div class="product-header">
+												<label class="product-checkbox">
+													<input
+														type="checkbox"
+														[checked]="
+															isProductSelectedForItem(
+																offerItems[0],
+																product
+															)
+														"
+														(change)="
+															toggleProductSelectionForItem(
+																offerItems[0],
+																product
+															)
+														"
+														[disabled]="loading"
+													/>
+													<span>{{ product.name }}</span>
+												</label>
+												@if (
+													product.variations &&
+													product.variations.length > 0
+												) {
+													<button
+														type="button"
+														class="expand-variations-btn"
+														[class.disabled]="
+															!isProductSelectedForItem(
+																offerItems[0],
+																product
+															)
+														"
+														(click)="
+															toggleProductExpanded(
+																product.uuid,
+																$event
+															)
+														"
+													>
+														<fa-icon
+															[icon]="
+																isProductExpanded(product.uuid)
+																	? faChevronDown
+																	: faChevronRight
+															"
+														></fa-icon>
+													</button>
+												}
+											</div>
+											@if (
+												isProductExpanded(product.uuid) &&
+												isProductSelectedForItem(
+													offerItems[0],
+													product
+												)
+											) {
+												<div class="variations-list">
+													@for (
+														variation of product.variations;
+														track variation.uuid
+													) {
+														<div class="variation-group">
+															<h5 class="variation-name">
+																{{ variation.name }}
+															</h5>
+															<div class="variation-items-grid">
+																@for (
+																	item of variation.variationItems;
+																	track item.uuid
+																) {
+																	<label
+																		class="variation-item-checkbox"
+																	>
+																		<input
+																			type="checkbox"
+																			[checked]="
+																				isVariationItemSelectedForItem(
+																					offerItems[0],
+																					product.uuid,
+																					variation.uuid,
+																					item
+																				)
+																			"
+																			(change)="
+																				toggleVariationItemForItem(
+																					offerItems[0],
+																					product.uuid,
+																					variation.uuid,
+																					item
+																				)
+																			"
+																		/>
+																		<span>{{
+																			item.name
+																		}}</span>
+																	</label>
+																}
+															</div>
+														</div>
+													}
+												</div>
+											}
+										</div>
+									}
+								</div>
+							}
+						</div>
+					}
+				</div>
+			</div>
+
+			<!-- Keine "Ausgewählte Produkte" Anzeige mehr für Specials -->
+		}
+	} @else {
+		<!-- Menü Mode: Normale Item-Verwaltung -->
+		<h4>{{ locale.offerItems }}</h4>
+
+		<!-- Existing Items -->
+		@if (offerItems.length > 0) {
+			<div class="items-list">
+				@for (item of offerItems; track item.uuid) {
+					<div class="item-card" [class.editing]="editingItem === item">
+						<div class="item-header">
+							<div class="item-info">
+								<strong>{{ item.name }}</strong>
+								<span class="item-meta"
+									>Max. {{ item.maxSelections }} auswählbar</span
+								>
+							</div>
+							<div class="item-actions">
+								<dav-icon-button
+									size="xs"
+									(click)="editOfferItem(item)"
+									[disabled]="loading"
+								>
+									<fa-icon [icon]="faChevronRight"></fa-icon>
+								</dav-icon-button>
+								<dav-icon-button
+									size="xs"
+									(click)="removeOfferItem(item)"
+									[disabled]="loading"
+								>
+									<fa-icon [icon]="faTrash"></fa-icon>
+								</dav-icon-button>
+							</div>
+						</div>
+						<div class="item-products">
+							@for (product of item.products; track product.uuid) {
+								<span class="product-chip">{{ product.name }}</span>
+							}
+						</div>
+					</div>
+				}
+			</div>
+		}
+
+		<!-- Add New Item -->
+		<div class="add-item-section">
+			<h5>{{ editingItem ? locale.editItem : locale.addNewItem }}</h5>
+
+			@if (editingItem) {
+				<div class="edit-info">
+					<span>{{ locale.editingItemInfo }}</span>
+					<dav-button type="button" (click)="cancelEdit()">
+						{{ locale.cancel }}
+					</dav-button>
+				</div>
+			}
+
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="newItemName"
+					[label]="locale.itemName"
+					[disabled]="loading"
+					[errorMessage]="newItemNameError"
+					(change)="newItemNameChange($any($event).detail.value)"
+				></dav-textfield>
+			</div>
+
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="newItemMaxSelections.toString()"
+					[label]="locale.maxSelections"
+					[disabled]="loading"
+					type="number"
+					min="1"
+					(change)="newItemMaxSelectionsChange($any($event).detail.value)"
+				></dav-textfield>
+			</div>
+
+			<div class="dialog-formfield-container">
+				<label class="form-label">{{ locale.selectProducts }}</label>
+				<div class="categories-list">
+					@for (
+						category of getProductsByCategory();
+						track category.categoryUuid
+					) {
+						<div class="category-section">
+							<button
+								type="button"
+								class="category-header"
+								(click)="toggleCategory(category.categoryUuid)"
+							>
+								<fa-icon
+									[icon]="
+										isCategoryExpanded(category.categoryUuid)
+											? faChevronDown
+											: faChevronRight
+									"
+									class="chevron-icon"
+								></fa-icon>
+								<span class="category-name">{{
+									category.categoryName
+								}}</span>
+								<span class="category-count"
+									>({{
+										getSelectedCountInCategory(category.categoryUuid)
+									}})</span
+								>
+							</button>
+							@if (isCategoryExpanded(category.categoryUuid)) {
+								<div class="products-grid">
+									@for (
+										product of category.products;
+										track product.uuid
+									) {
+										<div class="product-item">
+											<div class="product-header">
+												<label class="product-checkbox">
+													<input
+														type="checkbox"
+														[checked]="isProductSelected(product)"
+														(change)="
+															toggleProductSelection(product)
+														"
+													/>
+													<span>{{ product.name }}</span>
+												</label>
+												@if (
+													product.variations &&
+													product.variations.length > 0
+												) {
+													<button
+														type="button"
+														class="expand-variations-btn"
+														[class.disabled]="
+															!isProductSelected(product)
+														"
+														(click)="
+															toggleProductExpanded(
+																product.uuid,
+																$event
+															)
+														"
+													>
+														<fa-icon
+															[icon]="
+																isProductExpanded(product.uuid)
+																	? faChevronDown
+																	: faChevronRight
+															"
+														></fa-icon>
+													</button>
+												}
+											</div>
+											@if (
+												isProductExpanded(product.uuid) &&
+												isProductSelected(product)
+											) {
+												<div class="variations-list">
+													@for (
+														variation of product.variations;
+														track variation.uuid
+													) {
+														<div class="variation-group">
+															<h5 class="variation-name">
+																{{ variation.name }}
+															</h5>
+															<div class="variation-items-grid">
+																@for (
+																	item of variation.variationItems;
+																	track item.uuid
+																) {
+																	<label
+																		class="variation-item-checkbox"
+																	>
+																		<input
+																			type="checkbox"
+																			[checked]="
+																				isVariationItemSelected(
+																					product.uuid,
+																					variation.uuid,
+																					item
+																				)
+																			"
+																			(change)="
+																				toggleVariationItem(
+																					product.uuid,
+																					variation.uuid,
+																					item
+																				)
+																			"
+																		/>
+																		<span>{{
+																			item.name
+																		}}</span>
+																	</label>
+																}
+															</div>
+														</div>
+													}
+												</div>
+											}
+										</div>
+									}
+								</div>
+							}
+						</div>
+					}
+				</div>
+			</div>
+
+			<dav-button
+				type="button"
+				[disabled]="loading"
+				(click)="addOfferItem()"
+			>
+				{{ editingItem ? locale.updateItem : locale.addItem }}
+			</dav-button>
+		</div>
+	}
+</div>

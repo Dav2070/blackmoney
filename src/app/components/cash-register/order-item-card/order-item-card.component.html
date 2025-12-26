@@ -2,8 +2,9 @@
 	class="order-item-card slide-up-in-light"
 	[class.selected]="
 		selectedOrderItemUuid === orderItem.uuid &&
-		selectedOrderItemNote === orderItem.note
+		selectedOrderItemNote === orderItem.notes
 	"
+	[class.clickable]="clickable"
 >
 	<div class="order-item-card-id">
 		<p>#{{ orderItem.product.id }}</p>
@@ -11,7 +12,7 @@
 
 	<div class="order-item-card-name">
 		<p>{{ orderItem.product.name }}</p>
-		@if (orderItem.note) {
+		@if (orderItem.notes) {
 			<fa-icon
 				[icon]="faNoteSticky"
 				class="note-icon"
@@ -33,44 +34,42 @@
 		@if (orderItem.orderItemVariations.length === 0 && orderItem.count > 1) {
 			<p>
 				{{ orderItem.count }} ×
-				{{ (orderItem.product.price / 100).toFixed(2).replace(".", ",") }}
-				€
+				{{ formatPrice(orderItem.product.price) }}
+			</p>
+		} @else if (orderItem.orderItemVariations.length > 0) {
+			<p>
+				{{ orderItem.count }} ×
+				{{ formatPrice(orderItem.product.price) }}
 			</p>
 		}
 	</div>
 
 	<div class="order-item-card-total-price">
-		<p>{{ calculateTotalPriceOfOrderItem(orderItem) }} €</p>
+		<p>{{ formatPrice(calculateTotalPriceOfOrderItem(orderItem)) }}</p>
 	</div>
 
 	@if (orderItem.orderItemVariations.length > 0) {
 		<div class="order-item-variations-separator"></div>
 
-		@for (variation of orderItem.orderItemVariations; track variation.uuid) {
-			@for (
-				variationItem of variation.variationItems;
-				track variationItem.uuid
-			) {
-				<div class="order-item-card-variation-name">
-					<p>- {{ variationItem.name }}</p>
-				</div>
+		@for (
+			orderItemVariation of orderItem.orderItemVariations;
+			track orderItemVariation.uuid
+		) {
+			<div class="order-item-card-variation-name">
+				<p>- {{ getCombinedVariationNames(orderItemVariation) }}</p>
+			</div>
 
-				<div class="order-item-card-variation-unit-price">
-					<p>
-						{{ variation.count }} ×
-						{{
-							(
-								(orderItem.product.price +
-									variationItem.additionalCost) /
-								100
-							)
-								.toFixed(2)
-								.replace(".", ",")
-						}}
-						€
-					</p>
-				</div>
-			}
+			<div class="order-item-card-variation-unit-price">
+				<p>
+					{{ orderItemVariation.count }} ×
+					{{
+						formatPrice(
+							getTotalVariationPrice(orderItemVariation) +
+								orderItem.product.price
+						)
+					}}
+				</p>
+			</div>
 		}
 	}
 </li>

@@ -30,11 +30,23 @@
 					orderItem of bookedItems.getOrderItems();
 					track orderItem.uuid
 				) {
-					<app-order-item-card
-						[orderItem]="orderItem"
-						(click)="transferItem(orderItem, bookedItems, activeBill)"
-						(contextmenu)="showContextMenu($event, orderItem, true)"
-					></app-order-item-card>
+					@if (
+						orderItem.type === "MENU" ||
+						orderItem.type === "SPECIAL"
+					) {
+						<app-offer-order-item-card
+							[orderItem]="orderItem"
+							[clickable]="true"
+							(click)="transferItem(orderItem, bookedItems, activeBill)"
+						></app-offer-order-item-card>
+					} @else {
+						<app-order-item-card
+							[orderItem]="orderItem"
+							[clickable]="true"
+							(click)="transferItem(orderItem, bookedItems, activeBill)"
+							(contextmenu)="showContextMenu($event, orderItem, true)"
+						></app-order-item-card>
+					}
 				}
 			</ul>
 		</div>
@@ -106,15 +118,37 @@
 								orderItem of bill.getOrderItems();
 								track orderItem.uuid
 							) {
-								<app-order-item-card
-									[orderItem]="orderItem"
-									(click)="
-										transferItem(orderItem, activeBill, bookedItems)
-									"
-									(contextmenu)="
-										showContextMenu($event, orderItem, false)
-									"
-								></app-order-item-card>
+								@if (
+									orderItem.type === "MENU" ||
+									orderItem.type === "SPECIAL"
+								) {
+									<app-offer-order-item-card
+										[orderItem]="orderItem"
+										[clickable]="true"
+										(click)="
+											transferItem(
+												orderItem,
+												activeBill,
+												bookedItems
+											)
+										"
+									></app-offer-order-item-card>
+								} @else {
+									<app-order-item-card
+										[orderItem]="orderItem"
+										[clickable]="true"
+										(click)="
+											transferItem(
+												orderItem,
+												activeBill,
+												bookedItems
+											)
+										"
+										(contextmenu)="
+											showContextMenu($event, orderItem, false)
+										"
+									></app-order-item-card>
+								}
 							}
 						</ul>
 					</div>

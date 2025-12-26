@@ -16,7 +16,7 @@ export class VariationComparer {
 			} else {
 				// push deep copy to avoid mutating incoming
 				existing.orderItemVariations.push(
-					JSON.parse(JSON.stringify(incVar))
+					structuredClone(incVar)
 				)
 			}
 		}
@@ -44,8 +44,8 @@ export class VariationComparer {
 
 		if (aItems.length !== bItems.length) return false
 
-		aItems.sort()
-		bItems.sort()
+		aItems.sort((a, b) => (a - b))
+		bItems.sort((a, b) => (a - b))
 
 		for (let i = 0; i < aItems.length; i++) {
 			if (aItems[i] !== bItems[i]) return false

@@ -18,6 +18,7 @@
 				allPreviousTreeVariationItemCount
 			: allCurrentTreeVariationItemCount === 0
 	"
+	[child]="child"
 	(dismiss)="currentVariation === 0 ? hide() : null"
 	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"
@@ -50,42 +51,21 @@
 									@let currentVariationKey =
 										(key ? key + "," : "") + value;
 
-									<div class="variation-selection-container">
-										<dav-icon-button
-											size="sm"
-											[disabled]="
-												variationTree[currentVariation]?.[
-													currentVariationKey
-												] === 0
-											"
-											(click)="removeButtonClick(key, value)"
-										>
-											<fa-icon [icon]="faMinus"></fa-icon>
-										</dav-icon-button>
-
-										<p>
-											{{
-												variationTree[currentVariation]?.[
-													currentVariationKey
-												] ?? 0
-											}}
-											×
-											{{ getHeadlineForKey(value) }}
-										</p>
-
-										<dav-icon-button
-											size="sm"
-											[disabled]="
-												currentVariation > 0
-													? currentTreeVariationItemCount >=
-														previousTreeVariationItemCount
-													: false
-											"
-											(click)="addButtonClick(key, value)"
-										>
-											<fa-icon [icon]="faPlus"></fa-icon>
-										</dav-icon-button>
-									</div>
+									<app-counter
+										[count]="
+											variationTree[currentVariation]?.[
+												currentVariationKey
+											] ?? 0
+										"
+										[headline]="getHeadlineForKey(value)"
+										[minusButtonDisabled]="
+											variationTree[currentVariation]?.[
+												currentVariationKey
+											] === 0
+										"
+										[plusButtonDisabled]="isPlusButtonDisabled(currentVariation, currentTreeVariationItemCount, previousTreeVariationItemCount)"
+										(change)="counterChange(key, value, $event)"
+									></app-counter>
 								}
 							</div>
 						</div>

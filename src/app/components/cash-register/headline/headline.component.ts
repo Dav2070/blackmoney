@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
-import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons"
+import { faArrowLeft, faCupTogo } from "@fortawesome/pro-regular-svg-icons"
 import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
@@ -11,6 +11,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 export class HeadlineComponent {
 	actionsLocale = this.localizationService.locale.actions
 	faArrowLeft = faArrowLeft
+	faCupTogo = faCupTogo
 
 	@Input() headline: string = ""
 	@Input() showBackButton: boolean = false

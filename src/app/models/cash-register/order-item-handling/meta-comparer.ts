@@ -3,7 +3,7 @@ import { VariationComparer } from "./variation-comparer"
 import { OrderItemType } from "src/app/types"
 
 export class MetaComparer {
-	private variationComparer = new VariationComparer()
+	private readonly variationComparer = new VariationComparer()
 
 	// Public entry: strikter Vergleich nur für Menus, sonst Basic-Check
 	isOrderItemMetaEqual(existing: OrderItem, incoming: OrderItem): boolean {
@@ -29,14 +29,20 @@ export class MetaComparer {
 			existing.type === OrderItemType.Menu &&
 			incoming.type === OrderItemType.Menu
 		) {
-			const aSubs = existing.orderItems ?? []
-			const bSubs = incoming.orderItems ?? []
+			const aSubs = existing.orderItems
+			const bSubs = incoming.orderItems
+
 			return this.areOrderItemsArrayEqualForMerge(
 				aSubs,
 				bSubs,
 				existing.count,
 				incoming.count
 			)
+		}
+
+		//Zusatz Vergleich für Diverse Artikel
+		if (!this.isDiversOrderItemMetaEqual(existing, incoming)) {
+			return false
 		}
 
 		return true
@@ -48,7 +54,7 @@ export class MetaComparer {
 		if (!a || !b) return false
 
 		if (a.type !== b.type) return false
-		if (a.note !== b.note) return false
+		if (a.notes !== b.notes) return false
 		if (a.discount !== b.discount) return false
 		if (a.takeAway !== b.takeAway) return false
 		if (a.course !== b.course) return false
@@ -164,7 +170,7 @@ export class MetaComparer {
 		if (aVars.length !== bVars.length) return false
 
 		// copy of b to mark matched variations
-		const bCopy = bVars.map(v => JSON.parse(JSON.stringify(v)))
+		const bCopy = bVars.map(v => structuredClone(v))
 
 		for (const aVar of aVars) {
 			const aVarCount = aVar.count
@@ -194,5 +200,17 @@ export class MetaComparer {
 			bCopy.splice(idx, 1)
 		}
 		return bCopy.length === 0
+	}
+
+	// Comparison for miscellaneous items: price and name is relevant
+	private isDiversOrderItemMetaEqual(
+		existing: OrderItem,
+		incoming: OrderItem
+	): boolean {
+		if (existing.product.id == 0 && incoming.product.id == 0) {
+			if (existing.product.price !== incoming.product.price) return false
+			if (existing.product.name !== incoming.product.name) return false
+		}
+		return true
 	}
 }

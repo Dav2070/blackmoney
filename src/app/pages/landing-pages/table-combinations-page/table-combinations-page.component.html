@@ -15,9 +15,11 @@
 		<mat-form-field appearance="fill" class="dialog-formfield-container">
 			<mat-label>Table Numbers</mat-label>
 			<mat-select [formControl]="tableCombinations" multiple>
-				<mat-option *ngFor="let t of table" [value]="t.name">
-					Table {{ t.name }} ({{ t.seats }} chairs)
-				</mat-option>
+				@for (t of table; track t) {
+					<mat-option [value]="t.name">
+						Table {{ t.name }} ({{ t.seats }} chairs)
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
 

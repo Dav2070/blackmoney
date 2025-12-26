@@ -15,7 +15,7 @@
 						class="mobile-hidden"
 						size="sm"
 						[tooltip]="locale.transferAllItemsToRight"
-						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
 					>
 						<fa-icon [icon]="faChevronsRight"></fa-icon>
 					</dav-icon-button>
@@ -24,7 +24,7 @@
 						class="desktop-hidden"
 						size="sm"
 						[tooltip]="locale.transferAllItemsToBottom"
-						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
+						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
 					>
 						<fa-icon [icon]="faChevronsDown"></fa-icon>
 					</dav-icon-button>
@@ -36,8 +36,12 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-					<dav-skeleton class="order-item-card-skeleton mobile-hidden"></dav-skeleton>
-					<dav-skeleton class="order-item-card-skeleton mobile-hidden"></dav-skeleton>
+					<dav-skeleton
+						class="order-item-card-skeleton mobile-hidden"
+					></dav-skeleton>
+					<dav-skeleton
+						class="order-item-card-skeleton mobile-hidden"
+					></dav-skeleton>
 				}
 
 				@if (
@@ -53,17 +57,34 @@
 						orderItem of bookedItemsLeft.getOrderItems();
 						track orderItem.uuid
 					) {
-						<app-order-item-card
-							[orderItem]="orderItem"
-							(click)="
-								transferItem(
-									orderItem,
-									bookedItemsLeft,
-									bookedItemsRight
-								)
-							"
-							(contextmenu)="showContextMenu($event, orderItem, true)"
-						></app-order-item-card>
+						@if (
+							orderItem.type === "MENU" || orderItem.type === "SPECIAL"
+						) {
+							<app-offer-order-item-card
+								[orderItem]="orderItem"
+								[clickable]="true"
+								(click)="
+									transferItem(
+										orderItem,
+										bookedItemsLeft,
+										bookedItemsRight
+									)
+								"
+							></app-offer-order-item-card>
+						} @else {
+							<app-order-item-card
+								[orderItem]="orderItem"
+								[clickable]="true"
+								(click)="
+									transferItem(
+										orderItem,
+										bookedItemsLeft,
+										bookedItemsRight
+									)
+								"
+								(contextmenu)="showContextMenu($event, orderItem, true)"
+							></app-order-item-card>
+						}
 					}
 				}
 			</ul>
@@ -88,7 +109,7 @@
 						class="mobile-hidden"
 						size="sm"
 						[tooltip]="locale.transferAllItemsToLeft"
-						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
 					>
 						<fa-icon [icon]="faChevronsLeft"></fa-icon>
 					</dav-icon-button>
@@ -97,7 +118,7 @@
 						class="desktop-hidden"
 						size="sm"
 						[tooltip]="locale.transferAllItemsToTop"
-						(click)="bookedItemsLeft.transferAllItems(bookedItemsRight)"
+						(click)="bookedItemsRight.transferAllItems(bookedItemsLeft)"
 					>
 						<fa-icon [icon]="faChevronsUp"></fa-icon>
 					</dav-icon-button>
@@ -109,8 +130,12 @@
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
 					<dav-skeleton class="order-item-card-skeleton"></dav-skeleton>
-					<dav-skeleton class="order-item-card-skeleton mobile-hidden"></dav-skeleton>
-					<dav-skeleton class="order-item-card-skeleton mobile-hidden"></dav-skeleton>
+					<dav-skeleton
+						class="order-item-card-skeleton mobile-hidden"
+					></dav-skeleton>
+					<dav-skeleton
+						class="order-item-card-skeleton mobile-hidden"
+					></dav-skeleton>
 				}
 
 				@if (
@@ -126,17 +151,34 @@
 						orderItem of bookedItemsRight.getOrderItems();
 						track orderItem.uuid
 					) {
-						<app-order-item-card
-							[orderItem]="orderItem"
-							(click)="
-								transferItem(
-									orderItem,
-									bookedItemsRight,
-									bookedItemsLeft
-								)
-							"
-							(contextmenu)="showContextMenu($event, orderItem, true)"
-						></app-order-item-card>
+						@if (
+							orderItem.type === "MENU" || orderItem.type === "SPECIAL"
+						) {
+							<app-offer-order-item-card
+								[orderItem]="orderItem"
+								[clickable]="true"
+								(click)="
+									transferItem(
+										orderItem,
+										bookedItemsRight,
+										bookedItemsLeft
+									)
+								"
+							></app-offer-order-item-card>
+						} @else {
+							<app-order-item-card
+								[orderItem]="orderItem"
+								[clickable]="true"
+								(click)="
+									transferItem(
+										orderItem,
+										bookedItemsRight,
+										bookedItemsLeft
+									)
+								"
+								(contextmenu)="showContextMenu($event, orderItem, true)"
+							></app-order-item-card>
+						}
 					}
 				}
 			</ul>

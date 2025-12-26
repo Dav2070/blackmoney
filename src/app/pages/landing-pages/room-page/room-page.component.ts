@@ -61,6 +61,7 @@ export class RoomPageComponent {
 
 	@ViewChild("deleteTableDialog")
 	deleteTableDialog!: DeleteTableDialogComponent
+	deleteTableDialogLoading: boolean = false
 	deleteTableDialogName: number = 0
 
 	@ViewChild("tableItemContextMenu")
@@ -136,6 +137,7 @@ export class RoomPageComponent {
 	}
 
 	showDeleteRoomDialog() {
+		this.tableItemContextMenuVisible = false
 		this.deleteRoomDialog.show()
 	}
 
@@ -324,6 +326,7 @@ export class RoomPageComponent {
 
 	async deleteTableDialogPrimaryButtonClick() {
 		if (this.selectedTable == null) return
+		this.deleteTableDialogLoading = true
 
 		const deleteTableResponse = await this.apiService.deleteTable(`uuid`, {
 			uuid: this.selectedTable.uuid
@@ -333,6 +336,7 @@ export class RoomPageComponent {
 			this.removeTable(this.selectedTable)
 		}
 
+		this.deleteTableDialogLoading = false
 		this.deleteTableDialog.hide()
 	}
 

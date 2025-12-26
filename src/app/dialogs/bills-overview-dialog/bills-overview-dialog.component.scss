@@ -1,0 +1,87 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	padding: 0;
+	max-height: 65vh;
+}
+
+.bills-list {
+	width: 30%;
+	border-right: 1px solid var(--dav-color-outline-variant);
+	padding: 0 16px 16px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.bills-list > dav-card {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.bill-info {
+	display: flex;
+	justify-content: space-between;
+	margin: 0;
+}
+
+.bill-info-details > p {
+	margin: 0;
+}
+
+.bill-details {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	width: 70%;
+	padding: 16px;
+}
+
+.bill-details-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 16px;
+
+	h3 {
+		margin: 0;
+	}
+}
+
+.bill-details-paid-at > p {
+	margin: 0;
+}
+
+.bill-details-body {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	padding: 0 8px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.bill-items {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 24px;
+}
+
+.bill-actions {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 16px;
+}
+
+.separator {
+	border-top: 1px solid var(--dav-color-outline-variant);
+}
+
+.bill-price-container {
+	margin: 16px;
+	text-align: right;
+
+	p {
+		margin: 0;
+	}
+}

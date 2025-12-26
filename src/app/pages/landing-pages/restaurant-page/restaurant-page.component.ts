@@ -10,7 +10,8 @@ import {
 	faCashRegister,
 	faShop,
 	faAddressCard,
-	faClock
+	faClock,
+	faMap
 } from "@fortawesome/pro-regular-svg-icons"
 import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
@@ -18,6 +19,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 import * as ErrorCodes from "src/app/errorCodes"
 import { EditOwnerDialogComponent } from "src/app/dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "src/app/dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
+import { getGraphQLErrorCodes } from "src/app/utils"
 
 @Component({
 	templateUrl: "./restaurant-page.component.html",
@@ -36,6 +38,7 @@ export class RestaurantPageComponent {
 	faShop = faShop
 	faAddressCard = faAddressCard
 	faClock = faClock
+	faMap = faMap
 	uuid: string = null
 	name: string = ""
 	nameError: string = ""
@@ -148,6 +151,12 @@ export class RestaurantPageComponent {
 		this.router.navigate(["user", "restaurants", this.uuid, "openingTime"])
 	}
 
+	navigateToMenuPage(event: MouseEvent) {
+		event.preventDefault()
+
+		this.router.navigate(["user", "restaurants", this.uuid, "menu"])
+	}
+
 	showEditRestaurantNameDialog() {
 		this.editRestaurantNameDialogLoading = false
 		this.editRestaurantNameDialog.show()
@@ -205,11 +214,8 @@ export class RestaurantPageComponent {
 			this.name = responseData.name
 
 			this.editRestaurantNameDialog.hide()
-		} else if (updateRestaurantResponse.errors.length > 0) {
-			// Error handling
-			let errors = updateRestaurantResponse.errors[0].extensions?.[
-				"errors"
-			] as string[] | undefined
+		} else {
+			const errors = getGraphQLErrorCodes(updateRestaurantResponse)
 			if (errors == null) return
 
 			for (const errorCode of errors) {
@@ -264,11 +270,8 @@ export class RestaurantPageComponent {
 			this.postalCode = responseData.postalCode ?? ""
 
 			this.editAddressDialog.hide()
-		} else if (updateRestaurantResponse.errors.length > 0) {
-			// Error handling
-			let errors = updateRestaurantResponse.errors[0].extensions?.[
-				"errors"
-			] as string[] | undefined
+		} else {
+			let errors = getGraphQLErrorCodes(updateRestaurantResponse)
 			if (errors == null) return
 
 			for (const errorCode of errors) {

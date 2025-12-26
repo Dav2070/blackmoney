@@ -1,1 +1,80 @@
-<p>opening-time-page works!</p>
+<div class="container slide-up-in">
+    <div class="content-container">
+        <dav-header
+			backButtonVisible
+			editButtonVisible
+			(backButtonClick)="navigateBack()"
+			(editButtonClick)="showEditOpeningTimeDialog()"
+		>
+			{{ name }}
+		</dav-header>
+
+		@if (Tage && Tage.length > 0){
+
+        <div class="cards-container">
+			<dav-card>
+				<div class="openingTime-card-container">
+
+					<div class="openingTime-card-content">
+
+						@for (tag of Tage; track tag.day) { 
+							@if (tag.durchgehend) { 
+								<p>{{ tag.day }}: {{ tag.startTime1 }} - {{ tag.endTime1 }}</p> 
+							} @else { 
+								<p>{{ tag.day }}: {{ tag.startTime1 }} - {{ tag.endTime1 }} ; {{ tag.startTime2 }} - {{ tag.endTime2 }}</p> } 
+							}
+
+					</div>
+
+					<dav-icon-button
+						size="xs"
+						[tooltip]="actionsLocale.edit"
+						(click)="showEditOpeningTimeDialog() "
+					>
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
+				</div>
+			</dav-card>
+		</div>
+		}
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="special-content-container">
+        <dav-header
+			editButtonVisible
+			(editButtonClick)="tmp()"
+		>
+			{{ specialOpeningTime }}
+		</dav-header>
+	@if (sonderTage && sonderTage.length > 0){
+        <div class="cards-container">
+			<dav-card>
+				<div class="openingTime-card-container">
+
+					<dav-icon-button
+						size="xs"
+						[tooltip]="actionsLocale.edit"
+						(click)="tmp()"
+					>
+						<fa-icon [icon]="faPen"></fa-icon>
+					</dav-icon-button>
+				</div>
+			</dav-card>
+		</div>
+		}
+    </div>
+
+</div>
+
+<app-edit-opening-time-dialog
+	#editOpeningTimeDialog
+	[loading]="editOpeningTimeDialogLoading"
+	[Montag]=""
+	[DayError]=""
+	[Dienstag]=""
+	[DayError]=""
+	(primaryButtonClick)= "editOpeningTimeDialogPrimaryButtonClick($event)"           
+	(clearErrors)="DayError = ''"
+></app-edit-opening-time-dialog>

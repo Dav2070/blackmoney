@@ -1,0 +1,91 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+
+	<div *ngFor="let block of blocks; let i = index" class="block-container">
+
+	<div class="day-row">
+	<!-- Line 1 -->
+	<mat-form-field appearance="fill" class="dialog-formfield-container">
+		<mat-label>Tage</mat-label>
+		<mat-select [(ngModel)]="block.selectedDays" name="days{{i}}" multiple>
+		<mat-option *ngFor="let d of getAvailableDays(i)" [value]="d"> {{ d }} </mat-option>
+		</mat-select>
+	</mat-form-field>
+
+	<!-- Minus Button --> 
+
+		<button mat-icon-button color="warn" (click)="removeBlock(i)" [disabled]="blocks.length === 1" > 
+			<mat-icon>-</mat-icon> 
+		</button> 
+	</div>
+
+	<div fxLayout="row" class="checkbox-row">
+		<mat-checkbox [(ngModel)]="block.durchgehend" name="durchgehend{{i}}" (change)="onDurchgehendChange(block)">
+		Durchgehend geöffnet
+		</mat-checkbox>
+
+		<mat-checkbox [(ngModel)]="block.pause" name="pause{{i}}" (change)="onPauseChange(block)">
+		Mit Pause geöffnet
+		</mat-checkbox>
+	</div>
+
+	<!-- Durchgehend -->
+	<div *ngIf="block.durchgehend && !block.pause" class="time-row">
+		<mat-form-field appearance="fill">
+		<mat-label>Startzeit</mat-label>
+		<input matInput [(ngModel)]="block.startTime1" name="startTime1{{i}}" type="time">
+		</mat-form-field>
+
+		<mat-form-field appearance="fill">
+		<mat-label>Endzeit</mat-label>
+		<input matInput [(ngModel)]="block.endTime1" name="endTime1{{i}}" type="time">
+		</mat-form-field>
+	</div>
+
+	<!-- Pause -->
+	<div *ngIf="block.pause" class="time-row pause-layout">
+		<mat-form-field appearance="fill">
+		<mat-label>Startzeit 1</mat-label>
+		<input matInput [(ngModel)]="block.startTime1" name="startTime1p{{i}}" type="time">
+		</mat-form-field>
+
+		<mat-form-field appearance="fill">
+		<mat-label>Endzeit 1</mat-label>
+		<input matInput [(ngModel)]="block.endTime1" name="endTime1p{{i}}" type="time">
+		</mat-form-field>
+
+		<mat-form-field appearance="fill">
+		<mat-label>Startzeit 2</mat-label>
+		<input matInput [(ngModel)]="block.startTime2" name="startTime2{{i}}" type="time">
+		</mat-form-field>
+
+		<mat-form-field appearance="fill">
+		<mat-label>Endzeit 2</mat-label>
+		<input matInput [(ngModel)]="block.endTime2" name="endTime2{{i}}" type="time">
+		</mat-form-field>
+	</div>
+
+	</div>
+		<div class="separator"></div>
+
+	<!-- Plus-Button --> 
+	<div class="add-row"> 
+		<button mat-icon-button color="primary" (click)="addBlock()"> 
+			<mat-icon>+</mat-icon> 
+		</button> 
+	</div>
+
+	</form>
+	
+</dav-dialog>

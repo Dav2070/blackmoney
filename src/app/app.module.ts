@@ -113,6 +113,7 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
+import { EditOpeningTimeDialogComponent } from "./dialogs/edit-opening-time-dialog/edit-opening-time-dialog.component"
 
 @NgModule({
 	declarations: [
@@ -147,6 +148,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 		ViewNoteDialogComponent,
 		EditOwnerDialogComponent,
 		EditContactInfoDialogComponent,
+		EditOpeningTimeDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

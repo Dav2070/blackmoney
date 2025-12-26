@@ -75,6 +75,10 @@ export const de = {
 		testPrintSuccess: "Test-Druck erfolgreich gesendet",
 		testPrintError: "Test-Druck fehlgeschlagen: {errorMessage}"
 	},
+	openingTimePage: {
+		headline: "Öffnungszeiten",
+		specialOpeningTime: "Sonder-Öffnungszeiten"
+	},
 	roomsPage: {
 		headline: "Deine Räume"
 	},
@@ -177,6 +181,10 @@ export const de = {
 		},
 		editRoomDialog: {
 			headline: "Raum bearbeiten",
+			name: "Name"
+		},
+		editOpeningTimeDialog: {
+			headline: "Öffnungszeiten bearbeiten",
 			name: "Name"
 		},
 		deleteRoomDialog: {

@@ -1,7 +1,7 @@
 <dav-dialog
 	#dialog
 	[visible]="visible"
-	maxWidth="1000"
+	maxWidth="800"
 	[hideBehindOverlay]="addTakeawayDialogVisible || editTakeawayDialogVisible"
 	(dismiss)="visible = false"
 >
@@ -19,41 +19,28 @@
 			</div>
 
 			<div class="takeaway-filters">
-				<dav-icon-button
-					size="sm"
-					[tooltip]="locale.takeaway.filterAll"
-					[class.active]="takeawayFilter === 'ALL'"
-					(click)="setFilter('ALL')"
-				>
-					{{ locale.takeaway.filterAll }}
-				</dav-icon-button>
+				<dav-filter-group (change)="filterChange($event)">
+					<dav-filter-button
+						name="delivery"
+						[tooltip]="locale.takeaway.filterDelivery"
+					>
+						<fa-icon [icon]="faTruck"></fa-icon>
+					</dav-filter-button>
 
-				<dav-icon-button
-					size="sm"
-					[tooltip]="locale.takeaway.filterDelivery"
-					[class.active]="takeawayFilter === 'DELIVERY'"
-					(click)="setFilter('DELIVERY')"
-				>
-					<fa-icon [icon]="faTruck"></fa-icon>
-				</dav-icon-button>
+					<dav-filter-button
+						name="pickup"
+						[tooltip]="locale.takeaway.filterPickUp"
+					>
+						<fa-icon [icon]="faBagShopping"></fa-icon>
+					</dav-filter-button>
 
-				<dav-icon-button
-					size="sm"
-					[tooltip]="locale.takeaway.filterPickUp"
-					[class.active]="takeawayFilter === 'PICKUP'"
-					(click)="setFilter('PICKUP')"
-				>
-					<fa-icon [icon]="faBagShopping"></fa-icon>
-				</dav-icon-button>
-
-				<dav-icon-button
-					size="sm"
-					[tooltip]="locale.takeaway.filterDineIn"
-					[class.active]="takeawayFilter === 'DINEIN'"
-					(click)="setFilter('DINEIN')"
-				>
-					<fa-icon [icon]="faUtensils"></fa-icon>
-				</dav-icon-button>
+					<dav-filter-button
+						name="dinein"
+						[tooltip]="locale.takeaway.filterDineIn"
+					>
+						<fa-icon [icon]="faUtensils"></fa-icon>
+					</dav-filter-button>
+				</dav-filter-group>
 			</div>
 
 			@if (filteredOrders.length === 0) {

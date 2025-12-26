@@ -132,8 +132,23 @@ export class TakeawayDialogComponent {
 		return total
 	}
 
-	setFilter(filter: TakeawayFilterType) {
-		this.takeawayFilter = filter
+	filterChange(event: Event) {
+		const selectedFilter = (event as CustomEvent).detail.filter
+
+		switch (selectedFilter) {
+			case "delivery":
+				this.takeawayFilter = "DELIVERY"
+				break
+			case "pickup":
+				this.takeawayFilter = "PICKUP"
+				break
+			case "dinein":
+				this.takeawayFilter = "DINEIN"
+				break
+			default:
+				this.takeawayFilter = "ALL"
+				break
+		}
 	}
 
 	deleteOrder(orderUuid: string) {

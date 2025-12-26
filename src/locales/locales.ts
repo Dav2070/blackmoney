@@ -142,7 +142,6 @@ export const de = {
 			headline: "Grab & Go",
 			close: "Schließen",
 			add: "Hinzufügen",
-			filterAll: "Alle",
 			filterDelivery: "Lieferung",
 			filterPickUp: "Abholung",
 			filterDineIn: "Vor Ort",

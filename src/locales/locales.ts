@@ -566,6 +566,11 @@ export const de = {
 			headline: "Kategorie bearbeiten",
 			name: "Name"
 		},
+		deleteCategoryDialog: {
+			headline: "Kategorie {name} löschen",
+			description:
+				"Bist du dir sicher, dass du diese Kategorie löschen möchtest? Alle Produkte in dieser Kategorie werden ebenfalls gelöscht."
+		},
 		addVariationDialog: {
 			headline: "Variation hinzufügen",
 			name: "Name der Variation",

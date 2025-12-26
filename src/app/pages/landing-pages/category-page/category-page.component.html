@@ -4,9 +4,11 @@
 			backButtonVisible
 			addButtonVisible
 			editButtonVisible
+			deleteButtonVisible
 			(backButtonClick)="navigateBack()"
 			(addButtonClick)="handleAddButtonClick()"
 			(editButtonClick)="handleEditButtonClick()"
+			(deleteButtonClick)="handleDeleteButtonClick()"
 		>
 			{{ category?.name || locale.headline }}
 		</dav-header>
@@ -78,6 +80,13 @@
 	(primaryButtonClick)="editCategoryDialogPrimaryButtonClick($event)"
 	(clearErrors)="editCategoryDialogNameError = ''"
 ></app-edit-category-dialog>
+
+<app-delete-category-dialog
+	#deleteCategoryDialog
+	[name]="category?.name ?? ''"
+	[loading]="deleteCategoryDialogLoading"
+	(primaryButtonClick)="deleteCategoryDialogPrimaryButtonClick()"
+></app-delete-category-dialog>
 
 <!-- Add Offer Dialog -->
 <app-add-offer-dialog

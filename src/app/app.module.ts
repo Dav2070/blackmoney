@@ -135,6 +135,7 @@ import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-di
 import { EditVariationDialogComponent } from "./dialogs/edit-variation-dialog/edit-variation-dialog.component"
 import { EditVariationItemDialogComponent } from "./dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
 import { EditCategoryDialogComponent } from "./dialogs/edit-category-dialog/edit-category-dialog.component"
+import { DeleteCategoryDialogComponent } from "./dialogs/delete-category-dialog/delete-category-dialog.component"
 import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-product-dialog.component"
 import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-product-dialog.component"
 import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
@@ -195,6 +196,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		EditVariationDialogComponent,
 		EditVariationItemDialogComponent,
 		EditCategoryDialogComponent,
+		DeleteCategoryDialogComponent,
 		AddProductDialogComponent,
 		EditProductDialogComponent,
 		// Pages

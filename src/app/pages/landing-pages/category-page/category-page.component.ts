@@ -12,6 +12,7 @@ import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
 import { EditCategoryDialogComponent } from "src/app/dialogs/edit-category-dialog/edit-category-dialog.component"
+import { DeleteCategoryDialogComponent } from "src/app/dialogs/delete-category-dialog/delete-category-dialog.component"
 import { AddProductDialogComponent } from "src/app/dialogs/add-product-dialog/add-product-dialog.component"
 import { EditProductDialogComponent } from "src/app/dialogs/edit-product-dialog/edit-product-dialog.component"
 import { AddOfferDialogComponent } from "src/app/dialogs/add-offer-dialog/add-offer-dialog.component"
@@ -49,6 +50,10 @@ export class CategoryPageComponent {
 	editCategoryDialog!: EditCategoryDialogComponent
 	editCategoryDialogLoading: boolean = false
 	editCategoryDialogNameError: string = ""
+
+	@ViewChild("deleteCategoryDialog")
+	deleteCategoryDialog!: DeleteCategoryDialogComponent
+	deleteCategoryDialogLoading: boolean = false
 
 	@ViewChild("addProductDialog")
 	addProductDialog: AddProductDialogComponent
@@ -226,6 +231,23 @@ export class CategoryPageComponent {
 				}
 			}
 		}
+	}
+
+	handleDeleteButtonClick() {
+		this.deleteCategoryDialog.show()
+	}
+
+	async deleteCategoryDialogPrimaryButtonClick() {
+		this.deleteCategoryDialogLoading = true
+
+		await this.apiService.deleteCategory(
+			`uuid`,
+			{ uuid: this.category.uuid }
+		)
+
+		this.deleteCategoryDialog.hide()
+		this.deleteCategoryDialogLoading = false
+		this.navigateBack()
 	}
 
 	// Product Methods

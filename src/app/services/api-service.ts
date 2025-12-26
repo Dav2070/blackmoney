@@ -943,6 +943,25 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async deleteCategory(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloResult<{ deleteCategory: CategoryResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ deleteCategory: CategoryResource }>({
+				mutation: gql`
+					mutation DeleteCategory($uuid: String!) {
+						deleteCategory(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async searchProducts(
 		queryData: string,
 		variables: {

@@ -97,6 +97,14 @@ export class CategoryPageComponent {
 			`
 				uuid
 				name
+				products {
+					items {
+						id
+						uuid
+						name
+						type
+					}
+				}
 			`,
 			{ uuid: this.categoryUuid }
 		)
@@ -106,22 +114,6 @@ export class CategoryPageComponent {
 				retrieveCategoryResponse.data.retrieveCategory
 			)
 		}
-
-		// TODO: API - Load variations from backend
-		// Example: this.availableVariations = await this.apiService.retrieveVariations(...)
-		this.availableVariations = []
-
-		// TODO: API - Load available products for offer dialogs
-		// Example: this.availableProducts = await this.apiService.retrieveProducts(...)
-		this.loadAvailableProducts()
-
-		// TODO: API - Load menus from backend
-		// Example: this.menus = await this.apiService.retrieveMenus(...)
-		this.loadMenus()
-
-		// TODO: API - Load specials from backend
-		// Example: this.specials = await this.apiService.retrieveSpecials(...)
-		this.loadSpecials()
 
 		// Initialer Tab aus URL oder default
 		const currentChild =
@@ -312,25 +304,6 @@ export class CategoryPageComponent {
 				p => p.uuid !== product.uuid
 			)
 		}
-	}
-
-	// Offer/Menu Methods
-	loadAvailableProducts() {
-		// TODO: API - Load available products for offer creation
-		// Example: this.availableProducts = await this.apiService.retrieveProducts({ restaurantUuid: this.uuid })
-		this.availableProducts = []
-	}
-
-	loadMenus() {
-		// TODO: API - Load menus from backend
-		// Example: this.menus = await this.apiService.retrieveMenus({ restaurantUuid: this.uuid })
-		this.menus = []
-	}
-
-	loadSpecials() {
-		// TODO: API - Load specials from backend
-		// Example: this.specials = await this.apiService.retrieveSpecials({ restaurantUuid: this.uuid })
-		this.specials = []
 	}
 
 	showAddOfferDialog() {

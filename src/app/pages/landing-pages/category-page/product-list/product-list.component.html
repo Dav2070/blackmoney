@@ -1,6 +1,6 @@
 <div class="products-list">
-	@if (products?.length > 0) {
-		@for (product of products; track product.uuid) {
+	@if (category?.products?.length > 0) {
+		@for (product of category?.products; track product.uuid) {
 			<dav-card class="product-card">
 				<div class="product-header">
 					<div class="header-content">
@@ -60,7 +60,7 @@
 		}
 	} @else {
 		<div class="empty-state">
-			<p>Keine Produkte für {{ category?.name }}.</p>
+			<p>Keine Produkte</p>
 		</div>
 	}
 

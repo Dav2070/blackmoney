@@ -3,7 +3,6 @@ import {
 	Input,
 	Output,
 	EventEmitter,
-	OnInit,
 	ViewChild,
 	ElementRef,
 	HostListener
@@ -20,11 +19,11 @@ import { ProductType } from "src/app/types"
 
 @Component({
 	selector: "app-product-list",
-	standalone: false,
 	templateUrl: "./product-list.component.html",
-	styleUrl: "./product-list.component.scss"
+	styleUrl: "./product-list.component.scss",
+	standalone: false
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent {
 	@Input() category: Category
 	@Input() activeTab: string = "food"
 	@Output() editProduct = new EventEmitter<Product>()

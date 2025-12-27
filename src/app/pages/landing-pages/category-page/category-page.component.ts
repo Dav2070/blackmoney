@@ -52,6 +52,7 @@ export class CategoryPageComponent {
 	restaurantUuid: string = null
 	categoryUuid: string = null
 	productTypeFilter: ProductType | null = null
+	loading: boolean = true
 	category: Category = null
 	availableVariations: Variation[] = []
 	menus: Product[] = []
@@ -126,6 +127,8 @@ export class CategoryPageComponent {
 				retrieveCategoryResponse.data.retrieveCategory
 			)
 		}
+
+		this.loading = false
 	}
 
 	@HostListener("document:click", ["$event"])

@@ -33,30 +33,16 @@
 			</dav-filter-group>
 		</div>
 
-		<!-- Menüs-Liste (wenn Tab menus aktiv) -->
-		@if (productTypeFilter === "MENU") {
-			<app-offer-list
-				[offers]="menus"
-				(editOffer)="showEditOfferDialog($event)"
-				(deleteOffer)="deleteOffer($event)"
-			></app-offer-list>
-		}
-
-		<!-- Specials-Liste (wenn Tab specials aktiv) -->
-		@if (productTypeFilter === "SPECIAL") {
-			<app-offer-list
-				[offers]="specials"
-				(editOffer)="showEditOfferDialog($event)"
-				(deleteOffer)="deleteOffer($event)"
-			></app-offer-list>
-		}
-
-		@if (category && productTypeFilter !== "MENU" && productTypeFilter !== "SPECIAL") {
-			<app-product-list
-				[category]="category"
-				[productType]="productTypeFilter"
-				(editProduct)="showEditProductDialog($event)"
-			></app-product-list>
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else if (category?.products != null) {
+			@for (product of category.products; track product.uuid) {
+				@if (product.type === "MENU" || product.type === "SPECIAL") {
+					<app-offer-card [offer]="product"></app-offer-card>
+				} @else {
+					<app-product-card [product]="product"></app-product-card>
+				}
+			}
 		}
 	</div>
 </div>

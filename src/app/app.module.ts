@@ -113,6 +113,8 @@ import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/c
 import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
 import { ProductListComponent } from "./pages/landing-pages/category-page/product-list/product-list.component"
 import { OfferListComponent } from "./pages/landing-pages/category-page/offer-list/offer-list.component"
+import { OfferCardComponent } from "./pages/landing-pages/category-page/offer-card/offer-card.component"
+import { ProductCardComponent } from "./pages/landing-pages/category-page/product-card/product-card.component"
 
 // Services
 import { ApiService } from "./services/api-service"
@@ -232,7 +234,9 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		ReservationsPageComponent,
 		VariationsOverviewPageComponent,
 		ProductListComponent,
-		OfferListComponent
+		OfferListComponent,
+		OfferCardComponent,
+		ProductCardComponent
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],

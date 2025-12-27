@@ -29,7 +29,6 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
 import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
-import { ProductListComponent } from "./pages/landing-pages/category-page/product-list/product-list.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 
 const routes: Routes = [

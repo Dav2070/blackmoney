@@ -106,6 +106,33 @@ export class CategoryPageComponent {
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
 		// Load category with products from backend
+		await this.loadData()
+	}
+
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		// Context menus are now handled in child components
+	}
+
+	navigateBack() {
+		this.router.navigate([
+			"user",
+			"restaurants",
+			this.restaurantUuid,
+			"menu",
+			"categories"
+		])
+	}
+
+	async filterChange(event: Event) {
+		this.productTypeFilter = (event as CustomEvent).detail
+			.filter as ProductType
+		await this.loadData()
+	}
+
+	async loadData() {
+		this.loading = true
+
 		const retrieveCategoryResponse = await this.apiService.retrieveCategory(
 			`
 				uuid
@@ -129,26 +156,6 @@ export class CategoryPageComponent {
 		}
 
 		this.loading = false
-	}
-
-	@HostListener("document:click", ["$event"])
-	documentClick(event: MouseEvent) {
-		// Context menus are now handled in child components
-	}
-
-	navigateBack() {
-		this.router.navigate([
-			"user",
-			"restaurants",
-			this.restaurantUuid,
-			"menu",
-			"categories"
-		])
-	}
-
-	filterChange(event: Event) {
-		this.productTypeFilter = (event as CustomEvent).detail
-			.filter as ProductType
 	}
 
 	handleAddButtonClick() {

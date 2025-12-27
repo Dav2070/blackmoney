@@ -11,7 +11,7 @@ import { Weekday } from "src/app/types"
 	standalone: false
 })
 export class OfferCardComponent {
-	locale = this.localizationService.locale.offerList
+	locale = this.localizationService.locale.offerCard
 	actionsLocale = this.localizationService.locale.actions
 	faEllipsis = faEllipsis
 	@Input() offer: Product = null

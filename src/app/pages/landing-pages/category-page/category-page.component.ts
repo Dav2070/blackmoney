@@ -35,7 +35,7 @@ import {
 	standalone: false
 })
 export class CategoryPageComponent {
-	locale = this.localizationService.locale.productPage
+	locale = this.localizationService.locale.categoryPage
 	actionsLocale = this.localizationService.locale.actions
 	errorsLocale = this.localizationService.locale.errors
 	faPen = faPen

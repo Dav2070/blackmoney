@@ -11,7 +11,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 	styleUrl: "./menu-page.component.scss"
 })
 export class MenuPageComponent {
-	locale = this.localizationService.locale.productPage
+	locale = this.localizationService.locale.menuPage
 	errorsLocale = this.localizationService.locale.errors
 	faTags = faTags
 	faSplit = faSplit

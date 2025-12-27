@@ -152,21 +152,14 @@ export const de = {
 	},
 	menuPage: {
 		headline: "Deine Speisekarte",
-		clone: "Speisekarte kopieren",
-		products: "Produkte",
-		offers: "Angebote",
-		menu: "Menüs"
+		category: "Kategorien",
+		variations: "Variationen"
 	},
 	categoriesPage: {
 		headline: "Deine Kategorien",
 		noCategories: "Keine Kategorien vorhanden"
 	},
-	productPage: {
-		headline: "Produkte verwalten",
-		category: "Kategorien",
-		variations: "Variationen",
-		options: "Extras",
-		menus: "Menüs",
+	categoryPage: {
 		noProductsMessage: "Keine Produkte vorhanden",
 		addFood: "Speise hinzufügen",
 		addDrink: "Getränk hinzufügen",
@@ -221,9 +214,8 @@ export const de = {
 	offerOrderItemCard: {
 		discount: "Rabatt"
 	},
-	offerList: {
+	offerCard: {
 		options: "Optionen",
-		noOffers: "Keine Angebote vorhanden",
 		noItems: "Keine Items vorhanden"
 	},
 	addOfferDialog: {

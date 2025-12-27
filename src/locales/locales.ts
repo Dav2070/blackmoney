@@ -166,7 +166,8 @@ export const de = {
 		category: "Kategorien",
 		variations: "Variationen",
 		options: "Extras",
-		menus: "Menüs"
+		menus: "Menüs",
+		noProductsMessage: "Keine Produkte vorhanden"
 	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}",

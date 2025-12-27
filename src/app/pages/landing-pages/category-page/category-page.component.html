@@ -35,7 +35,11 @@
 
 		@if (loading) {
 			<dav-progress-ring size="24"></dav-progress-ring>
-		} @else if (category?.products != null) {
+		} @else if (category?.products?.length === 0) {
+			<div class="no-products-message">
+				<p>{{ locale.noProductsMessage }}</p>
+			</div>
+		} @else {
 			<div class="products-list">
 				@for (product of category.products; track product.uuid) {
 					@if (product.type === "MENU" || product.type === "SPECIAL") {

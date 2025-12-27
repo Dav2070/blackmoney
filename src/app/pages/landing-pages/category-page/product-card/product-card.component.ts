@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core"
+import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { faEllipsis } from "@fortawesome/pro-regular-svg-icons"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
@@ -11,8 +11,9 @@ import { VariationItem } from "src/app/models/VariationItem"
 	standalone: false
 })
 export class ProductCardComponent {
-   faEllipsis = faEllipsis
-   @Input() product: Product = null
+	faEllipsis = faEllipsis
+	@Input() product: Product = null
+	@Output() optionsButtonClick = new EventEmitter()
 
 	// Variation tooltip overlay state
 	variationTooltipVisible = false

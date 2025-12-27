@@ -9,6 +9,7 @@
 				<dav-icon-button
 					size="xs"
 					[tooltip]="'Optionen'"
+					(click)="optionsButtonClick.emit($event)"
 				>
 					<fa-icon [icon]="faEllipsis"></fa-icon>
 				</dav-icon-button>

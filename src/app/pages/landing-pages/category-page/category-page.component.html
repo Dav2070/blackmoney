@@ -43,9 +43,19 @@
 			<div class="products-list">
 				@for (product of category.products; track product.uuid) {
 					@if (product.type === "MENU" || product.type === "SPECIAL") {
-						<app-offer-card [offer]="product"></app-offer-card>
+						<app-offer-card
+							[offer]="product"
+							(optionsButtonClick)="
+								productCardOptionsButtonClick($event, product)
+							"
+						></app-offer-card>
 					} @else {
-						<app-product-card [product]="product"></app-product-card>
+						<app-product-card
+							[product]="product"
+							(optionsButtonClick)="
+								productCardOptionsButtonClick($event, product)
+							"
+						></app-product-card>
 					}
 				}
 			</div>
@@ -85,6 +95,21 @@
 		(click)="addSpecialContextMenuItemClick()"
 	>
 		<fa-icon slot="icon" [icon]="faBadgePercent" />
+	</dav-context-menu-item>
+</dav-context-menu>
+
+<dav-context-menu
+	#productContextMenu
+	[visible]="productContextMenuVisible"
+	[posX]="productContextMenuPositionX"
+	[posY]="productContextMenuPositionY"
+>
+	<dav-context-menu-item [value]="actionsLocale.edit">
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item [value]="actionsLocale.delete">
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
 	</dav-context-menu-item>
 </dav-context-menu>
 

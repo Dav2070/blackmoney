@@ -64,6 +64,15 @@ export class CategoryPageComponent {
 	addButtonContextMenuPositionY: number = 0
 	//#endregion
 
+	//#region ProductContextMenu
+	@ViewChild("productContextMenu")
+	productContextMenu: ElementRef<ContextMenu>
+	productContextMenuVisible: boolean = false
+	productContextMenuPositionX: number = 0
+	productContextMenuPositionY: number = 0
+	productContextMenuSelectedProduct: Product | null = null
+	//#endregion
+
 	@ViewChild("editCategoryDialog")
 	editCategoryDialog!: EditCategoryDialogComponent
 	editCategoryDialogLoading: boolean = false
@@ -121,6 +130,12 @@ export class CategoryPageComponent {
 			!this.addButtonContextMenu.nativeElement.contains(event.target as Node)
 		) {
 			this.addButtonContextMenuVisible = false
+		}
+
+		if (
+			!this.productContextMenu.nativeElement.contains(event.target as Node)
+		) {
+			this.productContextMenuVisible = false
 		}
 	}
 
@@ -271,6 +286,17 @@ export class CategoryPageComponent {
 	addSpecialContextMenuItemClick() {
 		this.addButtonContextMenuVisible = false
 		this.showAddSpecialDialog()
+	}
+
+	productCardOptionsButtonClick(event: CustomEvent, product: Product) {
+		if (this.productContextMenuVisible) {
+			this.productContextMenuVisible = false
+		} else {
+			this.productContextMenuPositionX = event.detail.contextMenuPosition.x
+			this.productContextMenuPositionY = event.detail.contextMenuPosition.y
+			this.productContextMenuSelectedProduct = product
+			this.productContextMenuVisible = true
+		}
 	}
 
 	// Product Methods

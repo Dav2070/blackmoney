@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core"
+import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { faEllipsis } from "@fortawesome/pro-regular-svg-icons"
 import { Product } from "src/app/models/Product"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -15,6 +15,7 @@ export class OfferCardComponent {
 	actionsLocale = this.localizationService.locale.actions
 	faEllipsis = faEllipsis
 	@Input() offer: Product = null
+	@Output() optionsButtonClick = new EventEmitter()
 
 	constructor(private localizationService: LocalizationService) {}
 

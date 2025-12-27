@@ -299,6 +299,28 @@ export class CategoryPageComponent {
 		}
 	}
 
+	editProductContextMenuItemClick() {
+		this.productContextMenuVisible = false
+
+		if (
+			["MENU", "SPECIAL"].includes(
+				this.productContextMenuSelectedProduct.type
+			)
+		) {
+			this.showEditOfferDialog(this.productContextMenuSelectedProduct)
+		} else {
+			this.showEditProductDialog(this.productContextMenuSelectedProduct)
+		}
+	}
+
+	deleteProductContextMenuItemClick() {
+		this.productContextMenuVisible = false
+
+		if (this.productContextMenuSelectedProduct) {
+			this.deleteProduct(this.productContextMenuSelectedProduct)
+		}
+	}
+
 	// Product Methods
 	showAddProductDialog() {
 		if (this.addProductDialog) {

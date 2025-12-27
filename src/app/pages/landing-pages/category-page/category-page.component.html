@@ -104,11 +104,17 @@
 	[posX]="productContextMenuPositionX"
 	[posY]="productContextMenuPositionY"
 >
-	<dav-context-menu-item [value]="actionsLocale.edit">
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="editProductContextMenuItemClick()"
+	>
 		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
 	</dav-context-menu-item>
 
-	<dav-context-menu-item [value]="actionsLocale.delete">
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="deleteProductContextMenuItemClick()"
+	>
 		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
 	</dav-context-menu-item>
 </dav-context-menu>

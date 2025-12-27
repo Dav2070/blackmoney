@@ -4,7 +4,15 @@ import {
 	HostListener,
 } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
+import {
+	faPen,
+	faTrash,
+	faEllipsis,
+	faUtensils,
+	faGlass,
+	faBurgerSoda,
+	faBadgePercent
+} from "@fortawesome/pro-regular-svg-icons"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
@@ -36,6 +44,10 @@ export class CategoryPageComponent {
 	faPen = faPen
 	faTrash = faTrash
 	faEllipsis = faEllipsis
+	faUtensils = faUtensils
+	faGlass = faGlass
+	faBurgerSoda = faBurgerSoda
+	faBadgePercent = faBadgePercent
 
 	restaurantUuid: string = null
 	categoryUuid: string = null
@@ -130,12 +142,6 @@ export class CategoryPageComponent {
 		// Context menus are now handled in child components
 	}
 
-	selectTab(tab: string) {
-		this.activeTab = tab
-		// navigate to child route (relativeTo this component's route)
-		this.router.navigate([tab], { relativeTo: this.activatedRoute })
-	}
-
 	navigateBack() {
 		this.router.navigate([
 			"user",
@@ -144,6 +150,17 @@ export class CategoryPageComponent {
 			"menu",
 			"categories"
 		])
+	}
+
+	filterChange(event: Event) {
+		const selectedFilter = (event as CustomEvent).detail.filter
+		this.selectTab(selectedFilter)
+	}
+
+	selectTab(tab: string) {
+		this.activeTab = tab
+		// navigate to child route (relativeTo this component's route)
+		this.router.navigate([tab], { relativeTo: this.activatedRoute })
 	}
 
 	mapPathToType(path: string): ProductType {
@@ -232,10 +249,7 @@ export class CategoryPageComponent {
 	async deleteCategoryDialogPrimaryButtonClick() {
 		this.deleteCategoryDialogLoading = true
 
-		await this.apiService.deleteCategory(
-			`uuid`,
-			{ uuid: this.category.uuid }
-		)
+		await this.apiService.deleteCategory(`uuid`, { uuid: this.category.uuid })
 
 		this.deleteCategoryDialog.hide()
 		this.deleteCategoryDialogLoading = false

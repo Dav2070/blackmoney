@@ -15,26 +15,26 @@
 
 		<div class="filter-container">
 			<dav-filter-group (change)="filterChange($event)">
-				<dav-filter-button name="food" label="Speisen">
+				<dav-filter-button name="FOOD" label="Speisen">
 					<fa-icon [icon]="faUtensils" />
 				</dav-filter-button>
 
-				<dav-filter-button name="drinks" label="Getränke">
+				<dav-filter-button name="DRINK" label="Getränke">
 					<fa-icon [icon]="faGlass" />
 				</dav-filter-button>
 
-				<dav-filter-button name="menus" label="Menüs">
+				<dav-filter-button name="MENU" label="Menüs">
 					<fa-icon [icon]="faBurgerSoda" />
 				</dav-filter-button>
 
-				<dav-filter-button name="specials" label="Specials">
+				<dav-filter-button name="SPECIAL" label="Specials">
 					<fa-icon [icon]="faBadgePercent" />
 				</dav-filter-button>
 			</dav-filter-group>
 		</div>
 
 		<!-- Menüs-Liste (wenn Tab menus aktiv) -->
-		@if (activeTab === "menus") {
+		@if (productTypeFilter === "MENU") {
 			<app-offer-list
 				[offers]="menus"
 				(editOffer)="showEditOfferDialog($event)"
@@ -43,7 +43,7 @@
 		}
 
 		<!-- Specials-Liste (wenn Tab specials aktiv) -->
-		@if (activeTab === "specials") {
+		@if (productTypeFilter === "SPECIAL") {
 			<app-offer-list
 				[offers]="specials"
 				(editOffer)="showEditOfferDialog($event)"
@@ -51,10 +51,10 @@
 			></app-offer-list>
 		}
 
-		@if (category && activeTab !== "menus" && activeTab !== "specials") {
+		@if (category && productTypeFilter !== "MENU" && productTypeFilter !== "SPECIAL") {
 			<app-product-list
 				[category]="category"
-				[activeTab]="activeTab"
+				[productType]="productTypeFilter"
 				(editProduct)="showEditProductDialog($event)"
 			></app-product-list>
 		}
@@ -99,7 +99,7 @@
 	[nameError]="addProductDialogNameError"
 	[priceError]="addProductDialogPriceError"
 	[category]="category"
-	[productType]="mapPathToType(activeTab)"
+	[productType]="productTypeFilter"
 	[availableVariations]="availableVariations"
 	(primaryButtonClick)="addProductDialogPrimaryButtonClick($any($event))"
 	(clearErrors)="

@@ -51,7 +51,7 @@ export class CategoryPageComponent {
 
 	restaurantUuid: string = null
 	categoryUuid: string = null
-	activeTab = "food"
+	productTypeFilter: ProductType | null = null
 	category: Category = null
 	availableVariations: Variation[] = []
 	menus: Product[] = []
@@ -109,7 +109,7 @@ export class CategoryPageComponent {
 			`
 				uuid
 				name
-				products {
+				products(type: $type) {
 					items {
 						id
 						uuid
@@ -118,22 +118,13 @@ export class CategoryPageComponent {
 					}
 				}
 			`,
-			{ uuid: this.categoryUuid }
+			{ uuid: this.categoryUuid, type: this.productTypeFilter }
 		)
 
 		if (retrieveCategoryResponse.data != null) {
 			this.category = convertCategoryResourceToCategory(
 				retrieveCategoryResponse.data.retrieveCategory
 			)
-		}
-
-		// Initialer Tab aus URL oder default
-		const currentChild =
-			this.activatedRoute.firstChild?.snapshot.routeConfig?.path
-		if (currentChild) {
-			this.activeTab = currentChild
-		} else {
-			this.selectTab("food")
 		}
 	}
 
@@ -153,33 +144,14 @@ export class CategoryPageComponent {
 	}
 
 	filterChange(event: Event) {
-		const selectedFilter = (event as CustomEvent).detail.filter
-		this.selectTab(selectedFilter)
-	}
-
-	selectTab(tab: string) {
-		this.activeTab = tab
-		// navigate to child route (relativeTo this component's route)
-		this.router.navigate([tab], { relativeTo: this.activatedRoute })
-	}
-
-	mapPathToType(path: string): ProductType {
-		switch (path) {
-			case "drinks":
-				return "DRINK"
-			case "specials":
-				return "SPECIAL"
-			case "menus":
-				return "MENU"
-			default:
-				return "FOOD"
-		}
+		this.productTypeFilter = (event as CustomEvent).detail
+			.filter as ProductType
 	}
 
 	handleAddButtonClick() {
-		if (this.activeTab === "menus") {
+		if (this.productTypeFilter === "MENU") {
 			this.showAddOfferDialog()
-		} else if (this.activeTab === "specials") {
+		} else if (this.productTypeFilter === "SPECIAL") {
 			this.showAddSpecialDialog()
 		} else {
 			this.showAddProductDialog()

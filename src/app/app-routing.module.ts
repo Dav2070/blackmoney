@@ -123,14 +123,7 @@ const routes: Routes = [
 			},
 			{
 				path: "user/restaurants/:restaurantUuid/menu/categories/:categoryUuid",
-				component: CategoryPageComponent,
-				children: [
-					{ path: "", redirectTo: "food", pathMatch: "full" },
-					{ path: "food", component: ProductListComponent },
-					{ path: "drinks", component: ProductListComponent }, // später durch DrinksListComponent ersetzen
-					{ path: "specials", component: ProductListComponent }, // später durch SpecialsListComponent ersetzen
-					{ path: "menus", component: ProductListComponent } // später durch MenusListComponent ersetzen
-				]
+				component: CategoryPageComponent
 			},
 			{
 				path: "user/restaurants/:uuid/menu/variations",

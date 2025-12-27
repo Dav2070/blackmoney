@@ -167,7 +167,11 @@ export const de = {
 		variations: "Variationen",
 		options: "Extras",
 		menus: "Menüs",
-		noProductsMessage: "Keine Produkte vorhanden"
+		noProductsMessage: "Keine Produkte vorhanden",
+		addFood: "Speise hinzufügen",
+		addDrink: "Getränk hinzufügen",
+		addMenu: "Menü hinzufügen",
+		addSpecial: "Special hinzufügen"
 	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}",

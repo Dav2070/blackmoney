@@ -1,8 +1,4 @@
-import {
-	Component,
-	ViewChild,
-	HostListener,
-} from "@angular/core"
+import { Component, ViewChild, HostListener, ElementRef } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import {
 	faPen,
@@ -13,6 +9,7 @@ import {
 	faBurgerSoda,
 	faBadgePercent
 } from "@fortawesome/pro-regular-svg-icons"
+import { ContextMenu } from "dav-ui-components"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
@@ -59,6 +56,14 @@ export class CategoryPageComponent {
 	specials: Product[] = []
 	availableProducts: Product[] = []
 
+	//#region AddButtonContextMenu
+	@ViewChild("addButtonContextMenu")
+	addButtonContextMenu: ElementRef<ContextMenu>
+	addButtonContextMenuVisible: boolean = false
+	addButtonContextMenuPositionX: number = 0
+	addButtonContextMenuPositionY: number = 0
+	//#endregion
+
 	@ViewChild("editCategoryDialog")
 	editCategoryDialog!: EditCategoryDialogComponent
 	editCategoryDialogLoading: boolean = false
@@ -71,6 +76,7 @@ export class CategoryPageComponent {
 	@ViewChild("addProductDialog")
 	addProductDialog: AddProductDialogComponent
 	addProductDialogLoading: boolean = false
+	addProductDialogProductType: ProductType = "FOOD"
 	addProductDialogNameError: string = ""
 	addProductDialogPriceError: string = ""
 
@@ -111,7 +117,11 @@ export class CategoryPageComponent {
 
 	@HostListener("document:click", ["$event"])
 	documentClick(event: MouseEvent) {
-		// Context menus are now handled in child components
+		if (
+			!this.addButtonContextMenu.nativeElement.contains(event.target as Node)
+		) {
+			this.addButtonContextMenuVisible = false
+		}
 	}
 
 	navigateBack() {
@@ -158,13 +168,16 @@ export class CategoryPageComponent {
 		this.loading = false
 	}
 
-	handleAddButtonClick() {
-		if (this.productTypeFilter === "MENU") {
-			this.showAddOfferDialog()
-		} else if (this.productTypeFilter === "SPECIAL") {
-			this.showAddSpecialDialog()
+	handleAddButtonClick(event: Event) {
+		if (this.addButtonContextMenuVisible) {
+			this.addButtonContextMenuVisible = false
 		} else {
-			this.showAddProductDialog()
+			const contextMenuPosition = (event as CustomEvent).detail
+				.contextMenuPosition
+
+			this.addButtonContextMenuPositionX = contextMenuPosition.x
+			this.addButtonContextMenuPositionY = contextMenuPosition.y
+			this.addButtonContextMenuVisible = true
 		}
 	}
 
@@ -236,6 +249,28 @@ export class CategoryPageComponent {
 		this.deleteCategoryDialog.hide()
 		this.deleteCategoryDialogLoading = false
 		this.navigateBack()
+	}
+
+	addFoodContextMenuItemClick() {
+		this.addButtonContextMenuVisible = false
+		this.addProductDialogProductType = "FOOD"
+		this.showAddProductDialog()
+	}
+
+	addDrinkContextMenuItemClick() {
+		this.addButtonContextMenuVisible = false
+		this.addProductDialogProductType = "DRINK"
+		this.showAddProductDialog()
+	}
+
+	addMenuContextMenuItemClick() {
+		this.addButtonContextMenuVisible = false
+		this.showAddOfferDialog()
+	}
+
+	addSpecialContextMenuItemClick() {
+		this.addButtonContextMenuVisible = false
+		this.showAddSpecialDialog()
 	}
 
 	// Product Methods

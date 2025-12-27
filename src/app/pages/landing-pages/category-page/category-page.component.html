@@ -6,7 +6,7 @@
 			editButtonVisible
 			deleteButtonVisible
 			(backButtonClick)="navigateBack()"
-			(addButtonClick)="handleAddButtonClick()"
+			(addButtonClick)="handleAddButtonClick($event)"
 			(editButtonClick)="handleEditButtonClick()"
 			(deleteButtonClick)="handleDeleteButtonClick()"
 		>
@@ -53,6 +53,41 @@
 	</div>
 </div>
 
+<dav-context-menu
+	#addButtonContextMenu
+	[visible]="addButtonContextMenuVisible"
+	[posX]="addButtonContextMenuPositionX"
+	[posY]="addButtonContextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="locale.addFood"
+		(click)="addFoodContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faUtensils" />
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="locale.addDrink"
+		(click)="addDrinkContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faGlass" />
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="locale.addMenu"
+		(click)="addMenuContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faBurgerSoda" />
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="locale.addSpecial"
+		(click)="addSpecialContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faBadgePercent" />
+	</dav-context-menu-item>
+</dav-context-menu>
+
 <app-edit-category-dialog
 	#editCategoryDialog
 	[category]="category"
@@ -91,7 +126,7 @@
 	[nameError]="addProductDialogNameError"
 	[priceError]="addProductDialogPriceError"
 	[category]="category"
-	[productType]="productTypeFilter"
+	[productType]="addProductDialogProductType"
 	[availableVariations]="availableVariations"
 	(primaryButtonClick)="addProductDialogPrimaryButtonClick($any($event))"
 	(clearErrors)="

@@ -78,7 +78,7 @@ export class EditProductDialogComponent {
 
 	show(product: Product) {
 		this.product = product
-		this.productId = product.id.toString()
+		this.productId = product.shortcut.toString()
 		this.name = product.name
 		this.price = (product.price / 100).toFixed(2)
 		this.takeaway = product.takeaway
@@ -134,9 +134,9 @@ export class EditProductDialogComponent {
 
 		const updatedProduct: Product = {
 			...this.product,
-			id: parseInt(this.productId.trim()),
 			name: this.name.trim(),
 			price: priceInCents,
+			shortcut: parseInt(this.productId.trim()),
 			variations: selectedVariations,
 			takeaway: this.takeaway
 		}

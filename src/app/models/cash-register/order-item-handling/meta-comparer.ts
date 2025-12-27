@@ -18,8 +18,8 @@ export class MetaComparer {
 			incoming.type === OrderItemType.Special
 		) {
 			if (
-				existing.orderItems[0].product.id !==
-				incoming.orderItems[0].product.id
+				existing.orderItems[0].product.shortcut !==
+				incoming.orderItems[0].product.shortcut
 			)
 				return false
 		}
@@ -59,7 +59,7 @@ export class MetaComparer {
 		if (a.takeAway !== b.takeAway) return false
 		if (a.course !== b.course) return false
 		if (a.offer?.id !== b.offer?.id) return false
-		if (a.product.id !== b.product.id) return false
+		if (a.product.shortcut !== b.product.shortcut) return false
 
 		return true
 	}
@@ -207,7 +207,7 @@ export class MetaComparer {
 		existing: OrderItem,
 		incoming: OrderItem
 	): boolean {
-		if (existing.product.id == 0 && incoming.product.id == 0) {
+		if (existing.product.shortcut == 0 && incoming.product.shortcut == 0) {
 			if (existing.product.price !== incoming.product.price) return false
 			if (existing.product.name !== incoming.product.name) return false
 		}

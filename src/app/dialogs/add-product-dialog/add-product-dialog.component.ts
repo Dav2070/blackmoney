@@ -127,10 +127,10 @@ export class AddProductDialogComponent {
 		)
 
 		const newProduct: Product = {
-			id: parseInt(this.productId.trim()),
 			uuid: `prod-${Date.now()}`,
 			name: this.name.trim(),
 			price: priceInCents,
+			shortcut: parseInt(this.productId.trim()),
 			type: this.productType,
 			category: this.category,
 			variations: selectedVariations,

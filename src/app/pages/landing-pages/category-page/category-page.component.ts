@@ -164,10 +164,10 @@ export class CategoryPageComponent {
 				name
 				products(type: $type) {
 					items {
-						id
 						uuid
 						name
 						type
+						shortcut
 					}
 				}
 			`,
@@ -416,9 +416,9 @@ export class CategoryPageComponent {
 				if (index !== -1) {
 					this.specials[index] = {
 						...this.specials[index],
-						id: data.id,
 						name: data.name,
 						price: data.price,
+						shortcut: data.id,
 						takeaway: data.takeaway,
 						offer: data.offer
 					}
@@ -429,11 +429,11 @@ export class CategoryPageComponent {
 				// Example: const newSpecial = await this.apiService.createSpecial({ ...data, restaurantUuid: this.uuid })
 
 				const newSpecial: Product = {
-					id: data.id,
 					uuid: crypto.randomUUID(),
 					type: "SPECIAL",
 					name: data.name,
 					price: data.price,
+					shortcut: data.id,
 					variations: [],
 					takeaway: data.takeaway,
 					offer: data.offer
@@ -452,9 +452,9 @@ export class CategoryPageComponent {
 				if (index !== -1) {
 					this.menus[index] = {
 						...this.menus[index],
-						id: data.id,
 						name: data.name,
 						price: data.price,
+						shortcut: data.id,
 						takeaway: data.takeaway,
 						offer: data.offer
 					}
@@ -465,11 +465,11 @@ export class CategoryPageComponent {
 				// Example: const newMenu = await this.apiService.createMenu({ ...data, restaurantUuid: this.uuid })
 
 				const newMenu: Product = {
-					id: data.id,
 					uuid: crypto.randomUUID(),
 					type: "MENU",
 					name: data.name,
 					price: data.price,
+					shortcut: data.id,
 					variations: [],
 					takeaway: data.takeaway,
 					offer: data.offer
@@ -516,9 +516,9 @@ export class CategoryPageComponent {
 			if (index !== -1) {
 				this.specials[index] = {
 					...this.specials[index],
-					id: data.id,
 					name: data.name,
 					price: data.price,
+					shortcut: data.id,
 					takeaway: data.takeaway,
 					offer: data.offer
 				}
@@ -534,9 +534,9 @@ export class CategoryPageComponent {
 			if (index !== -1) {
 				this.menus[index] = {
 					...this.menus[index],
-					id: data.id,
 					name: data.name,
 					price: data.price,
+					shortcut: data.id,
 					takeaway: data.takeaway,
 					offer: data.offer
 				}

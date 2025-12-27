@@ -120,11 +120,11 @@ export interface OfferItemResource {
 }
 
 export interface ProductResource {
-	id: number
 	uuid: string
 	type: ProductType
 	name: string
 	price: number
+	shortcut: number
 	category: CategoryResource
 	offer?: OfferResource
 	variations: List<VariationResource>

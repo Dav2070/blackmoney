@@ -533,11 +533,11 @@ export function convertProductResourceToProduct(
 	}
 
 	return {
-		id: productResource.id,
 		uuid: productResource.uuid,
 		type: productResource.type,
 		name: productResource.name,
 		price: productResource.price,
+		shortcut: productResource.shortcut,
 		category: convertCategoryResourceToCategory(productResource.category),
 		offer: convertOfferResourceToOffer(productResource.offer),
 		variations

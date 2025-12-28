@@ -6,7 +6,9 @@
 		<form>
 			<dav-textfield
 				[label]="locale.deviceNameLabel"
+            [errorMessage]="errorMessage"
 				[disabled]="loading"
+            (change)="deviceNameChange($event)"
 			></dav-textfield>
 
 			<div class="save-button-container" [class.loading]="loading">

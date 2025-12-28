@@ -61,6 +61,7 @@ export class SetPasswordPageComponent {
 	async send() {
 		if (this.password.length < 6) {
 			this.errorMessage = this.errorsLocale.passwordTooShort
+			return
 		} else if (this.password !== this.passwordConfirmation) {
 			this.errorMessage =
 				this.errorsLocale.passwordDoesNotMatchPasswordConfirmation

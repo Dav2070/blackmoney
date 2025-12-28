@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VariationsOverviewPageComponent } from './variations-overview-page.component';
+import { VariationsOverviewPageComponent } from './variations-page.component';
 
 describe('VariationsOverviewPageComponent', () => {
   let component: VariationsOverviewPageComponent;

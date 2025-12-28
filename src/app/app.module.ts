@@ -110,7 +110,7 @@ import { TableCombinationsPageComponent } from "./pages/landing-pages/table-comb
 import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
 import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
-import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
+import { VariationsPageComponent } from "./pages/landing-pages/variations-page/variations-page.component"
 import { OfferCardComponent } from "./pages/landing-pages/category-page/offer-card/offer-card.component"
 import { ProductCardComponent } from "./pages/landing-pages/category-page/product-card/product-card.component"
 
@@ -230,7 +230,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		TableCombinationsPageComponent,
 		OpeningTimePageComponent,
 		ReservationsPageComponent,
-		VariationsOverviewPageComponent,
+		VariationsPageComponent,
 		OfferCardComponent,
 		ProductCardComponent
 	],

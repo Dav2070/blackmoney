@@ -7,6 +7,7 @@ import {
 } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
+import { ContextMenu } from "dav-ui-components"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
 import { DataService } from "src/app/services/data-service"
@@ -14,17 +15,15 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
 import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialog/add-variation-dialog.component"
 import { AddVariationItemDialogComponent } from "src/app/dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
-import { ContextMenu } from "dav-ui-components"
 import { EditVariationDialogComponent } from "src/app/dialogs/edit-variation-dialog/edit-variation-dialog.component"
 import { EditVariationItemDialogComponent } from "src/app/dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
 
 @Component({
-	selector: "app-variations-overview-page",
-	templateUrl: "./variations-overview-page.component.html",
-	styleUrls: ["./variations-overview-page.component.scss"],
+	templateUrl: "./variations-page.component.html",
+	styleUrls: ["./variations-page.component.scss"],
 	standalone: false
 })
-export class VariationsOverviewPageComponent implements OnInit {
+export class VariationsPageComponent implements OnInit {
 	locale = this.localizationService.locale.variationsPage
 	actionsLocale = this.localizationService.locale.actions
 	faPen = faPen

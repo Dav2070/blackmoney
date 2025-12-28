@@ -9,8 +9,6 @@
 			{{ locale.headline }}
 		</dav-header>
 
-		<div class="separator"></div>
-
 		<!-- Variationen-Liste -->
 		@if (variations.length > 0) {
 			@for (variation of variations; track variation.uuid) {
@@ -57,7 +55,7 @@
 								</div>
 							}
 						} @else {
-							<p class="no-items">{{ locale.noVariationItems }}</p>
+							<p class="no-items-message">{{ locale.noVariationItems }}</p>
 						}
 					</div>
 
@@ -70,7 +68,7 @@
 				</dav-card>
 			}
 		} @else {
-			<p class="no-variations">{{ locale.noVariations }}</p>
+			<p class="no-items-message">{{ locale.noVariations }}</p>
 		}
 	</div>
 

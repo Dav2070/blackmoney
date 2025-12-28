@@ -1,12 +1,14 @@
-dav-card {
-	padding: 24px;
-	margin-bottom: 16px;
+.variations-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 }
 
 .variation-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	margin: 0;
 
 	h3 {
 		margin: 0;

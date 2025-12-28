@@ -10,65 +10,68 @@
 		</dav-header>
 
 		<!-- Variationen-Liste -->
-		@if (variations.length > 0) {
-			@for (variation of variations; track variation.uuid) {
-				<dav-card>
-					<div class="variation-header">
-						<h3>{{ variation.name }}</h3>
-						<div class="variation-actions">
-							<dav-icon-button
-								size="xs"
-								[tooltip]="locale.options"
-								(click)="showVariationContextMenu($event, variation)"
-							>
-								<fa-icon [icon]="faEllipsis"></fa-icon>
-							</dav-icon-button>
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else if (variations.length > 0) {
+			<div class="variations-list">
+				@for (variation of variations; track variation.uuid) {
+					<dav-card>
+						<div class="variation-header">
+							<h3>{{ variation.name }}</h3>
+							<div class="variation-actions">
+								<dav-icon-button
+									size="xs"
+									[tooltip]="locale.options"
+									(click)="showVariationContextMenu($event, variation)"
+								>
+									<fa-icon [icon]="faEllipsis"></fa-icon>
+								</dav-icon-button>
+							</div>
 						</div>
-					</div>
 
-					<div class="separator"></div>
-
-					<!-- VariationItems -->
-					<div class="variation-items">
-						@if (variation.variationItems?.length > 0) {
-							@for (item of variation.variationItems; track item.uuid) {
-								<div class="variation-item">
-									<span>{{ item.name }}</span>
-									<span class="item-price">{{
-										item.additionalCost | currency: "EUR"
-									}}</span>
-									<div class="item-actions">
-										<dav-icon-button
-											size="xs"
-											[tooltip]="locale.options"
-											(click)="
-												showVariationItemContextMenu(
-													$event,
-													variation,
-													item
-												)
-											"
-										>
-											<fa-icon [icon]="faEllipsis"></fa-icon>
-										</dav-icon-button>
+						<!-- VariationItems -->
+						<div class="variation-items">
+							@if (variation.variationItems?.length > 0) {
+								@for (
+									item of variation.variationItems;
+									track item.uuid
+								) {
+									<div class="variation-item">
+										<span>{{ item.name }}</span>
+										<span class="item-price">{{ formatPrice(item.additionalCost) }}</span>
+										<div class="item-actions">
+											<dav-icon-button
+												size="xs"
+												[tooltip]="locale.options"
+												(click)="
+													showVariationItemContextMenu(
+														$event,
+														variation,
+														item
+													)
+												"
+											>
+												<fa-icon [icon]="faEllipsis"></fa-icon>
+											</dav-icon-button>
+										</div>
 									</div>
-								</div>
+								}
+							} @else {
+								<p class="no-items-message">
+									{{ locale.noVariationItems }}
+								</p>
 							}
-						} @else {
-							<p class="no-items-message">
-								{{ locale.noVariationItems }}
-							</p>
-						}
-					</div>
+						</div>
 
-					<dav-button
-						class="add-item-button"
-						(click)="showAddVariationItemDialog(variation)"
-					>
-						{{ locale.addVariationItem }}
-					</dav-button>
-				</dav-card>
-			}
+						<dav-button
+							class="add-item-button"
+							(click)="showAddVariationItemDialog(variation)"
+						>
+							{{ locale.addVariationItem }}
+						</dav-button>
+					</dav-card>
+				}
+			</div>
 		} @else {
 			<p class="no-items-message">{{ locale.noVariations }}</p>
 		}

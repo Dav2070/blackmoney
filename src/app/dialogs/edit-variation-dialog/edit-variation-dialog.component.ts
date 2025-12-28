@@ -14,6 +14,7 @@ import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
+import { formatPrice } from "src/app/utils"
 
 @Component({
 	selector: "app-edit-variation-dialog",
@@ -24,6 +25,7 @@ import { VariationItem } from "src/app/models/VariationItem"
 export class EditVariationDialogComponent {
 	locale = this.localizationService.locale.dialogs.editVariationDialog
 	actionsLocale = this.localizationService.locale.actions
+	formatPrice = formatPrice
 	faTrash = faTrash
 
 	@Input() loading: boolean = false

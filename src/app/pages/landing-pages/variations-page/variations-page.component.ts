@@ -11,7 +11,10 @@ import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialo
 import { AddVariationItemDialogComponent } from "src/app/dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
 import { EditVariationDialogComponent } from "src/app/dialogs/edit-variation-dialog/edit-variation-dialog.component"
 import { EditVariationItemDialogComponent } from "src/app/dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
-import { convertRestaurantResourceToRestaurant } from "src/app/utils"
+import {
+	convertRestaurantResourceToRestaurant,
+	formatPrice
+} from "src/app/utils"
 
 @Component({
 	templateUrl: "./variations-page.component.html",
@@ -21,6 +24,7 @@ import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 export class VariationsPageComponent {
 	locale = this.localizationService.locale.variationsPage
 	actionsLocale = this.localizationService.locale.actions
+	formatPrice = formatPrice
 	faPen = faPen
 	faTrash = faTrash
 	faEllipsis = faEllipsis
@@ -28,6 +32,7 @@ export class VariationsPageComponent {
 	uuid: string = null
 	selectedVariation: Variation = null
 	variations: Variation[] = []
+	loading: boolean = true
 
 	@ViewChild("addVariationDialog")
 	addVariationDialog: AddVariationDialogComponent
@@ -106,6 +111,8 @@ export class VariationsPageComponent {
 			)
 			this.variations = restaurant.menu.variations
 		}
+
+		this.loading = false
 	}
 
 	navigateBack() {

@@ -48,9 +48,9 @@
 
 						<div class="item-products">
 							@for (product of item.products; track product.uuid) {
-								<div class="product-chip">
+								<dav-badge color="secondary" tonal>
 									{{ product.name }}
-								</div>
+								</dav-badge>
 							}
 						</div>
 					</div>

@@ -32,15 +32,9 @@
 					<strong>Variationen:</strong>
 					<div class="variation-chips">
 						@for (variation of product.variations; track variation.uuid) {
-							<div
-								class="variation-chip"
-								(mouseenter)="showVariationTooltip($event, variation)"
-								(mouseleave)="scheduleHideVariationTooltip()"
-							>
-								<span class="variation-badge">{{
-									variation.name
-								}}</span>
-							</div>
+							<dav-badge color="secondary" tonal>
+								{{ variation.name }}
+							</dav-badge>
 						}
 					</div>
 				</div>

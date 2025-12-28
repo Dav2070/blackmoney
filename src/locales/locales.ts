@@ -9,7 +9,7 @@ export const de = {
 		loginFailed: "Anmeldung fehlgeschlagen"
 	},
 	setPasswordPage: {
-		headline: "Willkommen!",
+		headline: "Willkommen, {name}!",
 		description:
 			"Bitte wähle ein Passwort, mit dem du dich zukünftig anmelden kannst.",
 		passwordLabel: "Dein Passwort",

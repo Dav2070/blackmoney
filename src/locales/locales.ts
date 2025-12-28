@@ -17,6 +17,12 @@ export const de = {
 		passwordConfirmationLabel: "Passwort bestätigen",
 		passwordConfirmationPlaceholder: "Wiederhole dein Passwort"
 	},
+	deviceSetupPage: {
+		headline: "Neues Gerät erkannt",
+		description:
+			"Gib diesem Gerät einen Namen, damit du es später bei der Verwaltung deiner Geräte einfacher hast.",
+		deviceNameLabel: "Gerätename"
+	},
 	onboardingPage: {
 		createCompanySection: {
 			headline: "Wie heißt dein Restaurant?",
@@ -612,7 +618,8 @@ export const de = {
 		edit: "Bearbeiten",
 		delete: "Löschen",
 		close: "Schließen",
-		reset: "Zurücksetzen"
+		reset: "Zurücksetzen",
+		skip: "Überspringen"
 	},
 	errors: {
 		printerAlreadyExists:

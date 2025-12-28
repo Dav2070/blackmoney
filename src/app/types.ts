@@ -255,3 +255,5 @@ export interface TimeSlotSuggestion {
 		seats: number
 	}
 }
+
+export type RatingNum = "1" | "2" | "3" | "4" | "5"

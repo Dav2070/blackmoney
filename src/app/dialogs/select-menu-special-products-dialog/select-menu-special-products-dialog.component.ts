@@ -28,7 +28,8 @@ import { OfferItem } from "src/app/models/OfferItem"
 	standalone: false
 })
 export class SelectMenuSpecialProductsDialogComponent {
-	locale = this.localizationService.locale.dialogs.selectMenuSpecialProductsDialog
+	locale =
+		this.localizationService.locale.dialogs.selectMenuSpecialProductsDialog
 	actionsLocale = this.localizationService.locale.actions
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	@Input() product: Product = null

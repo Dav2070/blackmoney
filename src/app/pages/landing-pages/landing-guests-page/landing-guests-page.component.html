@@ -1,0 +1,105 @@
+<div class="container slide-up-in">
+	<dav-card class="filters-card">
+		<div class="guests-header">
+			<div class="filter-item name-filter">
+				<dav-textfield
+					[value]="nameFilter"
+					label="Name des Restaurants"
+					(change)="nameTextfieldChange($any($event).detail.value)"
+				></dav-textfield>
+			</div>
+
+			<div class="filter-item city-filter">
+				<dav-textfield
+					[value]="cityPostalFilter"
+					label="Stadt / PLZ"
+					(change)="cityTextfieldChange($any($event).detail.value)"
+				></dav-textfield>
+			</div>
+
+			<div class="filter-item distance-filter">
+				<label class="distance-label"
+					>Entfernung: {{ distanceKm }} km</label
+				>
+				<input
+					type="range"
+					min="1"
+					max="100"
+					[value]="distanceKm"
+					(input)="distanceRangeChange($any($event).target.value)"
+				/>
+			</div>
+
+			<div class="filter-item rating-filter">
+				<label>Bewertung</label>
+				<div class="stars">
+					@for (i of [1, 2, 3, 4, 5]; track i) {
+						<fa-icon
+							[icon]="faStar"
+							class="star"
+							[class.filled]="i <= ratingFilter"
+							(click)="setRating(i)"
+						></fa-icon>
+					}
+				</div>
+			</div>
+
+			<div class="filter-item checkboxes">
+				<dav-checkbox
+					[checked]="hasTakeaway"
+					[label]="'Zum Mitnehmen'"
+					(change)="takeawayCheckboxChange($any($event).detail.checked)"
+				></dav-checkbox>
+
+				<dav-checkbox
+					[checked]="hasDelivery"
+					[label]="'Lieferung'"
+					(change)="deliveryCheckboxChange($any($event).detail.checked)"
+				></dav-checkbox>
+			</div>
+		</div>
+	</dav-card>
+</div>
+
+<div class="cards-grid">
+	@for (r of filteredRestaurants; track r.uuid) {
+		<dav-card
+			class="restaurant-card"
+			[href]="'/guests/restaurantinfo/' + r.uuid"
+			(click)="openRestaurant($event, r.uuid)"
+		>
+			<div class="card-body">
+				<div class="card-info">
+					<h3 class="restaurant-name">{{ r.name }}</h3>
+					<div class="address">
+						{{ r.addressLine1 }} {{ r.postalCode }} {{ r.city }}
+					</div>
+					<div class="rating">
+						@for (i of [1, 2, 3, 4, 5]; track i) {
+							<fa-icon
+								[icon]="faStar"
+								class="star"
+								[class.filled]="i <= r.rating"
+							></fa-icon>
+						}
+					</div>
+				</div>
+
+				<div class="image-wrapper">
+					<div class="image-placeholder">&nbsp;</div>
+				</div>
+			</div>
+
+			<div class="card-actions">
+				<div class="icons">
+					@if (r.hasTakeaway) {
+						<fa-icon [icon]="faCupTogo" title="Zum Mitnehmen"></fa-icon>
+					}
+					@if (r.hasDelivery) {
+						<fa-icon [icon]="faTruck" title="Lieferung"></fa-icon>
+					}
+				</div>
+			</div>
+		</dav-card>
+	}
+</div>

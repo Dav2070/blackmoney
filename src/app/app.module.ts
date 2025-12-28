@@ -98,6 +98,7 @@ import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/emp
 import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
 import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-page/set-password-page.component"
+import { DeviceSetupPageComponent } from "./pages/landing-pages/device-setup-page/device-setup-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
 import { CashRegisterPageComponent } from "./pages/cash-register-pages/cash-register-page/cash-register-page.component"
 import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
@@ -149,7 +150,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		OrderItemCardComponent,
 		OfferOrderItemCardComponent,
 		CounterComponent,
-		// Dialog
+		// Dialogs
 		LogoutDialogComponent,
 		EditRegisterClientNameDialogComponent,
 		EditRestaurantNameDialogComponent,
@@ -214,6 +215,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		EmployeePageComponent,
 		LoginPageComponent,
 		SetPasswordPageComponent,
+		DeviceSetupPageComponent,
 		OnboardingPageComponent,
 		CashRegisterPageComponent,
 		TableOverviewPageComponent,
@@ -223,7 +225,6 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		CategoryPageComponent,
 		CategoriesPageComponent,
 		MenuPageComponent,
-		//Landing-Pages
 		PrintersPageComponent,
 		RoomsPageComponent,
 		RoomPageComponent,

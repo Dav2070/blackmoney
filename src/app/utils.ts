@@ -190,8 +190,7 @@ export async function initUserAfterLogin(
 	apiService: ApiService,
 	authService: AuthService,
 	dataService: DataService,
-	settingsService: SettingsService,
-	router: Router
+	settingsService: SettingsService
 ): Promise<void> {
 	await authService.setAccessToken(accessToken)
 	dataService.loadApollo(accessToken)
@@ -201,9 +200,6 @@ export async function initUserAfterLogin(
 	dataService.blackmoneyUserPromiseHolder.Resolve()
 
 	await settingsService.setRestaurant(restaurantUuid)
-
-	// Redirect to user page
-	router.navigate(["user"])
 }
 
 export async function getSerialNumber(

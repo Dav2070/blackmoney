@@ -17,6 +17,7 @@ import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialo
 import { AddVariationItemDialogComponent } from "src/app/dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
 import { EditVariationDialogComponent } from "src/app/dialogs/edit-variation-dialog/edit-variation-dialog.component"
 import { EditVariationItemDialogComponent } from "src/app/dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
+import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 
 @Component({
 	templateUrl: "./variations-page.component.html",
@@ -76,7 +77,6 @@ export class VariationsPageComponent implements OnInit {
 
 	async ngOnInit() {
 		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
-
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 
 		// Load data
@@ -84,9 +84,27 @@ export class VariationsPageComponent implements OnInit {
 	}
 
 	async loadData() {
-		// TODO: API - Load variations from backend
-		// Example: this.variations = await this.apiService.listVariations({ restaurantUuid: this.uuid })
-		this.variations = []
+		const retrieveRestaurantResponse =
+			await this.apiService.retrieveRestaurant(
+				`
+					menu {
+						variations {
+							items {
+								uuid
+								name
+							}
+						}
+					}
+				`,
+				{ uuid: this.uuid }
+			)
+
+		if (retrieveRestaurantResponse.data != null) {
+			const restaurant = convertRestaurantResourceToRestaurant(
+				retrieveRestaurantResponse.data.retrieveRestaurant
+			)
+			this.variations = restaurant.menu.variations
+		}
 	}
 
 	navigateBack() {

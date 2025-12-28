@@ -215,8 +215,7 @@ export const de = {
 		discount: "Rabatt"
 	},
 	offerCard: {
-		options: "Optionen",
-		noItems: "Keine Items vorhanden"
+		options: "Optionen"
 	},
 	addOfferDialog: {
 		headline: "Menü hinzufügen",

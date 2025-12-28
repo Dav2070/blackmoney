@@ -3,6 +3,7 @@ import { faEllipsis } from "@fortawesome/pro-regular-svg-icons"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
+import { formatPrice } from "src/app/utils"
 
 @Component({
 	selector: "app-product-card",
@@ -12,6 +13,7 @@ import { VariationItem } from "src/app/models/VariationItem"
 })
 export class ProductCardComponent {
 	faEllipsis = faEllipsis
+	formatPrice = formatPrice
 	@Input() product: Product = null
 	@Output() optionsButtonClick = new EventEmitter()
 

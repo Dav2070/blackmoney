@@ -1,6 +1,7 @@
 .offer-card {
 	display: flex;
 	flex-direction: column;
+	width: 300px;
 	border-radius: 8px;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	transition: box-shadow 0.2s ease;
@@ -14,8 +15,8 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-start;
-	padding: 16px;
 	gap: 12px;
+	margin: 0;
 
 	.header-content {
 		flex: 1;
@@ -50,7 +51,6 @@
 }
 
 .offer-content {
-	padding: 16px;
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
@@ -128,12 +128,4 @@
 	border-radius: 16px;
 	font-size: 0.875rem;
 	color: var(--dav-color-on-surface-variant);
-}
-
-.no-items,
-.no-offers {
-	text-align: center;
-	color: var(--dav-color-on-surface-variant);
-	font-style: italic;
-	padding: 32px;
 }

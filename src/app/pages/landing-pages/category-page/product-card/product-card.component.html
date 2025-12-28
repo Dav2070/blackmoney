@@ -20,9 +20,8 @@
 
 		<div class="product-content">
 			<div class="product-meta">
-				<span class="price">{{
-					product.price / 100 | currency: "EUR" : "symbol" : "1.2-2"
-				}}</span>
+				<span class="price">{{ formatPrice(product.price) }}</span>
+
 				@if (product.takeaway) {
 					<span class="badge takeaway">Takeaway</span>
 				}
@@ -45,8 +44,6 @@
 						}
 					</div>
 				</div>
-			} @else {
-				<p class="no-variations">Keine Variationen</p>
 			}
 		</div>
 	</dav-card>

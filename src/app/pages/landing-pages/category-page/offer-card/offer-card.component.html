@@ -20,41 +20,42 @@
 
 		<div class="offer-content">
 			<div class="offer-meta">
-				<span class="price">{{ offer.price | currency: "EUR" }}</span>
+				<span class="price">{{ formatPrice(offer.price) }}</span>
+
 				@if (offer.takeaway) {
 					<span class="badge takeaway">Takeaway</span>
 				}
 			</div>
 
-			<div class="offer-weekdays">
-				{{ formatAvailability(offer.offer) }}
-			</div>
+			@let availability = formatAvailability(offer.offer);
+
+			@if (availability) {
+				<div class="offer-weekdays">
+					{{ availability }}
+				</div>
+			}
 
 			<!-- Offer Items -->
-			<div class="offer-items">
-				@if (offer.offer?.offerItems?.length > 0) {
-					@for (item of offer.offer.offerItems; track item.uuid) {
-						<div class="offer-item">
-							<div class="item-header">
-								<h4>{{ item.name }}</h4>
-								<span class="max-selections">
-									(max. {{ item.maxSelections }} auswählbar)
-								</span>
-							</div>
-
-							<div class="item-products">
-								@for (product of item.products; track product.uuid) {
-									<div class="product-chip">
-										{{ product.name }}
-									</div>
-								}
-							</div>
+			@if (offer.offer?.offerItems?.length > 0) {
+				@for (item of offer.offer.offerItems; track item.uuid) {
+					<div class="offer-item">
+						<div class="item-header">
+							<h4>{{ item.name }}</h4>
+							<span class="max-selections">
+								(max. {{ item.maxSelections }} auswählbar)
+							</span>
 						</div>
-					}
-				} @else {
-					<p class="no-items">{{ locale.noItems }}</p>
+
+						<div class="item-products">
+							@for (product of item.products; track product.uuid) {
+								<div class="product-chip">
+									{{ product.name }}
+								</div>
+							}
+						</div>
+					</div>
 				}
-			</div>
+			}
 		</div>
 	</dav-card>
 }

@@ -168,6 +168,27 @@ export class CategoryPageComponent {
 						name
 						type
 						shortcut
+						price
+						variations {
+							items {
+								name
+							}
+						}
+						offer {
+							offerItems {
+								items {
+									uuid
+									name
+									maxSelections
+									products {
+										items {
+											uuid
+											name
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			`,

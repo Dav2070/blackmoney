@@ -3,6 +3,7 @@ import { faEllipsis } from "@fortawesome/pro-regular-svg-icons"
 import { Product } from "src/app/models/Product"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Weekday } from "src/app/types"
+import { formatPrice } from "src/app/utils"
 
 @Component({
 	selector: "app-offer-card",
@@ -14,6 +15,7 @@ export class OfferCardComponent {
 	locale = this.localizationService.locale.offerCard
 	actionsLocale = this.localizationService.locale.actions
 	faEllipsis = faEllipsis
+	formatPrice = formatPrice
 	@Input() offer: Product = null
 	@Output() optionsButtonClick = new EventEmitter()
 

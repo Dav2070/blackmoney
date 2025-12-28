@@ -9,11 +9,11 @@ import {
 	ViewChild
 } from "@angular/core"
 import { isPlatformBrowser } from "@angular/common"
+import { faTrash } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
-import { faTrash } from "@fortawesome/free-solid-svg-icons"
 
 @Component({
 	selector: "app-edit-variation-dialog",

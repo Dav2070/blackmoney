@@ -1,12 +1,6 @@
-import {
-	Component,
-	OnInit,
-	ViewChild,
-	ElementRef,
-	HostListener
-} from "@angular/core"
+import { Component, ViewChild, ElementRef, HostListener } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
+import { faPen, faTrash, faEllipsis } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
@@ -24,7 +18,7 @@ import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 	styleUrls: ["./variations-page.component.scss"],
 	standalone: false
 })
-export class VariationsPageComponent implements OnInit {
+export class VariationsPageComponent {
 	locale = this.localizationService.locale.variationsPage
 	actionsLocale = this.localizationService.locale.actions
 	faPen = faPen
@@ -92,6 +86,13 @@ export class VariationsPageComponent implements OnInit {
 							items {
 								uuid
 								name
+								variationItems {
+									items {
+										uuid
+										name
+										additionalCost
+									}
+								}
 							}
 						}
 					}

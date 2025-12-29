@@ -88,12 +88,18 @@
 								</div>
 
 								<dav-button
-									[outline]="!reservation.checkedIn"
-									size="sm"
 									class="check-in-button"
+									size="sm"
+									[outline]="!reservation.checkedIn"
+									[disabled]="
+										checkedInLoadingUuid === reservation.uuid
+									"
 									(click)="toggleCheckedIn(reservation)"
 								>
-									<fa-icon [icon]="faCheckCircle"></fa-icon>
+									<fa-icon
+										slot="icon-left"
+										[icon]="faCheckCircle"
+									></fa-icon>
 									{{
 										reservation.checkedIn
 											? locale.checkedInText

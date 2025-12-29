@@ -49,6 +49,7 @@ export class ReservationsPageComponent {
 	reservationContextMenuX = 0
 	reservationContextMenuY = 0
 	selectedReservationForContext: Reservation = null
+	checkedInLoadingUuid: string = null
 
 	@ViewChild("addReservationDialog")
 	addReservationDialog: AddReservationDialogComponent
@@ -165,8 +166,25 @@ export class ReservationsPageComponent {
 		}
 	}
 
-	toggleCheckedIn(reservation: Reservation) {
-		reservation.checkedIn = !reservation.checkedIn
+	async toggleCheckedIn(reservation: Reservation) {
+		this.checkedInLoadingUuid = reservation.uuid
+		const updateReservationResponse = await this.apiService.updateReservation(
+			`
+				uuid
+				checkedIn
+			`,
+			{
+				uuid: reservation.uuid,
+				checkedIn: !reservation.checkedIn
+			}
+		)
+
+		if (updateReservationResponse.data != null) {
+			reservation.checkedIn =
+				updateReservationResponse.data.updateReservation.checkedIn
+		}
+
+		this.checkedInLoadingUuid = null
 	}
 
 	showReservationOptions(event: Event, reservation: Reservation) {

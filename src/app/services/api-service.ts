@@ -1274,4 +1274,32 @@ export class ApiService {
 			})
 			.toPromise()
 	}
+
+	async updateReservation(
+		queryData: string,
+		variables: {
+			uuid: string
+			checkedIn?: boolean
+		}
+	): Promise<ApolloResult<{ updateReservation: ReservationResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateReservation: ReservationResource }>({
+				mutation: gql`
+					mutation UpdateReservation(
+						$uuid: String!
+						$checkedIn: Boolean
+					) {
+						updateReservation(
+							uuid: $uuid
+							checkedIn: $checkedIn
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
 }

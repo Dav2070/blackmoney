@@ -12,7 +12,7 @@ import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
-import { ReservationDetails } from "src/app/models/ReservationDetails"
+import { Reservation } from "src/app/models/Reservation"
 import { LocalizationService } from "src/app/services/localization-service"
 import { TimeSlotSuggestion } from "src/app/types"
 
@@ -40,7 +40,7 @@ export class EditReservationDialogComponent {
 	currentTab: number = 0
 
 	// Tab 1: Details
-	reservation: ReservationDetails = null
+	reservation: Reservation = null
 	name: string = ""
 	numberOfPeople: number = 2
 	phoneNumber: string = ""
@@ -93,7 +93,7 @@ export class EditReservationDialogComponent {
 		}
 	}
 
-	show(reservation: ReservationDetails) {
+	show(reservation: Reservation) {
 		this.reservation = reservation
 		this.visible = true
 		this.loadReservationData()
@@ -111,14 +111,12 @@ export class EditReservationDialogComponent {
 		this.numberOfPeople = this.reservation.numberOfPeople
 		this.phoneNumber = this.reservation.phoneNumber || ""
 		this.email = this.reservation.email || ""
-		this.reservationDate = this.formatDateForInput(
-			this.reservation.reservationDate
-		)
-		this.reservationTime = this.reservation.reservationTime
+		this.reservationDate = this.formatDateForInput(this.reservation.date)
+		// this.reservationTime = this.reservation.reservationTime
 
 		// Store original values to track changes
 		this.originalNumberOfPeople = this.reservation.numberOfPeople
-		this.originalReservationTime = this.reservation.reservationTime
+		// this.originalReservationTime = this.reservation.reservationTime
 
 		// Reset availability state
 		this.isAvailable = true

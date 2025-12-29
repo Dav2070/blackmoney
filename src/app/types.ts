@@ -185,6 +185,17 @@ export interface OrderItemVariationResource {
 	variationItems: List<VariationItemResource>
 }
 
+export interface ReservationResource {
+	uuid: string
+	table: TableResource
+	name: string
+	phoneNumber?: string
+	email?: string
+	numberOfPeople: number
+	date: string
+	checkedIn: boolean
+}
+
 export interface AddProductsInput {
 	uuid: string
 	count: number

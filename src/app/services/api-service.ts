@@ -21,7 +21,8 @@ import {
 	PrinterResource,
 	AddProductsInput,
 	ProductType,
-	PrintRuleType
+	PrintRuleType,
+	ReservationResource
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -1236,6 +1237,34 @@ export class ApiService {
 				mutation: gql`
 					mutation CreateBill($registerClientUuid: String!) {
 						createBill(registerClientUuid: $registerClientUuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async listReservations(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			date: string
+		}
+	): Promise<ApolloResult<{ listReservations: List<ReservationResource> }>> {
+		return await this.blackmoneyAuthApollo
+			.query<{ listReservations: List<ReservationResource> }>({
+				query: gql`
+					query ListReservations(
+						$restaurantUuid: String!
+						$date: String!
+					) {
+						listReservations(
+							restaurantUuid: $restaurantUuid
+							date: $date
+						) {
 							${queryData}
 						}
 					}

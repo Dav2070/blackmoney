@@ -48,6 +48,12 @@ export class OrderItemMerger {
 	 */
 	mergeIntoExisting(existing: OrderItem, incoming: OrderItem): void {
 		existing.count += incoming.count
+
+		// Discounts addieren beim Mergen
+		if (incoming.discount) {
+			existing.discount = (existing.discount ?? 0) + incoming.discount
+		}
+
 		this.orderItemsArrayMerger.mergeOrderItemArray(existing, incoming)
 		this.variationComparer.mergeOrAddVariations(existing, incoming)
 	}

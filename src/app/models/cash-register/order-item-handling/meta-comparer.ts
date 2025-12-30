@@ -50,12 +50,12 @@ export class MetaComparer {
 
 	// basic equality: all fields except uuid, count, order, orderItemVariations
 	isOrderItemBasicEqual(a: OrderItem, b: OrderItem): boolean {
+		console.log("MetaComparer.isOrderItemBasicEqual", a, b)
 		if (a === b) return true
 		if (!a || !b) return false
 
 		if (a.type !== b.type) return false
 		if (a.notes !== b.notes) return false
-		if (a.discount !== b.discount) return false
 		if (a.takeAway !== b.takeAway) return false
 		if (a.course !== b.course) return false
 		if (a.offer?.id !== b.offer?.id) return false

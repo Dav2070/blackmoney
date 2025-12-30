@@ -681,7 +681,10 @@ export class BookingPageComponent {
 			incoming.count = newItem.count
 			this.stagedItems.pushNewItem(incoming)
 		} else {
-			newItem.count = newItem.orderItemVariations.length
+			newItem.count = 0
+			for (let variation of newItem.orderItemVariations) {
+				newItem.count += variation.count
+			}
 			this.stagedItems.pushNewItem(newItem)
 		}
 

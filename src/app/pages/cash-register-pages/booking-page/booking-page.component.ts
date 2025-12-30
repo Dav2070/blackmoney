@@ -875,6 +875,21 @@ export class BookingPageComponent {
 												}
 											}
 										}
+										orderItemVariations {
+											total
+											items {
+												uuid
+												count
+												variationItems {
+													total
+													items {
+														uuid
+														name
+														additionalCost
+													}
+												}
+											}
+										}
 									}
 								}
 							}

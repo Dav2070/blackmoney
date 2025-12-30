@@ -19,16 +19,6 @@
 				<button class="date-label" (click)="toggleCalendar()" type="button">
 					{{ getDateLabel() }}
 				</button>
-
-				@if (showCalendar) {
-					<div class="calendar-popover">
-						<dav-textfield
-							[value]="getFormattedDateForInput()"
-							type="date"
-							(change)="onDateChange($event)"
-						></dav-textfield>
-					</div>
-				}
 			</div>
 
 			<dav-icon-button size="sm" (click)="nextDay()">
@@ -121,6 +111,13 @@
 			}
 		</div>
 	</div>
+</div>
+
+<div class="calendar-popover slide-down-in" [class.visible]="showCalendar">
+	<dav-calendar
+		#calendar
+		(change)="onDateChange($event)"
+	></dav-calendar>
 </div>
 
 <app-add-reservation-dialog

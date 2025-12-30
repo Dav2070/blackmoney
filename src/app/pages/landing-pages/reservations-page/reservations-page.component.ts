@@ -9,7 +9,7 @@ import {
 	faPen
 } from "@fortawesome/pro-regular-svg-icons"
 import { DateTime } from "luxon"
-import { ContextMenu } from "dav-ui-components"
+import { Calendar, ContextMenu } from "dav-ui-components"
 import { DataService } from "src/app/services/data-service"
 import { ApiService } from "src/app/services/api-service"
 import { LocalizationService } from "src/app/services/localization-service"
@@ -51,6 +51,9 @@ export class ReservationsPageComponent {
 	selectedReservationForContext: Reservation = null
 	checkedInLoadingUuid: string = null
 
+	@ViewChild("calendar")
+	calendar: ElementRef<Calendar>
+
 	@ViewChild("addReservationDialog")
 	addReservationDialog: AddReservationDialogComponent
 
@@ -69,6 +72,32 @@ export class ReservationsPageComponent {
 
 	async ngOnInit() {
 		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
+		await this.loadReservations()
+	}
+
+	getSelectedDateString(): string {
+		return this.selectedDate.toISOString()
+	}
+
+	@HostListener("document:click", ["$event"])
+	documentClick(event: MouseEvent) {
+		// Reservation-Menü schließen, wenn außerhalb geklickt wird
+		if (
+			this.reservationContextMenuVisible &&
+			!this.reservationContextMenu.nativeElement.contains(
+				event.target as Node
+			)
+		) {
+			this.reservationContextMenuVisible = false
+		}
+	}
+
+	navigateBack() {
+		this.router.navigate(["user"])
+	}
+
+	async loadReservations() {
+		this.loading = true
 
 		const listReservationsResponse = await this.apiService.listReservations(
 			`
@@ -104,10 +133,6 @@ export class ReservationsPageComponent {
 		}
 
 		this.loading = false
-	}
-
-	navigateBack() {
-		this.router.navigate(["user"])
 	}
 
 	showAddReservationDialog() {
@@ -222,24 +247,31 @@ export class ReservationsPageComponent {
 		const newDate = new Date(this.selectedDate)
 		newDate.setDate(newDate.getDate() - 1)
 		this.selectedDate = newDate
+
+		this.loadReservations()
 	}
 
 	nextDay() {
 		const newDate = new Date(this.selectedDate)
 		newDate.setDate(newDate.getDate() + 1)
 		this.selectedDate = newDate
+
+		this.loadReservations()
 	}
 
 	toggleCalendar() {
+		this.calendar.nativeElement.date = DateTime.fromJSDate(this.selectedDate)
+
 		this.showCalendar = !this.showCalendar
 	}
 
-	onDateChange(event: any) {
-		const dateValue = event.detail.value
-		if (dateValue) {
-			this.selectedDate = new Date(dateValue)
-			this.showCalendar = false
-		}
+	onDateChange(event: Event) {
+		const date = (event as CustomEvent).detail.date
+
+		this.selectedDate = new Date(date)
+		this.showCalendar = false
+
+		this.loadReservations()
 	}
 
 	getDateLabel(): string {
@@ -261,13 +293,6 @@ export class ReservationsPageComponent {
 		return this.selectedDate.toLocaleDateString("de-DE", options)
 	}
 
-	getFormattedDateForInput(): string {
-		const year = this.selectedDate.getFullYear()
-		const month = String(this.selectedDate.getMonth() + 1).padStart(2, "0")
-		const day = String(this.selectedDate.getDate()).padStart(2, "0")
-		return `${year}-${month}-${day}`
-	}
-
 	get filteredReservations(): Reservation[] {
 		const selected = DateTime.fromJSDate(this.selectedDate)
 
@@ -279,18 +304,5 @@ export class ReservationsPageComponent {
 	getReservationTime(reservation: Reservation): string {
 		const dateTime = DateTime.fromJSDate(reservation.date)
 		return dateTime.toFormat("HH:mm")
-	}
-
-	@HostListener("document:click", ["$event"])
-	documentClick(event: MouseEvent) {
-		// Reservation-Menü schließen, wenn außerhalb geklickt wird
-		if (
-			this.reservationContextMenuVisible &&
-			!this.reservationContextMenu.nativeElement.contains(
-				event.target as Node
-			)
-		) {
-			this.reservationContextMenuVisible = false
-		}
 	}
 }

@@ -931,13 +931,23 @@ export class BookingPageComponent {
 				uuid: item.product.uuid,
 				count: item.count,
 				discount: item.discount,
+				notes: item.notes,
+				takeAway: item.takeAway,
+				course: item.course,
+				offerUuid: item.offer?.uuid,
 				variations: item.orderItemVariations?.map(variation => ({
 					count: variation.count,
 					variationItemUuids: variation.variationItems.map(vi => vi.uuid)
 				})),
 				orderItems: item.orderItems?.map(orderItem => ({
 					productUuid: orderItem.product.uuid,
-					count: orderItem.count
+					count: orderItem.count,
+					variations: orderItem.orderItemVariations?.map(variation => ({
+						count: variation.count,
+						variationItemUuids: variation.variationItems.map(
+							vi => vi.uuid
+						)
+					}))
 				}))
 			})
 		}
@@ -977,6 +987,13 @@ export class BookingPageComponent {
 									}
 								}
 							}
+						}
+						offer {
+							id
+							uuid
+							offerType
+							discountType
+							offerValue
 						}
 						orderItemVariations {
 							total
@@ -1024,6 +1041,28 @@ export class BookingPageComponent {
 										}
 									}
 								}
+								offer {
+									id
+									uuid
+									offerType
+									discountType
+									offerValue
+								}
+								orderItemVariations {
+									total
+									items {
+										uuid
+										count
+										variationItems {
+											total
+											items {
+												uuid
+												name
+												additionalCost
+											}
+										}
+									}
+								}
 							}
 						}
 					}
@@ -1035,11 +1074,12 @@ export class BookingPageComponent {
 			}
 		)
 
-		this.bookedItems.clearItems()
-
-		for (const item of items.data.addProductsToOrder.orderItems.items) {
-			this.bookedItems.pushNewItem(convertOrderItemResourceToOrderItem(item))
-		}
+		// Setze alle Items direkt ohne Merging-Logik (Backend hat bereits gemerged)
+		this.bookedItems.setItems(
+			items.data.addProductsToOrder.orderItems.items.map(item =>
+				convertOrderItemResourceToOrderItem(item)
+			)
+		)
 
 		this.stagedItems.clearItems()
 

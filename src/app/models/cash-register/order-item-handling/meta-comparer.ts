@@ -48,7 +48,7 @@ export class MetaComparer {
 		return true
 	}
 
-	// basic equality: all fields except uuid, count, order, orderItemVariations
+	// basic equality: all fields except uuid, count, order, orderItemVariations, discount
 	isOrderItemBasicEqual(a: OrderItem, b: OrderItem): boolean {
 		if (a === b) return true
 		if (!a || !b) return false

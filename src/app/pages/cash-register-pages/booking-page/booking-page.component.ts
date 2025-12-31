@@ -1235,11 +1235,10 @@ export class BookingPageComponent {
 				this.selectedProduct = orderItem.orderItems[0].product
 				this.selectProductVariationsDialog.show()
 			} else {
-				// Bestimme Ziel-Handler (wenn ausgewählt: tmpAllItemHandler, sonst stagedItems)
-				const handler =
-					this.tmpAllItemHandler === this.bookedItems
-						? this.bookedItems
-						: this.stagedItems
+				// Wenn Item aus bookedItems ist, immer zu stagedItems hinzufügen
+				const handler = this.isSelectedItemBooked()
+					? this.stagedItems
+					: this.tmpAllItemHandler || this.stagedItems
 
 				const delta = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 

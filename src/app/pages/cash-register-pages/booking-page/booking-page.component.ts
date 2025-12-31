@@ -354,7 +354,11 @@ export class BookingPageComponent {
 	}
 
 	selectTableButtonClick() {
-		this.selectTableDialog.show(this.console, this.consoleActive)
+		this.selectTableDialog.show(this.console, this.consoleActive, false)
+	}
+
+	transferTableButtonClick() {
+		this.selectTableDialog.show(this.console, this.consoleActive, true)
 	}
 
 	async navigateToPaymentPage(event: MouseEvent) {
@@ -363,10 +367,25 @@ export class BookingPageComponent {
 		this.router.navigate(["dashboard", "tables", this.uuid, "payment"])
 	}
 
-	selectTableDialogPrimaryButtonClick(event: { uuid: string }) {
+	selectTableDialogPrimaryButtonClick(event: {
+		uuid: string
+		transferMode: boolean
+	}) {
 		this.selectTableDialog.hide()
-		this.showTotal()
-		this.router.navigate(["dashboard", "tables", event.uuid])
+
+		if (event.transferMode) {
+			// Transfer mode: Navigate to transfer page
+			this.router.navigate([
+				"dashboard",
+				"tables",
+				this.table.uuid,
+				event.uuid
+			])
+		} else {
+			// Switch table mode: Reset console and navigate
+			this.showTotal()
+			this.router.navigate(["dashboard", "tables", event.uuid])
+		}
 	}
 
 	showSelectProductDialog() {

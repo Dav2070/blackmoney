@@ -32,6 +32,7 @@ export class SelectTableDialogComponent {
 	selectedTableUuid: string = null
 	searchNumber: string = ""
 	consoleActive: boolean = false
+	transferMode: boolean = false
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
 
@@ -53,12 +54,19 @@ export class SelectTableDialogComponent {
 		}
 	}
 
-	async show(searchNumber?: string, consoleActive?: boolean) {
+	async show(
+		searchNumber?: string,
+		consoleActive?: boolean,
+		transferMode?: boolean
+	) {
 		if (searchNumber !== undefined) {
 			this.searchNumber = searchNumber
 		}
 		if (consoleActive !== undefined) {
 			this.consoleActive = consoleActive
+		}
+		if (transferMode !== undefined) {
+			this.transferMode = transferMode
 		}
 
 		if (this.rooms.length === 0) {
@@ -105,17 +113,14 @@ export class SelectTableDialogComponent {
 
 	submit() {
 		this.primaryButtonClick.emit({
-			uuid: this.selectedTableUuid
+			uuid: this.selectedTableUuid,
+			transferMode: this.transferMode
 		})
 	}
 
 	filterRoomsBySearchNumber(): boolean {
-		console.log("searchNumber:", this.searchNumber)
-		console.log("consoleActive:", this.consoleActive)
-
 		if (!this.consoleActive || !this.searchNumber) {
 			// Keine Filterung, zeige alle Räume (ohne aktuellen Tisch)
-			console.log("Showing all rooms - no filter")
 			this.filteredRooms = this.rooms
 				.map(room => ({
 					...room,
@@ -129,10 +134,8 @@ export class SelectTableDialogComponent {
 
 		// Extrahiere die Nummer aus der Console (z.B. "5" aus "5" oder "5,00 €")
 		const searchNum = this.searchNumber.replace(/[^0-9]/g, "")
-		console.log("searchNum after replace:", searchNum)
 
 		if (!searchNum || searchNum === "0") {
-			console.log("No valid search number")
 			this.filteredRooms = [...this.rooms]
 			return false
 		}

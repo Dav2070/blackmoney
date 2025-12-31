@@ -242,14 +242,7 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="
-						commaUsed ||
-						!consoleActive ||
-						table?.uuid == console ||
-						checkforZero() ||
-						xUsed
-					"
-					(click)="navigateToTransferPage()"
+					(click)="transferTableButtonClick()"
 				>
 					<fa-icon
 						[icon]="faArrowTurnDownRight"
@@ -261,14 +254,8 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="
-						commaUsed ||
-						!consoleActive ||
-						table?.uuid == console ||
-						checkforZero() ||
-						xUsed
-					"
-					(click)="selectTableButtonClick()"
+					[disabled]="!selectedOrderItem"
+					(click)="takeAwayButtonClick()"
 				>
 					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
 					{{ locale.takeAway }}

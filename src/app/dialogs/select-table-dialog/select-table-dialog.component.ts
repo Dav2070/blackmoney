@@ -114,9 +114,16 @@ export class SelectTableDialogComponent {
 		console.log("consoleActive:", this.consoleActive)
 
 		if (!this.consoleActive || !this.searchNumber) {
-			// Keine Filterung, zeige alle Räume
+			// Keine Filterung, zeige alle Räume (ohne aktuellen Tisch)
 			console.log("Showing all rooms - no filter")
-			this.filteredRooms = [...this.rooms]
+			this.filteredRooms = this.rooms
+				.map(room => ({
+					...room,
+					tables: room.tables.filter(
+						table => table.uuid !== this.currentTableUuid
+					)
+				}))
+				.filter(room => room.tables.length > 0)
 			return false
 		}
 
@@ -133,11 +140,13 @@ export class SelectTableDialogComponent {
 		// Konvertiere zu Number für exakten Vergleich
 		const searchNumber = parseInt(searchNum, 10)
 
-		// Filtere Räume und Tische nach der Suchnummer (exakter Match)
+		// Filtere Räume und Tische nach der Suchnummer (exakter Match) und entferne aktuellen Tisch
 		this.filteredRooms = this.rooms
 			.map(room => {
 				const filteredTables = room.tables.filter(
-					table => table.name === searchNumber
+					table =>
+						table.name === searchNumber &&
+						table.uuid !== this.currentTableUuid
 				)
 
 				if (filteredTables.length > 0) {
@@ -154,9 +163,22 @@ export class SelectTableDialogComponent {
 		// Wenn keine Tische gefunden wurden, zeige Toast und öffne Dialog nicht
 		const allFilteredTables = this.filteredRooms.flatMap(room => room.tables)
 		if (allFilteredTables.length === 0) {
-			showToast(
-				`Kein Tisch mit Nummer ${searchNumber} gefunden. Bitte Eingabe überprüfen.`
+			// Prüfe ob die Nummer dem aktuellen Tisch entspricht
+			const currentTableExists = this.rooms.some(room =>
+				room.tables.some(
+					table =>
+						table.name === searchNumber &&
+						table.uuid === this.currentTableUuid
+				)
 			)
+
+			if (currentTableExists) {
+				showToast(`Sie befinden sich bereits an Tisch ${searchNumber}.`)
+			} else {
+				showToast(
+					`Kein Tisch mit Nummer ${searchNumber} gefunden. Bitte Eingabe überprüfen.`
+				)
+			}
 			return true // Dialog nicht öffnen
 		}
 

@@ -268,16 +268,7 @@
 						checkforZero() ||
 						xUsed
 					"
-				>
-					<fa-icon [icon]="faSeat" slot="icon-left"></fa-icon>
-					{{ locale.switchTable }}
-				</dav-button>
-
-				<dav-button
-					color="secondary"
-					text
-					[disabled]="!selectedOrderItem"
-					(click)="takeAwayButtonClick()"
+				(click)="selectTableButtonClick()"
 				>
 					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
 					{{ locale.takeAway }}

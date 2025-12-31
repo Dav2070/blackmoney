@@ -354,7 +354,7 @@ export class BookingPageComponent {
 	}
 
 	selectTableButtonClick() {
-		this.selectTableDialog.show()
+		this.selectTableDialog.show(this.console, this.consoleActive)
 	}
 
 	async navigateToPaymentPage(event: MouseEvent) {
@@ -365,6 +365,7 @@ export class BookingPageComponent {
 
 	selectTableDialogPrimaryButtonClick(event: { uuid: string }) {
 		this.selectTableDialog.hide()
+		this.showTotal()
 		this.router.navigate(["dashboard", "tables", event.uuid])
 	}
 

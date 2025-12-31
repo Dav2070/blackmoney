@@ -60,7 +60,7 @@ export class SelectTableDialogComponent {
 		if (consoleActive !== undefined) {
 			this.consoleActive = consoleActive
 		}
-		
+
 		if (this.rooms.length === 0) {
 			const listRoomsResponse = await this.apiService.listRooms(
 				`
@@ -88,7 +88,7 @@ export class SelectTableDialogComponent {
 		}
 
 		const shouldAutoSelect = this.filterRoomsBySearchNumber()
-		
+
 		// Wenn Auto-Select aktiviert ist, öffne den Dialog nicht
 		if (!shouldAutoSelect) {
 			this.visible = true
@@ -110,22 +110,22 @@ export class SelectTableDialogComponent {
 	}
 
 	filterRoomsBySearchNumber(): boolean {
-		console.log('searchNumber:', this.searchNumber)
-		console.log('consoleActive:', this.consoleActive)
-		
+		console.log("searchNumber:", this.searchNumber)
+		console.log("consoleActive:", this.consoleActive)
+
 		if (!this.consoleActive || !this.searchNumber) {
 			// Keine Filterung, zeige alle Räume
-			console.log('Showing all rooms - no filter')
+			console.log("Showing all rooms - no filter")
 			this.filteredRooms = [...this.rooms]
 			return false
 		}
 
 		// Extrahiere die Nummer aus der Console (z.B. "5" aus "5" oder "5,00 €")
 		const searchNum = this.searchNumber.replace(/[^0-9]/g, "")
-		console.log('searchNum after replace:', searchNum)
+		console.log("searchNum after replace:", searchNum)
 
 		if (!searchNum || searchNum === "0") {
-			console.log('No valid search number')
+			console.log("No valid search number")
 			this.filteredRooms = [...this.rooms]
 			return false
 		}
@@ -136,8 +136,8 @@ export class SelectTableDialogComponent {
 		// Filtere Räume und Tische nach der Suchnummer (exakter Match)
 		this.filteredRooms = this.rooms
 			.map(room => {
-				const filteredTables = room.tables.filter(table =>
-					table.name === searchNumber
+				const filteredTables = room.tables.filter(
+					table => table.name === searchNumber
 				)
 
 				if (filteredTables.length > 0) {
@@ -154,7 +154,9 @@ export class SelectTableDialogComponent {
 		// Wenn keine Tische gefunden wurden, zeige Toast und öffne Dialog nicht
 		const allFilteredTables = this.filteredRooms.flatMap(room => room.tables)
 		if (allFilteredTables.length === 0) {
-			showToast(`Kein Tisch mit Nummer ${searchNumber} gefunden. Bitte Eingabe überprüfen.`)
+			showToast(
+				`Kein Tisch mit Nummer ${searchNumber} gefunden. Bitte Eingabe überprüfen.`
+			)
 			return true // Dialog nicht öffnen
 		}
 
@@ -166,7 +168,7 @@ export class SelectTableDialogComponent {
 			}, 50)
 			return true // Dialog soll nicht geöffnet werden
 		}
-		
+
 		return false // Dialog soll geöffnet werden
 	}
 }

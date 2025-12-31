@@ -268,7 +268,7 @@
 						checkforZero() ||
 						xUsed
 					"
-				(click)="selectTableButtonClick()"
+					(click)="selectTableButtonClick()"
 				>
 					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
 					{{ locale.takeAway }}
@@ -421,7 +421,8 @@
 	#selectMenuSpecialProductsDialog
 	[product]="selectedProduct"
 	(primaryButtonClick)="
-		selectMenuSpecialProductsDialogPrimaryButtonClick($event)"
+		selectMenuSpecialProductsDialogPrimaryButtonClick($event)
+	"
 ></app-select-menu-special-products-dialog>
 
 <app-select-product-variations-dialog
@@ -435,7 +436,8 @@
 <app-subtract-product-variations-dialog
 	#subtractProductVariationsDialog
 	[orderItem]="
-		selectedOrderItem?.type === 'SPECIAL' && selectedOrderItem?.orderItems?.length > 0
+		selectedOrderItem?.type === 'SPECIAL' &&
+		selectedOrderItem?.orderItems?.length > 0
 			? selectedOrderItem.orderItems[0]
 			: selectedOrderItem
 	"

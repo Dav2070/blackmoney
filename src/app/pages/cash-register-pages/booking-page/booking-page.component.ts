@@ -1213,6 +1213,15 @@ export class BookingPageComponent {
 		}
 	}
 
+	//Prüft ob das ausgewählte Item aus bookedItems ist
+	isSelectedItemBooked(): boolean {
+		if (!this.selectedOrderItem) {
+			return false
+		}
+		// Prüfe ob das Item in den bookedItems ist
+		return this.bookedItems.getOrderItems().includes(this.selectedOrderItem)
+	}
+
 	//Füge selektiertes Item hinzu
 	addSelectedItem(orderItem: OrderItem) {
 		if (

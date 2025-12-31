@@ -254,7 +254,7 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedOrderItem"
+					[disabled]="!selectedOrderItem || isSelectedItemBooked()"
 					(click)="takeAwayButtonClick()"
 				>
 					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
@@ -264,7 +264,7 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedOrderItem"
+					[disabled]="!selectedOrderItem || isSelectedItemBooked()"
 					(click)="addNoteButtonClick()"
 				>
 					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
@@ -274,7 +274,9 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedOrderItem || !consoleActive"
+					[disabled]="
+						!selectedOrderItem || !consoleActive || isSelectedItemBooked()
+					"
 					(click)="setCourseButtonClick()"
 				>
 					<fa-icon [icon]="faUtensils" slot="icon-left"></fa-icon>

@@ -1191,7 +1191,7 @@ export class BookingPageComponent {
 		if (pickedItem) {
 			this.clickItem(pickedItem)
 		} else {
-			window.alert("Item gibt es nicht")
+			showToast(`Artikel mit Nummer ${id} wurde nicht gefunden.`)
 		}
 	}
 

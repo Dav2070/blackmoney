@@ -674,6 +674,7 @@ export function convertOrderItemResourceToOrderItem(
 		course: orderItemResource.course,
 		order: convertOrderResourceToOrder(orderItemResource.order),
 		product: convertProductResourceToProduct(orderItemResource.product),
+		offer: convertOfferResourceToOffer(orderItemResource.offer),
 		orderItems,
 		orderItemVariations
 	}

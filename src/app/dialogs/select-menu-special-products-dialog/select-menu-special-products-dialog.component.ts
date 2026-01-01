@@ -28,7 +28,8 @@ import { OfferItem } from "src/app/models/OfferItem"
 	standalone: false
 })
 export class SelectMenuSpecialProductsDialogComponent {
-	locale = this.localizationService.locale.dialogs.selectMenuSpecialProductsDialog
+	locale =
+		this.localizationService.locale.dialogs.selectMenuSpecialProductsDialog
 	actionsLocale = this.localizationService.locale.actions
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	@Input() product: Product = null
@@ -233,9 +234,16 @@ export class SelectMenuSpecialProductsDialogComponent {
 			incoming.count = newItem.count
 			this.allItemHandler.pushNewItem(incoming)
 		} else {
-			newItem.count = newItem.orderItemVariations.length
+			newItem.count = 0
+			for (let variation of newItem.orderItemVariations) {
+				newItem.count += variation.count
+			}
 			this.allItemHandler.pushNewItem(newItem)
-			this.selectedOfferItem.maxSelections -= totalCount
+
+			// Nur bei OfferItems (Menü) maxSelections verringern
+			if (this.selectedOfferItem) {
+				this.selectedOfferItem.maxSelections -= totalCount
+			}
 		}
 	}
 

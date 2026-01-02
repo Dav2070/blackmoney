@@ -49,14 +49,45 @@ export class AllItemHandler {
 								count
 								type
 								discount
+								notes
+								takeAway
+								course
 								order {
 									uuid
 								}
 								product {
 									uuid
+									type
 									name
 									price
 									shortcut
+									variations {
+										total
+										items {
+											uuid
+											name
+											variationItems {
+												total
+												items {
+													uuid
+													name
+													additionalCost
+												}
+											}
+										}
+									}
+								}
+								offer {
+									id
+									uuid
+									offerType
+									discountType
+									offerValue
+									startDate
+									endDate
+									startTime
+									endTime
+									weekdays
 								}
 								orderItemVariations {
 									total
@@ -101,6 +132,21 @@ export class AllItemHandler {
 															name
 															additionalCost
 														}
+													}
+												}
+											}
+										}
+										orderItemVariations {
+											total
+											items {
+												uuid
+												count
+												variationItems {
+													total
+													items {
+														uuid
+														name
+														additionalCost
 													}
 												}
 											}

@@ -791,154 +791,16 @@ export class BookingPageComponent {
 	async loadOrders() {
 		this.ordersLoading = true
 
-		let order = await this.apiService.retrieveTable(
-			`
-				orders(paid: $paid) {
-					total
-					items {
-						uuid
-						bill {
-							uuid
-						}
-						totalPrice
-						orderItems {
-							total
-							items {
-								uuid
-								count
-								type
-								discount
-								notes
-								takeAway
-								course
-								order {
-									uuid
-								}
-								product {
-									uuid
-									type
-									name
-									price
-									shortcut
-									variations {
-										total
-										items {
-											uuid
-											name
-											variationItems {
-												total
-												items {
-													uuid
-													name
-													additionalCost
-												}
-											}
-										}
-									}
-								}
-								offer {
-									id
-									uuid
-									offerType
-									discountType
-									offerValue
-									startDate
-									endDate
-									startTime
-									endTime
-									weekdays
-								}
-								orderItemVariations {
-									total
-									items {
-										uuid
-										count
-										variationItems {
-											total
-											items {
-												id
-												uuid
-												name
-												additionalCost
-											}
-										}
-									}
-								}
-								orderItems {
-									items {
-										uuid
-										count
-										type
-										discount
-										notes
-										takeAway
-										course
-										product {
-											uuid
-											name
-											type
-											price
-											shortcut
-											variations {
-												total
-												items {
-													uuid
-													name
-													variationItems {
-														total
-														items {
-															uuid
-															name
-															additionalCost
-														}
-													}
-												}
-											}
-										}
-										orderItemVariations {
-											total
-											items {
-												uuid
-												count
-												variationItems {
-													total
-													items {
-														uuid
-														name
-														additionalCost
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			`,
-			{
-				uuid: this.table.uuid,
-				paid: false
-			}
+		const order = await this.bookedItems.loadItemsFromOrder(
+			this.apiService,
+			this.table.uuid
 		)
 
 		this.ordersLoading = false
 
-		if (order.data.retrieveTable.orders.total > 0) {
-			if (this.orderUuid == null) {
-				this.orderUuid = order.data.retrieveTable.orders.items[0].uuid
-				this.billUuid = order.data.retrieveTable.orders.items[0].bill?.uuid
-			}
-
-			this.bookedItems.clearItems()
-
-			for (let item of order.data.retrieveTable.orders.items[0].orderItems
-				.items) {
-				this.bookedItems.pushNewItem(
-					convertOrderItemResourceToOrderItem(item)
-				)
-			}
+		if (order != null) {
+			this.orderUuid = order.uuid
+			this.billUuid = order.bill?.uuid
 		}
 	}
 

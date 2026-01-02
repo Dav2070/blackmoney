@@ -297,16 +297,14 @@ export function convertRestaurantResourceToRestaurant(
 		registers,
 		printers,
 		menu: convertMenuResourceToMenu(restaurantResource.menu),
-		restaurantDetails: {
+		images: [],
+		address: {
 			uuid: restaurantResource.uuid,
-			address: {
-				uuid: restaurantResource.uuid,
-				addressLine1: restaurantResource.line1,
-				addressLine2: restaurantResource.line2,
-				postalCode: restaurantResource.postalCode,
-				city: restaurantResource.city,
-				country: restaurantResource.country
-			}
+			addressLine1: restaurantResource.line1,
+			addressLine2: restaurantResource.line2,
+			postalCode: restaurantResource.postalCode,
+			city: restaurantResource.city,
+			country: restaurantResource.country
 		}
 	}
 }

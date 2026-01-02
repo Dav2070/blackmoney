@@ -4,7 +4,7 @@
 			<div class="filter-item name-filter">
 				<dav-textfield
 					[value]="nameFilter"
-					label="Name des Restaurants"
+					[label]="locale.restaurantName"
 					(change)="nameTextfieldChange($any($event).detail.value)"
 				></dav-textfield>
 			</div>
@@ -12,14 +12,14 @@
 			<div class="filter-item city-filter">
 				<dav-textfield
 					[value]="cityPostalFilter"
-					label="Stadt / PLZ"
+					[label]="locale.cityPostalCode"
 					(change)="cityTextfieldChange($any($event).detail.value)"
 				></dav-textfield>
 			</div>
 
 			<div class="filter-item distance-filter">
 				<label class="distance-label"
-					>Entfernung: {{ distanceKm }} km</label
+					>{{ locale.distance }}: {{ distanceKm }} km</label
 				>
 				<input
 					type="range"
@@ -31,7 +31,7 @@
 			</div>
 
 			<div class="filter-item rating-filter">
-				<label>Bewertung</label>
+				<label>{{ locale.rating }}</label>
 				<div class="stars">
 					@for (i of [1, 2, 3, 4, 5]; track i) {
 						<fa-icon
@@ -47,13 +47,13 @@
 			<div class="filter-item checkboxes">
 				<dav-checkbox
 					[checked]="hasTakeaway"
-					[label]="'Zum Mitnehmen'"
+					[label]="locale.takeaway"
 					(change)="takeawayCheckboxChange($any($event).detail.checked)"
 				></dav-checkbox>
 
 				<dav-checkbox
 					[checked]="hasDelivery"
-					[label]="'Lieferung'"
+					[label]="locale.delivery"
 					(change)="deliveryCheckboxChange($any($event).detail.checked)"
 				></dav-checkbox>
 			</div>
@@ -72,21 +72,30 @@
 				<div class="card-info">
 					<h3 class="restaurant-name">{{ r.name }}</h3>
 					<div class="address">
-						{{ r.addressLine1 }} {{ r.postalCode }} {{ r.city }}
+						{{ r.address.addressLine1 }} {{ r.address.postalCode }}
+						{{ r.address.city }}
 					</div>
 					<div class="rating">
 						@for (i of [1, 2, 3, 4, 5]; track i) {
 							<fa-icon
 								[icon]="faStar"
 								class="star"
-								[class.filled]="i <= r.rating"
+								[class.filled]="i <= getAverageRating(r)"
 							></fa-icon>
 						}
 					</div>
 				</div>
 
 				<div class="image-wrapper">
-					<div class="image-placeholder">&nbsp;</div>
+					@if (r.images && r.images.length > 0) {
+						<img
+							class="restaurant-image"
+							[src]="r.images[0]"
+							alt="{{ r.name }}"
+						/>
+					} @else {
+						<div class="image-placeholder">&nbsp;</div>
+					}
 				</div>
 			</div>
 

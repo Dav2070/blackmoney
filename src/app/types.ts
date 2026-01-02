@@ -213,6 +213,7 @@ export enum OrderItemType {
 }
 
 export type TakeawayFilterType = "ALL" | "DELIVERY" | "PICKUP" | "DINEIN"
+export type ReviewFilterType = "newest" | "lowest" | "highest"
 
 export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
@@ -256,4 +257,10 @@ export interface TimeSlotSuggestion {
 	}
 }
 
-export type RatingNum = "1" | "2" | "3" | "4" | "5"
+export enum RatingNum {
+	One = 1,
+	Two = 2,
+	Three = 3,
+	Four = 4,
+	Five = 5
+}

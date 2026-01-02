@@ -13,4 +13,5 @@ export class Product {
 	variations: Variation[]
 	offer?: Offer
 	takeaway?: boolean
+	description?: string
 }

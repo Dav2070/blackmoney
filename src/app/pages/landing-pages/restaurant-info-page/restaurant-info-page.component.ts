@@ -1,26 +1,52 @@
-import { Component, EventEmitter, Output } from "@angular/core"
+import {
+	Component,
+	EventEmitter,
+	Output,
+	Inject,
+	PLATFORM_ID
+} from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { CommonModule } from "@angular/common"
+import { isPlatformBrowser } from "@angular/common"
 import {
 	faStar,
 	faCupTogo,
 	faTruck,
 	faSearch,
 	faChevronLeft,
-	faChevronRight
+	faChevronRight,
+	faList,
+	faPlus
 } from "@fortawesome/pro-regular-svg-icons"
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome"
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
+import { Restaurant } from "src/app/models/Restaurant"
+import { Rating } from "src/app/models/Rating"
+import { Menu } from "src/app/models/Menu"
+import { Product } from "src/app/models/Product"
+import { ViewChild } from "@angular/core"
+import { ViewMenuDialogComponent } from "src/app/dialogs/view-menu-dialog/view-menu-dialog.component"
+import { ViewReviewsDialogComponent } from "src/app/dialogs/view-reviews-dialog/view-reviews-dialog.component"
+import { UploadImageDialogComponent } from "src/app/dialogs/upload-image-dialog/upload-image-dialog.component"
+import { AddReviewDialogComponent } from "src/app/dialogs/add-review-dialog/add-review-dialog.component"
+import { Variation } from "src/app/models/Variation"
+import { formatPrice } from "src/app/utils"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	templateUrl: "./restaurant-info-page.component.html",
 	styleUrls: ["./restaurant-info-page.component.scss"],
-	standalone: true,
-	imports: [CommonModule, FontAwesomeModule],
-	schemas: [CUSTOM_ELEMENTS_SCHEMA]
+	standalone: false
 })
 export class RestaurantInfoPageComponent {
+	@ViewChild(ViewMenuDialogComponent) viewMenuDialog: ViewMenuDialogComponent
+	@ViewChild(ViewReviewsDialogComponent)
+	viewReviewsDialog: ViewReviewsDialogComponent
+	@ViewChild(UploadImageDialogComponent)
+	uploadImageDialog: UploadImageDialogComponent
+	@ViewChild(AddReviewDialogComponent)
+	addReviewDialog: AddReviewDialogComponent
+
 	uuid: string | null = null
+	formatPrice = formatPrice
+	locale = this.localizationService.locale.restaurantInfoPage
 
 	// filters
 	nameFilter: string = ""
@@ -36,11 +62,14 @@ export class RestaurantInfoPageComponent {
 	faSearch = faSearch
 	faChevronLeft = faChevronLeft
 	faChevronRight = faChevronRight
+	faList = faList
+	faPlus = faPlus
 
 	// Restaurant data
-	restaurant: any = null
-	menu: any = null
-	ratings: any[] = []
+	restaurant: Restaurant = null
+	bestsellers: Menu = null
+	topProducts: Product[] = []
+
 	currentImageIndex: number = 0
 	currentImageUrl: string | null = null
 
@@ -57,10 +86,21 @@ export class RestaurantInfoPageComponent {
 
 	constructor(
 		private route: ActivatedRoute,
-		private router: Router
+		private localizationService: LocalizationService,
+		private router: Router,
+		@Inject(PLATFORM_ID) private platformId: object
 	) {
 		this.uuid = this.route.snapshot.paramMap.get("uuid")
-		this.loadRestaurantData()
+	}
+
+	ngOnInit() {
+		// Always load bestsellers and ratings (sample data)
+		this.loadBestSellersData()
+
+		// Load restaurant data from localStorage only in browser
+		if (isPlatformBrowser(this.platformId)) {
+			this.loadRestaurantFromStorage()
+		}
 	}
 
 	nameTextfieldChange(value: string) {
@@ -123,76 +163,385 @@ export class RestaurantInfoPageComponent {
 		})
 	}
 
-	private loadRestaurantData() {
+	openMenuDialog() {
+		if (this.viewMenuDialog && this.restaurant?.menu) {
+			this.viewMenuDialog.menu = this.restaurant.menu
+			this.viewMenuDialog.open()
+		}
+	}
+
+	openReviewsDialog() {
+		if (this.viewReviewsDialog) {
+			this.viewReviewsDialog.ratings = this.restaurant?.ratings || []
+			this.viewReviewsDialog.open()
+		}
+	}
+
+	addReview() {
+		if (this.addReviewDialog) {
+			this.addReviewDialog.open()
+		}
+	}
+
+	onReviewSubmitted(rating: Rating) {
+		// Initialize ratings array if it doesn't exist
+		if (!this.restaurant.ratings) {
+			this.restaurant.ratings = []
+		}
+
+		// Add to beginning of ratings array
+		this.restaurant.ratings.unshift(rating)
+	}
+
+	private loadRestaurantFromStorage() {
 		// Load restaurant data from localStorage (set by landing-guests-page)
 		const storedData = localStorage.getItem("selectedRestaurant")
 		if (storedData) {
 			try {
 				this.restaurant = JSON.parse(storedData)
-				// Add sample images if not present
-				if (
-					!this.restaurant.images ||
-					this.restaurant.images.length === 0
-				) {
-					this.restaurant.images = [
-						"https://via.placeholder.com/400x300/FF6B6B/FFFFFF?text=Restaurant+Bild",
-						"https://via.placeholder.com/400x300/4ECDC4/FFFFFF?text=Restaurant+Interior",
-						"https://via.placeholder.com/400x300/45B7D1/FFFFFF?text=Restaurant+Menu"
-					]
-				}
 			} catch (error) {
 				console.error("Error parsing restaurant data:", error)
-				this.loadFallbackData()
 			}
-		} else {
-			this.loadFallbackData()
 		}
-		this.loadMenuData()
-		this.loadRatingsData()
+
+		// Always initialize ratings with sample data if not present or empty
+		if (
+			this.restaurant &&
+			(!this.restaurant.ratings || this.restaurant.ratings.length === 0)
+		) {
+			this.loadRatingsData()
+		}
+
 		this.updateCurrentImage()
 	}
 
-	private loadFallbackData() {
-		// Fallback data if no stored data is available
-		this.restaurant = {
-			name: "Restaurant",
-			addressLine1: "Adresse nicht verfügbar",
-			postalCode: "",
-			city: "",
-			hasTakeaway: false,
-			hasDelivery: false,
-			images: [
-				"https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=Kein+Bild"
-			]
-		}
-	}
+	private loadBestSellersData() {
+		// TODO: Load top 5 bestsellers from API
+		// For now, create sample data with top 5 products
+		this.topProducts = [
+			{
+				id: 1,
+				uuid: crypto.randomUUID(),
+				type: "FOOD",
+				name: "Caesar Salad",
+				price: 850,
+				category: undefined,
+				variations: [
+					{
+						uuid: crypto.randomUUID(),
+						name: "Größe",
+						variationItems: [
+							{
+								id: 1,
+								uuid: crypto.randomUUID(),
+								name: "Klein",
+								additionalCost: 0
+							},
+							{
+								id: 2,
+								uuid: crypto.randomUUID(),
+								name: "Groß",
+								additionalCost: 200
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 2,
+				uuid: crypto.randomUUID(),
+				type: "FOOD",
+				name: "Grilled Salmon",
+				price: 1800,
+				category: undefined,
+				variations: []
+			},
+			{
+				id: 3,
+				uuid: crypto.randomUUID(),
+				type: "FOOD",
+				name: "Beef Steak",
+				price: 2200,
+				category: undefined,
+				variations: [
+					{
+						uuid: crypto.randomUUID(),
+						name: "Garstufe",
+						variationItems: [
+							{
+								id: 3,
+								uuid: crypto.randomUUID(),
+								name: "Medium",
+								additionalCost: 0
+							},
+							{
+								id: 4,
+								uuid: crypto.randomUUID(),
+								name: "Well Done",
+								additionalCost: 0
+							}
+						]
+					}
+				]
+			},
+			{
+				id: 4,
+				uuid: crypto.randomUUID(),
+				type: "FOOD",
+				name: "Margherita Pizza",
+				price: 1250,
+				category: undefined,
+				variations: []
+			},
+			{
+				id: 5,
+				uuid: crypto.randomUUID(),
+				type: "FOOD",
+				name: "Pasta Carbonara",
+				price: 1400,
+				category: undefined,
+				variations: []
+			}
+		]
 
-	private loadMenuData() {
-		// Load or create sample menu data
-		this.menu = {
-			categories: [
+		// Create a complete menu offer with offer items
+		this.bestsellers = {
+			uuid: crypto.randomUUID(),
+			categories: [],
+			offers: [
 				{
-					name: "Vorspeisen",
-					products: [
-						{ name: "Caesar Salad", price: 8.50 },
-						{ name: "Tomato Soup", price: 6.00 },
-						{ name: "Garlic Bread", price: 5.50 }
+					id: 1,
+					uuid: crypto.randomUUID(),
+					offerType: "FIXED_PRICE",
+					offerValue: 45,
+					weekdays: [
+						"MONDAY",
+						"TUESDAY",
+						"WEDNESDAY",
+						"THURSDAY",
+						"FRIDAY",
+						"SATURDAY",
+						"SUNDAY"
+					],
+					offerItems: [
+						{
+							uuid: crypto.randomUUID(),
+							name: "Hauptgericht",
+							maxSelections: 2,
+							products: [
+								{
+									id: 10,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Grilled Chicken",
+									price: 1600,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 11,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Beef Burger",
+									price: 1400,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 12,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Vegetarian Pasta",
+									price: 1300,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 13,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Fish & Chips",
+									price: 1500,
+									category: undefined,
+									variations: []
+								}
+							]
+						},
+						{
+							uuid: crypto.randomUUID(),
+							name: "Beilage",
+							maxSelections: 2,
+							products: [
+								{
+									id: 20,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "French Fries",
+									price: 400,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 21,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Mixed Salad",
+									price: 450,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 22,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Steamed Vegetables",
+									price: 450,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 23,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Rice",
+									price: 350,
+									category: undefined,
+									variations: []
+								}
+							]
+						},
+						{
+							uuid: crypto.randomUUID(),
+							name: "Getränk",
+							maxSelections: 4,
+							products: [
+								{
+									id: 30,
+									uuid: crypto.randomUUID(),
+									type: "DRINK",
+									name: "Cola",
+									price: 300,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 31,
+									uuid: crypto.randomUUID(),
+									type: "DRINK",
+									name: "Fanta",
+									price: 300,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 32,
+									uuid: crypto.randomUUID(),
+									type: "DRINK",
+									name: "Sprite",
+									price: 300,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 33,
+									uuid: crypto.randomUUID(),
+									type: "DRINK",
+									name: "Water",
+									price: 250,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 34,
+									uuid: crypto.randomUUID(),
+									type: "DRINK",
+									name: "Orange Juice",
+									price: 350,
+									category: undefined,
+									variations: []
+								}
+							]
+						},
+						{
+							uuid: crypto.randomUUID(),
+							name: "Dessert",
+							maxSelections: 1,
+							products: [
+								{
+									id: 40,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Tiramisu",
+									price: 550,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 41,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Ice Cream",
+									price: 450,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 42,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Chocolate Cake",
+									price: 600,
+									category: undefined,
+									variations: []
+								}
+							]
+						}
 					]
 				},
 				{
-					name: "Hauptgerichte",
-					products: [
-						{ name: "Grilled Salmon", price: 18.00 },
-						{ name: "Beef Steak", price: 22.00 },
-						{ name: "Pasta Carbonara", price: 14.50 }
-					]
-				},
-				{
-					name: "Desserts",
-					products: [
-						{ name: "Tiramisu", price: 7.00 },
-						{ name: "Chocolate Cake", price: 6.50 },
-						{ name: "Ice Cream", price: 5.00 }
+					id: 2,
+					uuid: crypto.randomUUID(),
+					offerType: "DISCOUNT",
+					discountType: "PERCENTAGE",
+					offerValue: 20,
+					startTime: "17:00",
+					endTime: "19:00",
+					weekdays: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY"],
+					offerItems: [
+						{
+							uuid: crypto.randomUUID(),
+							name: "Happy Hour Pizza",
+							maxSelections: 1,
+							products: [
+								{
+									id: 50,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Margherita Pizza",
+									price: 1200,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 51,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Pepperoni Pizza",
+									price: 1400,
+									category: undefined,
+									variations: []
+								},
+								{
+									id: 52,
+									uuid: crypto.randomUUID(),
+									type: "FOOD",
+									name: "Vegetarian Pizza",
+									price: 1300,
+									category: undefined,
+									variations: []
+								}
+							]
+						}
 					]
 				}
 			]
@@ -200,27 +549,84 @@ export class RestaurantInfoPageComponent {
 	}
 
 	private loadRatingsData() {
-		// Load or create sample ratings data
-		this.ratings = [
+		// TODO: Load ratings data from API or localStorage
+		// For now, create sample data
+		if (!this.restaurant) {
+			return
+		}
+
+		this.restaurant.ratings = [
 			{
+				uuid: crypto.randomUUID(),
+				username: "Anna M.",
 				value: 5,
-				review: "Ausgezeichnetes Essen und toller Service! Wir kommen gerne wieder.",
-				userName: "Anna M."
+				review:
+					"Ausgezeichnetes Essen und toller Service! Wir kommen gerne wieder.",
+				userUuid: crypto.randomUUID()
 			},
 			{
+				uuid: crypto.randomUUID(),
+				username: "Michael K.",
 				value: 4,
-				review: "Sehr gutes Restaurant mit freundlichem Personal. Das Essen war lecker.",
-				userName: "Michael K."
+				review:
+					"Sehr gutes Restaurant mit freundlichem Personal. Das Essen war lecker.",
+				userUuid: crypto.randomUUID()
 			},
 			{
+				uuid: crypto.randomUUID(),
+				username: "Sarah L.",
 				value: 5,
-				review: "Fantastische Atmosphäre und hervorragende Qualität. Absolut empfehlenswert!",
-				userName: "Sarah L."
+				review:
+					"Fantastische Atmosphäre und hervorragende Qualität. Absolut empfehlenswert!",
+				userUuid: crypto.randomUUID()
 			},
 			{
+				uuid: crypto.randomUUID(),
+				username: "Thomas B.",
 				value: 4,
-				review: "Gutes Preis-Leistungs-Verhältnis. Die Portionen waren großzügig.",
-				userName: "Thomas B."
+				review:
+					"Gutes Preis-Leistungs-Verhältnis. Die Portionen waren großzügig.",
+				userUuid: crypto.randomUUID()
+			},
+			{
+				uuid: crypto.randomUUID(),
+				username: "Julia S.",
+				value: 3,
+				review:
+					"Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				userUuid: crypto.randomUUID()
+			},
+			{
+				uuid: crypto.randomUUID(),
+				username: "Julia S.",
+				value: 3,
+				review:
+					"Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				userUuid: crypto.randomUUID()
+			},
+			{
+				uuid: crypto.randomUUID(),
+				username: "Julia S.",
+				value: 3,
+				review:
+					"Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				userUuid: crypto.randomUUID()
+			},
+			{
+				uuid: crypto.randomUUID(),
+				username: "Julia S.",
+				value: 3,
+				review:
+					"Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				userUuid: crypto.randomUUID()
+			},
+			{
+				uuid: crypto.randomUUID(),
+				username: "Julia S.",
+				value: 3,
+				review:
+					"Das Essen war in Ordnung, aber der Service hätte besser sein können.Das Essen war in Ordnung, aber der Service hätte besser sein können.Das Essen war in Ordnung, aber der Service hätte besser sein können.Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				userUuid: crypto.randomUUID()
 			}
 		]
 	}
@@ -272,10 +678,59 @@ export class RestaurantInfoPageComponent {
 	}
 
 	calculateAverageRating(): number {
-		if (!this.ratings || this.ratings.length === 0) {
+		if (!this.restaurant?.ratings || this.restaurant.ratings.length === 0) {
 			return 0
 		}
-		const sum = this.ratings.reduce((acc, rating) => acc + rating.value, 0)
-		return sum / this.ratings.length
+		const sum = this.restaurant.ratings.reduce(
+			(acc, rating) => acc + rating.value,
+			0
+		)
+		return sum / this.restaurant.ratings.length
+	}
+
+	getVariationTooltip(variation: Variation): string {
+		if (!variation.variationItems || variation.variationItems.length === 0) {
+			return variation.name
+		}
+
+		const items = variation.variationItems
+			.map(item => {
+				const cost =
+					item.additionalCost > 0
+						? ` (+${formatPrice(item.additionalCost)})`
+						: ""
+				return `${item.name}${cost}`
+			})
+			.join(", ")
+
+		return `${variation.name}: ${items}`
+	}
+
+	getProductVariationsText(product: Product): string {
+		if (!product.variations || product.variations.length === 0) {
+			return ""
+		}
+		return product.variations.map(v => v.name).join(", ")
+	}
+
+	addImage() {
+		if (this.uploadImageDialog) {
+			this.uploadImageDialog.open()
+		}
+	}
+
+	onImageUploaded(imageUrl: string) {
+		if (this.restaurant) {
+			if (!this.restaurant.images) {
+				this.restaurant.images = []
+			}
+
+			// Add the new image
+			this.restaurant.images.push(imageUrl)
+
+			// Set as current image
+			this.currentImageIndex = this.restaurant.images.length - 1
+			this.updateCurrentImage()
+		}
 	}
 }

@@ -1,0 +1,96 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[visible]="visible"
+	[defaultButtonText]="locale.close"
+	maxWidth="900"
+	(dismiss)="close()"
+	(defaultButtonClick)="close()"
+>
+	<div class="dialog-content">
+		@if (ratings && ratings.length > 0) {
+			<div class="average-rating-section">
+				<div class="rating-summary">
+					<div class="rating-value">
+						{{ calculateAverageRating() | number: "1.1-1" }}
+					</div>
+					<div class="rating-details">
+						<div class="stars">
+							@for (star of [1, 2, 3, 4, 5]; track star) {
+								<fa-icon
+									[icon]="faStar"
+									[class.filled]="star <= calculateAverageRating()"
+								></fa-icon>
+							}
+						</div>
+						<span class="rating-label">{{ locale.starsLabel }}</span>
+						<span class="review-count"
+							>{{ ratings.length }}
+							{{
+								ratings.length === 1
+									? locale.reviewSingular
+									: locale.reviewPlural
+							}}</span
+						>
+					</div>
+				</div>
+			</div>
+
+			<div class="filters-section">
+				<dav-filter-group>
+					<dav-filter-button
+						name="newest"
+						[active]="filterType === 'newest'"
+						(click)="setFilter('newest')"
+					>
+						<fa-icon [icon]="faClock"></fa-icon>
+						{{ locale.newest }}
+					</dav-filter-button>
+
+					<dav-filter-button
+						name="lowest"
+						[active]="filterType === 'lowest'"
+						(click)="setFilter('lowest')"
+					>
+						<fa-icon [icon]="faArrowDown"></fa-icon>
+						{{ locale.lowest }}
+					</dav-filter-button>
+
+					<dav-filter-button
+						name="highest"
+						[active]="filterType === 'highest'"
+						(click)="setFilter('highest')"
+					>
+						<fa-icon [icon]="faArrowUp"></fa-icon>
+						{{ locale.highest }}
+					</dav-filter-button>
+				</dav-filter-group>
+			</div>
+
+			<div class="reviews-list">
+				@for (rating of getFilteredRatings(); track rating) {
+					<div class="review-item">
+						<div class="review-header">
+							<span class="reviewer-name">{{ rating.username }}</span>
+							<div class="review-stars">
+								@for (star of [1, 2, 3, 4, 5]; track star) {
+									<fa-icon
+										[icon]="faStar"
+										[class.filled]="star <= rating.value"
+									></fa-icon>
+								}
+							</div>
+						</div>
+						@if (rating.review) {
+							<p class="review-text">{{ rating.review }}</p>
+						}
+					</div>
+				}
+			</div>
+		} @else {
+			<div class="empty-state">
+				<p>{{ locale.noReviews }}</p>
+			</div>
+		}
+	</div>
+</dav-dialog>

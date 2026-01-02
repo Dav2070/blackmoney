@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Output, OnInit } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
 import { faStar, faCupTogo, faTruck } from "@fortawesome/pro-regular-svg-icons"
+import { Restaurant } from "src/app/models/Restaurant"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	templateUrl: "./landing-guests-page.component.html",
@@ -9,6 +11,7 @@ import { faStar, faCupTogo, faTruck } from "@fortawesome/pro-regular-svg-icons"
 })
 export class LandingGuestsPageComponent implements OnInit {
 	constructor(
+		private localizationService: LocalizationService,
 		private router: Router,
 		private route: ActivatedRoute
 	) {}
@@ -41,61 +44,241 @@ export class LandingGuestsPageComponent implements OnInit {
 	faCupTogo = faCupTogo
 	faTruck = faTruck
 
+	locale = this.localizationService.locale.landingGuestsPage
+
 	// sample data for cards
-	restaurants: {
-		uuid: string
-		name: string
-		addressLine1: string
-		postalCode: string
-		city: string
-		rating: number
-		imageUrl: string | null
-		hasTakeaway: boolean
-		hasDelivery: boolean
-	}[] = [
+	restaurants: Restaurant[] = [
 		{
 			uuid: crypto.randomUUID(),
-			name: "Café Central",
-			addressLine1: "Hauptstraße 1",
-			postalCode: "10115",
-			city: "Berlin",
-			rating: 4,
-			imageUrl: null,
+			name: "Wupper Grill",
+			address: {
+				uuid: crypto.randomUUID(),
+				addressLine1: "Musterstraße 1",
+				postalCode: "10115",
+				city: "Berlin",
+				country: "Germany"
+			},
+			ratings: [
+				{
+					uuid: crypto.randomUUID(),
+					username: "Jacek",
+					value: 5,
+					review: "War super lecker und der Service war freundlich!",
+					userUuid: crypto.randomUUID()
+				}
+			],
+			images: [
+				"https://dynamic-media-cdn.tripadvisor.com/media/photo-o/07/0a/aa/4d/wupper-grill.jpg?w=1200&h=1200&s=1",
+				"https://img.restaurantguru.com/r271-image-Can-2-Doner-and-Pizzeria-2021-09-985088.jpg",
+				"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMYz7f3RzYA7HQjJQAB1M47MUJOA4HzUn0SQ&s"
+			],
 			hasTakeaway: true,
-			hasDelivery: false
+			hasDelivery: true,
+			menu: {
+				uuid: crypto.randomUUID(),
+				categories: [
+					{
+						uuid: crypto.randomUUID(),
+						name: "Vorspeisen",
+						products: [
+							{
+								id: 1,
+								uuid: crypto.randomUUID(),
+								type: "FOOD",
+								name: "Caesar Salad",
+								price: 850,
+								variations: [
+									{
+										uuid: crypto.randomUUID(),
+										name: "Größe",
+										variationItems: [
+											{
+												id: 1,
+												uuid: crypto.randomUUID(),
+												name: "Klein",
+												additionalCost: 0
+											},
+											{
+												id: 2,
+												uuid: crypto.randomUUID(),
+												name: "Groß",
+												additionalCost: 200
+											}
+										]
+									}
+								]
+							},
+							{
+								id: 2,
+								uuid: crypto.randomUUID(),
+								type: "FOOD",
+								name: "Tomato Soup",
+								price: 600,
+								variations: []
+							}
+						]
+					},
+					{
+						uuid: crypto.randomUUID(),
+						name: "Hauptgerichte",
+						products: [
+							{
+								id: 3,
+								uuid: crypto.randomUUID(),
+								type: "FOOD",
+								name: "Grilled Salmon",
+								price: 1800,
+								variations: []
+							},
+							{
+								id: 4,
+								uuid: crypto.randomUUID(),
+								type: "FOOD",
+								name: "Beef Steak",
+								price: 2200,
+								variations: [
+									{
+										uuid: crypto.randomUUID(),
+										name: "Garstufe",
+										variationItems: [
+											{
+												id: 3,
+												uuid: crypto.randomUUID(),
+												name: "Medium",
+												additionalCost: 0
+											},
+											{
+												id: 4,
+												uuid: crypto.randomUUID(),
+												name: "Well Done",
+												additionalCost: 0
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				],
+				offers: [
+					{
+						id: 1,
+						uuid: crypto.randomUUID(),
+						offerType: "DISCOUNT",
+						discountType: "PERCENTAGE",
+						offerValue: 10,
+						startDate: undefined,
+						endDate: undefined,
+						startTime: undefined,
+						endTime: undefined,
+						weekdays: ["MONDAY", "TUESDAY"],
+						offerItems: [
+							{
+								uuid: crypto.randomUUID(),
+								name: "Mittagsangebot",
+								maxSelections: 1,
+								products: []
+							}
+						]
+					}
+				]
+			},
+			phoneNumber: "030 1234567",
+			mail: "Jacek@yandex.ru",
+			users: [],
+			rooms: [],
+			registers: [],
+			printers: []
 		},
 		{
 			uuid: crypto.randomUUID(),
 			name: "Pizzeria Roma",
-			addressLine1: "Italienerweg 5",
-			postalCode: "80331",
-			city: "München",
-			rating: 5,
-			imageUrl: null,
-			hasTakeaway: true,
-			hasDelivery: true
+			address: {
+				uuid: crypto.randomUUID(),
+				addressLine1: "Italienerweg 5",
+				postalCode: "80331",
+				city: "München",
+				country: "Germany"
+			},
+			ratings: [
+				{
+					uuid: crypto.randomUUID(),
+					username: "Marek",
+					value: 5,
+					review: "Leckere Pizza und schnelle Lieferung!",
+					userUuid: crypto.randomUUID()
+				}
+			],
+			images: [
+				"https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=Pizzeria+Roma"
+			],
+			hasTakeaway: false,
+			hasDelivery: false,
+			menu: undefined,
+			users: [],
+			rooms: [],
+			registers: [],
+			printers: []
 		},
 		{
 			uuid: crypto.randomUUID(),
 			name: "Sushi House",
-			addressLine1: "Fischmarkt 12",
-			postalCode: "20095",
-			city: "Hamburg",
-			rating: 3,
-			imageUrl: null,
+			address: {
+				uuid: crypto.randomUUID(),
+				addressLine1: "Fischmarkt 12",
+				postalCode: "20095",
+				city: "Hamburg",
+				country: "Germany"
+			},
+			ratings: [
+				{
+					uuid: crypto.randomUUID(),
+					username: "Lelek",
+					value: 3,
+					review: "Frisches Sushi, aber etwas teuer.",
+					userUuid: crypto.randomUUID()
+				}
+			],
+			images: [
+				"https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=Sushi+House"
+			],
 			hasTakeaway: false,
-			hasDelivery: true
+			hasDelivery: true,
+			menu: undefined,
+			users: [],
+			rooms: [],
+			registers: [],
+			printers: []
 		},
 		{
 			uuid: crypto.randomUUID(),
 			name: "Bistro Grün",
-			addressLine1: "Parkallee 7",
-			postalCode: "04109",
-			city: "Leipzig",
-			rating: 2,
-			imageUrl: null,
+			address: {
+				uuid: crypto.randomUUID(),
+				addressLine1: "Parkallee 7",
+				postalCode: "04109",
+				city: "Leipzig",
+				country: "Germany"
+			},
+			ratings: [
+				{
+					uuid: crypto.randomUUID(),
+					username: "Niggo",
+					value: 2,
+					review: "Nettes Bistro, aber wenig Auswahl.",
+					userUuid: crypto.randomUUID()
+				}
+			],
+			images: [
+				"https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=Bistro+Gr%C3%BCn"
+			],
 			hasTakeaway: false,
-			hasDelivery: false
+			hasDelivery: true,
+			menu: undefined,
+			users: [],
+			rooms: [],
+			registers: [],
+			printers: []
 		}
 	]
 
@@ -166,18 +349,30 @@ export class LandingGuestsPageComponent implements OnInit {
 			if (
 				this.cityPostalFilter &&
 				!(
-					r.city
+					r.address.city
 						.toLowerCase()
 						.includes(this.cityPostalFilter.toLowerCase()) ||
-					r.postalCode.includes(this.cityPostalFilter)
+					r.address.postalCode.includes(this.cityPostalFilter)
 				)
 			)
 				return false
-			if (this.ratingFilter && r.rating < this.ratingFilter) return false
+			if (this.ratingFilter && this.getAverageRating(r) < this.ratingFilter)
+				return false
 			if (this.hasTakeaway && !r.hasTakeaway) return false
 			if (this.hasDelivery && !r.hasDelivery) return false
 			return true
 		})
+	}
+
+	getAverageRating(restaurant: Restaurant): number {
+		if (!restaurant.ratings || restaurant.ratings.length === 0) {
+			return 0
+		}
+		const sum = restaurant.ratings.reduce(
+			(acc, rating) => acc + rating.value,
+			0
+		)
+		return sum / restaurant.ratings.length
 	}
 
 	trackByUuid(index: number, item: { uuid: string }) {

@@ -3,7 +3,8 @@ import { Room } from "./Room"
 import { Printer } from "./Printer"
 import { Menu } from "./Menu"
 import { Register } from "./Register"
-import { RestaurantDetails } from "./RestaurantDetails"
+import { Rating } from "./Rating"
+import { Address } from "./Address"
 
 export class Restaurant {
 	uuid: string
@@ -13,5 +14,13 @@ export class Restaurant {
 	rooms: Room[]
 	registers: Register[]
 	printers: Printer[]
-	restaurantDetails: RestaurantDetails
+	images: string[]
+	owner?: string
+	taxNumber?: string
+	phoneNumber?: string
+	mail?: string
+	ratings?: Rating[]
+	address?: Address
+	hasTakeaway?: boolean
+	hasDelivery?: boolean
 }

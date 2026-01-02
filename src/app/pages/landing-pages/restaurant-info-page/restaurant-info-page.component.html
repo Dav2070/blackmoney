@@ -4,7 +4,7 @@
 			<div class="filter-item name-filter">
 				<dav-textfield
 					[value]="nameFilter"
-					label="Name des Restaurants"
+					[label]="locale.restaurantName"
 					(change)="nameTextfieldChange($any($event).detail.value)"
 				></dav-textfield>
 			</div>
@@ -12,14 +12,14 @@
 			<div class="filter-item city-filter">
 				<dav-textfield
 					[value]="cityPostalFilter"
-					label="Stadt / PLZ"
+					[label]="locale.cityPostalCode"
 					(change)="cityTextfieldChange($any($event).detail.value)"
 				></dav-textfield>
 			</div>
 
 			<div class="filter-item distance-filter">
 				<label class="distance-label"
-					>Entfernung: {{ distanceKm }} km</label
+					>{{ locale.distance }}: {{ distanceKm }} km</label
 				>
 				<input
 					type="range"
@@ -31,7 +31,7 @@
 			</div>
 
 			<div class="filter-item rating-filter">
-				<label>Bewertung</label>
+				<label>{{ locale.rating }}</label>
 				<div class="stars">
 					@for (i of [1, 2, 3, 4, 5]; track i) {
 						<fa-icon
@@ -47,24 +47,21 @@
 			<div class="filter-item checkboxes">
 				<dav-checkbox
 					[checked]="hasTakeaway"
-					[label]="'Zum Mitnehmen'"
+					[label]="locale.takeaway"
 					(change)="takeawayCheckboxChange($any($event).detail.checked)"
 				></dav-checkbox>
 
 				<dav-checkbox
 					[checked]="hasDelivery"
-					[label]="'Lieferung'"
+					[label]="locale.delivery"
 					(change)="deliveryCheckboxChange($any($event).detail.checked)"
 				></dav-checkbox>
 			</div>
 
 			<div class="filter-item search-icon">
-				<fa-icon
-					[icon]="faSearch"
-					class="search-button"
-					(click)="search()"
-					title="Suchen"
-				></fa-icon>
+				<dav-icon-button size="md" (click)="search()">
+					<fa-icon [icon]="faSearch"></fa-icon>
+				</dav-icon-button>
 			</div>
 		</div>
 	</dav-card>
@@ -73,46 +70,87 @@
 		<div class="restaurant-info-grid">
 			<div class="restaurant-info-left">
 				<div class="restaurant-details">
-					<h2 class="restaurant-name">{{ restaurant?.name }}</h2>
+					<div class="restaurant-header">
+						<h2 class="restaurant-name">{{ restaurant?.name }}</h2>
+						@if (restaurant?.ratings && restaurant.ratings.length > 0) {
+							<div class="restaurant-rating">
+								<div class="rating-stars">
+									@for (star of [1, 2, 3, 4, 5]; track star) {
+										<fa-icon
+											[icon]="faStar"
+											[class.filled]="
+												star <= calculateAverageRating()
+											"
+										></fa-icon>
+									}
+								</div>
+								<span class="rating-text"
+									>{{ calculateAverageRating() | number: "1.1-1" }} ({{
+										restaurant.ratings.length
+									}})</span
+								>
+							</div>
+						}
+					</div>
 
 					<div class="restaurant-address">
-						<p>{{ restaurant?.addressLine1 }}</p>
-						<p>{{ restaurant?.postalCode }} {{ restaurant?.city }}</p>
+						<p>{{ restaurant?.address?.addressLine1 }}</p>
+						<p>
+							{{ restaurant?.address?.postalCode }}
+							{{ restaurant?.address?.city }}
+						</p>
 					</div>
 
 					<div class="restaurant-services">
 						@if (restaurant?.hasTakeaway) {
-							<fa-icon
-								[icon]="faCupTogo"
-								title="Zum Mitnehmen"
-							></fa-icon>
+							<div class="service-item">
+								<fa-icon
+									[icon]="faCupTogo"
+									class="service-icon"
+								></fa-icon>
+								<span>{{ locale.takeaway }}</span>
+							</div>
 						}
 						@if (restaurant?.hasDelivery) {
-							<fa-icon [icon]="faTruck" title="Lieferung"></fa-icon>
+							<div class="service-item">
+								<fa-icon
+									[icon]="faTruck"
+									class="service-icon"
+								></fa-icon>
+								<span>{{ locale.delivery }}</span>
+							</div>
 						}
 					</div>
 
 					<div class="restaurant-hours">
-						<h3>Öffnungszeiten</h3>
+						<h3>{{ locale.openingHours }}</h3>
 						<p>Mo-Fr: 08:00 - 18:00</p>
 						<p>Sa-So: 10:00 - 16:00</p>
 					</div>
 
 					<div class="restaurant-contact">
 						<div class="contact-item">
-							<strong>Telefon:</strong> +49 123 456789
+							<strong>{{ locale.phone }}:</strong>
+							{{ restaurant?.phoneNumber }}
 						</div>
 						<div class="contact-item">
-							<strong>E-Mail:</strong> info@restaurant.de
+							<strong>{{ locale.email }}:</strong> {{ restaurant?.mail }}
 						</div>
 					</div>
 				</div>
+			</div>
 
+			<div class="restaurant-info-middle">
 				<div class="restaurant-actions">
-					<dav-button (click)="reserveTable()"
-						>Jetzt reservieren</dav-button
-					>
-					<dav-button (click)="orderNow()">Jetzt bestellen</dav-button>
+					<dav-button (click)="reserveTable()" class="reserve-button">{{
+						locale.reserveNow
+					}}</dav-button>
+					<dav-button (click)="orderNow()" class="order-button">{{
+						locale.orderNow
+					}}</dav-button>
+					<dav-button (click)="orderNow()" class="order-button">{{
+						locale.buyVoucher
+					}}</dav-button>
 				</div>
 			</div>
 
@@ -132,7 +170,9 @@
 								class="restaurant-image"
 							/>
 						} @else {
-							<div class="image-placeholder">Kein Bild verfügbar</div>
+							<div class="image-placeholder">
+								{{ locale.noImageAvailable }}
+							</div>
 						}
 					</div>
 
@@ -152,69 +192,232 @@
 						></div>
 					}
 				</div>
+
+				<button class="add-image-button" (click)="addImage()">
+					<fa-icon [icon]="faPlus"></fa-icon>
+					<span>{{ locale.addImage }}</span>
+				</button>
 			</div>
 		</div>
 	</dav-card>
 
 	<div class="restaurant-details-grid">
 		<dav-card class="menu-card">
-			<h3>Menü</h3>
-			<div class="menu-content">
-				@if (menu?.categories && menu.categories.length > 0) {
-					@for (category of menu.categories; track category.name) {
-						<div class="menu-category">
-							<h4>{{ category.name }}</h4>
-							@for (product of category.products; track product.name) {
-								<div class="menu-item">
-									<span class="item-name">{{ product.name }}</span>
-									<span class="item-price">{{ product.price | currency:'EUR':'symbol':'1.2-2' }}</span>
+			<div class="menu-card-inner">
+				<div class="menu-header">
+					<h3>{{ locale.bestsellers }}</h3>
+					<dav-button (click)="openMenuDialog()">
+						{{ locale.showFullMenu }}
+					</dav-button>
+				</div>
+				<div class="menu-content">
+					@if (topProducts && topProducts.length > 0) {
+						<div class="products-grid">
+							@for (product of topProducts; track product.uuid) {
+								<div class="product-item">
+									<div class="product-main">
+										<span class="product-name">{{
+											product.name
+										}}</span>
+										<span class="product-price">{{
+											formatPrice(product.price)
+										}}</span>
+									</div>
+
+									@if (
+										product.variations &&
+										product.variations.length > 0
+									) {
+										<div class="product-variations">
+											<div class="variations-chips">
+												@for (
+													variation of product.variations;
+													track variation.uuid
+												) {
+													<div
+														class="variation-chip"
+														[title]="
+															getVariationTooltip(variation)
+														"
+													>
+														<fa-icon
+															[icon]="faList"
+															class="variation-icon"
+														></fa-icon>
+														<span class="variation-name">{{
+															variation.name
+														}}</span>
+													</div>
+												}
+											</div>
+										</div>
+									}
 								</div>
 							}
 						</div>
+					} @else {
+						<div class="empty-state">
+							<p>{{ locale.noBestsellers }}</p>
+						</div>
 					}
-				} @else {
-					<p>Keine Menüdaten verfügbar</p>
-				}
+
+					@if (bestsellers?.offers && bestsellers.offers.length > 0) {
+						<div class="offers-section">
+							<div class="category-header">
+								<h4>{{ locale.offers }}</h4>
+							</div>
+
+							<div class="offers-list">
+								@for (offer of bestsellers.offers; track offer.uuid) {
+									<div class="offer-item">
+										<div class="offer-header-row">
+											<div class="offer-type">
+												<span class="offer-badge">{{
+													offer.offerType === "DISCOUNT"
+														? locale.discount
+														: locale.fixedPrice
+												}}</span>
+											</div>
+											<div class="offer-value">
+												{{ offer.offerValue }}
+												@if (offer.offerType === "FIXED_PRICE") {
+													€
+												}
+												@if (offer.discountType === "PERCENTAGE") {
+													%
+												}
+												@if (offer.discountType === "AMOUNT") {
+													€
+												}
+											</div>
+										</div>
+
+										@if (
+											offer.offerItems && offer.offerItems.length > 0
+										) {
+											<div class="offer-items-section">
+												@for (
+													item of offer.offerItems;
+													track item.uuid
+												) {
+													<div class="offer-item-detail">
+														<div class="item-name-section">
+															<span class="item-name">{{
+																item.name
+															}}</span>
+															<span class="item-max"
+																>{{ locale.max }}
+																{{ item.maxSelections }}</span
+															>
+														</div>
+														<div class="item-products">
+															@for (
+																prod of item.products;
+																track prod.uuid
+															) {
+																<span class="product-chip">{{
+																	prod.name
+																}}</span>
+															}
+														</div>
+													</div>
+												}
+											</div>
+										}
+									</div>
+								}
+							</div>
+						</div>
+					}
+				</div>
 			</div>
 		</dav-card>
 
 		<dav-card class="reviews-card">
-			<h3>Bewertungen</h3>
-			<div class="reviews-content">
-				@if (ratings && ratings.length > 0) {
-					<div class="average-rating">
-						<strong>Durchschnitt: {{ calculateAverageRating() | number:'1.1-1' }}/5</strong>
-						<div class="stars">
-							@for (star of [1,2,3,4,5]; track star) {
-								<fa-icon
-									[icon]="faStar"
-									[class.filled]="star <= calculateAverageRating()"
-								></fa-icon>
-							}
-						</div>
+			<div class="reviews-card-inner">
+				<div class="reviews-header">
+					<h3>{{ locale.reviews }}</h3>
+					<div class="reviews-header-buttons">
+						<dav-button (click)="addReview()">
+							{{ locale.addReview }}
+						</dav-button>
+						<dav-button (click)="openReviewsDialog()">
+							{{ locale.showAllReviews }}
+						</dav-button>
 					</div>
-					<div class="reviews-list">
-						@for (rating of ratings; track rating) {
-							<div class="review-item">
-								<div class="review-header">
-									<span class="review-user">{{ rating.userName }}</span>
-									<div class="review-stars">
-										@for (star of [1,2,3,4,5]; track star) {
+				</div>
+
+				<div class="reviews-content">
+					@if (restaurant?.ratings && restaurant.ratings.length > 0) {
+						<div class="average-rating-section">
+							<div class="rating-summary">
+								<div class="rating-value">
+									{{ calculateAverageRating() | number: "1.1-1" }}
+								</div>
+								<div class="rating-details">
+									<div class="stars">
+										@for (star of [1, 2, 3, 4, 5]; track star) {
 											<fa-icon
 												[icon]="faStar"
-												[class.filled]="star <= rating.value"
+												[class.filled]="
+													star <= calculateAverageRating()
+												"
 											></fa-icon>
 										}
 									</div>
+									<span class="review-count"
+										>{{ restaurant.ratings.length }}
+										{{
+											restaurant.ratings.length === 1
+												? locale.reviewSingular
+												: locale.reviewPlural
+										}}</span
+									>
 								</div>
-								<p class="review-text">{{ rating.review }}</p>
 							</div>
-						}
-					</div>
-				} @else {
-					<p>Keine Bewertungen verfügbar</p>
-				}
+						</div>
+
+						<div class="reviews-list">
+							@for (
+								rating of restaurant.ratings.slice(0, 5);
+								track rating
+							) {
+								<div class="review-item">
+									<div class="review-header">
+										<span class="reviewer-name">{{
+											rating.username
+										}}</span>
+										<div class="review-stars">
+											@for (star of [1, 2, 3, 4, 5]; track star) {
+												<fa-icon
+													[icon]="faStar"
+													[class.filled]="star <= rating.value"
+												></fa-icon>
+											}
+										</div>
+									</div>
+									@if (rating.review) {
+										<p class="review-text">{{ rating.review }}</p>
+									}
+								</div>
+							}
+						</div>
+					} @else {
+						<div class="empty-state">
+							<p>{{ locale.noReviews }}</p>
+						</div>
+					}
+				</div>
 			</div>
 		</dav-card>
 	</div>
 </div>
+
+<app-view-menu-dialog></app-view-menu-dialog>
+<app-view-reviews-dialog></app-view-reviews-dialog>
+<app-upload-image-dialog
+	(imageUploaded)="onImageUploaded($event)"
+></app-upload-image-dialog>
+<app-add-review-dialog
+	(reviewSubmitted)="onReviewSubmitted($event)"
+></app-add-review-dialog>

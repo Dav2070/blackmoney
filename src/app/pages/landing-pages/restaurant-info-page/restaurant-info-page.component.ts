@@ -220,8 +220,8 @@ export class RestaurantInfoPageComponent {
 		// For now, create sample data with top 5 products
 		this.topProducts = [
 			{
-				id: 1,
 				uuid: crypto.randomUUID(),
+				shortcut: 1,
 				type: "FOOD",
 				name: "Caesar Salad",
 				price: 850,
@@ -248,8 +248,8 @@ export class RestaurantInfoPageComponent {
 				]
 			},
 			{
-				id: 2,
 				uuid: crypto.randomUUID(),
+				shortcut: 2,
 				type: "FOOD",
 				name: "Grilled Salmon",
 				price: 1800,
@@ -257,8 +257,8 @@ export class RestaurantInfoPageComponent {
 				variations: []
 			},
 			{
-				id: 3,
 				uuid: crypto.randomUUID(),
+				shortcut: 3,
 				type: "FOOD",
 				name: "Beef Steak",
 				price: 2200,
@@ -285,8 +285,8 @@ export class RestaurantInfoPageComponent {
 				]
 			},
 			{
-				id: 4,
 				uuid: crypto.randomUUID(),
+				shortcut: 4,
 				type: "FOOD",
 				name: "Margherita Pizza",
 				price: 1250,
@@ -294,8 +294,8 @@ export class RestaurantInfoPageComponent {
 				variations: []
 			},
 			{
-				id: 5,
 				uuid: crypto.randomUUID(),
+				shortcut: 5,
 				type: "FOOD",
 				name: "Pasta Carbonara",
 				price: 1400,
@@ -308,6 +308,7 @@ export class RestaurantInfoPageComponent {
 		this.bestsellers = {
 			uuid: crypto.randomUUID(),
 			categories: [],
+			variations: [],
 			offers: [
 				{
 					id: 1,
@@ -330,8 +331,8 @@ export class RestaurantInfoPageComponent {
 							maxSelections: 2,
 							products: [
 								{
-									id: 10,
 									uuid: crypto.randomUUID(),
+									shortcut: 10,
 									type: "FOOD",
 									name: "Grilled Chicken",
 									price: 1600,
@@ -339,8 +340,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 11,
 									uuid: crypto.randomUUID(),
+									shortcut: 11,
 									type: "FOOD",
 									name: "Beef Burger",
 									price: 1400,
@@ -348,8 +349,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 12,
 									uuid: crypto.randomUUID(),
+									shortcut: 12,
 									type: "FOOD",
 									name: "Vegetarian Pasta",
 									price: 1300,
@@ -357,8 +358,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 13,
 									uuid: crypto.randomUUID(),
+									shortcut: 13,
 									type: "FOOD",
 									name: "Fish & Chips",
 									price: 1500,
@@ -373,8 +374,8 @@ export class RestaurantInfoPageComponent {
 							maxSelections: 2,
 							products: [
 								{
-									id: 20,
 									uuid: crypto.randomUUID(),
+									shortcut: 20,
 									type: "FOOD",
 									name: "French Fries",
 									price: 400,
@@ -382,8 +383,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 21,
 									uuid: crypto.randomUUID(),
+									shortcut: 21,
 									type: "FOOD",
 									name: "Mixed Salad",
 									price: 450,
@@ -391,8 +392,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 22,
 									uuid: crypto.randomUUID(),
+									shortcut: 22,
 									type: "FOOD",
 									name: "Steamed Vegetables",
 									price: 450,
@@ -400,8 +401,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 23,
 									uuid: crypto.randomUUID(),
+									shortcut: 23,
 									type: "FOOD",
 									name: "Rice",
 									price: 350,
@@ -416,8 +417,8 @@ export class RestaurantInfoPageComponent {
 							maxSelections: 4,
 							products: [
 								{
-									id: 30,
 									uuid: crypto.randomUUID(),
+									shortcut: 30,
 									type: "DRINK",
 									name: "Cola",
 									price: 300,
@@ -425,8 +426,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 31,
 									uuid: crypto.randomUUID(),
+									shortcut: 31,
 									type: "DRINK",
 									name: "Fanta",
 									price: 300,
@@ -434,8 +435,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 32,
 									uuid: crypto.randomUUID(),
+									shortcut: 32,
 									type: "DRINK",
 									name: "Sprite",
 									price: 300,
@@ -443,8 +444,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 33,
 									uuid: crypto.randomUUID(),
+									shortcut: 33,
 									type: "DRINK",
 									name: "Water",
 									price: 250,
@@ -452,8 +453,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 34,
 									uuid: crypto.randomUUID(),
+									shortcut: 34,
 									type: "DRINK",
 									name: "Orange Juice",
 									price: 350,
@@ -468,8 +469,8 @@ export class RestaurantInfoPageComponent {
 							maxSelections: 1,
 							products: [
 								{
-									id: 40,
 									uuid: crypto.randomUUID(),
+									shortcut: 40,
 									type: "FOOD",
 									name: "Tiramisu",
 									price: 550,
@@ -477,8 +478,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 41,
 									uuid: crypto.randomUUID(),
+									shortcut: 41,
 									type: "FOOD",
 									name: "Ice Cream",
 									price: 450,
@@ -486,8 +487,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 42,
 									uuid: crypto.randomUUID(),
+									shortcut: 42,
 									type: "FOOD",
 									name: "Chocolate Cake",
 									price: 600,
@@ -514,8 +515,8 @@ export class RestaurantInfoPageComponent {
 							maxSelections: 1,
 							products: [
 								{
-									id: 50,
 									uuid: crypto.randomUUID(),
+									shortcut: 50,
 									type: "FOOD",
 									name: "Margherita Pizza",
 									price: 1200,
@@ -523,8 +524,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 51,
 									uuid: crypto.randomUUID(),
+									shortcut: 51,
 									type: "FOOD",
 									name: "Pepperoni Pizza",
 									price: 1400,
@@ -532,8 +533,8 @@ export class RestaurantInfoPageComponent {
 									variations: []
 								},
 								{
-									id: 52,
 									uuid: crypto.randomUUID(),
+									shortcut: 52,
 									type: "FOOD",
 									name: "Vegetarian Pizza",
 									price: 1300,

@@ -76,14 +76,15 @@ export class LandingGuestsPageComponent implements OnInit {
 			hasDelivery: true,
 			menu: {
 				uuid: crypto.randomUUID(),
+				variations: [],
 				categories: [
 					{
 						uuid: crypto.randomUUID(),
 						name: "Vorspeisen",
 						products: [
 							{
-								id: 1,
 								uuid: crypto.randomUUID(),
+								shortcut: 1,
 								type: "FOOD",
 								name: "Caesar Salad",
 								price: 850,
@@ -109,8 +110,8 @@ export class LandingGuestsPageComponent implements OnInit {
 								]
 							},
 							{
-								id: 2,
 								uuid: crypto.randomUUID(),
+								shortcut: 2,
 								type: "FOOD",
 								name: "Tomato Soup",
 								price: 600,
@@ -123,16 +124,16 @@ export class LandingGuestsPageComponent implements OnInit {
 						name: "Hauptgerichte",
 						products: [
 							{
-								id: 3,
 								uuid: crypto.randomUUID(),
+								shortcut: 3,
 								type: "FOOD",
 								name: "Grilled Salmon",
 								price: 1800,
 								variations: []
 							},
 							{
-								id: 4,
 								uuid: crypto.randomUUID(),
+								shortcut: 4,
 								type: "FOOD",
 								name: "Beef Steak",
 								price: 2200,

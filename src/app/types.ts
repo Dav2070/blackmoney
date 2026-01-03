@@ -94,6 +94,7 @@ export interface PrintRuleResource {
 export interface MenuResource {
 	uuid: string
 	categories: List<CategoryResource>
+	variations: List<VariationResource>
 	offers: List<OfferResource>
 }
 
@@ -120,11 +121,11 @@ export interface OfferItemResource {
 }
 
 export interface ProductResource {
-	id: number
 	uuid: string
 	type: ProductType
 	name: string
 	price: number
+	shortcut: number
 	category: CategoryResource
 	offer?: OfferResource
 	variations: List<VariationResource>

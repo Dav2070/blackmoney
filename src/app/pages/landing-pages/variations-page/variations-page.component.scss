@@ -1,34 +1,14 @@
-.container {
+.variations-list {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	min-height: 100vh;
-	padding: 32px 16px;
-}
-
-.content-container {
-	width: 100%;
-	max-width: 800px;
-	display: flex;
-	flex-direction: column;
-	gap: 24px;
-}
-
-.separator {
-	width: 100%;
-	border-top: 1px solid var(--dav-color-outline-variant);
-	margin: 16px 0;
-}
-
-dav-card {
-	padding: 24px;
-	margin-bottom: 16px;
+	gap: 12px;
 }
 
 .variation-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	margin: 0;
 
 	h3 {
 		margin: 0;
@@ -77,12 +57,11 @@ dav-card {
 	width: 100%;
 }
 
-.no-variations,
-.no-items {
-	font-style: italic;
+.no-items-message {
 	color: var(--dav-color-on-surface-variant);
+	font-style: italic;
 	text-align: center;
-	padding: 32px;
+	margin: 0;
 }
 
 @media (max-width: 700px) {

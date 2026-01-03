@@ -60,7 +60,7 @@ export class OrderItemsArrayMerger {
 		if (a.takeAway !== b.takeAway) return false
 		if (a.course !== b.course) return false
 		if (a.offer?.id !== b.offer?.id) return false
-		if (a.product.id !== b.product.id) return false
+		if (a.product.shortcut !== b.product.shortcut) return false
 
 		// Variations: Struktur (variationItems) muss gleich sein (counts dürfen abweichen)
 		if (

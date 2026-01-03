@@ -34,9 +34,7 @@
 					@for (item of variationItems; track item.uuid) {
 						<div class="item-row">
 							<span class="item-name">{{ item.name }}</span>
-							<span class="item-cost">{{
-								item.additionalCost | currency: "EUR"
-							}}</span>
+							<span class="item-cost">{{ formatPrice(item.additionalCost) }}</span>
 							<dav-icon-button
 								size="xs"
 								(click)="removeVariationItem(item)"

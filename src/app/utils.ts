@@ -457,6 +457,12 @@ export function convertMenuResourceToMenu(menuResource: MenuResource): Menu {
 		categories.push(convertCategoryResourceToCategory(category))
 	}
 
+	const variations: Variation[] = []
+
+	for (const variation of menuResource.variations?.items ?? []) {
+		variations.push(convertVariationResourceToVariation(variation))
+	}
+
 	const offers: Offer[] = []
 
 	for (const offer of menuResource.offers?.items ?? []) {
@@ -466,6 +472,7 @@ export function convertMenuResourceToMenu(menuResource: MenuResource): Menu {
 	return {
 		uuid: menuResource.uuid,
 		categories,
+		variations,
 		offers
 	}
 }
@@ -537,11 +544,11 @@ export function convertProductResourceToProduct(
 	}
 
 	return {
-		id: productResource.id,
 		uuid: productResource.uuid,
 		type: productResource.type,
 		name: productResource.name,
 		price: productResource.price,
+		shortcut: productResource.shortcut,
 		category: convertCategoryResourceToCategory(productResource.category),
 		offer: convertOfferResourceToOffer(productResource.offer),
 		variations

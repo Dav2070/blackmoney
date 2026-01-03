@@ -210,11 +210,11 @@ export class BookingPageComponent {
 							products {
 								total
 								items {
-									id
 									uuid
 									type
 									name
 									price
+									shortcut
 									variations {
 										total
 										items {
@@ -250,19 +250,19 @@ export class BookingPageComponent {
 												maxSelections
 												products {
 													items {
-														id
 														uuid
 														name
 														price
+														shortcut
 														category {
 															uuid
 															name
 															products {
 																items {
-																id
 																	uuid
 																	name
 																	price
+																	shortcut
 																}
 															}
 														}
@@ -792,11 +792,11 @@ export class BookingPageComponent {
 									uuid
 								}
 								product {
-									id
 									uuid
 									type
 									name
 									price
+									shortcut
 									variations {
 										total
 										items {
@@ -851,11 +851,11 @@ export class BookingPageComponent {
 										takeAway
 										course
 										product {
-											id
 											uuid
 											name
 											type
 											price
+											shortcut
 											variations {
 												total
 												items {
@@ -955,10 +955,10 @@ export class BookingPageComponent {
 							uuid
 						}
 						product {
-							id
 							uuid
 							name
 							price
+							shortcut
 							variations {
 								total
 								items {
@@ -1000,11 +1000,11 @@ export class BookingPageComponent {
 								takeAway
 								course
 								product {
-									id
 									uuid
 									name
 									type
 									price
+									shortcut
 									variations {
 										total
 										items {
@@ -1107,7 +1107,7 @@ export class BookingPageComponent {
 
 		for (let dish of this.categories) {
 			for (let item of dish.products) {
-				if (id === item.id.toString()) pickedItem = item
+				if (id === item.shortcut.toString()) pickedItem = item
 			}
 		}
 		if (pickedItem) {
@@ -1205,9 +1205,9 @@ export class BookingPageComponent {
 							uuid
 							count
 							product {
-								id
 								name
 								price
+								shortcut
 							}
 							orderItemVariations {
 								total
@@ -1296,11 +1296,11 @@ export class BookingPageComponent {
 					order: null,
 					offer: this.selectedProduct.offer,
 					product: {
-						id: this.selectedProduct.id,
 						uuid: this.selectedProduct.uuid,
 						type: this.selectedProduct.type,
 						name: this.selectedProduct.name,
 						price: processedItem.product.price,
+						shortcut: this.selectedProduct.shortcut,
 						category: this.selectedProduct.category,
 						variations: [],
 						offer: this.selectedProduct.offer
@@ -1366,7 +1366,7 @@ export class BookingPageComponent {
 		price: number
 	}) {
 		const product = new Product()
-		product.id = 0
+		product.shortcut = 0
 		product.price = event.price
 		product.variations = []
 

@@ -6,71 +6,118 @@
 			editButtonVisible
 			deleteButtonVisible
 			(backButtonClick)="navigateBack()"
-			(addButtonClick)="handleAddButtonClick()"
+			(addButtonClick)="handleAddButtonClick($event)"
 			(editButtonClick)="handleEditButtonClick()"
 			(deleteButtonClick)="handleDeleteButtonClick()"
 		>
-			{{ category?.name || locale.headline }}
+			{{ category?.name }}
 		</dav-header>
 
-		<dav-tab-bar>
-			<dav-tab-bar-item
-				id="tab-food"
-				[active]="activeTab === 'food'"
-				(click)="selectTab('food')"
-			>
-				Speisen
-			</dav-tab-bar-item>
-			<dav-tab-bar-item
-				id="tab-drinks"
-				[active]="activeTab === 'drinks'"
-				(click)="selectTab('drinks')"
-			>
-				Getränke
-			</dav-tab-bar-item>
-			<dav-tab-bar-item
-				id="tab-specials"
-				[active]="activeTab === 'specials'"
-				(click)="selectTab('specials')"
-			>
-				Specials
-			</dav-tab-bar-item>
-			<dav-tab-bar-item
-				id="tab-menus"
-				[active]="activeTab === 'menus'"
-				(click)="selectTab('menus')"
-			>
-				Menüs
-			</dav-tab-bar-item>
-		</dav-tab-bar>
+		<div class="filter-container">
+			<dav-filter-group (change)="filterChange($event)">
+				<dav-filter-button name="FOOD" label="Speisen">
+					<fa-icon [icon]="faUtensils" />
+				</dav-filter-button>
 
-		<!-- Menüs-Liste (wenn Tab menus aktiv) -->
-		@if (activeTab === "menus") {
-			<app-offer-list
-				[offers]="menus"
-				(editOffer)="showEditOfferDialog($event)"
-				(deleteOffer)="deleteOffer($event)"
-			></app-offer-list>
-		}
+				<dav-filter-button name="DRINK" label="Getränke">
+					<fa-icon [icon]="faGlass" />
+				</dav-filter-button>
 
-		<!-- Specials-Liste (wenn Tab specials aktiv) -->
-		@if (activeTab === "specials") {
-			<app-offer-list
-				[offers]="specials"
-				(editOffer)="showEditOfferDialog($event)"
-				(deleteOffer)="deleteOffer($event)"
-			></app-offer-list>
-		}
+				<dav-filter-button name="MENU" label="Menüs">
+					<fa-icon [icon]="faBurgerSoda" />
+				</dav-filter-button>
 
-		@if (category && activeTab !== "menus" && activeTab !== "specials") {
-			<app-product-list
-				[category]="category"
-				[activeTab]="activeTab"
-				(editProduct)="showEditProductDialog($event)"
-			></app-product-list>
+				<dav-filter-button name="SPECIAL" label="Specials">
+					<fa-icon [icon]="faBadgePercent" />
+				</dav-filter-button>
+			</dav-filter-group>
+		</div>
+
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else if (category?.products?.length === 0) {
+			<div class="no-products-message">
+				<p>{{ locale.noProductsMessage }}</p>
+			</div>
+		} @else {
+			<div class="products-list">
+				@for (product of category.products; track product.uuid) {
+					@if (product.type === "MENU" || product.type === "SPECIAL") {
+						<app-offer-card
+							[offer]="product"
+							(optionsButtonClick)="
+								productCardOptionsButtonClick($event, product)
+							"
+						></app-offer-card>
+					} @else {
+						<app-product-card
+							[product]="product"
+							(optionsButtonClick)="
+								productCardOptionsButtonClick($event, product)
+							"
+						></app-product-card>
+					}
+				}
+			</div>
 		}
 	</div>
 </div>
+
+<dav-context-menu
+	#addButtonContextMenu
+	[visible]="addButtonContextMenuVisible"
+	[posX]="addButtonContextMenuPositionX"
+	[posY]="addButtonContextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="locale.addFood"
+		(click)="addFoodContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faUtensils" />
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="locale.addDrink"
+		(click)="addDrinkContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faGlass" />
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="locale.addMenu"
+		(click)="addMenuContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faBurgerSoda" />
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="locale.addSpecial"
+		(click)="addSpecialContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faBadgePercent" />
+	</dav-context-menu-item>
+</dav-context-menu>
+
+<dav-context-menu
+	#productContextMenu
+	[visible]="productContextMenuVisible"
+	[posX]="productContextMenuPositionX"
+	[posY]="productContextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="editProductContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="deleteProductContextMenuItemClick()"
+	>
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>
 
 <app-edit-category-dialog
 	#editCategoryDialog
@@ -110,7 +157,7 @@
 	[nameError]="addProductDialogNameError"
 	[priceError]="addProductDialogPriceError"
 	[category]="category"
-	[productType]="mapPathToType(activeTab)"
+	[productType]="addProductDialogProductType"
 	[availableVariations]="availableVariations"
 	(primaryButtonClick)="addProductDialogPrimaryButtonClick($any($event))"
 	(clearErrors)="

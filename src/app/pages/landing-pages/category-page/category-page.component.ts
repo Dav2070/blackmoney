@@ -1,10 +1,15 @@
-import {
-	Component,
-	ViewChild,
-	HostListener,
-} from "@angular/core"
+import { Component, ViewChild, HostListener, ElementRef } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
+import {
+	faPen,
+	faTrash,
+	faEllipsis,
+	faUtensils,
+	faGlass,
+	faBurgerSoda,
+	faBadgePercent
+} from "@fortawesome/pro-regular-svg-icons"
+import { ContextMenu } from "dav-ui-components"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
@@ -30,21 +35,43 @@ import {
 	standalone: false
 })
 export class CategoryPageComponent {
-	locale = this.localizationService.locale.productPage
+	locale = this.localizationService.locale.categoryPage
 	actionsLocale = this.localizationService.locale.actions
 	errorsLocale = this.localizationService.locale.errors
 	faPen = faPen
 	faTrash = faTrash
 	faEllipsis = faEllipsis
+	faUtensils = faUtensils
+	faGlass = faGlass
+	faBurgerSoda = faBurgerSoda
+	faBadgePercent = faBadgePercent
 
 	restaurantUuid: string = null
 	categoryUuid: string = null
-	activeTab = "food"
+	productTypeFilter: ProductType | null = null
+	loading: boolean = true
 	category: Category = null
 	availableVariations: Variation[] = []
 	menus: Product[] = []
 	specials: Product[] = []
 	availableProducts: Product[] = []
+
+	//#region AddButtonContextMenu
+	@ViewChild("addButtonContextMenu")
+	addButtonContextMenu: ElementRef<ContextMenu>
+	addButtonContextMenuVisible: boolean = false
+	addButtonContextMenuPositionX: number = 0
+	addButtonContextMenuPositionY: number = 0
+	//#endregion
+
+	//#region ProductContextMenu
+	@ViewChild("productContextMenu")
+	productContextMenu: ElementRef<ContextMenu>
+	productContextMenuVisible: boolean = false
+	productContextMenuPositionX: number = 0
+	productContextMenuPositionY: number = 0
+	productContextMenuSelectedProduct: Product | null = null
+	//#endregion
 
 	@ViewChild("editCategoryDialog")
 	editCategoryDialog!: EditCategoryDialogComponent
@@ -58,6 +85,7 @@ export class CategoryPageComponent {
 	@ViewChild("addProductDialog")
 	addProductDialog: AddProductDialogComponent
 	addProductDialogLoading: boolean = false
+	addProductDialogProductType: ProductType = "FOOD"
 	addProductDialogNameError: string = ""
 	addProductDialogPriceError: string = ""
 
@@ -93,55 +121,22 @@ export class CategoryPageComponent {
 		await this.dataService.davUserPromiseHolder.AwaitResult()
 
 		// Load category with products from backend
-		const retrieveCategoryResponse = await this.apiService.retrieveCategory(
-			`
-				uuid
-				name
-			`,
-			{ uuid: this.categoryUuid }
-		)
-
-		if (retrieveCategoryResponse.data != null) {
-			this.category = convertCategoryResourceToCategory(
-				retrieveCategoryResponse.data.retrieveCategory
-			)
-		}
-
-		// TODO: API - Load variations from backend
-		// Example: this.availableVariations = await this.apiService.retrieveVariations(...)
-		this.availableVariations = []
-
-		// TODO: API - Load available products for offer dialogs
-		// Example: this.availableProducts = await this.apiService.retrieveProducts(...)
-		this.loadAvailableProducts()
-
-		// TODO: API - Load menus from backend
-		// Example: this.menus = await this.apiService.retrieveMenus(...)
-		this.loadMenus()
-
-		// TODO: API - Load specials from backend
-		// Example: this.specials = await this.apiService.retrieveSpecials(...)
-		this.loadSpecials()
-
-		// Initialer Tab aus URL oder default
-		const currentChild =
-			this.activatedRoute.firstChild?.snapshot.routeConfig?.path
-		if (currentChild) {
-			this.activeTab = currentChild
-		} else {
-			this.selectTab("food")
-		}
+		await this.loadData()
 	}
 
 	@HostListener("document:click", ["$event"])
 	documentClick(event: MouseEvent) {
-		// Context menus are now handled in child components
-	}
+		if (
+			!this.addButtonContextMenu.nativeElement.contains(event.target as Node)
+		) {
+			this.addButtonContextMenuVisible = false
+		}
 
-	selectTab(tab: string) {
-		this.activeTab = tab
-		// navigate to child route (relativeTo this component's route)
-		this.router.navigate([tab], { relativeTo: this.activatedRoute })
+		if (
+			!this.productContextMenu.nativeElement.contains(event.target as Node)
+		) {
+			this.productContextMenuVisible = false
+		}
 	}
 
 	navigateBack() {
@@ -154,26 +149,50 @@ export class CategoryPageComponent {
 		])
 	}
 
-	mapPathToType(path: string): ProductType {
-		switch (path) {
-			case "drinks":
-				return "DRINK"
-			case "specials":
-				return "SPECIAL"
-			case "menus":
-				return "MENU"
-			default:
-				return "FOOD"
-		}
+	async filterChange(event: Event) {
+		this.productTypeFilter = (event as CustomEvent).detail
+			.filter as ProductType
+		await this.loadData()
 	}
 
-	handleAddButtonClick() {
-		if (this.activeTab === "menus") {
-			this.showAddOfferDialog()
-		} else if (this.activeTab === "specials") {
-			this.showAddSpecialDialog()
+	async loadData() {
+		this.loading = true
+
+		const retrieveCategoryResponse = await this.apiService.retrieveCategory(
+			`
+				uuid
+				name
+				products(type: $type) {
+					items {
+						uuid
+						name
+						type
+						shortcut
+					}
+				}
+			`,
+			{ uuid: this.categoryUuid, type: this.productTypeFilter }
+		)
+
+		if (retrieveCategoryResponse.data != null) {
+			this.category = convertCategoryResourceToCategory(
+				retrieveCategoryResponse.data.retrieveCategory
+			)
+		}
+
+		this.loading = false
+	}
+
+	handleAddButtonClick(event: Event) {
+		if (this.addButtonContextMenuVisible) {
+			this.addButtonContextMenuVisible = false
 		} else {
-			this.showAddProductDialog()
+			const contextMenuPosition = (event as CustomEvent).detail
+				.contextMenuPosition
+
+			this.addButtonContextMenuPositionX = contextMenuPosition.x
+			this.addButtonContextMenuPositionY = contextMenuPosition.y
+			this.addButtonContextMenuVisible = true
 		}
 	}
 
@@ -240,14 +259,66 @@ export class CategoryPageComponent {
 	async deleteCategoryDialogPrimaryButtonClick() {
 		this.deleteCategoryDialogLoading = true
 
-		await this.apiService.deleteCategory(
-			`uuid`,
-			{ uuid: this.category.uuid }
-		)
+		await this.apiService.deleteCategory(`uuid`, { uuid: this.category.uuid })
 
 		this.deleteCategoryDialog.hide()
 		this.deleteCategoryDialogLoading = false
 		this.navigateBack()
+	}
+
+	addFoodContextMenuItemClick() {
+		this.addButtonContextMenuVisible = false
+		this.addProductDialogProductType = "FOOD"
+		this.showAddProductDialog()
+	}
+
+	addDrinkContextMenuItemClick() {
+		this.addButtonContextMenuVisible = false
+		this.addProductDialogProductType = "DRINK"
+		this.showAddProductDialog()
+	}
+
+	addMenuContextMenuItemClick() {
+		this.addButtonContextMenuVisible = false
+		this.showAddOfferDialog()
+	}
+
+	addSpecialContextMenuItemClick() {
+		this.addButtonContextMenuVisible = false
+		this.showAddSpecialDialog()
+	}
+
+	productCardOptionsButtonClick(event: CustomEvent, product: Product) {
+		if (this.productContextMenuVisible) {
+			this.productContextMenuVisible = false
+		} else {
+			this.productContextMenuPositionX = event.detail.contextMenuPosition.x
+			this.productContextMenuPositionY = event.detail.contextMenuPosition.y
+			this.productContextMenuSelectedProduct = product
+			this.productContextMenuVisible = true
+		}
+	}
+
+	editProductContextMenuItemClick() {
+		this.productContextMenuVisible = false
+
+		if (
+			["MENU", "SPECIAL"].includes(
+				this.productContextMenuSelectedProduct.type
+			)
+		) {
+			this.showEditOfferDialog(this.productContextMenuSelectedProduct)
+		} else {
+			this.showEditProductDialog(this.productContextMenuSelectedProduct)
+		}
+	}
+
+	deleteProductContextMenuItemClick() {
+		this.productContextMenuVisible = false
+
+		if (this.productContextMenuSelectedProduct) {
+			this.deleteProduct(this.productContextMenuSelectedProduct)
+		}
 	}
 
 	// Product Methods
@@ -314,25 +385,6 @@ export class CategoryPageComponent {
 		}
 	}
 
-	// Offer/Menu Methods
-	loadAvailableProducts() {
-		// TODO: API - Load available products for offer creation
-		// Example: this.availableProducts = await this.apiService.retrieveProducts({ restaurantUuid: this.uuid })
-		this.availableProducts = []
-	}
-
-	loadMenus() {
-		// TODO: API - Load menus from backend
-		// Example: this.menus = await this.apiService.retrieveMenus({ restaurantUuid: this.uuid })
-		this.menus = []
-	}
-
-	loadSpecials() {
-		// TODO: API - Load specials from backend
-		// Example: this.specials = await this.apiService.retrieveSpecials({ restaurantUuid: this.uuid })
-		this.specials = []
-	}
-
 	showAddOfferDialog() {
 		this.addOfferDialog.isSpecialMode = false
 		this.addOfferDialog.show()
@@ -364,9 +416,9 @@ export class CategoryPageComponent {
 				if (index !== -1) {
 					this.specials[index] = {
 						...this.specials[index],
-						id: data.id,
 						name: data.name,
 						price: data.price,
+						shortcut: data.id,
 						takeaway: data.takeaway,
 						offer: data.offer
 					}
@@ -377,11 +429,11 @@ export class CategoryPageComponent {
 				// Example: const newSpecial = await this.apiService.createSpecial({ ...data, restaurantUuid: this.uuid })
 
 				const newSpecial: Product = {
-					id: data.id,
 					uuid: crypto.randomUUID(),
 					type: "SPECIAL",
 					name: data.name,
 					price: data.price,
+					shortcut: data.id,
 					variations: [],
 					takeaway: data.takeaway,
 					offer: data.offer
@@ -400,9 +452,9 @@ export class CategoryPageComponent {
 				if (index !== -1) {
 					this.menus[index] = {
 						...this.menus[index],
-						id: data.id,
 						name: data.name,
 						price: data.price,
+						shortcut: data.id,
 						takeaway: data.takeaway,
 						offer: data.offer
 					}
@@ -413,11 +465,11 @@ export class CategoryPageComponent {
 				// Example: const newMenu = await this.apiService.createMenu({ ...data, restaurantUuid: this.uuid })
 
 				const newMenu: Product = {
-					id: data.id,
 					uuid: crypto.randomUUID(),
 					type: "MENU",
 					name: data.name,
 					price: data.price,
+					shortcut: data.id,
 					variations: [],
 					takeaway: data.takeaway,
 					offer: data.offer
@@ -464,9 +516,9 @@ export class CategoryPageComponent {
 			if (index !== -1) {
 				this.specials[index] = {
 					...this.specials[index],
-					id: data.id,
 					name: data.name,
 					price: data.price,
+					shortcut: data.id,
 					takeaway: data.takeaway,
 					offer: data.offer
 				}
@@ -482,9 +534,9 @@ export class CategoryPageComponent {
 			if (index !== -1) {
 				this.menus[index] = {
 					...this.menus[index],
-					id: data.id,
 					name: data.name,
 					price: data.price,
+					shortcut: data.id,
 					takeaway: data.takeaway,
 					offer: data.offer
 				}

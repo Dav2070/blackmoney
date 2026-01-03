@@ -1,12 +1,7 @@
-import {
-	Component,
-	OnInit,
-	ViewChild,
-	ElementRef,
-	HostListener
-} from "@angular/core"
+import { Component, ViewChild, ElementRef, HostListener } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen, faTrash, faEllipsis } from "@fortawesome/free-solid-svg-icons"
+import { faPen, faTrash, faEllipsis } from "@fortawesome/pro-regular-svg-icons"
+import { ContextMenu } from "dav-ui-components"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
 import { DataService } from "src/app/services/data-service"
@@ -14,19 +9,22 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
 import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialog/add-variation-dialog.component"
 import { AddVariationItemDialogComponent } from "src/app/dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
-import { ContextMenu } from "dav-ui-components"
 import { EditVariationDialogComponent } from "src/app/dialogs/edit-variation-dialog/edit-variation-dialog.component"
 import { EditVariationItemDialogComponent } from "src/app/dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
+import {
+	convertRestaurantResourceToRestaurant,
+	formatPrice
+} from "src/app/utils"
 
 @Component({
-	selector: "app-variations-overview-page",
-	templateUrl: "./variations-overview-page.component.html",
-	styleUrls: ["./variations-overview-page.component.scss"],
+	templateUrl: "./variations-page.component.html",
+	styleUrls: ["./variations-page.component.scss"],
 	standalone: false
 })
-export class VariationsOverviewPageComponent implements OnInit {
+export class VariationsPageComponent {
 	locale = this.localizationService.locale.variationsPage
 	actionsLocale = this.localizationService.locale.actions
+	formatPrice = formatPrice
 	faPen = faPen
 	faTrash = faTrash
 	faEllipsis = faEllipsis
@@ -34,6 +32,7 @@ export class VariationsOverviewPageComponent implements OnInit {
 	uuid: string = null
 	selectedVariation: Variation = null
 	variations: Variation[] = []
+	loading: boolean = true
 
 	@ViewChild("addVariationDialog")
 	addVariationDialog: AddVariationDialogComponent
@@ -77,7 +76,6 @@ export class VariationsOverviewPageComponent implements OnInit {
 
 	async ngOnInit() {
 		await this.dataService.blackmoneyUserPromiseHolder.AwaitResult()
-
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
 
 		// Load data
@@ -85,9 +83,36 @@ export class VariationsOverviewPageComponent implements OnInit {
 	}
 
 	async loadData() {
-		// TODO: API - Load variations from backend
-		// Example: this.variations = await this.apiService.listVariations({ restaurantUuid: this.uuid })
-		this.variations = []
+		const retrieveRestaurantResponse =
+			await this.apiService.retrieveRestaurant(
+				`
+					menu {
+						variations {
+							items {
+								uuid
+								name
+								variationItems {
+									items {
+										uuid
+										name
+										additionalCost
+									}
+								}
+							}
+						}
+					}
+				`,
+				{ uuid: this.uuid }
+			)
+
+		if (retrieveRestaurantResponse.data != null) {
+			const restaurant = convertRestaurantResourceToRestaurant(
+				retrieveRestaurantResponse.data.retrieveRestaurant
+			)
+			this.variations = restaurant.menu.variations
+		}
+
+		this.loading = false
 	}
 
 	navigateBack() {

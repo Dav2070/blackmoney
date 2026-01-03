@@ -1,0 +1,60 @@
+@if (offer) {
+	<dav-card class="offer-card">
+		<div class="offer-header">
+			<div class="header-content">
+				<h3>{{ offer.name }}</h3>
+				<span class="offer-id">ID: {{ offer.shortcut }}</span>
+			</div>
+			<div class="offer-actions">
+				<dav-icon-button
+					size="xs"
+					[tooltip]="locale.options"
+					(click)="optionsButtonClick.emit($event)"
+				>
+					<fa-icon [icon]="faEllipsis"></fa-icon>
+				</dav-icon-button>
+			</div>
+		</div>
+
+		<div class="separator"></div>
+
+		<div class="offer-content">
+			<div class="offer-meta">
+				<span class="price">{{ offer.price | currency: "EUR" }}</span>
+				@if (offer.takeaway) {
+					<span class="badge takeaway">Takeaway</span>
+				}
+			</div>
+
+			<div class="offer-weekdays">
+				{{ formatAvailability(offer.offer) }}
+			</div>
+
+			<!-- Offer Items -->
+			<div class="offer-items">
+				@if (offer.offer?.offerItems?.length > 0) {
+					@for (item of offer.offer.offerItems; track item.uuid) {
+						<div class="offer-item">
+							<div class="item-header">
+								<h4>{{ item.name }}</h4>
+								<span class="max-selections">
+									(max. {{ item.maxSelections }} auswählbar)
+								</span>
+							</div>
+
+							<div class="item-products">
+								@for (product of item.products; track product.uuid) {
+									<div class="product-chip">
+										{{ product.name }}
+									</div>
+								}
+							</div>
+						</div>
+					}
+				} @else {
+					<p class="no-items">{{ locale.noItems }}</p>
+				}
+			</div>
+		</div>
+	</dav-card>
+}

@@ -48,10 +48,10 @@ export class AllItemHandler {
 									uuid
 								}
 								product {
-									id
 									uuid
 									name
 									price
+									shortcut
 								}
 								orderItemVariations {
 									total
@@ -79,11 +79,11 @@ export class AllItemHandler {
 										takeAway
 										course
 										product {
-											id
 											uuid
 											name
 											type
 											price
+											shortcut
 											variations {
 												total
 												items {
@@ -218,7 +218,7 @@ export class AllItemHandler {
 		return this.allPickedItems.map(item => {
 			return {
 				count: item.count,
-				productId: item.product.id,
+				productId: item.product.shortcut,
 				orderItemVariations:
 					item.orderItemVariations?.map(variation => {
 						return {

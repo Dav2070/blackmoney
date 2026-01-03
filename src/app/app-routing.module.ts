@@ -29,8 +29,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
 import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
-import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
-import { ProductListComponent } from "./pages/landing-pages/category-page/product-list/product-list.component"
+import { VariationsPageComponent } from "./pages/landing-pages/variations-page/variations-page.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { RestaurantInfoPageComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-info-page.component"
 const routes: Routes = [
@@ -132,18 +131,11 @@ const routes: Routes = [
 			},
 			{
 				path: "user/restaurants/:restaurantUuid/menu/categories/:categoryUuid",
-				component: CategoryPageComponent,
-				children: [
-					{ path: "", redirectTo: "food", pathMatch: "full" },
-					{ path: "food", component: ProductListComponent },
-					{ path: "drinks", component: ProductListComponent }, // später durch DrinksListComponent ersetzen
-					{ path: "specials", component: ProductListComponent }, // später durch SpecialsListComponent ersetzen
-					{ path: "menus", component: ProductListComponent } // später durch MenusListComponent ersetzen
-				]
+				component: CategoryPageComponent
 			},
 			{
 				path: "user/restaurants/:uuid/menu/variations",
-				component: VariationsOverviewPageComponent
+				component: VariationsPageComponent
 			}
 		]
 	},

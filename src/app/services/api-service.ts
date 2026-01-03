@@ -846,12 +846,19 @@ export class ApiService {
 
 	async retrieveCategory(
 		queryData: string,
-		variables: { uuid: string }
+		variables: { uuid: string; type?: ProductType }
 	): Promise<ApolloResult<{ retrieveCategory: CategoryResource }>> {
+		const typeParam = queryData.includes("products")
+			? "$type: ProductType"
+			: ""
+
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveCategory: CategoryResource }>({
 				query: gql`
-					query RetrieveCategory($uuid: String!) {
+					query RetrieveCategory(
+						$uuid: String!
+						${typeParam}
+					) {
 						retrieveCategory(uuid: $uuid) {
 							${queryData}
 						}
@@ -997,7 +1004,7 @@ export class ApiService {
 		queryData: string,
 		variables: { uuid: string; paid?: boolean }
 	): Promise<ApolloResult<{ retrieveTable: TableResource }>> {
-		let paidParam = queryData.includes("paid") ? "$paid: Boolean" : ""
+		const paidParam = queryData.includes("paid") ? "$paid: Boolean" : ""
 
 		return await this.blackmoneyAuthApollo
 			.query<{ retrieveTable: TableResource }>({

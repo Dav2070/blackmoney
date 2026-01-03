@@ -16,7 +16,7 @@ import { VariationItem } from "src/app/models/VariationItem"
 @Component({
 	selector: "app-edit-variation-item-dialog",
 	templateUrl: "./edit-variation-item-dialog.component.html",
-	styleUrls: ["./edit-variation-item-dialog.component.scss"],
+	styleUrl: "./edit-variation-item-dialog.component.scss",
 	standalone: false
 })
 export class EditVariationItemDialogComponent {

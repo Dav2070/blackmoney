@@ -669,7 +669,8 @@ export class BookingPageComponent {
 			order: null,
 			product: this.selectedProduct,
 			orderItems: [],
-			orderItemVariations: []
+			orderItemVariations: [],
+			isExpanded: true
 		}
 
 		for (const key of Object.keys(lastVariationTree)) {
@@ -1248,7 +1249,8 @@ export class BookingPageComponent {
 				offer: this.selectedProduct.offer,
 				product: this.selectedProduct,
 				orderItems: event.orderItems,
-				orderItemVariations: []
+				orderItemVariations: [],
+				isExpanded: true
 			}
 
 			const discount = this.priceCalculator.calculateDiscount(menuOrderItem)
@@ -1279,7 +1281,8 @@ export class BookingPageComponent {
 						offer: this.selectedProduct.offer
 					},
 					orderItems: [processedItem],
-					orderItemVariations: []
+					orderItemVariations: [],
+					isExpanded: true
 				}
 
 				// Use PriceCalculator to compute discount

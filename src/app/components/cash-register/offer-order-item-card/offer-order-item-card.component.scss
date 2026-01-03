@@ -66,6 +66,23 @@
 	gap: 8px;
 }
 
+.sub-product-name {
+	color: var(--dav-color-outline);
+	font-weight: normal;
+	margin-left: 4px;
+}
+
+.expand-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 14px;
+	transition: transform 200ms;
+
+	&:hover {
+		transform: scale(1.2);
+	}
+}
+
 .note-icon {
 	color: var(--dav-color-primary);
 	cursor: pointer;

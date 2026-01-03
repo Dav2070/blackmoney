@@ -7,7 +7,7 @@
 	[class.clickable]="clickable"
 >
 	<div class="order-item-card-id">
-		<p>#{{ orderItem.product.shortcut }}</p>
+		<p>#{{ getProductNumber(orderItem) }}</p>
 	</div>
 
 	<div class="order-item-card-name">
@@ -34,7 +34,7 @@
 		@if (orderItem.orderItemVariations.length === 0 && orderItem.count > 1) {
 			<p>
 				{{ orderItem.count }} ×
-				{{ formatPrice(orderItem.product.price) }}
+				{{ formatPrice(orderItem.diversePrice ?? orderItem.product.price) }}
 			</p>
 		}
 	</div>
@@ -60,7 +60,7 @@
 					{{
 						formatPrice(
 							getTotalVariationPrice(orderItemVariation) +
-								orderItem.product.price
+								(orderItem.diversePrice ?? orderItem.product.price)
 						)
 					}}
 				</p>

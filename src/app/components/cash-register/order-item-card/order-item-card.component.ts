@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
+import { OrderItemType } from "src/app/types"
 import {
 	faNoteSticky,
 	faCupTogo,
@@ -30,6 +31,25 @@ export class OrderItemCardComponent {
 	}>()
 
 	private priceCalculator = new PriceCalculator()
+
+	/**
+	 * Checks if an OrderItem is a diverse item
+	 */
+	private isDiverseOrderItem(orderItem: OrderItem): boolean {
+		return (
+			orderItem.type === OrderItemType.DiverseFood ||
+			orderItem.type === OrderItemType.DiverseDrink ||
+			orderItem.type === OrderItemType.DiverseOther
+		)
+	}
+
+	getProductNumber(orderItem: OrderItem): string {
+		// All diverse items show product number 0
+		if (this.isDiverseOrderItem(orderItem)) {
+			return "0"
+		}
+		return orderItem.product.shortcut.toString()
+	}
 
 	calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {
 		return this.priceCalculator.calculateTotalPrice(orderItem)

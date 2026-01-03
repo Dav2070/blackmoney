@@ -49,6 +49,7 @@ export class AllItemHandler {
 								count
 								type
 								discount
+								diversePrice
 								notes
 								takeAway
 								course
@@ -111,6 +112,7 @@ export class AllItemHandler {
 										count
 										type
 										discount
+										diversePrice
 										notes
 										takeAway
 										course
@@ -167,8 +169,8 @@ export class AllItemHandler {
 		if (order.data.retrieveTable.orders.total > 0) {
 			// Setze Items direkt ohne Merging-Logik (Backend hat bereits gemerged)
 			this.setItems(
-				order.data.retrieveTable.orders.items[0].orderItems.items.map(item =>
-					convertOrderItemResourceToOrderItem(item)
+				order.data.retrieveTable.orders.items[0].orderItems.items.map(
+					item => convertOrderItemResourceToOrderItem(item)
 				)
 			)
 
@@ -292,7 +294,9 @@ export class AllItemHandler {
 		let total = 0
 
 		for (let item of pickedItem.orderItems) {
-			total += item.product.price * item.count
+			// For diverse items use diversePrice, for regular products use product.price
+			const itemPrice = item.diversePrice ?? item.product.price
+			total += itemPrice * item.count
 
 			if (item.orderItemVariations) {
 				for (const variation of item.orderItemVariations) {

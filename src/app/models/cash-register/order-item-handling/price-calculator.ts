@@ -16,9 +16,16 @@ export class PriceCalculator {
 
 		let price = 0
 
-		// Für reguläre Produkte: Produktpreis × count + alle Variationen
-		if (orderItem.type === OrderItemType.Product) {
-			price = orderItem.product.price * orderItem.count
+		// Für reguläre Produkte und diverse Items: Produktpreis × count + alle Variationen
+		if (
+			orderItem.type === OrderItemType.Product ||
+			orderItem.type === OrderItemType.DiverseFood ||
+			orderItem.type === OrderItemType.DiverseDrink ||
+			orderItem.type === OrderItemType.DiverseOther
+		) {
+			// For diverse items use diversePrice, for regular products use product.price
+			const itemPrice = orderItem.diversePrice ?? orderItem.product.price
+			price = itemPrice * orderItem.count
 			price += this.calculateVariationsPrice(orderItem)
 		}
 		// Für Menus und Specials: nur verschachtelte Items
@@ -60,9 +67,16 @@ export class PriceCalculator {
 
 		let price = 0
 
-		// Für reguläre Produkte: Produktpreis × count + alle Variationen
-		if (orderItem.type === OrderItemType.Product) {
-			price = orderItem.product.price * orderItem.count
+		// Für reguläre Produkte und diverse Items: Produktpreis × count + alle Variationen
+		if (
+			orderItem.type === OrderItemType.Product ||
+			orderItem.type === OrderItemType.DiverseFood ||
+			orderItem.type === OrderItemType.DiverseDrink ||
+			orderItem.type === OrderItemType.DiverseOther
+		) {
+			// For diverse items use diversePrice, for regular products use product.price
+			const itemPrice = orderItem.diversePrice ?? orderItem.product.price
+			price = itemPrice * orderItem.count
 			price += this.calculateVariationsPrice(orderItem)
 		}
 		// Für Menus und Specials: nur verschachtelte Items (haben bereits ihre counts)
@@ -132,11 +146,14 @@ export class PriceCalculator {
 		for (let i = 0; i < orderItem.orderItems.length; i++) {
 			const nestedItem = orderItem.orderItems[i]
 
+			// For diverse items use diversePrice, for regular products use product.price
+			const itemPrice = nestedItem.diversePrice ?? nestedItem.product.price
+
 			// Berechne Gesamtpreis für verschachtelte Items: (Produktpreis × count) + Variationen
-			const itemPrice = nestedItem.product.price * nestedItem.count
+			const totalItemPrice = itemPrice * nestedItem.count
 			const variationPrice = this.calculateVariationsPrice(nestedItem)
 
-			totalNestedPrice += itemPrice + variationPrice
+			totalNestedPrice += totalItemPrice + variationPrice
 		}
 
 		return totalNestedPrice

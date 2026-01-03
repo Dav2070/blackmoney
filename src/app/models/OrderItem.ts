@@ -15,6 +15,7 @@ export class OrderItem {
 	orderItemVariations: OrderItemVariation[]
 	notes?: string
 	discount?: number
+	diversePrice?: number
 	takeAway?: boolean
 	course?: number
 }

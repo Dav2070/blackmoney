@@ -1173,32 +1173,37 @@ export class BookingPageComponent {
 
 				const delta = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-				// Erstelle eine Kopie des OrderItems mit der zu addierenden Anzahl
-				const incoming: OrderItem = JSON.parse(JSON.stringify(orderItem))
-
-				// Gib dem Item eine neue UUID
-				incoming.uuid = crypto.randomUUID()
-
 				// Ursprunglicher Parent-Count (falls 0: Fehler vermeiden)
 				const originalParentCount =
 					orderItem.count && orderItem.count > 0 ? orderItem.count : 1
-				incoming.count = delta
-				incoming.isExpanded = true
 
-				// Skaliere Subitems und deren Variationen pro Einheit (per-unit), dann mit delta multiplizieren
-				for (const sub of incoming.orderItems ?? []) {
-					sub.uuid = crypto.randomUUID()
+				// Erstelle eine shallow copy mit allen Attributen und kopiere die Sub-Items tief
+				const copiedOrderItems = (orderItem.orderItems ?? []).map(sub => {
+					const copiedSub = { ...sub, uuid: crypto.randomUUID() }
 					const perUnitSubCount = (sub.count ?? 0) / originalParentCount
-					sub.count = Math.round(perUnitSubCount * delta)
+					copiedSub.count = Math.round(perUnitSubCount * delta)
 
 					if (sub.orderItemVariations?.length) {
-						for (const v of sub.orderItemVariations) {
-							v.uuid = crypto.randomUUID()
-							const perUnitVarCount =
-								(v.count ?? 0) / originalParentCount
-							v.count = Math.round(perUnitVarCount * delta)
-						}
+						copiedSub.orderItemVariations = sub.orderItemVariations.map(
+							v => {
+								const copiedVar = { ...v, uuid: crypto.randomUUID() }
+								const perUnitVarCount =
+									(v.count ?? 0) / originalParentCount
+								copiedVar.count = Math.round(perUnitVarCount * delta)
+								return copiedVar
+							}
+						)
 					}
+
+					return copiedSub
+				})
+
+				const incoming: OrderItem = {
+					...orderItem,
+					uuid: crypto.randomUUID(),
+					count: delta,
+					isExpanded: true,
+					orderItems: copiedOrderItems
 				}
 
 				// Delegiere an den AllItemHandler / Merger

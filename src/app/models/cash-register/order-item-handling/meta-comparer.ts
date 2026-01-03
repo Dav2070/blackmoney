@@ -201,15 +201,24 @@ export class MetaComparer {
 		return bCopy.length === 0
 	}
 
-	// Comparison for miscellaneous items: price and name is relevant
+	// Comparison for diverse items: type, price and name must match
 	private isDiversOrderItemMetaEqual(
 		existing: OrderItem,
 		incoming: OrderItem
 	): boolean {
-		if (existing.product.shortcut == 0 && incoming.product.shortcut == 0) {
-			if (existing.product.price !== incoming.product.price) return false
-			if (existing.product.name !== incoming.product.name) return false
+		// Check if these are diverse items
+		const isDiverseType = existing.type === OrderItemType.DiverseFood ||
+		                      existing.type === OrderItemType.DiverseDrink ||
+		                      existing.type === OrderItemType.DiverseOther
+		
+		if (isDiverseType) {
+			// For diverse items, the type must match exactly
+			if (existing.type !== incoming.type) return false
+			// DiversePrice must match
+			if (existing.diversePrice !== incoming.diversePrice) return false
+			// Name (from notes) must match - notes are compared in isOrderItemBasicEqual
 		}
+		
 		return true
 	}
 }

@@ -437,7 +437,7 @@ export class BookingPageComponent {
 	}
 
 	// Füge item zu stagedItems hinzu
-	clickItem(product: Product, note?: string) {
+	clickItem(product: Product, note?: string, orderItemType?: OrderItemType, diversePrice?: number) {
 		if (product == null) return
 		this.selectedOrderItem = null
 		this.selectedProduct = product
@@ -451,13 +451,14 @@ export class BookingPageComponent {
 		} else {
 			let newItem: OrderItem = {
 				uuid: crypto.randomUUID(),
-				type: OrderItemType.Product,
+				type: orderItemType || OrderItemType.Product,
 				count: 0,
 				order: null,
 				product,
 				orderItems: [],
 				orderItemVariations: [],
-				notes: note
+				notes: note,
+				diversePrice: diversePrice
 			}
 
 			if (product.variations.length === 0) {
@@ -824,10 +825,14 @@ export class BookingPageComponent {
 		let tmpProductArray: AddProductsInput[] = []
 
 		for (const item of this.stagedItems.getAllPickedItems().values()) {
+			const isDiverseItem = this.isDiverseOrderItem(item)
+			
 			tmpProductArray.push({
-				uuid: item.product.uuid,
+				uuid: isDiverseItem ? undefined : item.product.uuid,
 				count: item.count,
 				discount: item.discount,
+				diversePrice: isDiverseItem ? item.diversePrice : undefined,
+				type: isDiverseItem ? item.type : undefined,
 				notes: item.notes,
 				takeAway: item.takeAway,
 				course: item.course,
@@ -858,6 +863,7 @@ export class BookingPageComponent {
 						count
 						type
 						discount
+						diversePrice
 						notes
 						takeAway
 						course
@@ -1133,7 +1139,14 @@ export class BookingPageComponent {
 				this.showTotal()
 			}
 		} else {
-			this.clickItem(orderItem.product, orderItem.notes)
+			// For diverse items, pass all necessary information
+			if (orderItem.type === OrderItemType.DiverseFood ||
+			    orderItem.type === OrderItemType.DiverseDrink ||
+			    orderItem.type === OrderItemType.DiverseOther) {
+				this.clickItem(orderItem.product, orderItem.notes, orderItem.type, orderItem.diversePrice)
+			} else {
+				this.clickItem(orderItem.product, orderItem.notes)
+			}
 		}
 	}
 
@@ -1247,7 +1260,7 @@ export class BookingPageComponent {
 						uuid: this.selectedProduct.uuid,
 						type: this.selectedProduct.type,
 						name: this.selectedProduct.name,
-						price: processedItem.product.price,
+						price: processedItem.diversePrice ?? processedItem.product.price,
 						shortcut: this.selectedProduct.shortcut,
 						category: this.selectedProduct.category,
 						variations: [],
@@ -1308,29 +1321,58 @@ export class BookingPageComponent {
 		}
 	}
 
+	/**
+	 * Checks if an OrderItem is a diverse item
+	 */
+	private isDiverseOrderItem(item: OrderItem): boolean {
+		return item.type === OrderItemType.DiverseFood ||
+		       item.type === OrderItemType.DiverseDrink ||
+		       item.type === OrderItemType.DiverseOther
+	}
+
+	/**
+	 * Determines OrderItemType and dialog name from product type string
+	 */
+	private getDiverseProductTypeInfo(productType: string): { orderItemType: OrderItemType, dialogName: string } {
+		if (productType === "diverse_speisen") {
+			return {
+				orderItemType: OrderItemType.DiverseFood,
+				dialogName: this.dialogLocale.addDiverseProductDialog.diverseFood
+			}
+		} else if (productType === "diverse_getraenke") {
+			return {
+				orderItemType: OrderItemType.DiverseDrink,
+				dialogName: this.dialogLocale.addDiverseProductDialog.diverseDrinks
+			}
+		} else {
+			return {
+				orderItemType: OrderItemType.DiverseOther,
+				dialogName: this.dialogLocale.addDiverseProductDialog.diverseCosts
+			}
+		}
+	}
+
+	/**
+	 * Creates a minimal Product object for diverse items
+	 */
+	private createDiverseProduct(dialogName: string): Product {
+		const product = new Product()
+		product.uuid = null
+		product.name = dialogName
+		product.variations = []
+		return product
+	}
+
 	addDiverseProductDialogPrimaryButtonClick(event: {
 		name: string
 		productType: string
 		price: number
 	}) {
-		const product = new Product()
-		product.shortcut = 0
-		product.price = event.price
-		product.variations = []
+		const { orderItemType, dialogName } = this.getDiverseProductTypeInfo(event.productType)
+		const product = this.createDiverseProduct(dialogName)
 
-		if (event.productType === "diverse_speisen") {
-			product.type = "FOOD"
-			product.name = this.dialogLocale.addDiverseProductDialog.diverseFood
-		} else if (event.productType === "diverse_getraenke") {
-			product.type = "DRINK"
-			product.name = this.dialogLocale.addDiverseProductDialog.diverseDrinks
-		} else {
-			product.type = null
-			product.name = this.dialogLocale.addDiverseProductDialog.diverseCosts
-		}
-
-		// Add as order item with note
-		this.clickItem(product, event.name)
+		// Add as order item with note, specific type, and diversePrice
+		this.clickItem(product, event.name, orderItemType, event.price)
 	}
 
 	takeAwayButtonClick() {

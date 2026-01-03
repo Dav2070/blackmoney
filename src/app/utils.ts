@@ -128,15 +128,18 @@ export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
 			}
 		}
 	} else {
+		// For diverse items use diversePrice, for regular products use product.price
+		const itemPrice = orderItem.diversePrice ?? orderItem.product.price
+		
 		unitPrice =
 			orderItem.orderItemVariations.length === 0
-				? orderItem.product.price
+				? itemPrice
 				: 0
 
 		for (const variation of orderItem.orderItemVariations) {
 			for (const variationItem of variation.variationItems) {
 				unitPrice +=
-					(orderItem.product.price + variationItem.additionalCost) *
+					(itemPrice + variationItem.additionalCost) *
 					variation.count
 			}
 		}
@@ -664,6 +667,26 @@ export function convertOrderItemResourceToOrderItem(
 		)
 	}
 
+	// For diverse items (with diversePrice), create a minimal placeholder product
+	let product: Product
+	if (orderItemResource.diversePrice != null) {
+		// Create minimal placeholder product for diverse items
+		product = new Product()
+		product.uuid = null
+		product.variations = []
+		
+		// Set name based on OrderItemType
+		if (orderItemResource.type === OrderItemType.DiverseFood) {
+			product.name = "Diverse Speise"
+		} else if (orderItemResource.type === OrderItemType.DiverseDrink) {
+			product.name = "Diverse Getränke"
+		} else if (orderItemResource.type === OrderItemType.DiverseOther) {
+			product.name = "Diverse Kosten"
+		}
+	} else {
+		product = convertProductResourceToProduct(orderItemResource.product)
+	}
+
 	return {
 		uuid: orderItemResource.uuid,
 		type: orderItemResource.type,
@@ -673,10 +696,11 @@ export function convertOrderItemResourceToOrderItem(
 		takeAway: orderItemResource.takeAway,
 		course: orderItemResource.course,
 		order: convertOrderResourceToOrder(orderItemResource.order),
-		product: convertProductResourceToProduct(orderItemResource.product),
+		product: product,
 		offer: convertOfferResourceToOffer(orderItemResource.offer),
 		orderItems,
-		orderItemVariations
+		orderItemVariations,
+		diversePrice: orderItemResource.diversePrice
 	}
 }
 

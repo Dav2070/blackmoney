@@ -170,6 +170,7 @@ export interface OrderItemResource {
 	count: number
 	type: OrderItemType
 	discount: number
+	diversePrice?: number
 	notes?: string
 	takeAway: boolean
 	course?: number
@@ -198,9 +199,11 @@ export interface ReservationResource {
 }
 
 export interface AddProductsInput {
-	uuid: string
+	uuid?: string
 	count: number
 	discount?: number
+	diversePrice?: number
+	type?: OrderItemType
 	notes?: string
 	takeAway?: boolean
 	course?: number
@@ -226,7 +229,10 @@ export type PrintRuleType = "BILLS" | "PRODUCT_TYPE" | "CATEGORIES" | "PRODUCTS"
 export enum OrderItemType {
 	Product = "PRODUCT",
 	Menu = "MENU",
-	Special = "SPECIAL"
+	Special = "SPECIAL",
+	DiverseFood = "DIVERSE_FOOD",
+	DiverseDrink = "DIVERSE_DRINK",
+	DiverseOther = "DIVERSE_OTHER"
 }
 
 export type TakeawayFilterType = "ALL" | "DELIVERY" | "PICKUP" | "DINEIN"

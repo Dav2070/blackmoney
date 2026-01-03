@@ -49,6 +49,7 @@ export class AllItemHandler {
 								count
 								type
 								discount
+								diversePrice
 								notes
 								takeAway
 								course
@@ -111,6 +112,7 @@ export class AllItemHandler {
 										count
 										type
 										discount
+										diversePrice
 										notes
 										takeAway
 										course
@@ -292,7 +294,9 @@ export class AllItemHandler {
 		let total = 0
 
 		for (let item of pickedItem.orderItems) {
-			total += item.product.price * item.count
+			// For diverse items use diversePrice, for regular products use product.price
+			const itemPrice = item.diversePrice ?? item.product.price
+			total += itemPrice * item.count
 
 			if (item.orderItemVariations) {
 				for (const variation of item.orderItemVariations) {

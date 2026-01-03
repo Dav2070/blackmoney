@@ -1,0 +1,40 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[visible]="visible"
+	[primaryButtonText]="locale.submit"
+	[secondaryButtonText]="locale.cancel"
+	maxWidth="600"
+	(primaryButtonClick)="submit()"
+	(secondaryButtonClick)="close()"
+	(dismiss)="close()"
+>
+	<div class="dialog-content">
+		<div class="form-section">
+			<label class="form-label">{{ locale.ratingLabel }}</label>
+			<div class="rating-stars">
+				@for (star of [1, 2, 3, 4, 5]; track star) {
+					<fa-icon
+						[icon]="faStar"
+						class="star"
+						[class.filled]="star <= selectedRating"
+						[class.hover]="star <= hoverRating"
+						(click)="setRating(star)"
+						(mouseenter)="hoverRating = star"
+						(mouseleave)="hoverRating = 0"
+					></fa-icon>
+				}
+			</div>
+		</div>
+
+		<div class="form-section">
+			<dav-textarea
+				[value]="reviewText"
+				[label]="locale.reviewLabel"
+				[placeholder]="locale.reviewPlaceholder"
+				resize="none"
+				(change)="reviewText = $any($event).detail.value"
+			></dav-textarea>
+		</div>
+	</div>
+</dav-dialog>

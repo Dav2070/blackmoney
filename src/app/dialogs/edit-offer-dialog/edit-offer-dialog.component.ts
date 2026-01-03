@@ -23,7 +23,7 @@ import { OfferAvailability } from "../add-offer-dialog/offer-availability/offer-
 	standalone: false
 })
 export class EditOfferDialogComponent {
-	locale = this.localizationService.locale.editOfferDialog
+	locale = this.localizationService.locale.dialogs.editOfferDialog
 	actionsLocale = this.localizationService.locale.actions
 
 	@Input() loading: boolean = false

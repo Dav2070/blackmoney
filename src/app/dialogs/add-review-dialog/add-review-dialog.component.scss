@@ -1,0 +1,35 @@
+.dialog-content {
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.form-label {
+	display: block;
+	margin-bottom: 12px;
+	color: var(--dav-color-on-surface);
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.rating-stars {
+	display: flex;
+	gap: 8px;
+}
+
+.star {
+	font-size: 32px;
+	color: var(--dav-color-outline);
+	cursor: pointer;
+	transition: all 0.2s ease;
+
+	&.filled,
+	&.hover {
+		color: var(--dav-color-primary);
+	}
+
+	&:hover {
+		transform: scale(1.1);
+	}
+}

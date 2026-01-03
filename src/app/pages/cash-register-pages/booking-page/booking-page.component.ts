@@ -469,8 +469,10 @@ export class BookingPageComponent {
 			if (product.variations.length === 0) {
 				newItem.count = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-				this.stagedItems.pushNewItem(newItem)
-				this.showTotal()
+				const addedItem = this.stagedItems.pushNewItem(newItem)
+				this.selectedOrderItem = addedItem
+				this.tmpAllItemHandler = this.stagedItems
+				this.showTotal(false)
 			} else {
 				this.selectedProduct = product
 				this.selectProductVariationsDialog.show()
@@ -528,7 +530,14 @@ export class BookingPageComponent {
 
 				this.tmpAnzahl = undefined
 				this.bookedItems.removeEmptyItems()
-				this.showTotal()
+				// Prüfe ob Item noch existiert
+				const itemStillExists = this.bookedItems
+					.getOrderItems()
+					.includes(orderItem)
+				if (!itemStillExists) {
+					this.selectedOrderItem = null
+				}
+				this.showTotal(false)
 			} else {
 				if (this.tmpAnzahl > 0) {
 					if (orderItem.count >= this.tmpAnzahl) {
@@ -580,7 +589,14 @@ export class BookingPageComponent {
 
 				this.tmpAnzahl = undefined
 				this.stagedItems.removeEmptyItems()
-				this.showTotal()
+				// Prüfe ob Item noch existiert
+				const itemStillExists = this.stagedItems
+					.getOrderItems()
+					.includes(orderItem)
+				if (!itemStillExists) {
+					this.selectedOrderItem = null
+				}
+				this.showTotal(false)
 			}
 		} else if (orderItem.type === OrderItemType.Special) {
 			if (
@@ -605,9 +621,24 @@ export class BookingPageComponent {
 				if (this.tmpAllItemHandler === this.bookedItems) {
 					this.sendOrderItem(this.selectedOrderItem)
 					this.bookedItems.removeEmptyItems()
+					// Prüfe ob Item noch existiert
+					const itemStillExists = this.bookedItems
+						.getOrderItems()
+						.includes(this.selectedOrderItem)
+					if (!itemStillExists) {
+						this.selectedOrderItem = null
+					}
 				} else {
 					this.stagedItems.removeEmptyItems()
+					// Prüfe ob Item noch existiert
+					const itemStillExists = this.stagedItems
+						.getOrderItems()
+						.includes(this.selectedOrderItem)
+					if (!itemStillExists) {
+						this.selectedOrderItem = null
+					}
 				}
+				this.showTotal(false)
 			}
 		} else {
 			// Bestehende OrderItem Logik
@@ -626,7 +657,14 @@ export class BookingPageComponent {
 					this.sendOrderItem(this.selectedOrderItem)
 					this.bookedItems.removeEmptyItems()
 
-					this.showTotal()
+					// Prüfe ob Item noch existiert
+					const itemStillExists = this.bookedItems
+						.getOrderItems()
+						.includes(this.selectedOrderItem)
+					if (!itemStillExists) {
+						this.selectedOrderItem = null
+					}
+					this.showTotal(false)
 				} else {
 					// Wenn Variationen vorhanden sind - öffne den Subtract Dialog
 					this.subtractProductVariationsDialog.show()
@@ -641,13 +679,26 @@ export class BookingPageComponent {
 				} else {
 					window.alert("Anzahl ist zu hoch")
 				}
-
 				this.stagedItems.removeEmptyItems()
-				this.showTotal()
+				// Prüfe ob Item noch existiert
+				const itemStillExists = this.stagedItems
+					.getOrderItems()
+					.includes(this.selectedOrderItem)
+				if (!itemStillExists) {
+					this.selectedOrderItem = null
+				}
+				this.showTotal(false)
 			} else {
 				this.selectedOrderItem.count--
 				this.stagedItems.removeEmptyItems()
-				this.showTotal()
+				// Prüfe ob Item noch existiert
+				const itemStillExists = this.stagedItems
+					.getOrderItems()
+					.includes(this.selectedOrderItem)
+				if (!itemStillExists) {
+					this.selectedOrderItem = null
+				}
+				this.showTotal(false)
 			}
 		}
 	}
@@ -704,16 +755,20 @@ export class BookingPageComponent {
 
 			incoming.orderItems = [newItem]
 			incoming.count = newItem.count
-			this.stagedItems.pushNewItem(incoming)
+			const addedItem = this.stagedItems.pushNewItem(incoming)
+			this.selectedOrderItem = addedItem
+			this.tmpAllItemHandler = this.stagedItems
 		} else {
 			newItem.count = 0
 			for (let variation of newItem.orderItemVariations) {
 				newItem.count += variation.count
 			}
-			this.stagedItems.pushNewItem(newItem)
+			const addedItem = this.stagedItems.pushNewItem(newItem)
+			this.selectedOrderItem = addedItem
+			this.tmpAllItemHandler = this.stagedItems
 		}
 
-		this.showTotal()
+		this.showTotal(false)
 		this.tmpAnzahl = undefined
 	}
 
@@ -811,7 +866,7 @@ export class BookingPageComponent {
 	}
 
 	// Aktualisiert den Gesamtpreis
-	async showTotal() {
+	async showTotal(clearSelection: boolean = true) {
 		this.console = formatPrice(
 			this.bookedItems.calculateTotal() + this.stagedItems.calculateTotal()
 		)
@@ -820,7 +875,10 @@ export class BookingPageComponent {
 		this.commaUsed = false
 		this.tmpAnzahl = 0
 		this.xUsed = false
-		this.selectedOrderItem = null
+
+		if (clearSelection) {
+			this.selectedOrderItem = null
+		}
 	}
 
 	// Fügt Items der Liste an bestellten Artikeln hinzu
@@ -1118,6 +1176,9 @@ export class BookingPageComponent {
 				// Erstelle eine Kopie des OrderItems mit der zu addierenden Anzahl
 				const incoming: OrderItem = JSON.parse(JSON.stringify(orderItem))
 
+				// Gib dem Item eine neue UUID
+				incoming.uuid = crypto.randomUUID()
+
 				// Ursprunglicher Parent-Count (falls 0: Fehler vermeiden)
 				const originalParentCount =
 					orderItem.count && orderItem.count > 0 ? orderItem.count : 1
@@ -1126,11 +1187,13 @@ export class BookingPageComponent {
 
 				// Skaliere Subitems und deren Variationen pro Einheit (per-unit), dann mit delta multiplizieren
 				for (const sub of incoming.orderItems ?? []) {
+					sub.uuid = crypto.randomUUID()
 					const perUnitSubCount = (sub.count ?? 0) / originalParentCount
 					sub.count = Math.round(perUnitSubCount * delta)
 
 					if (sub.orderItemVariations?.length) {
 						for (const v of sub.orderItemVariations) {
+							v.uuid = crypto.randomUUID()
 							const perUnitVarCount =
 								(v.count ?? 0) / originalParentCount
 							v.count = Math.round(perUnitVarCount * delta)
@@ -1139,10 +1202,12 @@ export class BookingPageComponent {
 				}
 
 				// Delegiere an den AllItemHandler / Merger
-				handler.pushNewItem(incoming)
+				const addedItem = handler.pushNewItem(incoming)
 
+				this.selectedOrderItem = addedItem
+				this.tmpAllItemHandler = handler
 				this.tmpAnzahl = undefined
-				this.showTotal()
+				this.showTotal(false)
 			}
 		} else {
 			// For diverse items, pass all necessary information
@@ -1241,6 +1306,9 @@ export class BookingPageComponent {
 	selectMenuSpecialProductsDialogPrimaryButtonClick(event: {
 		orderItems: OrderItem[]
 	}) {
+		// Clear selection before adding new item
+		this.selectedOrderItem = null
+
 		if (this.selectedProduct.type === "MENU") {
 			const menuOrderItem: OrderItem = {
 				uuid: crypto.randomUUID(),
@@ -1257,8 +1325,11 @@ export class BookingPageComponent {
 			const discount = this.priceCalculator.calculateDiscount(menuOrderItem)
 			menuOrderItem.discount = discount
 
-			this.stagedItems.pushNewItem(menuOrderItem)
+			const addedItem = this.stagedItems.pushNewItem(menuOrderItem)
+			this.selectedOrderItem = addedItem
+			this.tmpAllItemHandler = this.stagedItems
 		} else {
+			let lastSpecialOrderItem: OrderItem = null
 			for (const orderItem of event.orderItems) {
 				const processedItem: OrderItem = JSON.parse(
 					JSON.stringify(orderItem)
@@ -1291,12 +1362,15 @@ export class BookingPageComponent {
 					this.priceCalculator.calculateDiscount(specialOrderItem)
 				specialOrderItem.discount = discount
 
-				this.stagedItems.pushNewItem(specialOrderItem)
+				lastSpecialOrderItem =
+					this.stagedItems.pushNewItem(specialOrderItem)
 			}
+			this.selectedOrderItem = lastSpecialOrderItem
+			this.tmpAllItemHandler = this.stagedItems
 		}
 
 		this.selectMenuSpecialProductsDialog.hide()
-		this.showTotal()
+		this.showTotal(false)
 	}
 
 	addNoteButtonClick() {

@@ -34,9 +34,11 @@ export class OrderItemCardComponent {
 	 * Checks if an OrderItem is a diverse item
 	 */
 	private isDiverseOrderItem(orderItem: OrderItem): boolean {
-		return orderItem.type === OrderItemType.DiverseFood ||
-		       orderItem.type === OrderItemType.DiverseDrink ||
-		       orderItem.type === OrderItemType.DiverseOther
+		return (
+			orderItem.type === OrderItemType.DiverseFood ||
+			orderItem.type === OrderItemType.DiverseDrink ||
+			orderItem.type === OrderItemType.DiverseOther
+		)
 	}
 
 	getProductNumber(orderItem: OrderItem): string {

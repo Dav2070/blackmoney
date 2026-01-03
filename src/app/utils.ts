@@ -130,17 +130,13 @@ export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
 	} else {
 		// For diverse items use diversePrice, for regular products use product.price
 		const itemPrice = orderItem.diversePrice ?? orderItem.product.price
-		
-		unitPrice =
-			orderItem.orderItemVariations.length === 0
-				? itemPrice
-				: 0
+
+		unitPrice = orderItem.orderItemVariations.length === 0 ? itemPrice : 0
 
 		for (const variation of orderItem.orderItemVariations) {
 			for (const variationItem of variation.variationItems) {
 				unitPrice +=
-					(itemPrice + variationItem.additionalCost) *
-					variation.count
+					(itemPrice + variationItem.additionalCost) * variation.count
 			}
 		}
 	}
@@ -674,7 +670,7 @@ export function convertOrderItemResourceToOrderItem(
 		product = new Product()
 		product.uuid = null
 		product.variations = []
-		
+
 		// Set name based on OrderItemType
 		if (orderItemResource.type === OrderItemType.DiverseFood) {
 			product.name = "Diverse Speise"

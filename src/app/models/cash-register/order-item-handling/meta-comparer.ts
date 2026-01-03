@@ -207,10 +207,11 @@ export class MetaComparer {
 		incoming: OrderItem
 	): boolean {
 		// Check if these are diverse items
-		const isDiverseType = existing.type === OrderItemType.DiverseFood ||
-		                      existing.type === OrderItemType.DiverseDrink ||
-		                      existing.type === OrderItemType.DiverseOther
-		
+		const isDiverseType =
+			existing.type === OrderItemType.DiverseFood ||
+			existing.type === OrderItemType.DiverseDrink ||
+			existing.type === OrderItemType.DiverseOther
+
 		if (isDiverseType) {
 			// For diverse items, the type must match exactly
 			if (existing.type !== incoming.type) return false
@@ -218,7 +219,7 @@ export class MetaComparer {
 			if (existing.diversePrice !== incoming.diversePrice) return false
 			// Name (from notes) must match - notes are compared in isOrderItemBasicEqual
 		}
-		
+
 		return true
 	}
 }

@@ -437,7 +437,12 @@ export class BookingPageComponent {
 	}
 
 	// Füge item zu stagedItems hinzu
-	clickItem(product: Product, note?: string, orderItemType?: OrderItemType, diversePrice?: number) {
+	clickItem(
+		product: Product,
+		note?: string,
+		orderItemType?: OrderItemType,
+		diversePrice?: number
+	) {
 		if (product == null) return
 		this.selectedOrderItem = null
 		this.selectedProduct = product
@@ -826,7 +831,7 @@ export class BookingPageComponent {
 
 		for (const item of this.stagedItems.getAllPickedItems().values()) {
 			const isDiverseItem = this.isDiverseOrderItem(item)
-			
+
 			tmpProductArray.push({
 				uuid: isDiverseItem ? undefined : item.product.uuid,
 				count: item.count,
@@ -1140,10 +1145,17 @@ export class BookingPageComponent {
 			}
 		} else {
 			// For diverse items, pass all necessary information
-			if (orderItem.type === OrderItemType.DiverseFood ||
-			    orderItem.type === OrderItemType.DiverseDrink ||
-			    orderItem.type === OrderItemType.DiverseOther) {
-				this.clickItem(orderItem.product, orderItem.notes, orderItem.type, orderItem.diversePrice)
+			if (
+				orderItem.type === OrderItemType.DiverseFood ||
+				orderItem.type === OrderItemType.DiverseDrink ||
+				orderItem.type === OrderItemType.DiverseOther
+			) {
+				this.clickItem(
+					orderItem.product,
+					orderItem.notes,
+					orderItem.type,
+					orderItem.diversePrice
+				)
 			} else {
 				this.clickItem(orderItem.product, orderItem.notes)
 			}
@@ -1260,7 +1272,8 @@ export class BookingPageComponent {
 						uuid: this.selectedProduct.uuid,
 						type: this.selectedProduct.type,
 						name: this.selectedProduct.name,
-						price: processedItem.diversePrice ?? processedItem.product.price,
+						price:
+							processedItem.diversePrice ?? processedItem.product.price,
 						shortcut: this.selectedProduct.shortcut,
 						category: this.selectedProduct.category,
 						variations: [],
@@ -1325,15 +1338,20 @@ export class BookingPageComponent {
 	 * Checks if an OrderItem is a diverse item
 	 */
 	private isDiverseOrderItem(item: OrderItem): boolean {
-		return item.type === OrderItemType.DiverseFood ||
-		       item.type === OrderItemType.DiverseDrink ||
-		       item.type === OrderItemType.DiverseOther
+		return (
+			item.type === OrderItemType.DiverseFood ||
+			item.type === OrderItemType.DiverseDrink ||
+			item.type === OrderItemType.DiverseOther
+		)
 	}
 
 	/**
 	 * Determines OrderItemType and dialog name from product type string
 	 */
-	private getDiverseProductTypeInfo(productType: string): { orderItemType: OrderItemType, dialogName: string } {
+	private getDiverseProductTypeInfo(productType: string): {
+		orderItemType: OrderItemType
+		dialogName: string
+	} {
 		if (productType === "diverse_speisen") {
 			return {
 				orderItemType: OrderItemType.DiverseFood,
@@ -1368,7 +1386,9 @@ export class BookingPageComponent {
 		productType: string
 		price: number
 	}) {
-		const { orderItemType, dialogName } = this.getDiverseProductTypeInfo(event.productType)
+		const { orderItemType, dialogName } = this.getDiverseProductTypeInfo(
+			event.productType
+		)
 		const product = this.createDiverseProduct(dialogName)
 
 		// Add as order item with note, specific type, and diversePrice

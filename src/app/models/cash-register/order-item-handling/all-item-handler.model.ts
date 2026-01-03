@@ -169,8 +169,8 @@ export class AllItemHandler {
 		if (order.data.retrieveTable.orders.total > 0) {
 			// Setze Items direkt ohne Merging-Logik (Backend hat bereits gemerged)
 			this.setItems(
-				order.data.retrieveTable.orders.items[0].orderItems.items.map(item =>
-					convertOrderItemResourceToOrderItem(item)
+				order.data.retrieveTable.orders.items[0].orderItems.items.map(
+					item => convertOrderItemResourceToOrderItem(item)
 				)
 			)
 

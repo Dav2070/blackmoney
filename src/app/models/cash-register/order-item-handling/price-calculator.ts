@@ -17,10 +17,12 @@ export class PriceCalculator {
 		let price = 0
 
 		// Für reguläre Produkte und diverse Items: Produktpreis × count + alle Variationen
-		if (orderItem.type === OrderItemType.Product ||
-		    orderItem.type === OrderItemType.DiverseFood ||
-		    orderItem.type === OrderItemType.DiverseDrink ||
-		    orderItem.type === OrderItemType.DiverseOther) {
+		if (
+			orderItem.type === OrderItemType.Product ||
+			orderItem.type === OrderItemType.DiverseFood ||
+			orderItem.type === OrderItemType.DiverseDrink ||
+			orderItem.type === OrderItemType.DiverseOther
+		) {
 			// For diverse items use diversePrice, for regular products use product.price
 			const itemPrice = orderItem.diversePrice ?? orderItem.product.price
 			price = itemPrice * orderItem.count
@@ -66,10 +68,12 @@ export class PriceCalculator {
 		let price = 0
 
 		// Für reguläre Produkte und diverse Items: Produktpreis × count + alle Variationen
-		if (orderItem.type === OrderItemType.Product ||
-		    orderItem.type === OrderItemType.DiverseFood ||
-		    orderItem.type === OrderItemType.DiverseDrink ||
-		    orderItem.type === OrderItemType.DiverseOther) {
+		if (
+			orderItem.type === OrderItemType.Product ||
+			orderItem.type === OrderItemType.DiverseFood ||
+			orderItem.type === OrderItemType.DiverseDrink ||
+			orderItem.type === OrderItemType.DiverseOther
+		) {
 			// For diverse items use diversePrice, for regular products use product.price
 			const itemPrice = orderItem.diversePrice ?? orderItem.product.price
 			price = itemPrice * orderItem.count
@@ -144,7 +148,7 @@ export class PriceCalculator {
 
 			// For diverse items use diversePrice, for regular products use product.price
 			const itemPrice = nestedItem.diversePrice ?? nestedItem.product.price
-			
+
 			// Berechne Gesamtpreis für verschachtelte Items: (Produktpreis × count) + Variationen
 			const totalItemPrice = itemPrice * nestedItem.count
 			const variationPrice = this.calculateVariationsPrice(nestedItem)

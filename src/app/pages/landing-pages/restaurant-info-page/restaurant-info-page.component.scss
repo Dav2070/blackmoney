@@ -16,6 +16,12 @@
 	gap: 6px;
 }
 
+.guests-header .back-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 .guests-header .name-filter {
 	flex: 1 1 220px;
 	min-width: 180px;

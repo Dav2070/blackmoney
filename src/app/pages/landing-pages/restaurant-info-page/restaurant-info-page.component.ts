@@ -12,6 +12,7 @@ import {
 	faCupTogo,
 	faTruck,
 	faSearch,
+	faArrowLeft,
 	faChevronLeft,
 	faChevronRight,
 	faList,
@@ -60,6 +61,7 @@ export class RestaurantInfoPageComponent {
 	faCupTogo = faCupTogo
 	faTruck = faTruck
 	faSearch = faSearch
+	faArrowLeft = faArrowLeft
 	faChevronLeft = faChevronLeft
 	faChevronRight = faChevronRight
 	faList = faList
@@ -150,6 +152,20 @@ export class RestaurantInfoPageComponent {
 	}
 
 	search() {
+		this.router.navigate(["guests"], {
+			queryParams: {
+				name: this.nameFilter || null,
+				cityPostal: this.cityPostalFilter || null,
+				distanceKm: this.distanceKm,
+				rating: this.ratingFilter,
+				hasTakeaway: this.hasTakeaway,
+				hasDelivery: this.hasDelivery
+			},
+			queryParamsHandling: "merge"
+		})
+	}
+
+	goBack() {
 		this.router.navigate(["guests"], {
 			queryParams: {
 				name: this.nameFilter || null,

@@ -18,11 +18,7 @@
 		}
 		<p>
 			{{ orderItem.product.name }}
-			@if (
-				orderItem.type === "SPECIAL" &&
-				!isExpanded &&
-				orderItem.orderItems.length > 0
-			) {
+			@if (orderItem.type === "SPECIAL" && orderItem.orderItems.length > 0) {
 				<span class="sub-product-name">
 					({{ orderItem.orderItems[0].product.name }})
 				</span>

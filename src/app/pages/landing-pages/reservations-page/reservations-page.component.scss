@@ -29,6 +29,8 @@
 .date-selector {
 	position: relative;
 	flex-shrink: 0;
+	display: inline-block;
+	width: max-content;
 }
 
 .date-label {
@@ -67,17 +69,19 @@
 }
 
 .calendar-popover {
+	display: none;
+	justify-content: center;
 	position: absolute;
-	top: calc(100% + 8px);
-	left: 50%;
-	transform: translateX(-50%);
-	background: var(--dav-color-surface);
-	border: 1px solid var(--dav-color-outline-variant);
-	border-radius: 12px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-	padding: 16px;
+	top: 228px;
+	left: 0;
+	right: 0;
+	width: 100%;
+	background-color: transparent;
 	z-index: 10;
-	min-width: 280px;
+}
+
+.calendar-popover.visible {
+	display: flex;
 }
 
 .content {
@@ -87,6 +91,7 @@
 	margin-bottom: 24px;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	gap: 12px;
 }
 

@@ -1,6 +1,7 @@
 .product-card {
 	display: flex;
 	flex-direction: column;
+	width: 300px;
 	border-radius: 8px;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	transition: box-shadow 0.2s ease;
@@ -14,8 +15,8 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-start;
-	padding: 16px;
 	gap: 12px;
+	margin: 0;
 
 	.header-content {
 		flex: 1;
@@ -50,7 +51,6 @@
 }
 
 .product-content {
-	padding: 16px;
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
@@ -101,32 +101,6 @@
 	gap: 8px;
 }
 
-.variation-chip {
-	position: relative;
-	padding: 6px 12px;
-	background-color: var(--dav-color-primary-container);
-	border-radius: 16px;
-	cursor: pointer;
-	transition: background-color 0.2s ease;
-
-	&:hover {
-		background-color: var(--dav-color-primary);
-	}
-
-	.variation-badge {
-		font-size: 13px;
-		font-weight: 500;
-		color: var(--dav-color-on-primary-container);
-	}
-}
-
-.no-variations {
-	font-size: 13px;
-	color: var(--dav-color-on-surface-variant);
-	margin: 0;
-	font-style: italic;
-}
-
 .empty-state {
 	padding: 48px 24px;
 	text-align: center;
@@ -136,31 +110,6 @@
 		margin: 0;
 		font-size: 16px;
 	}
-}
-
-/* Variation Tooltip Overlay */
-.variation-tooltip-overlay {
-	position: fixed;
-	z-index: 1000;
-	background-color: var(--dav-color-surface-variant);
-	border-radius: 8px;
-	padding: 12px;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-	min-width: 200px;
-	border: 1px solid var(--dav-color-outline);
-
-	strong {
-		display: block;
-		font-size: 14px;
-		color: var(--dav-color-on-surface);
-		margin-bottom: 8px;
-	}
-}
-
-.variation-tooltip-items {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
 }
 
 .variation-item {

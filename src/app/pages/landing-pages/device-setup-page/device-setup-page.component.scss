@@ -15,13 +15,14 @@ h1 {
 p {
 	text-align: center;
 	color: var(--dav-color-on-surface);
+   max-width: 500px;
 }
 
 form {
 	display: flex;
 	flex-direction: column;
 	gap: 14px;
-	width: 240px;
+	width: 280px;
 	margin-top: 22px;
 }
 
@@ -29,13 +30,18 @@ dav-textfield {
 	width: 100%;
 }
 
-.button-container {
+.save-button-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	gap: 16px;
 }
 
-.button-container.loading {
+.save-button-container.loading {
 	margin-left: 32px;
+}
+
+.skip-button-container {
+	display: flex;
+	justify-content: center;
 }

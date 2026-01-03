@@ -1,0 +1,40 @@
+<div class="container slide-up-in">
+	<div class="content">
+		<h1>{{ locale.headline }}</h1>
+		<p>{{ locale.description }}</p>
+
+		<form>
+			<dav-textfield
+				[label]="locale.deviceNameLabel"
+            [errorMessage]="errorMessage"
+				[disabled]="loading"
+            (change)="deviceNameChange($event)"
+			></dav-textfield>
+
+			<div class="save-button-container" [class.loading]="loading">
+				<dav-button
+					size="sm"
+					[disabled]="loading"
+					(click)="saveButtonClick()"
+				>
+					{{ actionsLocale.save }}
+				</dav-button>
+
+				@if (loading) {
+					<dav-progress-ring size="16"></dav-progress-ring>
+				}
+			</div>
+
+			<div class="skip-button-container">
+				<dav-button
+					size="sm"
+					text
+					[disabled]="loading"
+					(click)="skipButtonClick()"
+				>
+					{{ actionsLocale.skip }}
+				</dav-button>
+			</div>
+		</form>
+	</div>
+</div>

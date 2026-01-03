@@ -242,14 +242,7 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="
-						commaUsed ||
-						!consoleActive ||
-						table?.uuid == console ||
-						checkforZero() ||
-						xUsed
-					"
-					(click)="navigateToTransferPage()"
+					(click)="transferTableButtonClick()"
 				>
 					<fa-icon
 						[icon]="faArrowTurnDownRight"
@@ -261,22 +254,7 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="
-						commaUsed ||
-						!consoleActive ||
-						table?.uuid == console ||
-						checkforZero() ||
-						xUsed
-					"
-				>
-					<fa-icon [icon]="faSeat" slot="icon-left"></fa-icon>
-					{{ locale.switchTable }}
-				</dav-button>
-
-				<dav-button
-					color="secondary"
-					text
-					[disabled]="!selectedOrderItem"
+					[disabled]="!selectedOrderItem || isSelectedItemBooked()"
 					(click)="takeAwayButtonClick()"
 				>
 					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
@@ -286,7 +264,7 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedOrderItem"
+					[disabled]="!selectedOrderItem || isSelectedItemBooked()"
 					(click)="addNoteButtonClick()"
 				>
 					<fa-icon [icon]="faNoteSticky" slot="icon-left"></fa-icon>
@@ -296,7 +274,9 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedOrderItem || !consoleActive"
+					[disabled]="
+						!selectedOrderItem || !consoleActive || isSelectedItemBooked()
+					"
 					(click)="setCourseButtonClick()"
 				>
 					<fa-icon [icon]="faUtensils" slot="icon-left"></fa-icon>
@@ -430,7 +410,8 @@
 	#selectMenuSpecialProductsDialog
 	[product]="selectedProduct"
 	(primaryButtonClick)="
-		selectMenuSpecialProductsDialogPrimaryButtonClick($event)"
+		selectMenuSpecialProductsDialogPrimaryButtonClick($event)
+	"
 ></app-select-menu-special-products-dialog>
 
 <app-select-product-variations-dialog
@@ -444,7 +425,8 @@
 <app-subtract-product-variations-dialog
 	#subtractProductVariationsDialog
 	[orderItem]="
-		selectedOrderItem?.type === 'SPECIAL' && selectedOrderItem?.orderItems?.length > 0
+		selectedOrderItem?.type === 'SPECIAL' &&
+		selectedOrderItem?.orderItems?.length > 0
 			? selectedOrderItem.orderItems[0]
 			: selectedOrderItem
 	"

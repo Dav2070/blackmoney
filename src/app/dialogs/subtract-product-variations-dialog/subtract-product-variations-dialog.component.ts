@@ -82,7 +82,7 @@ export class SubtractProductVariationsDialogComponent {
 
 			// Generate all combinations
 			for (const combination of this.cartesian(items)) {
-				this.variationCombinations[combination.join(",")] = 0
+				this.variationCombinations[combination.sort().join(",")] = 0
 			}
 
 			// Load existing variations from orderItem
@@ -108,6 +108,7 @@ export class SubtractProductVariationsDialogComponent {
 			// Build the key from variationItems
 			const key = orderItemVariation.variationItems
 				.map(vi => vi.uuid)
+				.sort()
 				.join(",")
 
 			// Set the count if this combination exists
@@ -142,12 +143,10 @@ export class SubtractProductVariationsDialogComponent {
 		const keyParts = key.split(",")
 		const variationItems: VariationItem[] = []
 
-		for (const variationItemUuid of keyParts) {
-			const variationItem = this.product.variations
-				.map(v => v.variationItems)
-				.flat()
-				.find(v => v.uuid === variationItemUuid)
-
+		for (const variation of this.product.variations) {
+			const variationItem = variation.variationItems.find(vi =>
+				keyParts.includes(vi.uuid)
+			)
 			if (variationItem) variationItems.push(variationItem)
 		}
 

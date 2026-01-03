@@ -19,16 +19,6 @@
 				<button class="date-label" (click)="toggleCalendar()" type="button">
 					{{ getDateLabel() }}
 				</button>
-
-				@if (showCalendar) {
-					<div class="calendar-popover">
-						<dav-textfield
-							[value]="getFormattedDateForInput()"
-							type="date"
-							(change)="onDateChange($event)"
-						></dav-textfield>
-					</div>
-				}
 			</div>
 
 			<dav-icon-button size="sm" (click)="nextDay()">
@@ -53,7 +43,7 @@
 										<strong>{{ reservation.name }}</strong>
 									</div>
 									<div class="reservation-time">
-										{{ reservation.reservationTime }}
+										{{ getReservationTime(reservation) }}
 									</div>
 								</div>
 
@@ -88,12 +78,18 @@
 								</div>
 
 								<dav-button
-									[outline]="!reservation.checkedIn"
-									size="sm"
 									class="check-in-button"
+									size="sm"
+									[outline]="!reservation.checkedIn"
+									[disabled]="
+										checkedInLoadingUuid === reservation.uuid
+									"
 									(click)="toggleCheckedIn(reservation)"
 								>
-									<fa-icon [icon]="faCheckCircle"></fa-icon>
+									<fa-icon
+										slot="icon-left"
+										[icon]="faCheckCircle"
+									></fa-icon>
 									{{
 										reservation.checkedIn
 											? locale.checkedInText
@@ -115,6 +111,13 @@
 			}
 		</div>
 	</div>
+</div>
+
+<div class="calendar-popover slide-down-in" [class.visible]="showCalendar">
+	<dav-calendar
+		#calendar
+		(change)="onDateChange($event)"
+	></dav-calendar>
 </div>
 
 <app-add-reservation-dialog

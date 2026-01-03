@@ -13,11 +13,11 @@
 	(defaultButtonClick)="hide()"
 >
 	<dav-tree>
-		@for (room of rooms; track room.uuid) {
+		@for (room of filteredRooms; track room.uuid) {
 			<dav-tree-item
 				[headline]="room.name"
 				node
-				[open]="currentRoomUuid === room.uuid"
+				[open]="currentRoomUuid === room.uuid || filteredRooms.length === 1"
 			>
 				@for (table of room.tables; track table.uuid) {
 					<dav-tree-item

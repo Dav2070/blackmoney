@@ -25,6 +25,7 @@ import { Bill } from "./models/Bill"
 import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
+import { Reservation } from "./models/Reservation"
 import {
 	ApolloResult,
 	CategoryResource,
@@ -47,6 +48,7 @@ import {
 	BillResource,
 	OfferResource,
 	OfferItemResource,
+	ReservationResource,
 	ErrorCode,
 	Theme,
 	OrderItemType
@@ -190,8 +192,7 @@ export async function initUserAfterLogin(
 	apiService: ApiService,
 	authService: AuthService,
 	dataService: DataService,
-	settingsService: SettingsService,
-	router: Router
+	settingsService: SettingsService
 ): Promise<void> {
 	await authService.setAccessToken(accessToken)
 	dataService.loadApollo(accessToken)
@@ -201,9 +202,6 @@ export async function initUserAfterLogin(
 	dataService.blackmoneyUserPromiseHolder.Resolve()
 
 	await settingsService.setRestaurant(restaurantUuid)
-
-	// Redirect to user page
-	router.navigate(["user"])
 }
 
 export async function getSerialNumber(
@@ -680,6 +678,7 @@ export function convertOrderItemResourceToOrderItem(
 		course: orderItemResource.course,
 		order: convertOrderResourceToOrder(orderItemResource.order),
 		product: convertProductResourceToProduct(orderItemResource.product),
+		offer: convertOfferResourceToOffer(orderItemResource.offer),
 		orderItems,
 		orderItemVariations
 	}
@@ -705,6 +704,27 @@ export function convertOrderItemVariationResourceToOrderItemVariation(
 		uuid: orderItemVariationResource.uuid,
 		count: orderItemVariationResource.count,
 		variationItems
+	}
+}
+
+export function convertReservationResourceToReservation(
+	reservationResource: ReservationResource
+): Reservation {
+	if (reservationResource == null) {
+		return null
+	}
+
+	return {
+		uuid: reservationResource.uuid,
+		table: convertTableResourceToTable(reservationResource.table),
+		name: reservationResource.name,
+		phoneNumber: reservationResource.phoneNumber,
+		email: reservationResource.email,
+		numberOfPeople: reservationResource.numberOfPeople,
+		date: reservationResource.date
+			? new Date(reservationResource.date)
+			: null,
+		checkedIn: reservationResource.checkedIn
 	}
 }
 

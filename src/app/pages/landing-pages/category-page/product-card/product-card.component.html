@@ -20,9 +20,8 @@
 
 		<div class="product-content">
 			<div class="product-meta">
-				<span class="price">{{
-					product.price / 100 | currency: "EUR" : "symbol" : "1.2-2"
-				}}</span>
+				<span class="price">{{ formatPrice(product.price) }}</span>
+
 				@if (product.takeaway) {
 					<span class="badge takeaway">Takeaway</span>
 				}
@@ -33,20 +32,12 @@
 					<strong>Variationen:</strong>
 					<div class="variation-chips">
 						@for (variation of product.variations; track variation.uuid) {
-							<div
-								class="variation-chip"
-								(mouseenter)="showVariationTooltip($event, variation)"
-								(mouseleave)="scheduleHideVariationTooltip()"
-							>
-								<span class="variation-badge">{{
-									variation.name
-								}}</span>
-							</div>
+							<dav-badge color="secondary" tonal>
+								{{ variation.name }}
+							</dav-badge>
 						}
 					</div>
 				</div>
-			} @else {
-				<p class="no-variations">Keine Variationen</p>
 			}
 		</div>
 	</dav-card>

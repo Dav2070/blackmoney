@@ -36,11 +36,6 @@
 				{{ orderItem.count }} ×
 				{{ formatPrice(orderItem.product.price) }}
 			</p>
-		} @else if (orderItem.orderItemVariations.length > 0) {
-			<p>
-				{{ orderItem.count }} ×
-				{{ formatPrice(orderItem.product.price) }}
-			</p>
 		}
 	</div>
 

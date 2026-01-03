@@ -22,6 +22,11 @@ export class AllItemHandler {
 		return this.allPickedItems
 	}
 
+	// Setzt Items direkt ohne Merging-Logik (für Backend-Responses, die bereits korrekt gemerged sind)
+	setItems(items: OrderItem[]) {
+		this.allPickedItems = items
+	}
+
 	// Lade alle Items einer Order
 	async loadItemsFromOrder(
 		apiService: ApiService,
@@ -44,14 +49,45 @@ export class AllItemHandler {
 								count
 								type
 								discount
+								notes
+								takeAway
+								course
 								order {
 									uuid
 								}
 								product {
 									uuid
+									type
 									name
 									price
 									shortcut
+									variations {
+										total
+										items {
+											uuid
+											name
+											variationItems {
+												total
+												items {
+													uuid
+													name
+													additionalCost
+												}
+											}
+										}
+									}
+								}
+								offer {
+									id
+									uuid
+									offerType
+									discountType
+									offerValue
+									startDate
+									endDate
+									startTime
+									endTime
+									weekdays
 								}
 								orderItemVariations {
 									total
@@ -100,6 +136,21 @@ export class AllItemHandler {
 												}
 											}
 										}
+										orderItemVariations {
+											total
+											items {
+												uuid
+												count
+												variationItems {
+													total
+													items {
+														uuid
+														name
+														additionalCost
+													}
+												}
+											}
+										}
 									}
 								}
 							}
@@ -114,12 +165,12 @@ export class AllItemHandler {
 		)
 
 		if (order.data.retrieveTable.orders.total > 0) {
-			this.clearItems()
-
-			for (const item of order.data.retrieveTable.orders.items[0].orderItems
-				.items) {
-				this.pushNewItem(convertOrderItemResourceToOrderItem(item))
-			}
+			// Setze Items direkt ohne Merging-Logik (Backend hat bereits gemerged)
+			this.setItems(
+				order.data.retrieveTable.orders.items[0].orderItems.items.map(item =>
+					convertOrderItemResourceToOrderItem(item)
+				)
+			)
 
 			return convertOrderResourceToOrder(
 				order.data.retrieveTable.orders.items[0]

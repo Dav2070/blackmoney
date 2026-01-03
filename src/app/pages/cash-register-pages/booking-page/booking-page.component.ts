@@ -354,7 +354,11 @@ export class BookingPageComponent {
 	}
 
 	selectTableButtonClick() {
-		this.selectTableDialog.show()
+		this.selectTableDialog.show(this.console, this.consoleActive, false)
+	}
+
+	transferTableButtonClick() {
+		this.selectTableDialog.show(this.console, this.consoleActive, true)
 	}
 
 	async navigateToPaymentPage(event: MouseEvent) {
@@ -363,9 +367,25 @@ export class BookingPageComponent {
 		this.router.navigate(["dashboard", "tables", this.uuid, "payment"])
 	}
 
-	selectTableDialogPrimaryButtonClick(event: { uuid: string }) {
+	selectTableDialogPrimaryButtonClick(event: {
+		uuid: string
+		transferMode: boolean
+	}) {
 		this.selectTableDialog.hide()
-		this.router.navigate(["dashboard", "tables", event.uuid])
+
+		if (event.transferMode) {
+			// Transfer mode: Navigate to transfer page
+			this.router.navigate([
+				"dashboard",
+				"tables",
+				this.table.uuid,
+				event.uuid
+			])
+		} else {
+			// Switch table mode: Reset console and navigate
+			this.showTotal()
+			this.router.navigate(["dashboard", "tables", event.uuid])
+		}
 	}
 
 	showSelectProductDialog() {
@@ -681,7 +701,10 @@ export class BookingPageComponent {
 			incoming.count = newItem.count
 			this.stagedItems.pushNewItem(incoming)
 		} else {
-			newItem.count = newItem.orderItemVariations.length
+			newItem.count = 0
+			for (let variation of newItem.orderItemVariations) {
+				newItem.count += variation.count
+			}
 			this.stagedItems.pushNewItem(newItem)
 		}
 
@@ -768,139 +791,16 @@ export class BookingPageComponent {
 	async loadOrders() {
 		this.ordersLoading = true
 
-		let order = await this.apiService.retrieveTable(
-			`
-				orders(paid: $paid) {
-					total
-					items {
-						uuid
-						bill {
-							uuid
-						}
-						totalPrice
-						orderItems {
-							total
-							items {
-								uuid
-								count
-								type
-								discount
-								notes
-								takeAway
-								course
-								order {
-									uuid
-								}
-								product {
-									uuid
-									type
-									name
-									price
-									shortcut
-									variations {
-										total
-										items {
-											uuid
-											name
-											variationItems {
-												total
-												items {
-													uuid
-													name
-													additionalCost
-												}
-											}
-										}
-									}
-								}
-								offer {
-									id
-									uuid
-									offerType
-									discountType
-									offerValue
-									startDate
-									endDate
-									startTime
-									endTime
-									weekdays
-								}
-								orderItemVariations {
-									total
-									items {
-										uuid
-										count
-										variationItems {
-											total
-											items {
-												id
-												uuid
-												name
-												additionalCost
-											}
-										}
-									}
-								}
-								orderItems {
-									items {
-										uuid
-										count
-										type
-										discount
-										notes
-										takeAway
-										course
-										product {
-											uuid
-											name
-											type
-											price
-											shortcut
-											variations {
-												total
-												items {
-													uuid
-													name
-													variationItems {
-														total
-														items {
-															uuid
-															name
-															additionalCost
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			`,
-			{
-				uuid: this.table.uuid,
-				paid: false
-			}
+		const order = await this.bookedItems.loadItemsFromOrder(
+			this.apiService,
+			this.table.uuid
 		)
 
 		this.ordersLoading = false
 
-		if (order.data.retrieveTable.orders.total > 0) {
-			if (this.orderUuid == null) {
-				this.orderUuid = order.data.retrieveTable.orders.items[0].uuid
-				this.billUuid = order.data.retrieveTable.orders.items[0].bill?.uuid
-			}
-
-			this.bookedItems.clearItems()
-
-			for (let item of order.data.retrieveTable.orders.items[0].orderItems
-				.items) {
-				this.bookedItems.pushNewItem(
-					convertOrderItemResourceToOrderItem(item)
-				)
-			}
+		if (order != null) {
+			this.orderUuid = order.uuid
+			this.billUuid = order.bill?.uuid
 		}
 	}
 
@@ -928,13 +828,23 @@ export class BookingPageComponent {
 				uuid: item.product.uuid,
 				count: item.count,
 				discount: item.discount,
+				notes: item.notes,
+				takeAway: item.takeAway,
+				course: item.course,
+				offerUuid: item.offer?.uuid,
 				variations: item.orderItemVariations?.map(variation => ({
 					count: variation.count,
 					variationItemUuids: variation.variationItems.map(vi => vi.uuid)
 				})),
 				orderItems: item.orderItems?.map(orderItem => ({
 					productUuid: orderItem.product.uuid,
-					count: orderItem.count
+					count: orderItem.count,
+					variations: orderItem.orderItemVariations?.map(variation => ({
+						count: variation.count,
+						variationItemUuids: variation.variationItems.map(
+							vi => vi.uuid
+						)
+					}))
 				}))
 			})
 		}
@@ -974,6 +884,13 @@ export class BookingPageComponent {
 									}
 								}
 							}
+						}
+						offer {
+							id
+							uuid
+							offerType
+							discountType
+							offerValue
 						}
 						orderItemVariations {
 							total
@@ -1021,6 +938,28 @@ export class BookingPageComponent {
 										}
 									}
 								}
+								offer {
+									id
+									uuid
+									offerType
+									discountType
+									offerValue
+								}
+								orderItemVariations {
+									total
+									items {
+										uuid
+										count
+										variationItems {
+											total
+											items {
+												uuid
+												name
+												additionalCost
+											}
+										}
+									}
+								}
 							}
 						}
 					}
@@ -1032,11 +971,12 @@ export class BookingPageComponent {
 			}
 		)
 
-		this.bookedItems.clearItems()
-
-		for (const item of items.data.addProductsToOrder.orderItems.items) {
-			this.bookedItems.pushNewItem(convertOrderItemResourceToOrderItem(item))
-		}
+		// Setze alle Items direkt ohne Merging-Logik (Backend hat bereits gemerged)
+		this.bookedItems.setItems(
+			items.data.addProductsToOrder.orderItems.items.map(item =>
+				convertOrderItemResourceToOrderItem(item)
+			)
+		)
 
 		this.stagedItems.clearItems()
 
@@ -1113,7 +1053,7 @@ export class BookingPageComponent {
 		if (pickedItem) {
 			this.clickItem(pickedItem)
 		} else {
-			window.alert("Item gibt es nicht")
+			showToast(`Artikel mit Nummer ${id} wurde nicht gefunden.`)
 		}
 	}
 
@@ -1135,6 +1075,15 @@ export class BookingPageComponent {
 		}
 	}
 
+	//Prüft ob das ausgewählte Item aus bookedItems ist
+	isSelectedItemBooked(): boolean {
+		if (!this.selectedOrderItem) {
+			return false
+		}
+		// Prüfe ob das Item in den bookedItems ist
+		return this.bookedItems.getOrderItems().includes(this.selectedOrderItem)
+	}
+
 	//Füge selektiertes Item hinzu
 	addSelectedItem(orderItem: OrderItem) {
 		if (
@@ -1148,11 +1097,10 @@ export class BookingPageComponent {
 				this.selectedProduct = orderItem.orderItems[0].product
 				this.selectProductVariationsDialog.show()
 			} else {
-				// Bestimme Ziel-Handler (wenn ausgewählt: tmpAllItemHandler, sonst stagedItems)
-				const handler =
-					this.tmpAllItemHandler === this.bookedItems
-						? this.bookedItems
-						: this.stagedItems
+				// Wenn Item aus bookedItems ist, immer zu stagedItems hinzufügen
+				const handler = this.isSelectedItemBooked()
+					? this.stagedItems
+					: this.tmpAllItemHandler || this.stagedItems
 
 				const delta = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 

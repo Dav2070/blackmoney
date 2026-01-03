@@ -13,7 +13,7 @@ import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
 import { Room } from "src/app/models/Room"
-import { convertRoomResourceToRoom } from "src/app/utils"
+import { convertRoomResourceToRoom, showToast } from "src/app/utils"
 
 @Component({
 	selector: "app-select-table-dialog",
@@ -28,7 +28,11 @@ export class SelectTableDialogComponent {
 	@Input() currentTableUuid: string = ""
 	@Output() primaryButtonClick = new EventEmitter()
 	rooms: Room[] = []
+	filteredRooms: Room[] = []
 	selectedTableUuid: string = null
+	searchNumber: string = ""
+	consoleActive: boolean = false
+	transferMode: boolean = false
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
 
@@ -50,7 +54,21 @@ export class SelectTableDialogComponent {
 		}
 	}
 
-	async show() {
+	async show(
+		searchNumber?: string,
+		consoleActive?: boolean,
+		transferMode?: boolean
+	) {
+		if (searchNumber !== undefined) {
+			this.searchNumber = searchNumber
+		}
+		if (consoleActive !== undefined) {
+			this.consoleActive = consoleActive
+		}
+		if (transferMode !== undefined) {
+			this.transferMode = transferMode
+		}
+
 		if (this.rooms.length === 0) {
 			const listRoomsResponse = await this.apiService.listRooms(
 				`
@@ -77,7 +95,12 @@ export class SelectTableDialogComponent {
 			}
 		}
 
-		this.visible = true
+		const shouldAutoSelect = this.filterRoomsBySearchNumber()
+
+		// Wenn Auto-Select aktiviert ist, öffne den Dialog nicht
+		if (!shouldAutoSelect) {
+			this.visible = true
+		}
 	}
 
 	hide() {
@@ -90,7 +113,87 @@ export class SelectTableDialogComponent {
 
 	submit() {
 		this.primaryButtonClick.emit({
-			uuid: this.selectedTableUuid
+			uuid: this.selectedTableUuid,
+			transferMode: this.transferMode
 		})
+	}
+
+	filterRoomsBySearchNumber(): boolean {
+		if (!this.consoleActive || !this.searchNumber) {
+			// Keine Filterung, zeige alle Räume (ohne aktuellen Tisch)
+			this.filteredRooms = this.rooms
+				.map(room => ({
+					...room,
+					tables: room.tables.filter(
+						table => table.uuid !== this.currentTableUuid
+					)
+				}))
+				.filter(room => room.tables.length > 0)
+			return false
+		}
+
+		// Extrahiere die Nummer aus der Console (z.B. "5" aus "5" oder "5,00 €")
+		const searchNum = this.searchNumber.replace(/[^0-9]/g, "")
+
+		if (!searchNum || searchNum === "0") {
+			this.filteredRooms = [...this.rooms]
+			return false
+		}
+
+		// Konvertiere zu Number für exakten Vergleich
+		const searchNumber = parseInt(searchNum, 10)
+
+		// Filtere Räume und Tische nach der Suchnummer (exakter Match) und entferne aktuellen Tisch
+		this.filteredRooms = this.rooms
+			.map(room => {
+				const filteredTables = room.tables.filter(
+					table =>
+						table.name === searchNumber &&
+						table.uuid !== this.currentTableUuid
+				)
+
+				if (filteredTables.length > 0) {
+					return {
+						...room,
+						tables: filteredTables
+					}
+				}
+
+				return null
+			})
+			.filter(room => room !== null)
+
+		// Wenn keine Tische gefunden wurden, zeige Toast und öffne Dialog nicht
+		const allFilteredTables = this.filteredRooms.flatMap(room => room.tables)
+		if (allFilteredTables.length === 0) {
+			// Prüfe ob die Nummer dem aktuellen Tisch entspricht
+			const currentTableExists = this.rooms.some(room =>
+				room.tables.some(
+					table =>
+						table.name === searchNumber &&
+						table.uuid === this.currentTableUuid
+				)
+			)
+
+			if (currentTableExists) {
+				showToast(`Sie befinden sich bereits an Tisch ${searchNumber}.`)
+			} else {
+				showToast(
+					`Kein Tisch mit Nummer ${searchNumber} gefunden. Bitte Eingabe überprüfen.`
+				)
+			}
+			return true // Dialog nicht öffnen
+		}
+
+		// Wenn nur ein Tisch gefunden wurde, wähle ihn automatisch aus
+		if (allFilteredTables.length === 1) {
+			this.selectedTableUuid = allFilteredTables[0].uuid
+			setTimeout(() => {
+				this.submit()
+			}, 50)
+			return true // Dialog soll nicht geöffnet werden
+		}
+
+		return false // Dialog soll geöffnet werden
 	}
 }

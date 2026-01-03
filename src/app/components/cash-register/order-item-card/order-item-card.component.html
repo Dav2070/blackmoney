@@ -5,12 +5,20 @@
 		selectedOrderItemNote === orderItem.notes
 	"
 	[class.clickable]="clickable"
+	[class.collapsible]="isCollapsible()"
 >
 	<div class="order-item-card-id">
 		<p>#{{ getProductNumber(orderItem) }}</p>
 	</div>
 
 	<div class="order-item-card-name">
+		@if (isCollapsible()) {
+			<fa-icon
+				[icon]="isExpanded ? faChevronUp : faChevronDown"
+				class="expand-icon"
+				(click)="toggleExpanded($event)"
+			></fa-icon>
+		}
 		<p>{{ orderItem.product.name }}</p>
 		@if (orderItem.notes) {
 			<fa-icon
@@ -43,28 +51,59 @@
 		<p>{{ formatPrice(calculateTotalPriceOfOrderItem(orderItem)) }}</p>
 	</div>
 
-	@if (orderItem.orderItemVariations.length > 0) {
-		<div class="order-item-variations-separator"></div>
+	@if (isCollapsible() && isExpanded) {
+		@if (orderItem.orderItemVariations.length > 0) {
+			<div class="order-item-variations-separator"></div>
 
-		@for (
-			orderItemVariation of orderItem.orderItemVariations;
-			track orderItemVariation.uuid
+			@for (
+				orderItemVariation of orderItem.orderItemVariations;
+				track orderItemVariation.uuid
+			) {
+				<div class="order-item-card-variation-name">
+					<p>- {{ getCombinedVariationNames(orderItemVariation) }}</p>
+				</div>
+
+				<div class="order-item-card-variation-unit-price">
+					<p>
+						{{ orderItemVariation.count }} ×
+						{{
+							formatPrice(
+								getTotalVariationPrice(orderItemVariation) +
+									(orderItem.diversePrice ?? orderItem.product.price)
+							)
+						}}
+					</p>
+				</div>
+			}
+		}
+
+		@if (
+			orderItem.type === OrderItemType.Special ||
+			orderItem.type === OrderItemType.Menu
 		) {
-			<div class="order-item-card-variation-name">
-				<p>- {{ getCombinedVariationNames(orderItemVariation) }}</p>
-			</div>
+			<div class="order-item-variations-separator"></div>
 
-			<div class="order-item-card-variation-unit-price">
-				<p>
-					{{ orderItemVariation.count }} ×
-					{{
-						formatPrice(
-							getTotalVariationPrice(orderItemVariation) +
-								(orderItem.diversePrice ?? orderItem.product.price)
-						)
-					}}
-				</p>
-			</div>
+			@if (orderItem.orderItems && orderItem.orderItems.length > 0) {
+				@for (subItem of orderItem.orderItems; track subItem.uuid) {
+					<div class="order-item-card-sub-item-name">
+						<p>- {{ subItem.product.name }}</p>
+					</div>
+
+					<div class="order-item-card-sub-item-count">
+						<p>{{ subItem.count }}×</p>
+					</div>
+
+					<div class="order-item-card-sub-item-price">
+						<p>
+							{{
+								formatPrice(
+									subItem.diversePrice ?? subItem.product.price
+								)
+							}}
+						</p>
+					</div>
+				}
+			}
 		}
 	}
 </li>

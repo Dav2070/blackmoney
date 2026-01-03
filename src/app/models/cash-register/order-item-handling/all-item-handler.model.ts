@@ -183,18 +183,21 @@ export class AllItemHandler {
 	}
 
 	// Entry: neues Item hinzufügen (delegiert an gemeinsame Merge-Logik)
-	pushNewItem(pickedItem: OrderItem, index?: number) {
+	// Gibt das tatsächliche Item zurück (entweder das neue oder das gemergte)
+	pushNewItem(pickedItem: OrderItem, index?: number): OrderItem {
 		const incoming = { ...pickedItem } // Kopie zum Schutz vor Seiteneffekten
 
 		// Suche Merge-Ziel (gibt undefined zurück, wenn keines vorhanden)
 		const target = this.merger.findMergeTarget(incoming, this.allPickedItems)
 
 		if (target) {
-			// Match gefunden -> zusammenführen; wenn Merge fehlschlägt -> einfügen
+			// Match gefunden -> zusammenführen; gibt das existing Item zurück
 			this.merger.mergeIntoExisting(target, incoming)
+			return target
 		} else {
-			// Kein Match -> neues Item einfügen
+			// Kein Match -> neues Item einfügen und zurückgeben
 			this.insertAtIndex(incoming, index)
+			return incoming
 		}
 	}
 

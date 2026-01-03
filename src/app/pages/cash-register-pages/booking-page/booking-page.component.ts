@@ -1122,6 +1122,7 @@ export class BookingPageComponent {
 				const originalParentCount =
 					orderItem.count && orderItem.count > 0 ? orderItem.count : 1
 				incoming.count = delta
+				incoming.isExpanded = true
 
 				// Skaliere Subitems und deren Variationen pro Einheit (per-unit), dann mit delta multiplizieren
 				for (const sub of incoming.orderItems ?? []) {

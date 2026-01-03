@@ -480,11 +480,10 @@ export class BookingPageComponent {
 					for (let i = 0; i < orderItem.orderItems.length; i++) {
 						let existingOrderItem = orderItem.orderItems[i]
 
-						if (existingOrderItem.orderItemVariations) {
+						if (existingOrderItem.orderItemVariations?.length > 0) {
 							for (
 								let j = 0;
-								j <
-								(existingOrderItem.orderItemVariations?.length || 0);
+								j < existingOrderItem.orderItemVariations.length;
 								j++
 							) {
 								existingOrderItem.orderItemVariations[j].count -=
@@ -497,6 +496,7 @@ export class BookingPageComponent {
 							(existingOrderItem.count / orderItem.count) *
 							this.tmpAnzahl
 					}
+
 					orderItem.count -= this.tmpAnzahl
 				} else {
 					for (let i = 0; i < orderItem.orderItems.length; i++) {
@@ -625,25 +625,23 @@ export class BookingPageComponent {
 					// Wenn Variationen vorhanden sind - öffne den Subtract Dialog
 					this.subtractProductVariationsDialog.show()
 				}
-			} else {
-				if (this.selectedOrderItem.orderItemVariations.length > 0) {
-					//Wenn Item Variationen enthält - öffne den Subtract Dialog
-					this.subtractProductVariationsDialog.show()
-				} else if (this.tmpAnzahl > 0) {
-					//Wenn zu löschende Anzahl eingegeben wurde (4 X -)
-					if (this.selectedOrderItem.count >= this.tmpAnzahl) {
-						this.selectedOrderItem.count -= this.tmpAnzahl
-					} else {
-						window.alert("Anzahl ist zu hoch")
-					}
-
-					this.stagedItems.removeEmptyItems()
-					this.showTotal()
+			} else if (this.selectedOrderItem.orderItemVariations.length > 0) {
+				// Wenn Item Variationen enthält - öffne den Subtract Dialog
+				this.subtractProductVariationsDialog.show()
+			} else if (this.tmpAnzahl > 0) {
+				// Wenn zu löschende Anzahl eingegeben wurde (4 X -)
+				if (this.selectedOrderItem.count >= this.tmpAnzahl) {
+					this.selectedOrderItem.count -= this.tmpAnzahl
 				} else {
-					this.selectedOrderItem.count -= 1
-					this.stagedItems.removeEmptyItems()
-					this.showTotal()
+					window.alert("Anzahl ist zu hoch")
 				}
+
+				this.stagedItems.removeEmptyItems()
+				this.showTotal()
+			} else {
+				this.selectedOrderItem.count--
+				this.stagedItems.removeEmptyItems()
+				this.showTotal()
 			}
 		}
 	}
@@ -720,7 +718,8 @@ export class BookingPageComponent {
 		const variationCombinations = event.variationCombinations
 
 		// Determine which item contains the variations
-		let targetItem: OrderItem
+		let targetItem: OrderItem = null
+
 		if (this.selectedOrderItem.type === OrderItemType.Special) {
 			targetItem = this.selectedOrderItem.orderItems[0]
 		} else {

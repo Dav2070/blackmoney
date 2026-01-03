@@ -1,13 +1,15 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core"
-import { OrderItem } from "src/app/models/OrderItem"
-import { formatPrice } from "src/app/utils"
-import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { OrderItemType } from "src/app/types"
 import {
 	faNoteSticky,
 	faCupTogo,
 	faUtensils
 } from "@fortawesome/pro-solid-svg-icons"
+import { OrderItem } from "src/app/models/OrderItem"
+import { OrderItemVariation } from "src/app/models/OrderItemVariation"
+import { VariationItem } from "src/app/models/VariationItem"
+import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
+import { formatPrice } from "src/app/utils"
 
 @Component({
 	selector: "app-order-item-card",
@@ -53,13 +55,13 @@ export class OrderItemCardComponent {
 		return this.priceCalculator.calculateTotalPrice(orderItem)
 	}
 
-	getCombinedVariationNames(orderItemVariation: any): string {
+	getCombinedVariationNames(orderItemVariation: OrderItemVariation): string {
 		return orderItemVariation.variationItems
-			.map((vi: any) => vi.name)
+			.map((vi: VariationItem) => vi.name)
 			.join(", ")
 	}
 
-	getTotalVariationPrice(orderItemVariation: any): number {
+	getTotalVariationPrice(orderItemVariation: OrderItemVariation): number {
 		return orderItemVariation.variationItems.reduce(
 			(sum: number, vi: any) => sum + vi.additionalCost,
 			0

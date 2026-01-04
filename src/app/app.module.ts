@@ -86,6 +86,7 @@ import { OfferAvailabilityComponent } from "./dialogs/add-offer-dialog/offer-ava
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
+import { LandingOrderPageComponent } from "./pages/landing-pages/landing-order-page/landing-order-page.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
 import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-settings-page/general-settings-page.component"
@@ -203,6 +204,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
+		LandingOrderPageComponent,
 		LandingPricingPageComponent,
 		UserPageComponent,
 		GeneralSettingsPageComponent,

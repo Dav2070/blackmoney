@@ -13,6 +13,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
+import { ProductVariationsCombinationsDialogComponent } from "src/app/dialogs/product-variations-combinations-dialog/product-variations-combinations-dialog.component"
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Table } from "src/app/models/Table"
@@ -52,8 +53,15 @@ export class PaymentPageComponent {
 
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 
+	//#region MoveMultiplProductsDialog variations
 	@ViewChild("moveMultipleProductsDialog")
 	moveMultipleProductsDialog: MoveMultipleProductsDialogComponent
+	//#endregion
+
+	//#region ProductVariationsDialog variables
+	@ViewChild("productVariationsCombinationsDialog")
+	productVariationsCombinationsDialog: ProductVariationsCombinationsDialogComponent
+	//#endregion
 
 	//#region ContextMenu variables
 	@ViewChild("contextMenu")
@@ -83,7 +91,7 @@ export class PaymentPageComponent {
 			if (this.table) break
 		}
 
-		let order = await this.bookedItems.loadItemsFromOrder(
+		const order = await this.bookedItems.loadItemsFromOrder(
 			this.apiService,
 			this.table.uuid
 		)
@@ -208,6 +216,7 @@ export class PaymentPageComponent {
 				send.reduceItem(item, anzahl)
 				receiving.pushNewItem({ ...item, count: anzahl })
 			}
+
 			if (item.orderItemVariations.length == 1) {
 				this.tmpSend = send
 				this.tmpReceiver = receiving
@@ -220,17 +229,19 @@ export class PaymentPageComponent {
 				}
 				this.transferVariation()
 			}
+
 			if (item.orderItemVariations.length > 1) {
 				this.tmpSend = send
 				this.tmpReceiver = receiving
 				this.lastClickedItem = item
 				this.tmpVariations = JSON.parse(JSON.stringify(item))
 				this.tmpVariations.count = 0
-				for (let variation of this.tmpVariations.orderItemVariations) {
+
+				for (const variation of this.tmpVariations.orderItemVariations) {
 					variation.count = 0
 				}
 
-				this.isItemPopupVisible = true
+				this.productVariationsCombinationsDialog.show()
 			}
 		}
 	}
@@ -240,6 +251,7 @@ export class PaymentPageComponent {
 			this.tmpVariations.orderItemVariations.filter(v => v.count > 0)
 		this.tmpReceiver.pushNewItem(this.tmpVariations)
 		this.tmpSend.reduceItem(this.lastClickedItem, this.tmpVariations.count)
+
 		for (
 			let i = this.lastClickedItem.orderItemVariations.length - 1;
 			i >= 0;
@@ -389,13 +401,15 @@ export class PaymentPageComponent {
 	async createBill(payment: PaymentMethod) {
 		await this.dataService.registerClientPromiseHolder.AwaitResult()
 
+		// Update the current order with the remaining items
 		// TODO: Error handling
+		// TODO: Check if there are any remaining items, if not use the order for all items
 		await this.apiService.updateOrder("uuid", {
 			uuid: this.orderUuid,
 			orderItems: this.bookedItems.getItemsCountandId()
 		})
 
-		let newOrder = await this.apiService.createOrder("uuid", {
+		const newOrder = await this.apiService.createOrder("uuid", {
 			tableUuid: this.table.uuid
 		})
 
@@ -447,5 +461,49 @@ export class PaymentPageComponent {
 			this.contextMenuBillsList ? this.activeBill : this.bookedItems
 		)
 		this.tmpAnzahl = 1
+	}
+
+	productVariationsCombinationsDialogPrimaryButtonClick(event: {
+		variationCombinations: { [key: string]: number }
+	}) {
+		this.productVariationsCombinationsDialog.hide()
+
+		// Go through each variation combination and update the orderItemVariations in lastClickedItem accordingly
+		for (const key of Object.keys(event.variationCombinations)) {
+			const count = event.variationCombinations[key]
+			if (count === 0) continue
+
+			// Find the matching OrderItemVariation
+			const matchingVariation =
+				this.lastClickedItem.orderItemVariations.find(
+					oiv =>
+						oiv.variationItems.length === key.split(",").length &&
+						oiv.variationItems.every(vi => key.includes(vi.uuid))
+				)
+
+			if (matchingVariation) {
+				this.tmpSend.reduceItem(this.lastClickedItem, count)
+				matchingVariation.count -= count
+
+				// Entfernen, wenn der count kleiner oder gleich 0 ist
+				if (matchingVariation.count <= 0) {
+					this.lastClickedItem.orderItemVariations =
+						this.lastClickedItem.orderItemVariations.filter(
+							ov => ov !== matchingVariation
+						)
+				}
+
+				this.tmpReceiver.pushNewItem({
+					...this.lastClickedItem,
+					count: count,
+					orderItemVariations: [
+						{
+							...matchingVariation,
+							count: count
+						}
+					]
+				})
+			}
+		}
 	}
 }

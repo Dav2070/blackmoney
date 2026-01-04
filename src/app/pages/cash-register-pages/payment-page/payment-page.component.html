@@ -216,6 +216,15 @@
 	(primaryButtonClick)="moveMultipleProductsDialogPrimaryButtonClick($event)"
 ></app-move-multiple-products-dialog>
 
+<app-product-variations-combinations-dialog
+	#productVariationsCombinationsDialog
+	[orderItem]="lastClickedItem"
+	mode="select"
+	(primaryButtonClick)="
+		productVariationsCombinationsDialogPrimaryButtonClick($event)
+	"
+></app-product-variations-combinations-dialog>
+
 <dav-context-menu
 	#contextMenu
 	[visible]="contextMenuVisible"

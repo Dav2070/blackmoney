@@ -17,17 +17,17 @@ import { VariationItem } from "src/app/models/VariationItem"
 import { OrderItem } from "src/app/models/OrderItem"
 
 @Component({
-	selector: "app-subtract-product-variations-dialog",
-	templateUrl: "./subtract-product-variations-dialog.component.html",
-	styleUrl: "./subtract-product-variations-dialog.component.scss",
+	selector: "app-product-variations-combinations-dialog",
+	templateUrl: "./product-variations-combinations-dialog.component.html",
+	styleUrl: "./product-variations-combinations-dialog.component.scss",
 	standalone: false
 })
-export class SubtractProductVariationsDialogComponent {
+export class ProductVariationsCombinationsDialogComponent {
 	faPlus = faPlus
 	faMinus = faMinus
 	Object = Object
 	locale =
-		this.localizationService.locale.dialogs.subtractProductVariationsDialog
+		this.localizationService.locale.dialogs.productVariationsCombinationsDialog
 	actionsLocale = this.localizationService.locale.actions
 
 	visible: boolean = false

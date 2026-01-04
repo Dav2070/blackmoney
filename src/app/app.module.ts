@@ -68,7 +68,7 @@ import { BillsOverviewDialogComponent } from "./dialogs/bills-overview-dialog/bi
 import { SelectProductDialogComponent } from "./dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectMenuSpecialProductsDialogComponent } from "./dialogs/select-menu-special-products-dialog/select-menu-special-products-dialog.component"
 import { SelectProductVariationsDialogComponent } from "./dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
-import { SubtractProductVariationsDialogComponent } from "./dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
+import { ProductVariationsCombinationsDialogComponent } from "./dialogs/product-variations-combinations-dialog/product-variations-combinations-dialog.component"
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
@@ -176,7 +176,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		SelectProductDialogComponent,
 		SelectMenuSpecialProductsDialogComponent,
 		SelectProductVariationsDialogComponent,
-		SubtractProductVariationsDialogComponent,
+		ProductVariationsCombinationsDialogComponent,
 		MoveMultipleProductsDialogComponent,
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,

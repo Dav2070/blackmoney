@@ -1,7 +1,7 @@
 <dav-dialog
 	#dialog
-	[headline]="locale.headline"
-	[primaryButtonText]="actionsLocale.delete"
+	[headline]="mode === 'select' ? locale.selectHeadline : locale.removeHeadline"
+	[primaryButtonText]="mode === 'select' ? actionsLocale.select : actionsLocale.delete"
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
 	maxWidth="450"

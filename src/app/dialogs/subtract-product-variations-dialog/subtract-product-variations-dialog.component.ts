@@ -37,6 +37,7 @@ export class SubtractProductVariationsDialogComponent {
 	originalVariationCombinations: { [key: string]: number } = {}
 
 	@Input() orderItem: OrderItem = null
+	@Input() mode: "select" | "subtract" = "select"
 
 	get product(): Product {
 		return this.orderItem?.product
@@ -69,14 +70,15 @@ export class SubtractProductVariationsDialogComponent {
 		setTimeout(() => {
 			// Create all final combinations directly
 			this.variationCombinations = {}
-
 			let items: string[][] = []
 
 			for (const variation of this.product.variations) {
 				const currentItems: string[] = []
+
 				for (const variationItem of variation.variationItems) {
 					currentItems.push(variationItem.uuid)
 				}
+
 				items.push(currentItems)
 			}
 
@@ -92,6 +94,14 @@ export class SubtractProductVariationsDialogComponent {
 			this.originalVariationCombinations = JSON.parse(
 				JSON.stringify(this.variationCombinations)
 			)
+
+			for (const key of Object.keys(this.variationCombinations)) {
+				if (this.variationCombinations[key] === 0) {
+					delete this.variationCombinations[key]
+				} else if (this.mode === "select") {
+					this.variationCombinations[key] = 0
+				}
+			}
 
 			this.visible = true
 		}, 100)

@@ -17,15 +17,13 @@
 					@let currentCount = variationCombinations[key] ?? 0;
 					@let originalCount = getOriginalCount(key);
 
-					@if (originalCount > 0) {
-						<app-counter
-							[count]="currentCount"
-							[headline]="getHeadlineForKey(key)"
-							[minusButtonDisabled]="currentCount === 0"
-							[plusButtonDisabled]="currentCount >= originalCount"
-							(change)="counterChange(key, $event)"
-						></app-counter>
-					}
+					<app-counter
+						[count]="currentCount"
+						[headline]="getHeadlineForKey(key)"
+						[minusButtonDisabled]="currentCount === 0"
+						[plusButtonDisabled]="currentCount >= originalCount"
+						(change)="counterChange(key, $event)"
+					></app-counter>
 				}
 			</div>
 		</div>

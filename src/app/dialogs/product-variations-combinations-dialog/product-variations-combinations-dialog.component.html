@@ -5,7 +5,11 @@
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
 	maxWidth="450"
-	[primaryButtonDisabled]="false"
+	[primaryButtonDisabled]="
+		mode === 'select'
+			? getAllVariationItemCount() === 0
+			: false
+	"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
 	(defaultButtonClick)="hide()"

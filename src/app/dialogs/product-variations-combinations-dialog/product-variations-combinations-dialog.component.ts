@@ -27,7 +27,8 @@ export class ProductVariationsCombinationsDialogComponent {
 	faMinus = faMinus
 	Object = Object
 	locale =
-		this.localizationService.locale.dialogs.productVariationsCombinationsDialog
+		this.localizationService.locale.dialogs
+			.productVariationsCombinationsDialog
 	actionsLocale = this.localizationService.locale.actions
 
 	visible: boolean = false
@@ -165,6 +166,16 @@ export class ProductVariationsCombinationsDialogComponent {
 
 	getOriginalCount(variationKey: string): number {
 		return this.originalVariationCombinations[variationKey] ?? 0
+	}
+
+	getAllVariationItemCount(): number {
+		let totalCount = 0
+
+		for (const key of Object.keys(this.variationCombinations)) {
+			totalCount += this.variationCombinations[key]
+		}
+
+		return totalCount
 	}
 
 	submit() {

@@ -7,17 +7,6 @@ import {
 } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { isPlatformBrowser } from "@angular/common"
-import {
-	faStar,
-	faCupTogo,
-	faTruck,
-	faSearch,
-	faArrowLeft,
-	faChevronLeft,
-	faChevronRight,
-	faList,
-	faPlus
-} from "@fortawesome/pro-regular-svg-icons"
 import { Restaurant } from "src/app/models/Restaurant"
 import { Rating } from "src/app/models/Rating"
 import { Menu } from "src/app/models/Menu"
@@ -27,7 +16,6 @@ import { ViewMenuDialogComponent } from "src/app/dialogs/view-menu-dialog/view-m
 import { ViewReviewsDialogComponent } from "src/app/dialogs/view-reviews-dialog/view-reviews-dialog.component"
 import { UploadImageDialogComponent } from "src/app/dialogs/upload-image-dialog/upload-image-dialog.component"
 import { AddReviewDialogComponent } from "src/app/dialogs/add-review-dialog/add-review-dialog.component"
-import { Variation } from "src/app/models/Variation"
 import { formatPrice } from "src/app/utils"
 import { LocalizationService } from "src/app/services/localization-service"
 
@@ -56,16 +44,6 @@ export class RestaurantInfoPageComponent {
 	ratingFilter: number = 0
 	hasTakeaway: boolean = false
 	hasDelivery: boolean = false
-
-	faStar = faStar
-	faCupTogo = faCupTogo
-	faTruck = faTruck
-	faSearch = faSearch
-	faArrowLeft = faArrowLeft
-	faChevronLeft = faChevronLeft
-	faChevronRight = faChevronRight
-	faList = faList
-	faPlus = faPlus
 
 	// Restaurant data
 	restaurant: Restaurant = null
@@ -105,37 +83,7 @@ export class RestaurantInfoPageComponent {
 		}
 	}
 
-	nameTextfieldChange(value: string) {
-		this.nameFilter = value
-		this.scheduleEmitFilters()
-	}
-
-	cityTextfieldChange(value: string) {
-		this.cityPostalFilter = value
-		this.scheduleEmitFilters()
-	}
-
-	distanceRangeChange(value: string) {
-		this.distanceKm = Number(value)
-		this.scheduleEmitFilters()
-	}
-
-	setRating(value: number) {
-		this.ratingFilter = value
-		this.scheduleEmitFilters()
-	}
-
-	takeawayCheckboxChange(checked: boolean) {
-		this.hasTakeaway = checked
-		this.scheduleEmitFilters()
-	}
-
-	deliveryCheckboxChange(checked: boolean) {
-		this.hasDelivery = checked
-		this.scheduleEmitFilters()
-	}
-
-	private scheduleEmitFilters() {
+	scheduleEmitFilters() {
 		if (this.emitTimer) {
 			clearTimeout(this.emitTimer)
 		}
@@ -701,42 +649,6 @@ export class RestaurantInfoPageComponent {
 	orderNow() {
 		// TODO: Implement ordering functionality
 		console.log("Bestellung wird implementiert...")
-	}
-
-	calculateAverageRating(): number {
-		if (!this.restaurant?.ratings || this.restaurant.ratings.length === 0) {
-			return 0
-		}
-		const sum = this.restaurant.ratings.reduce(
-			(acc, rating) => acc + rating.value,
-			0
-		)
-		return sum / this.restaurant.ratings.length
-	}
-
-	getVariationTooltip(variation: Variation): string {
-		if (!variation.variationItems || variation.variationItems.length === 0) {
-			return variation.name
-		}
-
-		const items = variation.variationItems
-			.map(item => {
-				const cost =
-					item.additionalCost > 0
-						? ` (+${formatPrice(item.additionalCost)})`
-						: ""
-				return `${item.name}${cost}`
-			})
-			.join(", ")
-
-		return `${variation.name}: ${items}`
-	}
-
-	getProductVariationsText(product: Product): string {
-		if (!product.variations || product.variations.length === 0) {
-			return ""
-		}
-		return product.variations.map(v => v.name).join(", ")
 	}
 
 	addImage() {

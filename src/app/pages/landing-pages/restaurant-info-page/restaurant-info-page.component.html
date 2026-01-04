@@ -1,434 +1,47 @@
 <div class="container slide-up-in">
-	<dav-card class="filters-card">
-		<div class="guests-header">
-			<div class="filter-item back-button">
-				<dav-icon-button size="md" (click)="goBack()">
-					<fa-icon [icon]="faArrowLeft"></fa-icon>
-				</dav-icon-button>
-			</div>
+	<app-restaurant-filters
+		[nameFilter]="nameFilter"
+		[cityPostalFilter]="cityPostalFilter"
+		[distanceKm]="distanceKm"
+		[ratingFilter]="ratingFilter"
+		[hasTakeaway]="hasTakeaway"
+		[hasDelivery]="hasDelivery"
+		(nameFilterChange)="nameFilter = $event; scheduleEmitFilters()"
+		(cityPostalFilterChange)="
+			cityPostalFilter = $event; scheduleEmitFilters()
+		"
+		(distanceKmChange)="distanceKm = $event; scheduleEmitFilters()"
+		(ratingFilterChange)="ratingFilter = $event; scheduleEmitFilters()"
+		(hasTakeawayChange)="hasTakeaway = $event; scheduleEmitFilters()"
+		(hasDeliveryChange)="hasDelivery = $event; scheduleEmitFilters()"
+		(searchClick)="search()"
+		(backClick)="goBack()"
+	></app-restaurant-filters>
 
-			<div class="filter-item name-filter">
-				<dav-textfield
-					[value]="nameFilter"
-					[label]="locale.restaurantName"
-					(change)="nameTextfieldChange($any($event).detail.value)"
-				></dav-textfield>
-			</div>
-
-			<div class="filter-item city-filter">
-				<dav-textfield
-					[value]="cityPostalFilter"
-					[label]="locale.cityPostalCode"
-					(change)="cityTextfieldChange($any($event).detail.value)"
-				></dav-textfield>
-			</div>
-
-			<div class="filter-item distance-filter">
-				<label class="distance-label"
-					>{{ locale.distance }}: {{ distanceKm }} km</label
-				>
-				<input
-					type="range"
-					min="1"
-					max="100"
-					[value]="distanceKm"
-					(input)="distanceRangeChange($any($event).target.value)"
-				/>
-			</div>
-
-			<div class="filter-item rating-filter">
-				<label>{{ locale.rating }}</label>
-				<div class="stars">
-					@for (i of [1, 2, 3, 4, 5]; track i) {
-						<fa-icon
-							[icon]="faStar"
-							class="star"
-							[class.filled]="i <= ratingFilter"
-							(click)="setRating(i)"
-						></fa-icon>
-					}
-				</div>
-			</div>
-
-			<div class="filter-item checkboxes">
-				<dav-checkbox
-					[checked]="hasTakeaway"
-					[label]="locale.takeaway"
-					(change)="takeawayCheckboxChange($any($event).detail.checked)"
-				></dav-checkbox>
-
-				<dav-checkbox
-					[checked]="hasDelivery"
-					[label]="locale.delivery"
-					(change)="deliveryCheckboxChange($any($event).detail.checked)"
-				></dav-checkbox>
-			</div>
-
-			<div class="filter-item search-icon">
-				<dav-icon-button size="md" (click)="search()">
-					<fa-icon [icon]="faSearch"></fa-icon>
-				</dav-icon-button>
-			</div>
-		</div>
-	</dav-card>
-
-	<dav-card class="restaurant-info-card">
-		<div class="restaurant-info-grid">
-			<div class="restaurant-info-left">
-				<div class="restaurant-details">
-					<div class="restaurant-header">
-						<h2 class="restaurant-name">{{ restaurant?.name }}</h2>
-						@if (restaurant?.ratings && restaurant.ratings.length > 0) {
-							<div class="restaurant-rating">
-								<div class="rating-stars">
-									@for (star of [1, 2, 3, 4, 5]; track star) {
-										<fa-icon
-											[icon]="faStar"
-											[class.filled]="
-												star <= calculateAverageRating()
-											"
-										></fa-icon>
-									}
-								</div>
-								<span class="rating-text"
-									>{{ calculateAverageRating() | number: "1.1-1" }} ({{
-										restaurant.ratings.length
-									}})</span
-								>
-							</div>
-						}
-					</div>
-
-					<div class="restaurant-address">
-						<p>{{ restaurant?.address?.addressLine1 }}</p>
-						<p>
-							{{ restaurant?.address?.postalCode }}
-							{{ restaurant?.address?.city }}
-						</p>
-					</div>
-
-					<div class="restaurant-services">
-						@if (restaurant?.hasTakeaway) {
-							<div class="service-item">
-								<fa-icon
-									[icon]="faCupTogo"
-									class="service-icon"
-								></fa-icon>
-								<span>{{ locale.takeaway }}</span>
-							</div>
-						}
-						@if (restaurant?.hasDelivery) {
-							<div class="service-item">
-								<fa-icon
-									[icon]="faTruck"
-									class="service-icon"
-								></fa-icon>
-								<span>{{ locale.delivery }}</span>
-							</div>
-						}
-					</div>
-
-					<div class="restaurant-hours">
-						<h3>{{ locale.openingHours }}</h3>
-						<p>Mo-Fr: 08:00 - 18:00</p>
-						<p>Sa-So: 10:00 - 16:00</p>
-					</div>
-
-					<div class="restaurant-contact">
-						<div class="contact-item">
-							<strong>{{ locale.phone }}:</strong>
-							{{ restaurant?.phoneNumber }}
-						</div>
-						<div class="contact-item">
-							<strong>{{ locale.email }}:</strong> {{ restaurant?.mail }}
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="restaurant-info-middle">
-				<div class="restaurant-actions">
-					<dav-button (click)="reserveTable()" class="reserve-button">{{
-						locale.reserveNow
-					}}</dav-button>
-					<dav-button (click)="orderNow()" class="order-button">{{
-						locale.orderNow
-					}}</dav-button>
-					<dav-button (click)="orderNow()" class="order-button">{{
-						locale.buyVoucher
-					}}</dav-button>
-				</div>
-			</div>
-
-			<div class="restaurant-image-section">
-				<div class="image-navigation">
-					<fa-icon
-						[icon]="faChevronLeft"
-						class="nav-arrow nav-arrow-left"
-						(click)="previousImage()"
-					></fa-icon>
-
-					<div class="image-container">
-						@if (currentImageUrl) {
-							<img
-								[src]="currentImageUrl"
-								alt="Restaurant"
-								class="restaurant-image"
-							/>
-						} @else {
-							<div class="image-placeholder">
-								{{ locale.noImageAvailable }}
-							</div>
-						}
-					</div>
-
-					<fa-icon
-						[icon]="faChevronRight"
-						class="nav-arrow nav-arrow-right"
-						(click)="nextImage()"
-					></fa-icon>
-				</div>
-
-				<div class="image-indicators">
-					@for (image of restaurant?.images || []; track $index) {
-						<div
-							class="indicator"
-							[class.active]="$index === currentImageIndex"
-							(click)="setCurrentImage($index)"
-						></div>
-					}
-				</div>
-
-				<button class="add-image-button" (click)="addImage()">
-					<fa-icon [icon]="faPlus"></fa-icon>
-					<span>{{ locale.addImage }}</span>
-				</button>
-			</div>
-		</div>
-	</dav-card>
+	<app-restaurant-details
+		[restaurant]="restaurant"
+		[currentImageUrl]="currentImageUrl"
+		[currentImageIndex]="currentImageIndex"
+		(reserveTableClick)="reserveTable()"
+		(orderNowClick)="orderNow()"
+		(addImageClick)="addImage()"
+		(previousImageClick)="previousImage()"
+		(nextImageClick)="nextImage()"
+		(setCurrentImageClick)="setCurrentImage($event)"
+	></app-restaurant-details>
 
 	<div class="restaurant-details-grid">
-		<dav-card class="menu-card">
-			<div class="menu-card-inner">
-				<div class="menu-header">
-					<h3>{{ locale.bestsellers }}</h3>
-					<dav-button (click)="openMenuDialog()">
-						{{ locale.showFullMenu }}
-					</dav-button>
-				</div>
-				<div class="menu-content">
-					@if (topProducts && topProducts.length > 0) {
-						<div class="products-grid">
-							@for (product of topProducts; track product.uuid) {
-								<div class="product-item">
-									<div class="product-main">
-										<span class="product-name">{{
-											product.name
-										}}</span>
-										<span class="product-price">{{
-											formatPrice(product.price)
-										}}</span>
-									</div>
+		<app-restaurant-menu
+			[topProducts]="topProducts"
+			[bestsellers]="bestsellers"
+			(openMenuDialogClick)="openMenuDialog()"
+		></app-restaurant-menu>
 
-									@if (
-										product.variations &&
-										product.variations.length > 0
-									) {
-										<div class="product-variations">
-											<div class="variations-chips">
-												@for (
-													variation of product.variations;
-													track variation.uuid
-												) {
-													<div
-														class="variation-chip"
-														[title]="
-															getVariationTooltip(variation)
-														"
-													>
-														<fa-icon
-															[icon]="faList"
-															class="variation-icon"
-														></fa-icon>
-														<span class="variation-name">{{
-															variation.name
-														}}</span>
-													</div>
-												}
-											</div>
-										</div>
-									}
-								</div>
-							}
-						</div>
-
-						@if (bestsellers?.offers && bestsellers.offers.length > 0) {
-							<div class="offers-section">
-								<div class="category-header">
-									<h4>{{ locale.offers }}</h4>
-								</div>
-
-								<div class="offers-list">
-									@for (
-										offer of bestsellers.offers;
-										track offer.uuid
-									) {
-										<div class="offer-item">
-											<div class="offer-header-row">
-												<div class="offer-type">
-													<span class="offer-badge">{{
-														offer.offerType === "DISCOUNT"
-															? locale.discount
-															: locale.fixedPrice
-													}}</span>
-												</div>
-												<div class="offer-value">
-													{{ offer.offerValue }}
-													@if (offer.offerType === "FIXED_PRICE") {
-														€
-													}
-													@if (
-														offer.discountType === "PERCENTAGE"
-													) {
-														%
-													}
-													@if (offer.discountType === "AMOUNT") {
-														€
-													}
-												</div>
-											</div>
-
-											@if (
-												offer.offerItems &&
-												offer.offerItems.length > 0
-											) {
-												<div class="offer-items-section">
-													@for (
-														item of offer.offerItems;
-														track item.uuid
-													) {
-														<div class="offer-item-detail">
-															<div class="item-name-section">
-																<span class="item-name">{{
-																	item.name
-																}}</span>
-																<span class="item-max"
-																	>{{ locale.max }}
-																	{{
-																		item.maxSelections
-																	}}</span
-																>
-															</div>
-															<div class="item-products">
-																@for (
-																	prod of item.products;
-																	track prod.uuid
-																) {
-																	<span class="product-chip">{{
-																		prod.name
-																	}}</span>
-																}
-															</div>
-														</div>
-													}
-												</div>
-											}
-										</div>
-									}
-								</div>
-							</div>
-						}
-					} @else {
-						<div class="empty-state">
-							<p>{{ locale.noBestsellers }}</p>
-						</div>
-					}
-				</div>
-			</div>
-		</dav-card>
-
-		<dav-card class="reviews-card">
-			<div class="reviews-card-inner">
-				<div class="reviews-header">
-					<h3>{{ locale.reviews }}</h3>
-					<div class="reviews-header-buttons">
-						<dav-button (click)="addReview()">
-							{{ locale.addReview }}
-						</dav-button>
-						<dav-button (click)="openReviewsDialog()">
-							{{ locale.showAllReviews }}
-						</dav-button>
-					</div>
-				</div>
-
-				<div class="reviews-content">
-					@if (restaurant?.ratings && restaurant.ratings.length > 0) {
-						<div class="average-rating-section">
-							<div class="rating-summary">
-								<div class="rating-value">
-									{{ calculateAverageRating() | number: "1.1-1" }}
-								</div>
-								<div class="rating-details">
-									<div class="stars">
-										@for (star of [1, 2, 3, 4, 5]; track star) {
-											<fa-icon
-												[icon]="faStar"
-												[class.filled]="
-													star <= calculateAverageRating()
-												"
-											></fa-icon>
-										}
-									</div>
-									<span class="review-count"
-										>{{ restaurant.ratings.length }}
-										{{
-											restaurant.ratings.length === 1
-												? locale.reviewSingular
-												: locale.reviewPlural
-										}}</span
-									>
-								</div>
-							</div>
-						</div>
-
-						<div class="reviews-list">
-							@for (
-								rating of restaurant.ratings.slice(0, 5);
-								track rating
-							) {
-								<div class="review-item">
-									<div class="review-header">
-										<div class="reviewer-info">
-											<span class="reviewer-name">{{
-												rating.username
-											}}</span>
-											<span class="review-date">{{
-												rating.date | date: "dd.MM.yyyy"
-											}}</span>
-										</div>
-										<div class="review-stars">
-											@for (star of [1, 2, 3, 4, 5]; track star) {
-												<fa-icon
-													[icon]="faStar"
-													[class.filled]="star <= rating.value"
-												></fa-icon>
-											}
-										</div>
-									</div>
-									@if (rating.review) {
-										<p class="review-text">{{ rating.review }}</p>
-									}
-								</div>
-							}
-						</div>
-					} @else {
-						<div class="empty-state">
-							<p>{{ locale.noReviews }}</p>
-						</div>
-					}
-				</div>
-			</div>
-		</dav-card>
+		<app-restaurant-reviews
+			[restaurant]="restaurant"
+			(addReviewClick)="addReview()"
+			(openReviewsDialogClick)="openReviewsDialog()"
+		></app-restaurant-reviews>
 	</div>
 </div>
 

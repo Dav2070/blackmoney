@@ -138,6 +138,10 @@ import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dial
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { LandingGuestsPageComponent } from "./pages/landing-pages/landing-guests-page/landing-guests-page.component"
 import { RestaurantInfoPageComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-info-page.component"
+import { RestaurantFiltersComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-filters/restaurant-filters.component"
+import { RestaurantDetailsComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-details/restaurant-details.component"
+import { RestaurantMenuComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-menu/restaurant-menu.component"
+import { RestaurantReviewsComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-reviews/restaurant-reviews.component"
 import { AddVariationDialogComponent } from "./dialogs/add-variation-dialog/add-variation-dialog.component"
 import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
 import { EditVariationDialogComponent } from "./dialogs/edit-variation-dialog/edit-variation-dialog.component"
@@ -238,6 +242,10 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		MenuPageComponent,
 		LandingGuestsPageComponent,
 		RestaurantInfoPageComponent,
+		RestaurantFiltersComponent,
+		RestaurantDetailsComponent,
+		RestaurantMenuComponent,
+		RestaurantReviewsComponent,
 		PrintersPageComponent,
 		RoomsPageComponent,
 		RoomPageComponent,

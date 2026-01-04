@@ -112,10 +112,22 @@
 	margin-bottom: 8px;
 }
 
+.reviewer-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
 .reviewer-name {
 	font-weight: 600;
 	color: var(--dav-color-on-surface);
 	font-size: 15px;
+}
+
+.review-date {
+	font-size: 12px;
+	color: var(--dav-color-on-surface-variant);
+	font-weight: 400;
 }
 
 .review-stars {

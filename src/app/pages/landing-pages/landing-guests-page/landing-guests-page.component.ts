@@ -64,6 +64,7 @@ export class LandingGuestsPageComponent implements OnInit {
 					username: "Jacek",
 					value: 5,
 					review: "War super lecker und der Service war freundlich!",
+					date: new Date(),
 					userUuid: crypto.randomUUID()
 				}
 			],
@@ -207,6 +208,7 @@ export class LandingGuestsPageComponent implements OnInit {
 					username: "Marek",
 					value: 5,
 					review: "Leckere Pizza und schnelle Lieferung!",
+					date: new Date(),
 					userUuid: crypto.randomUUID()
 				}
 			],
@@ -237,6 +239,7 @@ export class LandingGuestsPageComponent implements OnInit {
 					username: "Lelek",
 					value: 3,
 					review: "Frisches Sushi, aber etwas teuer.",
+					date: new Date(),
 					userUuid: crypto.randomUUID()
 				}
 			],
@@ -267,6 +270,7 @@ export class LandingGuestsPageComponent implements OnInit {
 					username: "Niggo",
 					value: 2,
 					review: "Nettes Bistro, aber wenig Auswahl.",
+					date: new Date(),
 					userUuid: crypto.randomUUID()
 				}
 			],

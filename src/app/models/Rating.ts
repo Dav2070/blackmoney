@@ -5,5 +5,6 @@ export class Rating {
 	username: string
 	value: RatingNum
 	review: string
+	date: Date
 	userUuid: string
 }

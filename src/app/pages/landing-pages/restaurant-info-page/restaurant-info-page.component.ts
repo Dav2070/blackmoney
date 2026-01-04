@@ -579,6 +579,7 @@ export class RestaurantInfoPageComponent {
 				value: 5,
 				review:
 					"Ausgezeichnetes Essen und toller Service! Wir kommen gerne wieder.",
+				date: new Date(),
 				userUuid: crypto.randomUUID()
 			},
 			{
@@ -587,6 +588,7 @@ export class RestaurantInfoPageComponent {
 				value: 4,
 				review:
 					"Sehr gutes Restaurant mit freundlichem Personal. Das Essen war lecker.",
+				date: new Date(),
 				userUuid: crypto.randomUUID()
 			},
 			{
@@ -595,6 +597,7 @@ export class RestaurantInfoPageComponent {
 				value: 5,
 				review:
 					"Fantastische Atmosphäre und hervorragende Qualität. Absolut empfehlenswert!",
+				date: new Date(),
 				userUuid: crypto.randomUUID()
 			},
 			{
@@ -603,6 +606,7 @@ export class RestaurantInfoPageComponent {
 				value: 4,
 				review:
 					"Gutes Preis-Leistungs-Verhältnis. Die Portionen waren großzügig.",
+				date: new Date(),
 				userUuid: crypto.randomUUID()
 			},
 			{
@@ -611,6 +615,7 @@ export class RestaurantInfoPageComponent {
 				value: 3,
 				review:
 					"Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				date: new Date(),
 				userUuid: crypto.randomUUID()
 			},
 			{
@@ -619,6 +624,7 @@ export class RestaurantInfoPageComponent {
 				value: 3,
 				review:
 					"Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				date: new Date(),
 				userUuid: crypto.randomUUID()
 			},
 			{
@@ -627,6 +633,7 @@ export class RestaurantInfoPageComponent {
 				value: 3,
 				review:
 					"Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				date: new Date(),
 				userUuid: crypto.randomUUID()
 			},
 			{
@@ -635,6 +642,7 @@ export class RestaurantInfoPageComponent {
 				value: 3,
 				review:
 					"Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				date: new Date(),
 				userUuid: crypto.randomUUID()
 			},
 			{
@@ -643,6 +651,7 @@ export class RestaurantInfoPageComponent {
 				value: 3,
 				review:
 					"Das Essen war in Ordnung, aber der Service hätte besser sein können.Das Essen war in Ordnung, aber der Service hätte besser sein können.Das Essen war in Ordnung, aber der Service hätte besser sein können.Das Essen war in Ordnung, aber der Service hätte besser sein können.",
+				date: new Date(),
 				userUuid: crypto.randomUUID()
 			}
 		]

@@ -398,9 +398,14 @@
 							) {
 								<div class="review-item">
 									<div class="review-header">
-										<span class="reviewer-name">{{
-											rating.username
-										}}</span>
+										<div class="reviewer-info">
+											<span class="reviewer-name">{{
+												rating.username
+											}}</span>
+											<span class="review-date">{{
+												rating.date | date: "dd.MM.yyyy"
+											}}</span>
+										</div>
 										<div class="review-stars">
 											@for (star of [1, 2, 3, 4, 5]; track star) {
 												<fa-icon

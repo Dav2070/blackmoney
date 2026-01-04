@@ -75,6 +75,7 @@ export class AddReviewDialogComponent {
 		rating.value = this.selectedRating
 		rating.review = this.reviewText.trim() || undefined
 		rating.userUuid = crypto.randomUUID() // TODO: Get from session/auth
+		rating.date = new Date()
 
 		this.reviewSubmitted.emit(rating)
 		this.close()

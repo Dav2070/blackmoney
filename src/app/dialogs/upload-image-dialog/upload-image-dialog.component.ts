@@ -11,6 +11,7 @@ import { isPlatformBrowser } from "@angular/common"
 import { faCloudArrowUp } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
+import { showToast } from "src/app/utils"
 
 @Component({
 	selector: "app-upload-image-dialog",
@@ -85,7 +86,7 @@ export class UploadImageDialogComponent {
 			if (file.type.startsWith("image/")) {
 				this.handleFile(file)
 			} else {
-				alert(this.locale.invalidFileType)
+				showToast(this.locale.invalidFileType)
 			}
 		}
 	}
@@ -93,7 +94,7 @@ export class UploadImageDialogComponent {
 	private handleFile(file: File) {
 		// Check file size (max 5MB)
 		if (file.size > 5 * 1024 * 1024) {
-			alert(this.locale.fileTooLarge)
+			showToast(this.locale.fileTooLarge)
 			return
 		}
 

@@ -17,17 +17,18 @@ import { VariationItem } from "src/app/models/VariationItem"
 import { OrderItem } from "src/app/models/OrderItem"
 
 @Component({
-	selector: "app-subtract-product-variations-dialog",
-	templateUrl: "./subtract-product-variations-dialog.component.html",
-	styleUrl: "./subtract-product-variations-dialog.component.scss",
+	selector: "app-product-variations-combinations-dialog",
+	templateUrl: "./product-variations-combinations-dialog.component.html",
+	styleUrl: "./product-variations-combinations-dialog.component.scss",
 	standalone: false
 })
-export class SubtractProductVariationsDialogComponent {
+export class ProductVariationsCombinationsDialogComponent {
 	faPlus = faPlus
 	faMinus = faMinus
 	Object = Object
 	locale =
-		this.localizationService.locale.dialogs.subtractProductVariationsDialog
+		this.localizationService.locale.dialogs
+			.productVariationsCombinationsDialog
 	actionsLocale = this.localizationService.locale.actions
 
 	visible: boolean = false
@@ -37,6 +38,7 @@ export class SubtractProductVariationsDialogComponent {
 	originalVariationCombinations: { [key: string]: number } = {}
 
 	@Input() orderItem: OrderItem = null
+	@Input() mode: "select" | "subtract" = "select"
 
 	get product(): Product {
 		return this.orderItem?.product
@@ -69,14 +71,15 @@ export class SubtractProductVariationsDialogComponent {
 		setTimeout(() => {
 			// Create all final combinations directly
 			this.variationCombinations = {}
-
 			let items: string[][] = []
 
 			for (const variation of this.product.variations) {
 				const currentItems: string[] = []
+
 				for (const variationItem of variation.variationItems) {
 					currentItems.push(variationItem.uuid)
 				}
+
 				items.push(currentItems)
 			}
 
@@ -92,6 +95,14 @@ export class SubtractProductVariationsDialogComponent {
 			this.originalVariationCombinations = JSON.parse(
 				JSON.stringify(this.variationCombinations)
 			)
+
+			for (const key of Object.keys(this.variationCombinations)) {
+				if (this.variationCombinations[key] === 0) {
+					delete this.variationCombinations[key]
+				} else if (this.mode === "select") {
+					this.variationCombinations[key] = 0
+				}
+			}
 
 			this.visible = true
 		}, 100)
@@ -155,6 +166,16 @@ export class SubtractProductVariationsDialogComponent {
 
 	getOriginalCount(variationKey: string): number {
 		return this.originalVariationCombinations[variationKey] ?? 0
+	}
+
+	getAllVariationItemCount(): number {
+		let totalCount = 0
+
+		for (const key of Object.keys(this.variationCombinations)) {
+			totalCount += this.variationCombinations[key]
+		}
+
+		return totalCount
 	}
 
 	submit() {

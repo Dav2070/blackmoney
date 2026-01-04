@@ -41,7 +41,7 @@ import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/
 import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectMenuSpecialProductsDialogComponent } from "src/app/dialogs/select-menu-special-products-dialog/select-menu-special-products-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
-import { SubtractProductVariationsDialogComponent } from "src/app/dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
+import { ProductVariationsCombinationsDialogComponent } from "src/app/dialogs/product-variations-combinations-dialog/product-variations-combinations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "src/app/dialogs/view-note-dialog/view-note-dialog.component"
 import { AddDiverseProductDialogComponent } from "src/app/dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
@@ -143,9 +143,9 @@ export class BookingPageComponent {
 	selectProductVariationsDialog: SelectProductVariationsDialogComponent
 	//#endregion
 
-	//#region SubtractProductVariationsDialog variables
-	@ViewChild("subtractProductVariationsDialog")
-	subtractProductVariationsDialog: SubtractProductVariationsDialogComponent
+	//#region ProductVariationsCombinationsDialog variables
+	@ViewChild("productVariationsCombinationsDialog")
+	productVariationsCombinationsDialog: ProductVariationsCombinationsDialogComponent
 	//#endregion
 
 	//#region BottomSheet variables
@@ -589,7 +589,7 @@ export class BookingPageComponent {
 				this.selectedOrderItem.orderItems[0].orderItemVariations &&
 				this.selectedOrderItem.orderItems[0].orderItemVariations.length > 0
 			) {
-				this.subtractProductVariationsDialog.show()
+				this.productVariationsCombinationsDialog.show()
 			} else {
 				if (this.tmpAnzahl > 0) {
 					if (this.selectedOrderItem.count >= this.tmpAnzahl) {
@@ -629,11 +629,11 @@ export class BookingPageComponent {
 					this.showTotal()
 				} else {
 					// Wenn Variationen vorhanden sind - öffne den Subtract Dialog
-					this.subtractProductVariationsDialog.show()
+					this.productVariationsCombinationsDialog.show()
 				}
 			} else if (this.selectedOrderItem.orderItemVariations.length > 0) {
 				// Wenn Item Variationen enthält - öffne den Subtract Dialog
-				this.subtractProductVariationsDialog.show()
+				this.productVariationsCombinationsDialog.show()
 			} else if (this.tmpAnzahl > 0) {
 				// Wenn zu löschende Anzahl eingegeben wurde (4 X -)
 				if (this.selectedOrderItem.count >= this.tmpAnzahl) {
@@ -716,10 +716,10 @@ export class BookingPageComponent {
 		this.tmpAnzahl = undefined
 	}
 
-	subtractProductVariationsDialogPrimaryButtonClick(event: {
+	productVariationsCombinationsDialogPrimaryButtonClick(event: {
 		variationCombinations: { [key: string]: number }
 	}) {
-		this.subtractProductVariationsDialog.hide()
+		this.productVariationsCombinationsDialog.hide()
 
 		const variationCombinations = event.variationCombinations
 

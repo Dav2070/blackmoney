@@ -17,7 +17,6 @@ import { ProductVariationsCombinationsDialogComponent } from "src/app/dialogs/pr
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Table } from "src/app/models/Table"
-import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { calculateTotalPriceOfOrderItem, formatPrice } from "src/app/utils"
 import { AddProductVariationInput, PaymentMethod } from "src/app/types"
 
@@ -43,7 +42,6 @@ export class PaymentPageComponent {
 	billUuid: string = ""
 	activeBill: AllItemHandler = this.bills[0]
 
-	isItemPopupVisible: boolean = false
 	lastClickedItem: OrderItem
 	tmpVariations: OrderItem
 	tmpAnzahl: number
@@ -276,126 +274,6 @@ export class PaymentPageComponent {
 				}
 			}
 		}
-
-		this.isItemPopupVisible = false
-	}
-
-	checkIfPlus(variation: OrderItemVariation) {
-		let variationCount = this.lastClickedItem.orderItemVariations.find(
-			v =>
-				v.variationItems.length === variation.variationItems.length &&
-				v.variationItems.every(
-					(item, index) =>
-						item.name === variation.variationItems[index].name
-					//&&
-					//item.uuid === variation.variationItems[index].uuid
-				)
-		)?.count
-
-		return variationCount <= variation.count
-	}
-
-	checkIfMinus(variation: OrderItemVariation) {
-		if (variation.count <= 0) {
-			return true
-		}
-		return false
-	}
-
-	checkifVariationPicked() {
-		let picked = true
-		if (this.tmpVariations != null) {
-			for (let variation of this.tmpVariations.orderItemVariations) {
-				if (variation.count > 0) {
-					picked = false
-				}
-			}
-		}
-		return picked
-	}
-
-	//Entfernt eine Variation
-	removeVariation(variation: OrderItemVariation) {
-		this.tmpVariations.count -= 1
-		variation.count -= 1
-	}
-
-	//Checkt ob Limit der Anzahl erreicht ist
-	checkLimitAnzahl(id: number) {
-		/*
-		let anzahl = this.lastClickedItem.pickedVariation.get(id).anzahl
-		if (this.tmpAnzahl > 0) {
-			anzahl = this.tmpAnzahl
-		}
-
-		if (this.tmpVariations.has(id)) {
-			if (anzahl === this.tmpVariations.get(id).anzahl) {
-				return true
-			}
-		}
-
-		return false 
-		*/
-	}
-
-	//Erhöht eine Variation um eins
-	addVariation(variation: OrderItemVariation) {
-		this.tmpVariations.count += 1
-		variation.count += 1
-	}
-
-	//Checkt ob mindestens eine Variation ausgewählt wurde oder die Anzahl an Variationen ausgewählt wurde die man buchen möchte
-	checkPickedVariation() {
-		/*
-		if (this.tmpAnzahl > 0) {
-			let anzahl = 0
-			for (let variation of this.tmpVariations.values()) {
-				anzahl += variation.anzahl
-			}
-			if (anzahl === this.tmpAnzahl) {
-				return false
-			}
-		} else {
-			for (let variation of this.tmpVariations.values()) {
-				if (variation.anzahl > 0) {
-					return false
-				}
-			}
-		}
-		return true
-		*/
-	}
-
-	//Schließt Popup und setzt alle Variablen default
-	closeItemPopup() {
-		this.isItemPopupVisible = !this.isItemPopupVisible
-		this.tmpVariations = null
-		this.lastClickedItem = undefined
-		this.tmpAnzahl = 0
-	}
-
-	//Fügt die ausgewählten Items mit Variationen zum anderen Tisch
-	sendVariation() {
-		// let number = 0
-		// for (let variation of this.tmpVariations.values()) {
-		// 	number += variation.anzahl
-		// }
-		// this.tmpReceiver.pushNewItem(
-		// 	new PickedItem(
-		// 		this.lastClickedItem,
-		// 		number,
-		// 		new Map(this.tmpVariations)
-		// 	)
-		// )
-		// this.tmpSend.reduceItem(
-		// 	new PickedItem(
-		// 		this.lastClickedItem,
-		// 		number,
-		// 		new Map(this.tmpVariations)
-		// 	),
-		// 	number
-		// )
-		// this.closeItemPopup()
 	}
 
 	async createBill(payment: PaymentMethod) {

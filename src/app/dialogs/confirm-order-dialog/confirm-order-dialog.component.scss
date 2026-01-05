@@ -1,0 +1,127 @@
+.dialog-content {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	padding: 8px;
+}
+
+.delivery-type-selection {
+	width: 100%;
+}
+
+.address-section {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.section-title {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--dav-color-on-surface);
+}
+
+.address-info {
+	padding: 16px 0;
+
+	p {
+		margin: 0;
+		color: var(--dav-color-on-surface);
+	}
+
+	.name {
+		font-weight: 600;
+		font-size: 16px;
+		margin-bottom: 8px;
+	}
+
+	.address {
+		font-size: 14px;
+		color: var(--dav-color-on-surface-variant);
+	}
+}
+
+.total-section {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 0;
+
+	.total-label {
+		font-size: 18px;
+		font-weight: 600;
+		color: var(--dav-color-on-surface);
+	}
+
+	.total-price {
+		font-size: 24px;
+		font-weight: 700;
+		color: var(--dav-color-on-surface);
+	}
+}
+
+.payment-section {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.payment-buttons {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+.payment-button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 20px 16px;
+	background-color: var(--dav-color-surface-container);
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 200ms;
+
+	&:hover {
+		background-color: var(--dav-color-surface-container-high);
+	}
+
+	&:active {
+		background-color: var(--dav-color-surface-container-highest);
+	}
+
+	.payment-icon {
+		font-size: 24px;
+	}
+
+	.payment-label {
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--dav-color-on-surface);
+	}
+}
+
+.cancel-section {
+	display: flex;
+	justify-content: center;
+	margin-top: 8px;
+}
+
+.cancel-button {
+	padding: 12px 32px;
+	background: none;
+	border: none;
+	color: var(--dav-color-on-surface-variant);
+	font-size: 14px;
+	cursor: pointer;
+	transition: 200ms;
+
+	&:hover {
+		color: var(--dav-color-on-surface);
+		text-decoration: underline;
+	}
+}

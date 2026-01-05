@@ -5,30 +5,46 @@
 		<div class="products-section">
 			<!-- Kategorien-Bar -->
 			<div class="categories-bar">
-				<dav-tab-bar>
-					@if (offerProducts.length > 0) {
-						<dav-tab-bar-item
-							[active]="selectedCategory?.uuid === 'offers'"
-							(click)="
-								selectCategory({
-									uuid: 'offers',
-									name: 'Angebote',
-									products: offerProducts
-								})
-							"
-						>
-							Angebote
-						</dav-tab-bar-item>
-					}
-					@for (category of menu?.categories; track category.uuid) {
-						<dav-tab-bar-item
-							[active]="selectedCategory?.uuid === category.uuid"
-							(click)="selectCategory(category)"
-						>
-							{{ category.name }}
-						</dav-tab-bar-item>
-					}
-				</dav-tab-bar>
+				<button
+					class="category-nav-button"
+					[disabled]="!canNavigatePrevious"
+					(click)="navigatePrevious()"
+				>
+					<fa-icon [icon]="faChevronLeft"></fa-icon>
+				</button>
+				<div class="tab-bar-wrapper" #categoryTabBar>
+					<dav-tab-bar>
+						@if (offerProducts.length > 0) {
+							<dav-tab-bar-item
+								[active]="selectedCategory?.uuid === 'offers'"
+								(click)="
+									selectCategory({
+										uuid: 'offers',
+										name: 'Angebote',
+										products: offerProducts
+									})
+								"
+							>
+								Angebote
+							</dav-tab-bar-item>
+						}
+						@for (category of menu?.categories; track category.uuid) {
+							<dav-tab-bar-item
+								[active]="selectedCategory?.uuid === category.uuid"
+								(click)="selectCategory(category)"
+							>
+								{{ category.name }}
+							</dav-tab-bar-item>
+						}
+					</dav-tab-bar>
+				</div>
+				<button
+					class="category-nav-button"
+					[disabled]="!canNavigateNext"
+					(click)="navigateNext()"
+				>
+					<fa-icon [icon]="faChevronRight"></fa-icon>
+				</button>
 			</div>
 			<!-- Angebote Kategorie -->
 			@if (offerProducts.length > 0) {
@@ -148,3 +164,8 @@
 	#addNoteDialog
 	(primaryButtonClick)="addNoteDialogPrimaryButtonClick($event)"
 ></app-add-note-dialog>
+
+<app-confirm-order-dialog
+	#confirmOrderDialog
+	(confirmOrder)="confirmOrderDialogConfirmOrder($event)"
+></app-confirm-order-dialog>

@@ -72,6 +72,7 @@ import { SubtractProductVariationsDialogComponent } from "./dialogs/subtract-pro
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
+import { ConfirmOrderDialogComponent } from "./dialogs/confirm-order-dialog/confirm-order-dialog.component"
 import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
 import { AddTakeawayDialogComponent } from "./dialogs/add-takeaway-dialog/add-takeaway-dialog.component"
 import { EditTakeawayDialogComponent } from "./dialogs/edit-takeaway-dialog/edit-takeaway-dialog.component"
@@ -186,6 +187,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		MoveMultipleProductsDialogComponent,
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,
+		ConfirmOrderDialogComponent,
 		AddDiverseProductDialogComponent,
 		AddTakeawayDialogComponent,
 		EditTakeawayDialogComponent,

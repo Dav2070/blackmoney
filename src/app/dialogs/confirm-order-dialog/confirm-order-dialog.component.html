@@ -1,0 +1,74 @@
+<dav-dialog
+	#dialog
+	headline="Bestellung abschließen"
+	[visible]="visible"
+	maxWidth="500px"
+	(dismiss)="hide()"
+>
+	<div class="dialog-content">
+		<!-- Lieferung/Abholung Auswahl -->
+		<div class="delivery-type-selection">
+			<dav-tab-bar>
+				<dav-tab-bar-item
+					[active]="selectedDeliveryType === 'delivery'"
+					(click)="selectDeliveryType('delivery')"
+				>
+					Lieferung
+				</dav-tab-bar-item>
+				<dav-tab-bar-item
+					[active]="selectedDeliveryType === 'pickup'"
+					(click)="selectDeliveryType('pickup')"
+				>
+					Abholung
+				</dav-tab-bar-item>
+			</dav-tab-bar>
+		</div>
+
+		<!-- Adresse Anzeige -->
+		<div class="address-section">
+			<h4 class="section-title">
+				@if (selectedDeliveryType === "delivery") {
+					Lieferadresse
+				} @else {
+					Abholadresse
+				}
+			</h4>
+			<div class="address-info">
+				@if (selectedDeliveryType === "delivery") {
+					<p class="name">{{ mockUser.name }}</p>
+				} @else {
+					<p class="name">{{ mockRestaurant.name }}</p>
+				}
+				<p class="address">{{ formatAddress(currentAddress) }}</p>
+			</div>
+		</div>
+
+		<!-- Gesamtpreis -->
+		<div class="total-section">
+			<span class="total-label">Gesamt:</span>
+			<span class="total-price"
+				>{{ totalPrice / 100 | number: "1.2-2" }} €</span
+			>
+		</div>
+
+		<!-- Bezahlungsmethoden -->
+		<div class="payment-section">
+			<h4 class="section-title">Bezahlmethode wählen</h4>
+			<div class="payment-buttons">
+				<button class="payment-button" (click)="confirmWithPayment('cash')">
+					<fa-icon class="payment-icon" [icon]="faMoneyBill1"></fa-icon>
+					<span class="payment-label">Bar</span>
+				</button>
+				<button class="payment-button" (click)="confirmWithPayment('card')">
+					<fa-icon class="payment-icon" [icon]="faCreditCard"></fa-icon>
+					<span class="payment-label">Karte</span>
+				</button>
+			</div>
+		</div>
+
+		<!-- Abbrechen Button -->
+		<div class="cancel-section">
+			<button class="cancel-button" (click)="hide()">Abbrechen</button>
+		</div>
+	</div>
+</dav-dialog>

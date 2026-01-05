@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core"
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core"
 import { Category } from "src/app/models/Category"
 import { Menu } from "src/app/models/Menu"
 import { Product } from "src/app/models/Product"
@@ -6,9 +6,11 @@ import { OrderItem } from "src/app/models/OrderItem"
 import { ProductType, OrderItemType } from "src/app/types"
 import { formatPrice } from "src/app/utils"
 import { faPlus, faMinus, faTrash } from "@fortawesome/pro-regular-svg-icons"
+import { faChevronLeft, faChevronRight } from "@fortawesome/pro-solid-svg-icons"
 import { SelectMenuSpecialProductsDialogComponent } from "src/app/dialogs/select-menu-special-products-dialog/select-menu-special-products-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
+import { ConfirmOrderDialogComponent } from "src/app/dialogs/confirm-order-dialog/confirm-order-dialog.component"
 
 @Component({
 	templateUrl: "./landing-order-page.component.html",
@@ -19,6 +21,8 @@ export class LandingOrderPageComponent implements OnInit {
 	faPlus = faPlus
 	faMinus = faMinus
 	faTrash = faTrash
+	faChevronLeft = faChevronLeft
+	faChevronRight = faChevronRight
 	formatPrice = formatPrice
 
 	menu: Menu
@@ -38,6 +42,14 @@ export class LandingOrderPageComponent implements OnInit {
 	@ViewChild("addNoteDialog")
 	addNoteDialog: AddNoteDialogComponent
 	selectedOrderItem: OrderItem = null
+	//#endregion
+	//#region ConfirmOrderDialog variables
+	@ViewChild("confirmOrderDialog")
+	confirmOrderDialog: ConfirmOrderDialogComponent
+	//#endregion
+	//#region Tab-Bar Navigation
+	@ViewChild("categoryTabBar", { read: ElementRef })
+	categoryTabBar: ElementRef
 	//#endregion
 
 	get offerProducts(): Product[] {
@@ -650,6 +662,30 @@ export class LandingOrderPageComponent implements OnInit {
 							takeaway: false
 						}
 					]
+				},
+				{
+					uuid: "cat-8",
+					name: "Alkoholische Getränke",
+					products: [
+						{
+							uuid: "prod-70",
+							type: "PRODUCT" as ProductType,
+							name: "Bier",
+							price: 450,
+							shortcut: 70,
+							variations: [],
+							takeaway: false
+						},
+						{
+							uuid: "prod-71",
+							type: "PRODUCT" as ProductType,
+							name: "Wein",
+							price: 600,
+							shortcut: 71,
+							variations: [],
+							takeaway: false
+						}
+					]
 				}
 			],
 			variations: [],
@@ -664,11 +700,93 @@ export class LandingOrderPageComponent implements OnInit {
 
 	selectCategory(category: Category) {
 		this.selectedCategory = category
-		// Scrolle zur Kategorie
+
+		// Scrolle zur Kategorie im Content
 		const element = document.getElementById(`category-${category.uuid}`)
 		if (element) {
 			element.scrollIntoView({ behavior: "smooth", block: "start" })
 		}
+
+		// Scrolle das Tab-Item in der Tab-Bar in die Sichtbarkeit
+		setTimeout(() => {
+			if (!this.categoryTabBar?.nativeElement) return
+			const tabBar =
+				this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
+			if (!tabBar) return
+
+			// Finde den Index der aktuellen Kategorie
+			const allCats = this.allCategories
+			const categoryIndex = allCats.findIndex(
+				cat => cat.uuid === category.uuid
+			)
+			if (categoryIndex === -1) return
+
+			// Hole alle Tab-Items
+			const tabItems = tabBar.querySelectorAll("dav-tab-bar-item")
+			if (!tabItems || tabItems.length === 0) return
+
+			const targetTab = tabItems[categoryIndex]
+			if (!targetTab) return
+
+			// Scrolle das Tab in die Sichtbarkeit
+			const tabBarRect = tabBar.getBoundingClientRect()
+			const tabRect = targetTab.getBoundingClientRect()
+
+			// Scrolle das Tab in die Mitte der Tab-Bar
+			const scrollLeft =
+				tabBar.scrollLeft +
+				(tabRect.left - tabBarRect.left) -
+				tabBarRect.width / 2 +
+				tabRect.width / 2
+			tabBar.scrollTo({ left: scrollLeft, behavior: "smooth" })
+		}, 100)
+	}
+
+	get allCategories(): Category[] {
+		const categories: Category[] = []
+		if (this.offerProducts.length > 0) {
+			categories.push({
+				uuid: "offers",
+				name: "Angebote",
+				products: this.offerProducts
+			})
+		}
+		if (this.menu?.categories) {
+			categories.push(...this.menu.categories)
+		}
+		return categories
+	}
+
+	get canNavigatePrevious(): boolean {
+		if (!this.categoryTabBar?.nativeElement) return false
+		const element =
+			this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
+		if (!element) return false
+		return element.scrollLeft > 0
+	}
+
+	get canNavigateNext(): boolean {
+		if (!this.categoryTabBar?.nativeElement) return false
+		const element =
+			this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
+		if (!element) return false
+		return element.scrollLeft < element.scrollWidth - element.clientWidth - 1
+	}
+
+	navigatePrevious() {
+		if (!this.categoryTabBar?.nativeElement) return
+		const element =
+			this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
+		if (!element) return
+		element.scrollBy({ left: -200, behavior: "smooth" })
+	}
+
+	navigateNext() {
+		if (!this.categoryTabBar?.nativeElement) return
+		const element =
+			this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
+		if (!element) return
+		element.scrollBy({ left: 200, behavior: "smooth" })
 	}
 
 	// Füge item zu cartItems hinzu (1:1 von booking-page)
@@ -759,7 +877,18 @@ export class LandingOrderPageComponent implements OnInit {
 	}
 
 	submitOrder() {
+		this.confirmOrderDialog.totalPrice = this.getCartTotal()
+		this.confirmOrderDialog.show()
+	}
+
+	confirmOrderDialogConfirmOrder(event: {
+		deliveryType: "delivery" | "pickup"
+		paymentMethod: "cash" | "card"
+	}) {
+		console.log("Order confirmed:", event)
 		// Hier würde die Logik zum Absenden der Bestellung implementiert werden
+		// Warenkorb leeren
+		this.cartItems = []
 	}
 
 	selectMenuSpecialProductsDialogPrimaryButtonClick(event: {

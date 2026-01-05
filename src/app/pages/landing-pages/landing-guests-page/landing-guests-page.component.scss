@@ -127,11 +127,7 @@ h1 {
 .restaurant-card {
 	cursor: pointer;
 }
-.restaurant-card:hover {
-	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-	transform: translateY(-2px);
-	transition: all 160ms ease;
-}
+
 .restaurant-card:active {
 	transform: translateY(0);
 }

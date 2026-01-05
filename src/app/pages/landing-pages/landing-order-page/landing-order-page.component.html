@@ -20,12 +20,12 @@
 								(click)="
 									selectCategory({
 										uuid: 'offers',
-										name: 'Angebote',
+										name: locale.offers,
 										products: offerProducts
 									})
 								"
 							>
-								Angebote
+								{{ locale.offers }}
 							</dav-tab-bar-item>
 						}
 						@for (category of menu?.categories; track category.uuid) {
@@ -49,7 +49,7 @@
 			<!-- Angebote Kategorie -->
 			@if (offerProducts.length > 0) {
 				<div class="category-section" id="category-offers">
-					<h2 class="category-title">Angebote</h2>
+					<h2 class="category-title">{{ locale.offers }}</h2>
 					<div class="product-items">
 						@for (product of offerProducts; track product.uuid) {
 							<app-order-product-offer-card
@@ -93,12 +93,12 @@
 		<!-- Warenkorb -->
 		<div class="cart-section">
 			<div class="cart-header">
-				<h3>Warenkorb</h3>
+				<h3>{{ locale.cart }}</h3>
 			</div>
 
 			<div class="cart-items-container">
 				@if (cartItems.length === 0) {
-					<p class="cart-empty-message">Ihr Warenkorb ist leer</p>
+					<p class="cart-empty-message">{{ locale.cartEmptyMessage }}</p>
 				} @else {
 					<ul class="cart-items-list">
 						@for (item of cartItems; track item.uuid) {
@@ -126,7 +126,7 @@
 
 			<div class="cart-footer">
 				<div class="cart-total">
-					<span class="cart-total-label">Gesamt:</span>
+					<span class="cart-total-label">{{ locale.total }}:</span>
 					<span class="cart-total-price">
 						{{ formatPrice(getCartTotal()) }}
 					</span>
@@ -137,7 +137,7 @@
 					[disabled]="cartItems.length === 0"
 					(click)="submitOrder()"
 				>
-					Bestellen
+					{{ locale.order }}
 				</dav-button>
 			</div>
 		</div>

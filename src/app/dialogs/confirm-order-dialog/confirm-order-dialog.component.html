@@ -1,6 +1,6 @@
 <dav-dialog
 	#dialog
-	headline="Bestellung abschließen"
+	[headline]="locale.headline"
 	[visible]="visible"
 	maxWidth="500px"
 	(dismiss)="hide()"
@@ -10,16 +10,16 @@
 		<div class="delivery-type-selection">
 			<dav-tab-bar>
 				<dav-tab-bar-item
-					[active]="selectedDeliveryType === 'delivery'"
-					(click)="selectDeliveryType('delivery')"
+					[active]="selectedOrderType === 'DELIVERY'"
+					(click)="selectDeliveryType('DELIVERY')"
 				>
-					Lieferung
+					{{ locale.delivery }}
 				</dav-tab-bar-item>
 				<dav-tab-bar-item
-					[active]="selectedDeliveryType === 'pickup'"
-					(click)="selectDeliveryType('pickup')"
+					[active]="selectedOrderType === 'PICKUP'"
+					(click)="selectDeliveryType('PICKUP')"
 				>
-					Abholung
+					{{ locale.pickup }}
 				</dav-tab-bar-item>
 			</dav-tab-bar>
 		</div>
@@ -27,14 +27,14 @@
 		<!-- Adresse Anzeige -->
 		<div class="address-section">
 			<h4 class="section-title">
-				@if (selectedDeliveryType === "delivery") {
-					Lieferadresse
+				@if (selectedOrderType === "DELIVERY") {
+					{{ locale.deliveryAddress }}
 				} @else {
-					Abholadresse
+					{{ locale.pickupAddress }}
 				}
 			</h4>
 			<div class="address-info">
-				@if (selectedDeliveryType === "delivery") {
+				@if (selectedOrderType === "DELIVERY") {
 					<p class="name">{{ mockUser.name }}</p>
 				} @else {
 					<p class="name">{{ mockRestaurant.name }}</p>
@@ -45,7 +45,7 @@
 
 		<!-- Gesamtpreis -->
 		<div class="total-section">
-			<span class="total-label">Gesamt:</span>
+			<span class="total-label">{{ locale.total }}:</span>
 			<span class="total-price"
 				>{{ totalPrice / 100 | number: "1.2-2" }} €</span
 			>
@@ -53,22 +53,24 @@
 
 		<!-- Bezahlungsmethoden -->
 		<div class="payment-section">
-			<h4 class="section-title">Bezahlmethode wählen</h4>
+			<h4 class="section-title">{{ locale.selectPaymentMethod }}</h4>
 			<div class="payment-buttons">
-				<button class="payment-button" (click)="confirmWithPayment('cash')">
+				<button class="payment-button" (click)="confirmWithPayment('CASH')">
 					<fa-icon class="payment-icon" [icon]="faMoneyBill1"></fa-icon>
-					<span class="payment-label">Bar</span>
+					<span class="payment-label">{{ locale.cash }}</span>
 				</button>
-				<button class="payment-button" (click)="confirmWithPayment('card')">
+				<button class="payment-button" (click)="confirmWithPayment('CARD')">
 					<fa-icon class="payment-icon" [icon]="faCreditCard"></fa-icon>
-					<span class="payment-label">Karte</span>
+					<span class="payment-label">{{ locale.card }}</span>
 				</button>
 			</div>
 		</div>
 
 		<!-- Abbrechen Button -->
 		<div class="cancel-section">
-			<button class="cancel-button" (click)="hide()">Abbrechen</button>
+			<button class="cancel-button" (click)="hide()">
+				{{ locale.cancel }}
+			</button>
 		</div>
 	</div>
 </dav-dialog>

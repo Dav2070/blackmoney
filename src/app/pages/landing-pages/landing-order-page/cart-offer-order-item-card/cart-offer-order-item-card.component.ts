@@ -19,7 +19,8 @@ import { PriceCalculator } from "src/app/models/cash-register/order-item-handlin
 	standalone: false
 })
 export class CartOfferOrderItemCardComponent {
-	locale = this.localizationService.locale.offerOrderItemCard
+	locale = this.localizationService.locale.landingOrderPage
+	discountLocale = this.localizationService.locale.offerOrderItemCard
 	formatPrice = formatPrice
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo

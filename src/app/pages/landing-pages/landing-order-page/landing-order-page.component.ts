@@ -11,6 +11,7 @@ import { SelectMenuSpecialProductsDialogComponent } from "src/app/dialogs/select
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
 import { ConfirmOrderDialogComponent } from "src/app/dialogs/confirm-order-dialog/confirm-order-dialog.component"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	templateUrl: "./landing-order-page.component.html",
@@ -18,6 +19,7 @@ import { ConfirmOrderDialogComponent } from "src/app/dialogs/confirm-order-dialo
 	standalone: false
 })
 export class LandingOrderPageComponent implements OnInit {
+	locale = this.localizationService.locale.landingOrderPage
 	faPlus = faPlus
 	faMinus = faMinus
 	faTrash = faTrash
@@ -51,6 +53,8 @@ export class LandingOrderPageComponent implements OnInit {
 	@ViewChild("categoryTabBar", { read: ElementRef })
 	categoryTabBar: ElementRef
 	//#endregion
+
+	constructor(private localizationService: LocalizationService) {}
 
 	get offerProducts(): Product[] {
 		if (!this.menu?.categories) return []
@@ -882,8 +886,8 @@ export class LandingOrderPageComponent implements OnInit {
 	}
 
 	confirmOrderDialogConfirmOrder(event: {
-		deliveryType: "delivery" | "pickup"
-		paymentMethod: "cash" | "card"
+		deliveryType: "DELIVERY" | "PICKUP"
+		paymentMethod: "CASH" | "CARD"
 	}) {
 		console.log("Order confirmed:", event)
 		// Hier würde die Logik zum Absenden der Bestellung implementiert werden

@@ -13,6 +13,7 @@ import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { VariationItem } from "src/app/models/VariationItem"
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { formatPrice } from "src/app/utils"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	selector: "app-cart-order-item-card",
@@ -21,6 +22,7 @@ import { formatPrice } from "src/app/utils"
 	standalone: false
 })
 export class CartOrderItemCardComponent {
+	locale = this.localizationService.locale.landingOrderPage
 	formatPrice = formatPrice
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo
@@ -40,6 +42,8 @@ export class CartOrderItemCardComponent {
 	@Output() addNote = new EventEmitter<OrderItem>()
 
 	private priceCalculator = new PriceCalculator()
+
+	constructor(private localizationService: LocalizationService) {}
 
 	/**
 	 * Checks if an OrderItem is a diverse item

@@ -1,6 +1,6 @@
 import { Address } from "./Address"
 
-export class User {
+export class UserL {
 	uuid: string
 	name: string
 	address: Address

@@ -223,6 +223,16 @@ export const de = {
 	offerCard: {
 		options: "Optionen"
 	},
+	landingOrderPage: {
+		offers: "Angebote",
+		cart: "Warenkorb",
+		cartEmptyMessage: "Ihr Warenkorb ist leer",
+		total: "Gesamt",
+		order: "Bestellen",
+		addNoteEdit: "Anmerkung bearbeiten",
+		addNoteAdd: "Anmerkung hinzufügen",
+		offerLabel: "Angebot"
+	},
 	addOfferDialog: {
 		headline: "Menü hinzufügen",
 		specialHeadline: "Special hinzufügen",
@@ -604,6 +614,18 @@ export const de = {
 			additionalCost: "Aufpreis (€)",
 			nameRequired: "Name ist erforderlich",
 			costPositive: "Preis muss positiv sein"
+		},
+		confirmOrderDialog: {
+			headline: "Bestellung abschließen",
+			delivery: "Lieferung",
+			pickup: "Abholung",
+			deliveryAddress: "Lieferadresse",
+			pickupAddress: "Abholadresse",
+			total: "Gesamt",
+			selectPaymentMethod: "Bezahlmethode wählen",
+			cash: "Bar",
+			card: "Karte",
+			cancel: "Abbrechen"
 		}
 	},
 	actions: {

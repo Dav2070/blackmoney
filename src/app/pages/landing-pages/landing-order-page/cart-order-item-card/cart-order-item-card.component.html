@@ -33,9 +33,9 @@
 	<div class="card-footer">
 		<button class="add-note-button" (click)="onAddNoteClick($event)">
 			@if (orderItem.notes) {
-				Anmerkung bearbeiten
+				{{ locale.addNoteEdit }}
 			} @else {
-				Anmerkung hinzufügen
+				{{ locale.addNoteAdd }}
 			}
 		</button>
 		<div class="controls">

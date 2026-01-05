@@ -225,6 +225,7 @@ export interface AddProductOrderItemInput {
 export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type ProductType = "FOOD" | "DRINK" | "SPECIAL" | "MENU"
 export type PrintRuleType = "BILLS" | "PRODUCT_TYPE" | "CATEGORIES" | "PRODUCTS"
+export type OrderType = "DELIVERY" | "PICKUP"
 
 export enum OrderItemType {
 	Product = "PRODUCT",

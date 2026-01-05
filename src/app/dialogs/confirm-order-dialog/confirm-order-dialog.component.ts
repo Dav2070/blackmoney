@@ -15,6 +15,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { User } from "src/app/models/User"
 import { Restaurant } from "src/app/models/Restaurant"
 import { Address } from "src/app/models/Address"
+import { OrderType, PaymentMethod } from "src/app/types"
 
 @Component({
 	selector: "app-confirm-order-dialog",
@@ -23,17 +24,18 @@ import { Address } from "src/app/models/Address"
 	standalone: false
 })
 export class ConfirmOrderDialogComponent {
+	locale = this.localizationService.locale.dialogs.confirmOrderDialog
 	actionsLocale = this.localizationService.locale.actions
 	faMoneyBill1 = faMoneyBill1
 	faCreditCard = faCreditCard
 	@Input() totalPrice: number = 0
 	@Output() confirmOrder = new EventEmitter<{
-		deliveryType: "delivery" | "pickup"
-		paymentMethod: "cash" | "card"
+		deliveryType: OrderType
+		paymentMethod: PaymentMethod
 	}>()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
-	selectedDeliveryType: "delivery" | "pickup" = "delivery"
+	selectedOrderType: OrderType = "DELIVERY"
 
 	// Mock User
 	mockUser = {
@@ -90,20 +92,20 @@ export class ConfirmOrderDialogComponent {
 		this.visible = false
 	}
 
-	selectDeliveryType(type: "delivery" | "pickup") {
-		this.selectedDeliveryType = type
+	selectDeliveryType(type: OrderType) {
+		this.selectedOrderType = type
 	}
 
-	confirmWithPayment(paymentMethod: "cash" | "card") {
+	confirmWithPayment(paymentMethod: PaymentMethod) {
 		this.confirmOrder.emit({
-			deliveryType: this.selectedDeliveryType,
+			deliveryType: this.selectedOrderType,
 			paymentMethod
 		})
 		this.hide()
 	}
 
 	get currentAddress(): Address {
-		return this.selectedDeliveryType === "delivery"
+		return this.selectedOrderType === "DELIVERY"
 			? this.mockUser.address
 			: ({
 					uuid: this.mockRestaurant.uuid,

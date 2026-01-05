@@ -45,7 +45,7 @@
 	@if (calculateDiscountOfOrderItem(orderItem) > 0) {
 		<div class="discount-info">
 			<span
-				>{{ locale.discount }}: -{{
+				>{{ discountLocale.discount }}: -{{
 					formatPrice(calculateDiscountOfOrderItem(orderItem))
 				}}</span
 			>
@@ -55,9 +55,9 @@
 	<div class="card-footer">
 		<button class="add-note-button" (click)="onAddNoteClick($event)">
 			@if (orderItem.notes) {
-				Anmerkung bearbeiten
+				{{ locale.addNoteEdit }}
 			} @else {
-				Anmerkung hinzufügen
+				{{ locale.addNoteAdd }}
 			}
 		</button>
 		<div class="controls">

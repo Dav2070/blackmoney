@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from "@angular/core"
 import { Offer } from "src/app/models/Offer"
 import { formatPrice } from "src/app/utils"
 import { faPlus } from "@fortawesome/pro-regular-svg-icons"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	selector: "app-order-product-offer-card",
@@ -10,11 +11,14 @@ import { faPlus } from "@fortawesome/pro-regular-svg-icons"
 	standalone: false
 })
 export class OrderProductOfferCardComponent {
+	locale = this.localizationService.locale.landingOrderPage
 	@Input() offer: Offer
 	@Output() selectOffer = new EventEmitter<Offer>()
 
 	faPlus = faPlus
 	formatPrice = formatPrice
+
+	constructor(private localizationService: LocalizationService) {}
 
 	onCardClick() {
 		console.log("Offer card clicked, emitting:", this.offer)
@@ -37,18 +41,6 @@ export class OrderProductOfferCardComponent {
 				return `${item.name}: ${productNames}`
 			})
 			.join(", ")
-	}
-
-	getOfferTypeLabel(): string {
-		if (!this.offer.offerType) return ""
-		switch (this.offer.offerType) {
-			case "FIXED_PRICE":
-				return "Festpreis"
-			case "DISCOUNT":
-				return "Rabatt"
-			default:
-				return this.offer.offerType
-		}
 	}
 
 	getAvailability(): string {

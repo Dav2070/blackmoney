@@ -1,0 +1,121 @@
+.product-variation-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 456px;
+	height: 120px;
+	min-width: 456px;
+	min-height: 120px;
+	max-width: 456px;
+	max-height: 120px;
+	background-color: var(--dav-color-surface);
+	color: var(--dav-color-on-surface);
+	border: 1px solid rgb(var(--dav-color-outline-rgb), 0.15);
+	border-radius: 12px;
+	box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+	padding: 16px;
+	box-sizing: border-box;
+	cursor: pointer;
+	transition: 200ms;
+
+	p {
+		margin: 0;
+	}
+
+	&:hover {
+		background-color: var(--dav-color-surface-hover);
+	}
+
+	&:focus,
+	&:active {
+		background-color: var(--dav-color-surface-focus);
+	}
+}
+
+.product-card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 8px;
+}
+
+.product-card-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+
+.product-card-name {
+	font-weight: 500;
+	font-size: 16px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.product-card-price {
+	color: var(--dav-color-primary);
+	font-weight: 700;
+	font-size: 18px;
+	white-space: nowrap;
+}
+
+.product-card-add {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	flex-shrink: 0;
+}
+
+.product-card-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	gap: 8px;
+}
+
+.product-card-description {
+	color: var(--dav-color-on-surface-variant);
+	font-size: 13px;
+	min-height: 20px;
+	flex: 1;
+}
+
+.product-card-variations {
+	display: flex;
+	flex-shrink: 0;
+}
+
+.variations-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	justify-content: flex-end;
+}
+
+.variation-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 8px;
+	background-color: var(--dav-color-surface-container-high);
+	border-radius: 12px;
+	font-size: 11px;
+	color: var(--dav-color-on-surface-variant);
+	cursor: help;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: var(--dav-color-surface-container-highest);
+	}
+
+	.variation-icon {
+		font-size: 10px;
+	}
+
+	.variation-name {
+		font-weight: 500;
+	}
+}

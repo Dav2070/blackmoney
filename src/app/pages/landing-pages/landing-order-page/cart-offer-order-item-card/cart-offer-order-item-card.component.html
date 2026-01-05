@@ -1,0 +1,77 @@
+<li class="offer-order-item-card slide-up-in-light">
+	<div class="card-header">
+		<div class="product-name">
+			<span>{{ orderItem.product.name }}</span>
+			@if (orderItem.notes) {
+				<fa-icon
+					[icon]="faNoteSticky"
+					class="note-icon"
+					(click)="onNoteIconClick($event)"
+				></fa-icon>
+			}
+		</div>
+		<div class="product-price">
+			<span>{{
+				formatPrice(calculateTotalPriceOfOrderItem(orderItem))
+			}}</span>
+		</div>
+	</div>
+
+	@if (orderItem.orderItems.length > 0) {
+		<div class="offer-items-list">
+			@for (subOrderItem of orderItem.orderItems; track subOrderItem.uuid) {
+				<div class="offer-item">
+					<span>{{ subOrderItem.product.name }}</span>
+					@if (subOrderItem.orderItemVariations.length > 0) {
+						@for (
+							orderItemVariation of subOrderItem.orderItemVariations;
+							track orderItemVariation.uuid
+						) {
+							@for (
+								variationItem of orderItemVariation.variationItems;
+								track variationItem.uuid
+							) {
+								<span class="variation-detail">{{
+									variationItem.name
+								}}</span>
+							}
+						}
+					}
+				</div>
+			}
+		</div>
+	}
+
+	@if (calculateDiscountOfOrderItem(orderItem) > 0) {
+		<div class="discount-info">
+			<span
+				>{{ locale.discount }}: -{{
+					formatPrice(calculateDiscountOfOrderItem(orderItem))
+				}}</span
+			>
+		</div>
+	}
+
+	<div class="card-footer">
+		<button class="add-note-button" (click)="onAddNoteClick($event)">
+			@if (orderItem.notes) {
+				Anmerkung bearbeiten
+			} @else {
+				Anmerkung hinzufügen
+			}
+		</button>
+		<div class="controls">
+			<button class="control-button" (click)="onMinusClick($event)">
+				@if (orderItem.count === 1) {
+					<fa-icon [icon]="faTrash"></fa-icon>
+				} @else {
+					<fa-icon [icon]="faMinus"></fa-icon>
+				}
+			</button>
+			<span class="count">{{ orderItem.count }}</span>
+			<button class="control-button" (click)="onPlusClick($event)">
+				<fa-icon [icon]="faPlus"></fa-icon>
+			</button>
+		</div>
+	</div>
+</li>

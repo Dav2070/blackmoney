@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { Component, OnInit, ViewChild } from "@angular/core"
 import { Category } from "src/app/models/Category"
 import { Menu } from "src/app/models/Menu"
 import { Product } from "src/app/models/Product"
@@ -6,6 +6,9 @@ import { OrderItem } from "src/app/models/OrderItem"
 import { ProductType, OrderItemType } from "src/app/types"
 import { formatPrice } from "src/app/utils"
 import { faPlus, faMinus, faTrash } from "@fortawesome/pro-regular-svg-icons"
+import { SelectMenuSpecialProductsDialogComponent } from "src/app/dialogs/select-menu-special-products-dialog/select-menu-special-products-dialog.component"
+import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
+import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
 
 @Component({
 	templateUrl: "./landing-order-page.component.html",
@@ -21,6 +24,91 @@ export class LandingOrderPageComponent implements OnInit {
 	menu: Menu
 	selectedCategory: Category | null = null
 	cartItems: OrderItem[] = []
+	selectedProduct: Product = null
+
+	//#region SelectProductSpecialDialog variables
+	@ViewChild("selectMenuSpecialProductsDialog")
+	selectMenuSpecialProductsDialog: SelectMenuSpecialProductsDialogComponent
+	//#endregion
+	//#region SelectProductVariationsDialog variables
+	@ViewChild("selectProductVariationsDialog")
+	selectProductVariationsDialog: SelectProductVariationsDialogComponent
+	//#endregion
+	//#region AddNoteDialog variables
+	@ViewChild("addNoteDialog")
+	addNoteDialog: AddNoteDialogComponent
+	selectedOrderItem: OrderItem = null
+	//#endregion
+
+	get offerProducts(): Product[] {
+		if (!this.menu?.categories) return []
+		return this.menu.categories
+			.flatMap(cat => cat.products)
+			.filter(
+				product => product.offer && this.isOfferAvailable(product.offer)
+			)
+	}
+
+	isOfferAvailable(offer: any): boolean {
+		const now = new Date()
+		const currentDay = now.getDay() // 0 = Sunday, 1 = Monday, ...
+		const currentTime = now.getHours() * 60 + now.getMinutes()
+
+		// Map JavaScript day (0-6) to weekday strings
+		const dayMap = [
+			"SUNDAY",
+			"MONDAY",
+			"TUESDAY",
+			"WEDNESDAY",
+			"THURSDAY",
+			"FRIDAY",
+			"SATURDAY"
+		]
+		const currentWeekday = dayMap[currentDay]
+
+		// Check weekdays
+		if (offer.weekdays && offer.weekdays.length > 0) {
+			if (!offer.weekdays.includes(currentWeekday)) {
+				return false
+			}
+		}
+
+		// Check date range
+		if (offer.startDate) {
+			const startDate = new Date(offer.startDate)
+			startDate.setHours(0, 0, 0, 0)
+			if (now < startDate) {
+				return false
+			}
+		}
+
+		if (offer.endDate) {
+			const endDate = new Date(offer.endDate)
+			endDate.setHours(23, 59, 59, 999)
+			if (now > endDate) {
+				return false
+			}
+		}
+
+		// Check time range
+		if (offer.startTime) {
+			const [startHour, startMin] = offer.startTime.split(":").map(Number)
+			const startTimeMinutes = startHour * 60 + startMin
+			if (currentTime < startTimeMinutes) {
+				return false
+			}
+		}
+
+		if (offer.endTime) {
+			const [endHour, endMin] = offer.endTime.split(":").map(Number)
+			const endTimeMinutes = endHour * 60 + endMin
+			if (currentTime > endTimeMinutes) {
+				return false
+			}
+		}
+
+		return true
+	}
 
 	ngOnInit() {
 		// Mock-Daten für die Kategorien mit Produkten
@@ -130,7 +218,62 @@ export class LandingOrderPageComponent implements OnInit {
 							name: "Margherita",
 							price: 850,
 							shortcut: 20,
-							variations: [],
+							variations: [
+								{
+									uuid: "var-pizza-size",
+									name: "Größe",
+									variationItems: [
+										{
+											id: 1,
+											uuid: "vi-1",
+											name: "Klein (26cm)",
+											additionalCost: 0
+										},
+										{
+											id: 2,
+											uuid: "vi-2",
+											name: "Mittel (30cm)",
+											additionalCost: 250
+										},
+										{
+											id: 3,
+											uuid: "vi-3",
+											name: "Groß (36cm)",
+											additionalCost: 400
+										}
+									]
+								},
+								{
+									uuid: "var-pizza-extras",
+									name: "Extras",
+									variationItems: [
+										{
+											id: 4,
+											uuid: "vi-4",
+											name: "Extra Käse",
+											additionalCost: 150
+										},
+										{
+											id: 5,
+											uuid: "vi-5",
+											name: "Knoblauch",
+											additionalCost: 0
+										},
+										{
+											id: 6,
+											uuid: "vi-6",
+											name: "Scharf",
+											additionalCost: 0
+										},
+										{
+											id: 7,
+											uuid: "vi-7",
+											name: "Oliven",
+											additionalCost: 100
+										}
+									]
+								}
+							],
 							takeaway: false
 						},
 						{
@@ -171,12 +314,128 @@ export class LandingOrderPageComponent implements OnInit {
 						},
 						{
 							uuid: "prod-25",
-							type: "PRODUCT" as ProductType,
+							type: "MENU" as ProductType,
 							name: "Diavola",
 							price: 1050,
 							shortcut: 25,
 							variations: [],
-							takeaway: false
+							takeaway: false,
+							offer: {
+								id: 1,
+								uuid: "offer-1",
+								offerType: "FIXED_PRICE",
+								offerValue: 1500,
+								weekdays: [
+									"MONDAY",
+									"TUESDAY",
+									"WEDNESDAY",
+									"THURSDAY",
+									"FRIDAY",
+									"SATURDAY",
+									"SUNDAY"
+								],
+								offerItems: [
+									{
+										uuid: "oi-1",
+										name: "Pizza",
+										maxSelections: 1,
+										products: [
+											{
+												uuid: "prod-25",
+												type: "PRODUCT" as ProductType,
+												name: "Diavola",
+												price: 1050,
+												shortcut: 25,
+												category: {
+													uuid: "cat-3",
+													name: "Pizza",
+													products: []
+												},
+												variations: []
+											},
+											{
+												uuid: "prod-26",
+												type: "PRODUCT" as ProductType,
+												name: "Hawaii",
+												price: 1050,
+												shortcut: 26,
+												category: {
+													uuid: "cat-3",
+													name: "Pizza",
+													products: []
+												},
+												variations: []
+											},
+											{
+												uuid: "prod-27",
+												type: "PRODUCT" as ProductType,
+												name: "Tuna",
+												price: 1050,
+												shortcut: 27,
+												category: {
+													uuid: "cat-3",
+													name: "Pizza",
+													products: []
+												},
+												variations: []
+											}
+										]
+									},
+									{
+										uuid: "oi-2",
+										name: "Getränk",
+										maxSelections: 1,
+										products: [
+											{
+												uuid: "prod-60",
+												type: "PRODUCT" as ProductType,
+												name: "Cola",
+												price: 350,
+												shortcut: 60,
+												category: {
+													uuid: "cat-7",
+													name: "Getränke",
+													products: []
+												},
+												variations: [
+													//Klein Gross
+													{
+														uuid: "var-coke-size",
+														name: "Größe",
+														variationItems: [
+															{
+																id: 8,
+																uuid: "vi-8",
+																name: "Klein",
+																additionalCost: 0
+															},
+															{
+																id: 9,
+																uuid: "vi-9",
+																name: "Groß",
+																additionalCost: 150
+															}
+														]
+													}
+												]
+											},
+											{
+												uuid: "prod-61",
+												type: "PRODUCT" as ProductType,
+												name: "Wasser",
+												price: 250,
+												shortcut: 61,
+												category: {
+													uuid: "cat-7",
+													name: "Getränke",
+													products: []
+												},
+												variations: []
+											}
+										]
+									}
+								]
+							}
 						}
 					]
 				},
@@ -190,7 +449,26 @@ export class LandingOrderPageComponent implements OnInit {
 							name: "Spaghetti Carbonara",
 							price: 1150,
 							shortcut: 30,
-							variations: [],
+							variations: [
+								{
+									uuid: "var-pasta-portion",
+									name: "Portion",
+									variationItems: [
+										{
+											id: 10,
+											uuid: "vi-10",
+											name: "Normal",
+											additionalCost: 0
+										},
+										{
+											id: 11,
+											uuid: "vi-11",
+											name: "Groß",
+											additionalCost: 300
+										}
+									]
+								}
+							],
 							takeaway: false
 						},
 						{
@@ -325,7 +603,50 @@ export class LandingOrderPageComponent implements OnInit {
 							name: "Cappuccino",
 							price: 350,
 							shortcut: 63,
-							variations: [],
+							variations: [
+								{
+									uuid: "var-cappuccino-size",
+									name: "Größe",
+									variationItems: [
+										{
+											id: 12,
+											uuid: "vi-12",
+											name: "Normal",
+											additionalCost: 0
+										},
+										{
+											id: 13,
+											uuid: "vi-13",
+											name: "Groß",
+											additionalCost: 100
+										}
+									]
+								},
+								{
+									uuid: "var-cappuccino-milk",
+									name: "Milch",
+									variationItems: [
+										{
+											id: 14,
+											uuid: "vi-14",
+											name: "Kuhmilch",
+											additionalCost: 0
+										},
+										{
+											id: 15,
+											uuid: "vi-15",
+											name: "Hafermilch",
+											additionalCost: 50
+										},
+										{
+											id: 16,
+											uuid: "vi-16",
+											name: "Sojamilch",
+											additionalCost: 50
+										}
+									]
+								}
+							],
 							takeaway: false
 						}
 					]
@@ -350,25 +671,52 @@ export class LandingOrderPageComponent implements OnInit {
 		}
 	}
 
-	addToCart(product: Product) {
-		// Prüfe ob Produkt bereits im Warenkorb ist
-		const existingItem = this.cartItems.find(
-			item => item.product.uuid === product.uuid
-		)
+	// Füge item zu cartItems hinzu (1:1 von booking-page)
+	clickItem(product: Product) {
+		if (product == null) return
+		console.log("clickItem called with product:", product)
+		this.selectedProduct = product
 
-		if (existingItem) {
-			existingItem.count++
+		if (product.type === "SPECIAL") {
+			console.log("Opening SPECIAL dialog")
+			this.selectedProduct = product
+			this.selectMenuSpecialProductsDialog.show()
+		} else if (product.type === "MENU") {
+			console.log("Opening MENU dialog")
+			this.selectedProduct = JSON.parse(JSON.stringify(product))
+			this.selectMenuSpecialProductsDialog.show()
 		} else {
-			const newItem: OrderItem = {
+			console.log("Normal product, variations:", product.variations?.length)
+			let newItem: OrderItem = {
 				uuid: crypto.randomUUID(),
 				type: OrderItemType.Product,
-				count: 1,
+				count: 0,
 				order: null,
-				product: product,
+				product,
 				orderItems: [],
 				orderItemVariations: []
 			}
-			this.cartItems.push(newItem)
+
+			if (product.variations.length === 0) {
+				console.log("No variations, adding to cart")
+				// Prüfe ob Produkt bereits im Warenkorb ist
+				const existingItem = this.cartItems.find(
+					item => item.product.uuid === product.uuid
+				)
+
+				if (existingItem) {
+					existingItem.count++
+				} else {
+					newItem.count = 1
+					this.cartItems.push(newItem)
+				}
+			} else {
+				console.log(
+					"Has variations, opening dialog",
+					this.selectProductVariationsDialog
+				)
+				this.selectProductVariationsDialog.show()
+			}
 		}
 	}
 
@@ -391,6 +739,18 @@ export class LandingOrderPageComponent implements OnInit {
 		}
 	}
 
+	openAddNoteDialog(item: OrderItem) {
+		this.selectedOrderItem = item
+		this.addNoteDialog.orderItem = item
+		this.addNoteDialog.show()
+	}
+
+	addNoteDialogPrimaryButtonClick(event: { note: string }) {
+		if (this.selectedOrderItem) {
+			this.selectedOrderItem.notes = event.note
+		}
+	}
+
 	getCartTotal(): number {
 		return this.cartItems.reduce(
 			(total, item) => total + item.product.price * item.count,
@@ -400,5 +760,69 @@ export class LandingOrderPageComponent implements OnInit {
 
 	submitOrder() {
 		// Hier würde die Logik zum Absenden der Bestellung implementiert werden
+	}
+
+	selectMenuSpecialProductsDialogPrimaryButtonClick(event: {
+		orderItems: OrderItem[]
+	}) {
+		const orderItemType =
+			this.selectedProduct.type === "MENU"
+				? OrderItemType.Menu
+				: OrderItemType.Special
+
+		const newItem: OrderItem = {
+			uuid: crypto.randomUUID(),
+			type: orderItemType,
+			count: 1,
+			order: null,
+			product: this.selectedProduct,
+			orderItems: event.orderItems,
+			orderItemVariations: []
+		}
+
+		this.cartItems.push(newItem)
+		this.selectMenuSpecialProductsDialog.hide()
+	}
+
+	selectProductVariationsDialogPrimaryButtonClick(event: {
+		variationTree: { [key: string]: number }[]
+	}) {
+		const lastVariationTree = event.variationTree.pop()
+		const allVariationItems = this.selectedProduct.variations
+			.map(v => v.variationItems)
+			.flat()
+
+		const newItem: OrderItem = {
+			uuid: crypto.randomUUID(),
+			type: OrderItemType.Product,
+			count: 1,
+			order: null,
+			product: this.selectedProduct,
+			orderItems: [],
+			orderItemVariations: []
+		}
+
+		for (const key of Object.keys(lastVariationTree)) {
+			const value = lastVariationTree[key]
+			if (value === 0) continue
+
+			const variationItems: any[] = []
+
+			for (const variationItemUuid of key.split(",")) {
+				const variationItem = allVariationItems.find(
+					vi => vi.uuid === variationItemUuid
+				)
+				if (variationItem) variationItems.push(variationItem)
+			}
+
+			newItem.orderItemVariations.push({
+				uuid: crypto.randomUUID(),
+				count: value,
+				variationItems
+			})
+		}
+
+		this.cartItems.push(newItem)
+		this.selectProductVariationsDialog.hide()
 	}
 }

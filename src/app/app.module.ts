@@ -87,6 +87,11 @@ import { OfferAvailabilityComponent } from "./dialogs/add-offer-dialog/offer-ava
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
 import { LandingOrderPageComponent } from "./pages/landing-pages/landing-order-page/landing-order-page.component"
+import { OrderProductCardComponent } from "./pages/landing-pages/landing-order-page/product-card/product-card.component"
+import { OrderProductVariationCardComponent } from "./pages/landing-pages/landing-order-page/product-variation-card/product-variation-card.component"
+import { OrderProductOfferCardComponent } from "./pages/landing-pages/landing-order-page/product-offer-card/product-offer-card.component"
+import { CartOrderItemCardComponent } from "./pages/landing-pages/landing-order-page/cart-order-item-card/cart-order-item-card.component"
+import { CartOfferOrderItemCardComponent } from "./pages/landing-pages/landing-order-page/cart-offer-order-item-card/cart-offer-order-item-card.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
 import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-settings-page/general-settings-page.component"
@@ -205,6 +210,11 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		LandingPageComponent,
 		LandingOverviewPageComponent,
 		LandingOrderPageComponent,
+		OrderProductCardComponent,
+		OrderProductVariationCardComponent,
+		OrderProductOfferCardComponent,
+		CartOrderItemCardComponent,
+		CartOfferOrderItemCardComponent,
 		LandingPricingPageComponent,
 		UserPageComponent,
 		GeneralSettingsPageComponent,

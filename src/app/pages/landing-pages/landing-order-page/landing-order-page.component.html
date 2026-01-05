@@ -6,6 +6,20 @@
 			<!-- Kategorien-Bar -->
 			<div class="categories-bar">
 				<dav-tab-bar>
+					@if (offerProducts.length > 0) {
+						<dav-tab-bar-item
+							[active]="selectedCategory?.uuid === 'offers'"
+							(click)="
+								selectCategory({
+									uuid: 'offers',
+									name: 'Angebote',
+									products: offerProducts
+								})
+							"
+						>
+							Angebote
+						</dav-tab-bar-item>
+					}
 					@for (category of menu?.categories; track category.uuid) {
 						<dav-tab-bar-item
 							[active]="selectedCategory?.uuid === category.uuid"
@@ -16,37 +30,43 @@
 					}
 				</dav-tab-bar>
 			</div>
+			<!-- Angebote Kategorie -->
+			@if (offerProducts.length > 0) {
+				<div class="category-section" id="category-offers">
+					<h2 class="category-title">Angebote</h2>
+					<div class="product-items">
+						@for (product of offerProducts; track product.uuid) {
+							<app-order-product-offer-card
+								[offer]="product.offer"
+								(selectOffer)="clickItem(product)"
+							></app-order-product-offer-card>
+						}
+					</div>
+				</div>
+			}
+			<!-- Normale Kategorien -->
 			@for (category of menu?.categories; track category.uuid) {
 				@if (category.products.length > 0) {
 					<div class="category-section" [id]="'category-' + category.uuid">
 						<h2 class="category-title">{{ category.name }}</h2>
 						<div class="product-items">
 							@for (product of category.products; track product.uuid) {
-								<div
-									class="product-card slide-up-in-light"
-									(click)="addToCart(product)"
-								>
-									<div class="product-card-id">
-										<p>#{{ product.shortcut }}</p>
-									</div>
-
-									<div class="product-card-name">
-										<p>{{ product.name }}</p>
-									</div>
-
-									<div class="product-card-price">
-										<p>{{ formatPrice(product.price) }}</p>
-									</div>
-
-									<div class="product-card-add">
-										<dav-icon-button
-											size="xs"
-											(click)="$event.stopPropagation()"
-										>
-											<fa-icon [icon]="faPlus"></fa-icon>
-										</dav-icon-button>
-									</div>
-								</div>
+								@if (!product.offer) {
+									@if (
+										product.variations &&
+										product.variations.length > 0
+									) {
+										<app-order-product-variation-card
+											[product]="product"
+											(selectProduct)="clickItem($event)"
+										></app-order-product-variation-card>
+									} @else {
+										<app-order-product-card
+											[product]="product"
+											(addToCart)="clickItem($event)"
+										></app-order-product-card>
+									}
+								}
 							}
 						</div>
 					</div>
@@ -66,40 +86,23 @@
 				} @else {
 					<ul class="cart-items-list">
 						@for (item of cartItems; track item.uuid) {
-							<li class="cart-item">
-								<div class="cart-item-info">
-									<span class="cart-item-name">{{
-										item.product.name
-									}}</span>
-									<span class="cart-item-price">
-										{{ formatPrice(item.product.price * item.count) }}
-									</span>
-								</div>
-								<div class="cart-item-controls">
-									<dav-icon-button
-										size="xs"
-										(click)="decreaseQuantity(item)"
-									>
-										<fa-icon [icon]="faMinus"></fa-icon>
-									</dav-icon-button>
-
-									<span class="cart-item-count">{{ item.count }}</span>
-
-									<dav-icon-button
-										size="xs"
-										(click)="increaseQuantity(item)"
-									>
-										<fa-icon [icon]="faPlus"></fa-icon>
-									</dav-icon-button>
-
-									<dav-icon-button
-										size="xs"
-										(click)="removeFromCart(item)"
-									>
-										<fa-icon [icon]="faTrash"></fa-icon>
-									</dav-icon-button>
-								</div>
-							</li>
+							@if (item.type === "MENU" || item.type === "SPECIAL") {
+								<app-cart-offer-order-item-card
+									[orderItem]="item"
+									[clickable]="false"
+									(plusClick)="increaseQuantity($event)"
+									(minusClick)="decreaseQuantity($event)"
+									(addNote)="openAddNoteDialog($event)"
+								></app-cart-offer-order-item-card>
+							} @else {
+								<app-cart-order-item-card
+									[orderItem]="item"
+									[clickable]="false"
+									(plusClick)="increaseQuantity($event)"
+									(minusClick)="decreaseQuantity($event)"
+									(addNote)="openAddNoteDialog($event)"
+								></app-cart-order-item-card>
+							}
 						}
 					</ul>
 				}
@@ -124,3 +127,24 @@
 		</div>
 	</div>
 </div>
+
+<app-select-menu-special-products-dialog
+	#selectMenuSpecialProductsDialog
+	[product]="selectedProduct"
+	(primaryButtonClick)="
+		selectMenuSpecialProductsDialogPrimaryButtonClick($event)
+	"
+></app-select-menu-special-products-dialog>
+
+<app-select-product-variations-dialog
+	#selectProductVariationsDialog
+	[product]="selectedProduct"
+	(primaryButtonClick)="
+		selectProductVariationsDialogPrimaryButtonClick($event)
+	"
+></app-select-product-variations-dialog>
+
+<app-add-note-dialog
+	#addNoteDialog
+	(primaryButtonClick)="addNoteDialogPrimaryButtonClick($event)"
+></app-add-note-dialog>

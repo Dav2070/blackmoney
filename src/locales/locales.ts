@@ -494,8 +494,9 @@ export const de = {
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"
 		},
-		subtractProductVariationsDialog: {
-			headline: "Variationen entfernen"
+		productVariationsCombinationsDialog: {
+			removeHeadline: "Variationen entfernen",
+			selectHeadline: "Variationen auswählen"
 		},
 		moveMultipleProductsDialog: {
 			headline: "Mehrere verschieben"

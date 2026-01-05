@@ -422,18 +422,19 @@
 	"
 ></app-select-product-variations-dialog>
 
-<app-subtract-product-variations-dialog
-	#subtractProductVariationsDialog
+<app-product-variations-combinations-dialog
+	#productVariationsCombinationsDialog
 	[orderItem]="
 		selectedOrderItem?.type === 'SPECIAL' &&
 		selectedOrderItem?.orderItems?.length > 0
 			? selectedOrderItem.orderItems[0]
 			: selectedOrderItem
 	"
+	mode="subtract"
 	(primaryButtonClick)="
-		subtractProductVariationsDialogPrimaryButtonClick($event)
+		productVariationsCombinationsDialogPrimaryButtonClick($event)
 	"
-></app-subtract-product-variations-dialog>
+></app-product-variations-combinations-dialog>
 
 <app-add-note-dialog
 	#addNoteDialog

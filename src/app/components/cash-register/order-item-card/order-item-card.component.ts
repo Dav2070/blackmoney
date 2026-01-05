@@ -3,9 +3,12 @@ import { OrderItemType } from "src/app/types"
 import {
 	faNoteSticky,
 	faCupTogo,
-	faUtensils
+	faUtensils,
+	faChevronDown,
+	faChevronUp
 } from "@fortawesome/pro-solid-svg-icons"
 import { OrderItem } from "src/app/models/OrderItem"
+import { OrderItemCard } from "src/app/types/orderItemCard"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { VariationItem } from "src/app/models/VariationItem"
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
@@ -19,10 +22,13 @@ import { formatPrice } from "src/app/utils"
 })
 export class OrderItemCardComponent {
 	formatPrice = formatPrice
+	OrderItemType = OrderItemType // Make enum available in template
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo
 	faUtensils = faUtensils
-	@Input() orderItem: OrderItem = null
+	faChevronDown = faChevronDown
+	faChevronUp = faChevronUp
+	@Input() orderItem: OrderItemCard = null
 	@Input() selectedOrderItemUuid: string = null
 	@Input() selectedOrderItemNote: string = null
 	@Input() clickable: boolean = false
@@ -31,6 +37,10 @@ export class OrderItemCardComponent {
 	}>()
 
 	private priceCalculator = new PriceCalculator()
+
+	get isExpanded(): boolean {
+		return this.orderItem?.isExpanded ?? false
+	}
 
 	/**
 	 * Checks if an OrderItem is a diverse item
@@ -73,5 +83,26 @@ export class OrderItemCardComponent {
 		this.noteIconClick.emit({
 			orderItem: this.orderItem
 		})
+	}
+
+	/**
+	 * Checks if the OrderItem should be collapsible
+	 */
+	isCollapsible(): boolean {
+		return (
+			this.orderItem.type === OrderItemType.Special ||
+			this.orderItem.type === OrderItemType.Menu ||
+			this.orderItem.orderItemVariations.length > 0
+		)
+	}
+
+	/**
+	 * Toggles the expanded state
+	 */
+	toggleExpanded(event: Event) {
+		event.stopPropagation()
+		if (this.orderItem) {
+			this.orderItem.isExpanded = !this.orderItem.isExpanded
+		}
 	}
 }

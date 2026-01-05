@@ -49,6 +49,17 @@
 	gap: 8px;
 }
 
+.expand-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 14px;
+	transition: transform 200ms;
+
+	&:hover {
+		transform: scale(1.2);
+	}
+}
+
 .note-icon {
 	color: var(--dav-color-primary);
 	cursor: pointer;
@@ -87,4 +98,26 @@
 	grid-column: span 4;
 	border-top: 1px solid var(--dav-color-outline-variant);
 	margin: 8px 0;
+}
+
+.order-item-card-sub-item-name {
+	grid-column: 2;
+	padding-left: 8px;
+}
+
+.order-item-card-sub-item-count {
+	grid-column: 3;
+	text-align: center;
+}
+
+.order-item-card-sub-item-price {
+	grid-column: 4;
+	text-align: right;
+}
+
+.order-item-card-offer-info {
+	grid-column: 2 / span 3;
+	padding-left: 8px;
+	color: var(--dav-color-primary);
+	margin-top: 4px;
 }

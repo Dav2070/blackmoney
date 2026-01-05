@@ -18,5 +18,4 @@ export class OrderItem {
 	diversePrice?: number
 	takeAway?: boolean
 	course?: number
-	isExpanded?: boolean
 }

@@ -7,6 +7,7 @@ import {
 	faChevronUp
 } from "@fortawesome/pro-solid-svg-icons"
 import { OrderItem } from "src/app/models/OrderItem"
+import { OrderItemCard } from "src/app/types/orderItemCard"
 import { LocalizationService } from "src/app/services/localization-service"
 import { formatPrice } from "src/app/utils"
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
@@ -25,7 +26,7 @@ export class OfferOrderItemCardComponent {
 	faUtensils = faUtensils
 	faChevronDown = faChevronDown
 	faChevronUp = faChevronUp
-	@Input() orderItem: OrderItem = null
+	@Input() orderItem: OrderItemCard = null
 	@Input() selectedOrderItemUuid: string = null
 	@Input() clickable: boolean = false
 	@Output() noteIconClick = new EventEmitter<{

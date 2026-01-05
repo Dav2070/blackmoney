@@ -31,6 +31,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { OrderItem } from "src/app/models/OrderItem"
+import { OrderItemCard } from "src/app/types/orderItemCard"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
 import { VariationItem } from "src/app/models/VariationItem"
@@ -713,7 +714,7 @@ export class BookingPageComponent {
 			.map(v => v.variationItems)
 			.flat()
 
-		const newItem: OrderItem = {
+		const newItem: OrderItemCard = {
 			uuid: crypto.randomUUID(),
 			type: OrderItemType.Product,
 			count: 1,
@@ -1198,7 +1199,7 @@ export class BookingPageComponent {
 					return copiedSub
 				})
 
-				const incoming: OrderItem = {
+				const incoming: OrderItemCard = {
 					...orderItem,
 					uuid: crypto.randomUUID(),
 					count: delta,
@@ -1315,7 +1316,7 @@ export class BookingPageComponent {
 		this.selectedOrderItem = null
 
 		if (this.selectedProduct.type === "MENU") {
-			const menuOrderItem: OrderItem = {
+			const menuOrderItem: OrderItemCard = {
 				uuid: crypto.randomUUID(),
 				type: OrderItemType.Menu,
 				count: 1,
@@ -1340,7 +1341,7 @@ export class BookingPageComponent {
 					JSON.stringify(orderItem)
 				)
 
-				const specialOrderItem: OrderItem = {
+				const specialOrderItem: OrderItemCard = {
 					uuid: crypto.randomUUID(),
 					type: OrderItemType.Special,
 					count: 1,

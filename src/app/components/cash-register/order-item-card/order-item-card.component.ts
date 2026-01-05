@@ -8,6 +8,7 @@ import {
 	faChevronUp
 } from "@fortawesome/pro-solid-svg-icons"
 import { OrderItem } from "src/app/models/OrderItem"
+import { OrderItemCard } from "src/app/types/orderItemCard"
 import { OrderItemVariation } from "src/app/models/OrderItemVariation"
 import { VariationItem } from "src/app/models/VariationItem"
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
@@ -27,7 +28,7 @@ export class OrderItemCardComponent {
 	faUtensils = faUtensils
 	faChevronDown = faChevronDown
 	faChevronUp = faChevronUp
-	@Input() orderItem: OrderItem = null
+	@Input() orderItem: OrderItemCard = null
 	@Input() selectedOrderItemUuid: string = null
 	@Input() selectedOrderItemNote: string = null
 	@Input() clickable: boolean = false

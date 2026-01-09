@@ -297,6 +297,20 @@ export class SelectMenuSpecialProductsDialogComponent {
 		this.visible = false
 	}
 
+	isSubmitDisabled(): boolean {
+		if (this.allItemHandler.isEmpty()) {
+			return true
+		}
+
+		if (this.product?.type === OrderItemType.Menu) {
+			return this.product.offer.offerItems.some(
+				offerItem => offerItem.maxSelections > 0
+			)
+		}
+
+		return false
+	}
+
 	submit() {
 		if (!this.allItemHandler.isEmpty()) {
 			this.primaryButtonClick.emit({

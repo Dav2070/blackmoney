@@ -73,6 +73,7 @@ import { ProductVariationsCombinationsDialogComponent } from "./dialogs/product-
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
+import { ConfirmOrderDialogComponent } from "./dialogs/confirm-order-dialog/confirm-order-dialog.component"
 import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
 import { AddReviewDialogComponent } from "./dialogs/add-review-dialog/add-review-dialog.component"
 import { ViewMenuDialogComponent } from "./dialogs/view-menu-dialog/view-menu-dialog.component"
@@ -91,6 +92,12 @@ import { OfferAvailabilityComponent } from "./dialogs/add-offer-dialog/offer-ava
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
+import { LandingOrderPageComponent } from "./pages/landing-pages/landing-order-page/landing-order-page.component"
+import { OrderProductCardComponent } from "./pages/landing-pages/landing-order-page/product-card/product-card.component"
+import { OrderProductVariationCardComponent } from "./pages/landing-pages/landing-order-page/product-variation-card/product-variation-card.component"
+import { OrderProductOfferCardComponent } from "./pages/landing-pages/landing-order-page/product-offer-card/product-offer-card.component"
+import { CartOrderItemCardComponent } from "./pages/landing-pages/landing-order-page/cart-order-item-card/cart-order-item-card.component"
+import { CartOfferOrderItemCardComponent } from "./pages/landing-pages/landing-order-page/cart-offer-order-item-card/cart-offer-order-item-card.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
 import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-settings-page/general-settings-page.component"
@@ -191,6 +198,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		MoveMultipleProductsDialogComponent,
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,
+		ConfirmOrderDialogComponent,
 		AddDiverseProductDialogComponent,
 		AddReviewDialogComponent,
 		ViewMenuDialogComponent,
@@ -218,6 +226,12 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
+		LandingOrderPageComponent,
+		OrderProductCardComponent,
+		OrderProductVariationCardComponent,
+		OrderProductOfferCardComponent,
+		CartOrderItemCardComponent,
+		CartOfferOrderItemCardComponent,
 		LandingPricingPageComponent,
 		UserPageComponent,
 		GeneralSettingsPageComponent,

@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core"
 import { RouterModule, Routes } from "@angular/router"
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
+import { LandingOrderPageComponent } from "./pages/landing-pages/landing-order-page/landing-order-page.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { LandingGuestsPageComponent } from "./pages/landing-pages/landing-guests-page/landing-guests-page.component"
 import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
@@ -41,6 +42,10 @@ const routes: Routes = [
 			{
 				path: "",
 				component: LandingOverviewPageComponent
+			},
+			{
+				path: "order",
+				component: LandingOrderPageComponent
 			},
 			{
 				path: "pricing",

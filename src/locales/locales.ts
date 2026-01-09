@@ -223,6 +223,16 @@ export const de = {
 	offerCard: {
 		options: "Optionen"
 	},
+	landingOrderPage: {
+		offers: "Angebote",
+		cart: "Warenkorb",
+		cartEmptyMessage: "Ihr Warenkorb ist leer",
+		total: "Gesamt",
+		order: "Bestellen",
+		addNoteEdit: "Anmerkung bearbeiten",
+		addNoteAdd: "Anmerkung hinzufügen",
+		offerLabel: "Angebot"
+	},
 	landingGuestsPage: {
 		restaurantName: "Name des Restaurants",
 		cityPostalCode: "Stadt / PLZ",
@@ -680,6 +690,18 @@ export const de = {
 			lowest: "Niedrigste",
 			highest: "Höchste",
 			noReviews: "Keine Bewertungen verfügbar"
+		},
+		confirmOrderDialog: {
+			headline: "Bestellung abschließen",
+			delivery: "Lieferung",
+			pickup: "Abholung",
+			deliveryAddress: "Lieferadresse",
+			pickupAddress: "Abholadresse",
+			total: "Gesamt",
+			selectPaymentMethod: "Bezahlmethode wählen",
+			cash: "Bar",
+			card: "Karte",
+			cancel: "Abbrechen"
 		}
 	},
 	actions: {

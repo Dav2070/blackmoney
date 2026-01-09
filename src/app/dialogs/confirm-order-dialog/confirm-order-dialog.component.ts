@@ -12,10 +12,10 @@ import { isPlatformBrowser } from "@angular/common"
 import { faMoneyBill1, faCreditCard } from "@fortawesome/pro-regular-svg-icons"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
-import { User } from "src/app/models/User"
 import { Restaurant } from "src/app/models/Restaurant"
 import { Address } from "src/app/models/Address"
 import { OrderType, PaymentMethod } from "src/app/types"
+import { formatPrice } from "src/app/utils"
 
 @Component({
 	selector: "app-confirm-order-dialog",
@@ -28,6 +28,7 @@ export class ConfirmOrderDialogComponent {
 	actionsLocale = this.localizationService.locale.actions
 	faMoneyBill1 = faMoneyBill1
 	faCreditCard = faCreditCard
+	formatPrice = formatPrice
 	@Input() totalPrice: number = 0
 	@Output() confirmOrder = new EventEmitter<{
 		deliveryType: OrderType

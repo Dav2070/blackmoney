@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from "@angular/core"
 import { Product } from "src/app/models/Product"
 import { formatPrice } from "src/app/utils"
 import { faPlus, faList } from "@fortawesome/pro-regular-svg-icons"
+import { Variation } from "src/app/models/Variation"
 
 @Component({
 	selector: "app-order-product-variation-card",
@@ -35,7 +36,7 @@ export class OrderProductVariationCardComponent {
 		return this.product.variations.map(v => v.name).join(", ")
 	}
 
-	getVariationTooltip(variation: any): string {
+	getVariationTooltip(variation: Variation): string {
 		if (!variation.variationItems || variation.variationItems.length === 0) {
 			return variation.name
 		}

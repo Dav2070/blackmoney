@@ -2,7 +2,7 @@
 	#dialog
 	[headline]="locale.headline"
 	[visible]="visible"
-	maxWidth="500px"
+	maxWidth="500"
 	(dismiss)="hide()"
 >
 	<div class="dialog-content">
@@ -46,9 +46,7 @@
 		<!-- Gesamtpreis -->
 		<div class="total-section">
 			<span class="total-label">{{ locale.total }}:</span>
-			<span class="total-price"
-				>{{ totalPrice / 100 | number: "1.2-2" }} €</span
-			>
+			<span class="total-price">{{ formatPrice(totalPrice) }}</span>
 		</div>
 
 		<!-- Bezahlungsmethoden -->

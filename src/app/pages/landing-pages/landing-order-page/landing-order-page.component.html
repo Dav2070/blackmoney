@@ -12,8 +12,8 @@
 				>
 					<fa-icon [icon]="faChevronLeft"></fa-icon>
 				</button>
-				<div class="tab-bar-wrapper" #categoryTabBar>
-					<dav-tab-bar>
+				<div class="tab-bar-wrapper">
+					<dav-tab-bar #categoryTabBar>
 						@if (offerProducts.length > 0) {
 							<dav-tab-bar-item
 								[active]="selectedCategory?.uuid === 'offers'"

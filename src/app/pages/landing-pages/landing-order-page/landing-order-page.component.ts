@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core"
+import { TabBar } from "dav-ui-components"
 import { Category } from "src/app/models/Category"
 import { Menu } from "src/app/models/Menu"
 import { Product } from "src/app/models/Product"
@@ -12,6 +13,7 @@ import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-p
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
 import { ConfirmOrderDialogComponent } from "src/app/dialogs/confirm-order-dialog/confirm-order-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
+import { Offer } from "src/app/models/Offer"
 
 @Component({
 	templateUrl: "./landing-order-page.component.html",
@@ -50,8 +52,8 @@ export class LandingOrderPageComponent implements OnInit {
 	confirmOrderDialog: ConfirmOrderDialogComponent
 	//#endregion
 	//#region Tab-Bar Navigation
-	@ViewChild("categoryTabBar", { read: ElementRef })
-	categoryTabBar: ElementRef
+	@ViewChild("categoryTabBar")
+	categoryTabBar: ElementRef<TabBar>
 	//#endregion
 
 	constructor(private localizationService: LocalizationService) {}
@@ -65,22 +67,11 @@ export class LandingOrderPageComponent implements OnInit {
 			)
 	}
 
-	isOfferAvailable(offer: any): boolean {
+	isOfferAvailable(offer: Offer): boolean {
 		const now = new Date()
-		const currentDay = now.getDay() // 0 = Sunday, 1 = Monday, ...
+		const currentDay = now.getDay()
 		const currentTime = now.getHours() * 60 + now.getMinutes()
-
-		// Map JavaScript day (0-6) to weekday strings
-		const dayMap = [
-			"SUNDAY",
-			"MONDAY",
-			"TUESDAY",
-			"WEDNESDAY",
-			"THURSDAY",
-			"FRIDAY",
-			"SATURDAY"
-		]
-		const currentWeekday = dayMap[currentDay]
+		const currentWeekday = offer.weekdays[currentDay]
 
 		// Check weekdays
 		if (offer.weekdays && offer.weekdays.length > 0) {
@@ -714,9 +705,7 @@ export class LandingOrderPageComponent implements OnInit {
 		// Scrolle das Tab-Item in der Tab-Bar in die Sichtbarkeit
 		setTimeout(() => {
 			if (!this.categoryTabBar?.nativeElement) return
-			const tabBar =
-				this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
-			if (!tabBar) return
+			const tabBar = this.categoryTabBar.nativeElement
 
 			// Finde den Index der aktuellen Kategorie
 			const allCats = this.allCategories
@@ -763,34 +752,29 @@ export class LandingOrderPageComponent implements OnInit {
 
 	get canNavigatePrevious(): boolean {
 		if (!this.categoryTabBar?.nativeElement) return false
-		const element =
-			this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
-		if (!element) return false
-		return element.scrollLeft > 0
+		return this.categoryTabBar.nativeElement.scrollLeft > 0
 	}
 
 	get canNavigateNext(): boolean {
 		if (!this.categoryTabBar?.nativeElement) return false
-		const element =
-			this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
-		if (!element) return false
+		const element = this.categoryTabBar.nativeElement
 		return element.scrollLeft < element.scrollWidth - element.clientWidth - 1
 	}
 
 	navigatePrevious() {
 		if (!this.categoryTabBar?.nativeElement) return
-		const element =
-			this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
-		if (!element) return
-		element.scrollBy({ left: -200, behavior: "smooth" })
+		this.categoryTabBar.nativeElement.scrollBy({
+			left: -200,
+			behavior: "smooth"
+		})
 	}
 
 	navigateNext() {
 		if (!this.categoryTabBar?.nativeElement) return
-		const element =
-			this.categoryTabBar.nativeElement.querySelector("dav-tab-bar")
-		if (!element) return
-		element.scrollBy({ left: 200, behavior: "smooth" })
+		this.categoryTabBar.nativeElement.scrollBy({
+			left: 200,
+			behavior: "smooth"
+		})
 	}
 
 	// Füge item zu cartItems hinzu (1:1 von booking-page)

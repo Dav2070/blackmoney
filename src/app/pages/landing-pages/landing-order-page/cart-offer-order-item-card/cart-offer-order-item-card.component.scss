@@ -123,7 +123,7 @@
 }
 
 .count {
-	font-weight: 500;
+	font-weight: 500px;
 	min-width: 30px;
 	text-align: center;
 	font-size: 16px;
@@ -155,12 +155,6 @@
 		background-color: var(--dav-color-surface-focus);
 		transform: scale(0.95);
 	}
-}
-
-.count {
-	font-weight: 500;
-	min-width: 20px;
-	text-align: center;
 }
 
 .offer-order-item-card-unit-price {

@@ -56,11 +56,16 @@ export class ConfirmOrderDialogComponent {
 	mockRestaurant: Restaurant = {
 		uuid: "rest-1",
 		name: "Ristorante Italia",
-		city: "Berlin",
-		country: "DE",
-		line1: "Hauptstraße",
-		line2: "42",
-		postalCode: "10115",
+		address: {
+			uuid: "addr-2",
+			addressLine1: "Italienische Allee",
+			addressLine2: "Zum Italiener",
+			houseNumber: "45",
+			postalCode: "54321",
+			city: "München",
+			country: "Deutschland"
+		},
+		images: [],
 		menu: null,
 		users: [],
 		rooms: [],
@@ -110,11 +115,11 @@ export class ConfirmOrderDialogComponent {
 			? this.mockUser.address
 			: ({
 					uuid: this.mockRestaurant.uuid,
-					addressLine1: this.mockRestaurant.line1,
-					houseNumber: this.mockRestaurant.line2,
-					postalCode: this.mockRestaurant.postalCode,
-					city: this.mockRestaurant.city,
-					country: this.mockRestaurant.country
+					addressLine1: this.mockRestaurant.address.addressLine1,
+					houseNumber: this.mockRestaurant.address.houseNumber,
+					postalCode: this.mockRestaurant.address.postalCode,
+					city: this.mockRestaurant.address.city,
+					country: this.mockRestaurant.address.country
 				} as Address)
 	}
 

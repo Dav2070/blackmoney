@@ -1,4 +1,5 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, isDevMode } from "@angular/core"
+import { CommonModule } from "@angular/common"
 import {
 	BrowserModule,
 	provideClientHydration
@@ -73,6 +74,10 @@ import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-pro
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
 import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
+import { AddReviewDialogComponent } from "./dialogs/add-review-dialog/add-review-dialog.component"
+import { ViewMenuDialogComponent } from "./dialogs/view-menu-dialog/view-menu-dialog.component"
+import { ViewReviewsDialogComponent } from "./dialogs/view-reviews-dialog/view-reviews-dialog.component"
+import { UploadImageDialogComponent } from "./dialogs/upload-image-dialog/upload-image-dialog.component"
 import { AddTakeawayDialogComponent } from "./dialogs/add-takeaway-dialog/add-takeaway-dialog.component"
 import { EditTakeawayDialogComponent } from "./dialogs/edit-takeaway-dialog/edit-takeaway-dialog.component"
 import { TakeawayDialogComponent } from "./dialogs/takeaway-dialog/takeaway-dialog.component"
@@ -131,6 +136,12 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
+import { LandingGuestsPageComponent } from "./pages/landing-pages/landing-guests-page/landing-guests-page.component"
+import { RestaurantInfoPageComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-info-page.component"
+import { RestaurantFiltersComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-filters/restaurant-filters.component"
+import { RestaurantDetailsComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-details/restaurant-details.component"
+import { RestaurantMenuComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-menu/restaurant-menu.component"
+import { RestaurantReviewsComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-reviews/restaurant-reviews.component"
 import { AddVariationDialogComponent } from "./dialogs/add-variation-dialog/add-variation-dialog.component"
 import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
 import { EditVariationDialogComponent } from "./dialogs/edit-variation-dialog/edit-variation-dialog.component"
@@ -181,6 +192,10 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,
 		AddDiverseProductDialogComponent,
+		AddReviewDialogComponent,
+		ViewMenuDialogComponent,
+		ViewReviewsDialogComponent,
+		UploadImageDialogComponent,
 		AddTakeawayDialogComponent,
 		EditTakeawayDialogComponent,
 		TakeawayDialogComponent,
@@ -225,6 +240,12 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		CategoryPageComponent,
 		CategoriesPageComponent,
 		MenuPageComponent,
+		LandingGuestsPageComponent,
+		RestaurantInfoPageComponent,
+		RestaurantFiltersComponent,
+		RestaurantDetailsComponent,
+		RestaurantMenuComponent,
+		RestaurantReviewsComponent,
 		PrintersPageComponent,
 		RoomsPageComponent,
 		RoomPageComponent,
@@ -238,6 +259,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],
 	imports: [
+		CommonModule,
 		BrowserModule,
 		BrowserAnimationsModule,
 		FormsModule,

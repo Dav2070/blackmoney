@@ -26,6 +26,7 @@ export class LandingPageComponent {
 	overviewTabActive: boolean = false
 	pricingTabActive: boolean = false
 	userButtonSelected: boolean = false
+	guestsTabActive: boolean = false
 
 	constructor(
 		private router: Router,
@@ -36,6 +37,7 @@ export class LandingPageComponent {
 			if (data instanceof NavigationEnd) {
 				this.overviewTabActive = data.url == "/"
 				this.pricingTabActive = data.url.startsWith("/pricing")
+				this.guestsTabActive = data.url.startsWith("/guests")
 			}
 		})
 	}
@@ -46,6 +48,10 @@ export class LandingPageComponent {
 
 	navigateToPricingPage() {
 		this.router.navigate(["pricing"])
+	}
+
+	navigateToGuestsPage() {
+		this.router.navigate(["guests"])
 	}
 
 	async navigateToUserPage() {

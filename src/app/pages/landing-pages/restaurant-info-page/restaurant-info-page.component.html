@@ -1,0 +1,55 @@
+<div class="container slide-up-in">
+	<app-restaurant-filters
+		[nameFilter]="nameFilter"
+		[cityPostalFilter]="cityPostalFilter"
+		[distanceKm]="distanceKm"
+		[ratingFilter]="ratingFilter"
+		[hasTakeaway]="hasTakeaway"
+		[hasDelivery]="hasDelivery"
+		(nameFilterChange)="nameFilter = $event; scheduleEmitFilters()"
+		(cityPostalFilterChange)="
+			cityPostalFilter = $event; scheduleEmitFilters()
+		"
+		(distanceKmChange)="distanceKm = $event; scheduleEmitFilters()"
+		(ratingFilterChange)="ratingFilter = $event; scheduleEmitFilters()"
+		(hasTakeawayChange)="hasTakeaway = $event; scheduleEmitFilters()"
+		(hasDeliveryChange)="hasDelivery = $event; scheduleEmitFilters()"
+		(searchClick)="search()"
+		(backClick)="goBack()"
+	></app-restaurant-filters>
+
+	<app-restaurant-details
+		[restaurant]="restaurant"
+		[currentImageUrl]="currentImageUrl"
+		[currentImageIndex]="currentImageIndex"
+		(reserveTableClick)="reserveTable()"
+		(orderNowClick)="orderNow()"
+		(addImageClick)="addImage()"
+		(previousImageClick)="previousImage()"
+		(nextImageClick)="nextImage()"
+		(setCurrentImageClick)="setCurrentImage($event)"
+	></app-restaurant-details>
+
+	<div class="restaurant-details-grid">
+		<app-restaurant-menu
+			[topProducts]="topProducts"
+			[bestsellers]="bestsellers"
+			(openMenuDialogClick)="openMenuDialog()"
+		></app-restaurant-menu>
+
+		<app-restaurant-reviews
+			[restaurant]="restaurant"
+			(addReviewClick)="addReview()"
+			(openReviewsDialogClick)="openReviewsDialog()"
+		></app-restaurant-reviews>
+	</div>
+</div>
+
+<app-view-menu-dialog></app-view-menu-dialog>
+<app-view-reviews-dialog></app-view-reviews-dialog>
+<app-upload-image-dialog
+	(imageUploaded)="onImageUploaded($event)"
+></app-upload-image-dialog>
+<app-add-review-dialog
+	(reviewSubmitted)="onReviewSubmitted($event)"
+></app-add-review-dialog>

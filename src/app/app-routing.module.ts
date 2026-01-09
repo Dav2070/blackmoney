@@ -4,6 +4,7 @@ import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
 import { LandingOrderPageComponent } from "./pages/landing-pages/landing-order-page/landing-order-page.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
+import { LandingGuestsPageComponent } from "./pages/landing-pages/landing-guests-page/landing-guests-page.component"
 import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
 import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-settings-page/general-settings-page.component"
 import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page/restaurants-page.component"
@@ -32,7 +33,7 @@ import { CategoryPageComponent } from "./pages/landing-pages/category-page/categ
 import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
 import { VariationsPageComponent } from "./pages/landing-pages/variations-page/variations-page.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
-
+import { RestaurantInfoPageComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-info-page.component"
 const routes: Routes = [
 	{
 		path: "",
@@ -49,6 +50,14 @@ const routes: Routes = [
 			{
 				path: "pricing",
 				component: LandingPricingPageComponent
+			},
+			{
+				path: "guests",
+				component: LandingGuestsPageComponent
+			},
+			{
+				path: "guests/restaurantinfo/:uuid",
+				component: RestaurantInfoPageComponent
 			},
 			{
 				path: "login",

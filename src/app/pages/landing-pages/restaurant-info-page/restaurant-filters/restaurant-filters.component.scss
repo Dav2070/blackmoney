@@ -1,0 +1,58 @@
+.filters-card {
+	width: 100%;
+}
+
+.guests-header {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+	margin-bottom: 16px;
+}
+
+.guests-header .filter-item {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.guests-header .back-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.guests-header .name-filter {
+	flex: 1 1 220px;
+	min-width: 180px;
+}
+
+.guests-header .city-filter {
+	flex: 1 1 180px;
+	min-width: 140px;
+}
+
+.guests-header .distance-filter {
+	flex: 0 1 200px;
+	min-width: 140px;
+}
+
+.guests-header input[type="range"] {
+	width: 100%;
+}
+
+.stars {
+	gap: 2px;
+}
+
+.star {
+	color: var(--dav-color-on-surface-light);
+}
+
+.star.filled {
+	color: gold;
+}
+
+.guests-header .rating-filter .star {
+	cursor: pointer;
+}

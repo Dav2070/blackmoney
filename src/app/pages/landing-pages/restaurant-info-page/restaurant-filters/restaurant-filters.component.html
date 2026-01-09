@@ -1,0 +1,72 @@
+<dav-card class="filters-card">
+	<div class="guests-header">
+		<div class="filter-item back-button">
+			<dav-icon-button size="md" (click)="goBack()">
+				<fa-icon [icon]="faArrowLeft"></fa-icon>
+			</dav-icon-button>
+		</div>
+
+		<div class="filter-item name-filter">
+			<dav-textfield
+				[value]="nameFilter"
+				[label]="locale.restaurantName"
+				(change)="nameTextfieldChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+
+		<div class="filter-item city-filter">
+			<dav-textfield
+				[value]="cityPostalFilter"
+				[label]="locale.cityPostalCode"
+				(change)="cityTextfieldChange($any($event).detail.value)"
+			></dav-textfield>
+		</div>
+
+		<div class="filter-item distance-filter">
+			<label class="distance-label"
+				>{{ locale.distance }}: {{ distanceKm }} km</label
+			>
+			<input
+				type="range"
+				min="1"
+				max="100"
+				[value]="distanceKm"
+				(input)="distanceRangeChange($any($event).target.value)"
+			/>
+		</div>
+
+		<div class="filter-item rating-filter">
+			<label>{{ locale.rating }}</label>
+			<div class="stars">
+				@for (i of [1, 2, 3, 4, 5]; track i) {
+					<fa-icon
+						[icon]="faStar"
+						class="star"
+						[class.filled]="i <= ratingFilter"
+						(click)="setRating(i)"
+					></fa-icon>
+				}
+			</div>
+		</div>
+
+		<div class="filter-item checkboxes">
+			<dav-checkbox
+				[checked]="hasTakeaway"
+				[label]="locale.takeaway"
+				(change)="takeawayCheckboxChange($any($event).detail.checked)"
+			></dav-checkbox>
+
+			<dav-checkbox
+				[checked]="hasDelivery"
+				[label]="locale.delivery"
+				(change)="deliveryCheckboxChange($any($event).detail.checked)"
+			></dav-checkbox>
+		</div>
+
+		<div class="filter-item search-icon">
+			<dav-icon-button size="md" (click)="search()">
+				<fa-icon [icon]="faSearch"></fa-icon>
+			</dav-icon-button>
+		</div>
+	</div>
+</dav-card>

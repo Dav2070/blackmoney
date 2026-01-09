@@ -1,0 +1,77 @@
+<dav-card class="reviews-card">
+	<div class="reviews-card-inner">
+		<div class="reviews-header">
+			<h3>{{ locale.reviews }}</h3>
+			<div class="reviews-header-buttons">
+				<dav-button (click)="addReview()">
+					{{ locale.addReview }}
+				</dav-button>
+				<dav-button (click)="openReviewsDialog()">
+					{{ locale.showAllReviews }}
+				</dav-button>
+			</div>
+		</div>
+
+		<div class="reviews-content">
+			@if (restaurant?.ratings && restaurant.ratings.length > 0) {
+				<div class="average-rating-section">
+					<div class="rating-summary">
+						<div class="rating-value">
+							{{ calculateAverageRating() | number: "1.1-1" }}
+						</div>
+						<div class="rating-details">
+							<div class="stars">
+								@for (star of [1, 2, 3, 4, 5]; track star) {
+									<fa-icon
+										[icon]="faStar"
+										[class.filled]="star <= calculateAverageRating()"
+									></fa-icon>
+								}
+							</div>
+							<span class="review-count"
+								>{{ restaurant.ratings.length }}
+								{{
+									restaurant.ratings.length === 1
+										? locale.reviewSingular
+										: locale.reviewPlural
+								}}</span
+							>
+						</div>
+					</div>
+				</div>
+
+				<div class="reviews-list">
+					@for (rating of restaurant.ratings.slice(0, 5); track rating) {
+						<div class="review-item">
+							<div class="review-header">
+								<div class="reviewer-info">
+									<span class="reviewer-name">{{
+										rating.username
+									}}</span>
+									<span class="review-date">{{
+										rating.date | date: "dd.MM.yyyy"
+									}}</span>
+								</div>
+								<div class="review-stars">
+									@for (star of [1, 2, 3, 4, 5]; track star) {
+										<fa-icon
+											[icon]="faStar"
+											[class.filled]="star <= rating.value"
+										></fa-icon>
+									}
+								</div>
+							</div>
+							@if (rating.review) {
+								<p class="review-text">{{ rating.review }}</p>
+							}
+						</div>
+					}
+				</div>
+			} @else {
+				<div class="empty-state">
+					<p>{{ locale.noReviews }}</p>
+				</div>
+			}
+		</div>
+	</div>
+</dav-card>

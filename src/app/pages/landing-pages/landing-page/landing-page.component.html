@@ -39,6 +39,13 @@
 			>
 				Bestellen
 			</dav-tab-bar-item>
+
+			<dav-tab-bar-item
+				[active]="guestsTabActive"
+				(click)="navigateToGuestsPage()"
+			>
+				Gäste
+			</dav-tab-bar-item>
 		</dav-tab-bar>
 	</div>
 

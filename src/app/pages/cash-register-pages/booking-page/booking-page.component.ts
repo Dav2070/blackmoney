@@ -31,6 +31,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { OrderItem } from "src/app/models/OrderItem"
+import { OrderItemCard } from "src/app/types/orderItemCard"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
 import { VariationItem } from "src/app/models/VariationItem"
@@ -41,7 +42,7 @@ import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/
 import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
 import { SelectMenuSpecialProductsDialogComponent } from "src/app/dialogs/select-menu-special-products-dialog/select-menu-special-products-dialog.component"
 import { SelectProductVariationsDialogComponent } from "src/app/dialogs/select-product-variations-dialog/select-product-variations-dialog.component"
-import { SubtractProductVariationsDialogComponent } from "src/app/dialogs/subtract-product-variations-dialog/subtract-product-variations-dialog.component"
+import { ProductVariationsCombinationsDialogComponent } from "src/app/dialogs/product-variations-combinations-dialog/product-variations-combinations-dialog.component"
 import { AddNoteDialogComponent } from "src/app/dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "src/app/dialogs/view-note-dialog/view-note-dialog.component"
 import { AddDiverseProductDialogComponent } from "src/app/dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
@@ -143,9 +144,9 @@ export class BookingPageComponent {
 	selectProductVariationsDialog: SelectProductVariationsDialogComponent
 	//#endregion
 
-	//#region SubtractProductVariationsDialog variables
-	@ViewChild("subtractProductVariationsDialog")
-	subtractProductVariationsDialog: SubtractProductVariationsDialogComponent
+	//#region ProductVariationsCombinationsDialog variables
+	@ViewChild("productVariationsCombinationsDialog")
+	productVariationsCombinationsDialog: ProductVariationsCombinationsDialogComponent
 	//#endregion
 
 	//#region BottomSheet variables
@@ -469,8 +470,10 @@ export class BookingPageComponent {
 			if (product.variations.length === 0) {
 				newItem.count = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-				this.stagedItems.pushNewItem(newItem)
-				this.showTotal()
+				const addedItem = this.stagedItems.pushNewItem(newItem)
+				this.selectedOrderItem = addedItem
+				this.tmpAllItemHandler = this.stagedItems
+				this.showTotal(false)
 			} else {
 				this.selectedProduct = product
 				this.selectProductVariationsDialog.show()
@@ -528,7 +531,14 @@ export class BookingPageComponent {
 
 				this.tmpAnzahl = undefined
 				this.bookedItems.removeEmptyItems()
-				this.showTotal()
+				// Prüfe ob Item noch existiert
+				const itemStillExists = this.bookedItems
+					.getOrderItems()
+					.includes(orderItem)
+				if (!itemStillExists) {
+					this.selectedOrderItem = null
+				}
+				this.showTotal(false)
 			} else {
 				if (this.tmpAnzahl > 0) {
 					if (orderItem.count >= this.tmpAnzahl) {
@@ -580,7 +590,14 @@ export class BookingPageComponent {
 
 				this.tmpAnzahl = undefined
 				this.stagedItems.removeEmptyItems()
-				this.showTotal()
+				// Prüfe ob Item noch existiert
+				const itemStillExists = this.stagedItems
+					.getOrderItems()
+					.includes(orderItem)
+				if (!itemStillExists) {
+					this.selectedOrderItem = null
+				}
+				this.showTotal(false)
 			}
 		} else if (orderItem.type === OrderItemType.Special) {
 			if (
@@ -589,7 +606,7 @@ export class BookingPageComponent {
 				this.selectedOrderItem.orderItems[0].orderItemVariations &&
 				this.selectedOrderItem.orderItems[0].orderItemVariations.length > 0
 			) {
-				this.subtractProductVariationsDialog.show()
+				this.productVariationsCombinationsDialog.show()
 			} else {
 				if (this.tmpAnzahl > 0) {
 					if (this.selectedOrderItem.count >= this.tmpAnzahl) {
@@ -605,9 +622,24 @@ export class BookingPageComponent {
 				if (this.tmpAllItemHandler === this.bookedItems) {
 					this.sendOrderItem(this.selectedOrderItem)
 					this.bookedItems.removeEmptyItems()
+					// Prüfe ob Item noch existiert
+					const itemStillExists = this.bookedItems
+						.getOrderItems()
+						.includes(this.selectedOrderItem)
+					if (!itemStillExists) {
+						this.selectedOrderItem = null
+					}
 				} else {
 					this.stagedItems.removeEmptyItems()
+					// Prüfe ob Item noch existiert
+					const itemStillExists = this.stagedItems
+						.getOrderItems()
+						.includes(this.selectedOrderItem)
+					if (!itemStillExists) {
+						this.selectedOrderItem = null
+					}
 				}
+				this.showTotal(false)
 			}
 		} else {
 			// Bestehende OrderItem Logik
@@ -626,14 +658,21 @@ export class BookingPageComponent {
 					this.sendOrderItem(this.selectedOrderItem)
 					this.bookedItems.removeEmptyItems()
 
-					this.showTotal()
+					// Prüfe ob Item noch existiert
+					const itemStillExists = this.bookedItems
+						.getOrderItems()
+						.includes(this.selectedOrderItem)
+					if (!itemStillExists) {
+						this.selectedOrderItem = null
+					}
+					this.showTotal(false)
 				} else {
 					// Wenn Variationen vorhanden sind - öffne den Subtract Dialog
-					this.subtractProductVariationsDialog.show()
+					this.productVariationsCombinationsDialog.show()
 				}
 			} else if (this.selectedOrderItem.orderItemVariations.length > 0) {
 				// Wenn Item Variationen enthält - öffne den Subtract Dialog
-				this.subtractProductVariationsDialog.show()
+				this.productVariationsCombinationsDialog.show()
 			} else if (this.tmpAnzahl > 0) {
 				// Wenn zu löschende Anzahl eingegeben wurde (4 X -)
 				if (this.selectedOrderItem.count >= this.tmpAnzahl) {
@@ -641,13 +680,26 @@ export class BookingPageComponent {
 				} else {
 					window.alert("Anzahl ist zu hoch")
 				}
-
 				this.stagedItems.removeEmptyItems()
-				this.showTotal()
+				// Prüfe ob Item noch existiert
+				const itemStillExists = this.stagedItems
+					.getOrderItems()
+					.includes(this.selectedOrderItem)
+				if (!itemStillExists) {
+					this.selectedOrderItem = null
+				}
+				this.showTotal(false)
 			} else {
 				this.selectedOrderItem.count--
 				this.stagedItems.removeEmptyItems()
-				this.showTotal()
+				// Prüfe ob Item noch existiert
+				const itemStillExists = this.stagedItems
+					.getOrderItems()
+					.includes(this.selectedOrderItem)
+				if (!itemStillExists) {
+					this.selectedOrderItem = null
+				}
+				this.showTotal(false)
 			}
 		}
 	}
@@ -662,14 +714,15 @@ export class BookingPageComponent {
 			.map(v => v.variationItems)
 			.flat()
 
-		const newItem: OrderItem = {
+		const newItem: OrderItemCard = {
 			uuid: crypto.randomUUID(),
 			type: OrderItemType.Product,
 			count: 1,
 			order: null,
 			product: this.selectedProduct,
 			orderItems: [],
-			orderItemVariations: []
+			orderItemVariations: [],
+			isExpanded: true
 		}
 
 		for (const key of Object.keys(lastVariationTree)) {
@@ -703,23 +756,27 @@ export class BookingPageComponent {
 
 			incoming.orderItems = [newItem]
 			incoming.count = newItem.count
-			this.stagedItems.pushNewItem(incoming)
+			const addedItem = this.stagedItems.pushNewItem(incoming)
+			this.selectedOrderItem = addedItem
+			this.tmpAllItemHandler = this.stagedItems
 		} else {
 			newItem.count = 0
 			for (let variation of newItem.orderItemVariations) {
 				newItem.count += variation.count
 			}
-			this.stagedItems.pushNewItem(newItem)
+			const addedItem = this.stagedItems.pushNewItem(newItem)
+			this.selectedOrderItem = addedItem
+			this.tmpAllItemHandler = this.stagedItems
 		}
 
-		this.showTotal()
+		this.showTotal(false)
 		this.tmpAnzahl = undefined
 	}
 
-	subtractProductVariationsDialogPrimaryButtonClick(event: {
+	productVariationsCombinationsDialogPrimaryButtonClick(event: {
 		variationCombinations: { [key: string]: number }
 	}) {
-		this.subtractProductVariationsDialog.hide()
+		this.productVariationsCombinationsDialog.hide()
 
 		const variationCombinations = event.variationCombinations
 
@@ -810,7 +867,7 @@ export class BookingPageComponent {
 	}
 
 	// Aktualisiert den Gesamtpreis
-	async showTotal() {
+	async showTotal(clearSelection: boolean = true) {
 		this.console = formatPrice(
 			this.bookedItems.calculateTotal() + this.stagedItems.calculateTotal()
 		)
@@ -819,7 +876,10 @@ export class BookingPageComponent {
 		this.commaUsed = false
 		this.tmpAnzahl = 0
 		this.xUsed = false
-		this.selectedOrderItem = null
+
+		if (clearSelection) {
+			this.selectedOrderItem = null
+		}
 	}
 
 	// Fügt Items der Liste an bestellten Artikeln hinzu
@@ -1114,33 +1174,46 @@ export class BookingPageComponent {
 
 				const delta = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-				// Erstelle eine Kopie des OrderItems mit der zu addierenden Anzahl
-				const incoming: OrderItem = JSON.parse(JSON.stringify(orderItem))
-
 				// Ursprunglicher Parent-Count (falls 0: Fehler vermeiden)
 				const originalParentCount =
 					orderItem.count && orderItem.count > 0 ? orderItem.count : 1
-				incoming.count = delta
 
-				// Skaliere Subitems und deren Variationen pro Einheit (per-unit), dann mit delta multiplizieren
-				for (const sub of incoming.orderItems ?? []) {
+				// Erstelle eine shallow copy mit allen Attributen und kopiere die Sub-Items tief
+				const copiedOrderItems = (orderItem.orderItems ?? []).map(sub => {
+					const copiedSub = { ...sub, uuid: crypto.randomUUID() }
 					const perUnitSubCount = (sub.count ?? 0) / originalParentCount
-					sub.count = Math.round(perUnitSubCount * delta)
+					copiedSub.count = Math.round(perUnitSubCount * delta)
 
 					if (sub.orderItemVariations?.length) {
-						for (const v of sub.orderItemVariations) {
-							const perUnitVarCount =
-								(v.count ?? 0) / originalParentCount
-							v.count = Math.round(perUnitVarCount * delta)
-						}
+						copiedSub.orderItemVariations = sub.orderItemVariations.map(
+							v => {
+								const copiedVar = { ...v, uuid: crypto.randomUUID() }
+								const perUnitVarCount =
+									(v.count ?? 0) / originalParentCount
+								copiedVar.count = Math.round(perUnitVarCount * delta)
+								return copiedVar
+							}
+						)
 					}
+
+					return copiedSub
+				})
+
+				const incoming: OrderItemCard = {
+					...orderItem,
+					uuid: crypto.randomUUID(),
+					count: delta,
+					isExpanded: true,
+					orderItems: copiedOrderItems
 				}
 
 				// Delegiere an den AllItemHandler / Merger
-				handler.pushNewItem(incoming)
+				const addedItem = handler.pushNewItem(incoming)
 
+				this.selectedOrderItem = addedItem
+				this.tmpAllItemHandler = handler
 				this.tmpAnzahl = undefined
-				this.showTotal()
+				this.showTotal(false)
 			}
 		} else {
 			// For diverse items, pass all necessary information
@@ -1239,8 +1312,11 @@ export class BookingPageComponent {
 	selectMenuSpecialProductsDialogPrimaryButtonClick(event: {
 		orderItems: OrderItem[]
 	}) {
+		// Clear selection before adding new item
+		this.selectedOrderItem = null
+
 		if (this.selectedProduct.type === "MENU") {
-			const menuOrderItem: OrderItem = {
+			const menuOrderItem: OrderItemCard = {
 				uuid: crypto.randomUUID(),
 				type: OrderItemType.Menu,
 				count: 1,
@@ -1248,20 +1324,24 @@ export class BookingPageComponent {
 				offer: this.selectedProduct.offer,
 				product: this.selectedProduct,
 				orderItems: event.orderItems,
-				orderItemVariations: []
+				orderItemVariations: [],
+				isExpanded: true
 			}
 
 			const discount = this.priceCalculator.calculateDiscount(menuOrderItem)
 			menuOrderItem.discount = discount
 
-			this.stagedItems.pushNewItem(menuOrderItem)
+			const addedItem = this.stagedItems.pushNewItem(menuOrderItem)
+			this.selectedOrderItem = addedItem
+			this.tmpAllItemHandler = this.stagedItems
 		} else {
+			let lastSpecialOrderItem: OrderItem = null
 			for (const orderItem of event.orderItems) {
 				const processedItem: OrderItem = JSON.parse(
 					JSON.stringify(orderItem)
 				)
 
-				const specialOrderItem: OrderItem = {
+				const specialOrderItem: OrderItemCard = {
 					uuid: crypto.randomUUID(),
 					type: OrderItemType.Special,
 					count: 1,
@@ -1279,7 +1359,8 @@ export class BookingPageComponent {
 						offer: this.selectedProduct.offer
 					},
 					orderItems: [processedItem],
-					orderItemVariations: []
+					orderItemVariations: [],
+					isExpanded: true
 				}
 
 				// Use PriceCalculator to compute discount
@@ -1287,12 +1368,15 @@ export class BookingPageComponent {
 					this.priceCalculator.calculateDiscount(specialOrderItem)
 				specialOrderItem.discount = discount
 
-				this.stagedItems.pushNewItem(specialOrderItem)
+				lastSpecialOrderItem =
+					this.stagedItems.pushNewItem(specialOrderItem)
 			}
+			this.selectedOrderItem = lastSpecialOrderItem
+			this.tmpAllItemHandler = this.stagedItems
 		}
 
 		this.selectMenuSpecialProductsDialog.hide()
-		this.showTotal()
+		this.showTotal(false)
 	}
 
 	addNoteButtonClick() {

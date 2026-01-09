@@ -162,59 +162,20 @@
 	</div>
 </div>
 
-<div class="popup-overlay" [ngClass]="{ visible: isItemPopupVisible }">
-	<div class="popup-content">
-		@if (tmpVariations != null) {
-			<h2>
-				{{ tmpVariations.product.name }}
-			</h2>
-			@for (
-				variation of tmpVariations.orderItemVariations;
-				track variation
-			) {
-				<div class="popup-content-dish">
-					<button
-						mat-mini-fab
-						[disabled]="checkIfMinus(variation)"
-						(click)="removeVariation(variation)"
-					>
-						<mat-icon>remove</mat-icon>
-					</button>
-					<b>
-						{{ variation.count }}x
-						@for (
-							variationItem of variation.variationItems;
-							track variationItem
-						) {
-							{{ variationItem.name }}
-						}
-					</b>
-					<button
-						mat-mini-fab
-						[disabled]="checkIfPlus(variation)"
-						(click)="addVariation(variation)"
-					>
-						<mat-icon>add</mat-icon>
-					</button>
-				</div>
-			}
-		}
-		<button mat-flat-button (click)="closeItemPopup()">Schließen</button>
-		<button
-			mat-flat-button
-			[disabled]="checkifVariationPicked()"
-			(click)="transferVariation()"
-		>
-			Auswählen
-		</button>
-	</div>
-</div>
-
 <app-move-multiple-products-dialog
 	#moveMultipleProductsDialog
 	[orderItem]="contextMenuOrderItem"
 	(primaryButtonClick)="moveMultipleProductsDialogPrimaryButtonClick($event)"
 ></app-move-multiple-products-dialog>
+
+<app-product-variations-combinations-dialog
+	#productVariationsCombinationsDialog
+	[orderItem]="lastClickedItem"
+	mode="select"
+	(primaryButtonClick)="
+		productVariationsCombinationsDialogPrimaryButtonClick($event)
+	"
+></app-product-variations-combinations-dialog>
 
 <dav-context-menu
 	#contextMenu

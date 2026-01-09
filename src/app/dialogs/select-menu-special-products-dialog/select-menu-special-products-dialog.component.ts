@@ -229,7 +229,6 @@ export class SelectMenuSpecialProductsDialogComponent {
 			for (let variation of newItem.orderItemVariations) {
 				newItem.count += variation.count
 			}
-
 			incoming.orderItems = [newItem]
 			incoming.count = newItem.count
 			this.allItemHandler.pushNewItem(incoming)
@@ -316,6 +315,10 @@ export class SelectMenuSpecialProductsDialogComponent {
 			this.primaryButtonClick.emit({
 				orderItems: this.allItemHandler.getAllPickedItems()
 			})
+			console.log(
+				"Submitted special products dialog",
+				this.allItemHandler.getAllPickedItems()
+			)
 		}
 	}
 }

@@ -1363,7 +1363,7 @@ export class BookingPageComponent {
 				const specialOrderItem: OrderItemCard = {
 					uuid: crypto.randomUUID(),
 					type: OrderItemType.Special,
-					count: 1,
+					count: processedItem.count,
 					order: null,
 					offer: this.selectedProduct.offer,
 					product: {

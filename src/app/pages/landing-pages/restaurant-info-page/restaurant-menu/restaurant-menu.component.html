@@ -1,0 +1,123 @@
+<dav-card class="menu-card">
+	<div class="menu-card-inner">
+		<div class="menu-header">
+			<h3>{{ locale.bestsellers }}</h3>
+			<dav-button (click)="openMenuDialog()">
+				{{ locale.showFullMenu }}
+			</dav-button>
+		</div>
+		<div class="menu-content">
+			@if (topProducts && topProducts.length > 0) {
+				<div class="products-grid">
+					@for (product of topProducts; track product.uuid) {
+						<div class="product-item">
+							<div class="product-main">
+								<span class="product-name">{{ product.name }}</span>
+								<span class="product-price">{{
+									formatPrice(product.price)
+								}}</span>
+							</div>
+
+							@if (product.variations && product.variations.length > 0) {
+								<div class="product-variations">
+									<div class="variations-chips">
+										@for (
+											variation of product.variations;
+											track variation.uuid
+										) {
+											<div
+												class="variation-chip"
+												[title]="getVariationTooltip(variation)"
+											>
+												<fa-icon
+													[icon]="faList"
+													class="variation-icon"
+												></fa-icon>
+												<span class="variation-name">{{
+													variation.name
+												}}</span>
+											</div>
+										}
+									</div>
+								</div>
+							}
+						</div>
+					}
+				</div>
+
+				@if (bestsellers?.offers && bestsellers.offers.length > 0) {
+					<div class="offers-section">
+						<div class="category-header">
+							<h4>{{ locale.offers }}</h4>
+						</div>
+
+						<div class="offers-list">
+							@for (offer of bestsellers.offers; track offer.uuid) {
+								<div class="offer-item">
+									<div class="offer-header-row">
+										<div class="offer-type">
+											<dav-badge>{{
+												offer.offerType === "DISCOUNT"
+													? locale.discount
+													: locale.fixedPrice
+											}}</dav-badge>
+										</div>
+										<div class="offer-value">
+											{{ offer.offerValue }}
+											@if (offer.offerType === "FIXED_PRICE") {
+												€
+											}
+											@if (offer.discountType === "PERCENTAGE") {
+												%
+											}
+											@if (offer.discountType === "AMOUNT") {
+												€
+											}
+										</div>
+									</div>
+
+									@if (
+										offer.offerItems && offer.offerItems.length > 0
+									) {
+										<div class="offer-items-section">
+											@for (
+												item of offer.offerItems;
+												track item.uuid
+											) {
+												<div class="offer-item-detail">
+													<div class="item-name-section">
+														<span class="item-name">{{
+															item.name
+														}}</span>
+														<span class="item-max"
+															>{{ locale.max }}
+															{{ item.maxSelections }}</span
+														>
+													</div>
+													<div class="item-products">
+														@for (
+															prod of item.products;
+															track prod.uuid
+														) {
+															<dav-badge>{{
+																prod.name
+															}}</dav-badge>
+														}
+													</div>
+												</div>
+											}
+										</div>
+									}
+								</div>
+							}
+						</div>
+					</div>
+				}
+			} @else {
+				<div class="empty-state">
+					<p>{{ locale.noBestsellers }}</p>
+				</div>
+			}
+		</div>
+	</div>
+</dav-card>

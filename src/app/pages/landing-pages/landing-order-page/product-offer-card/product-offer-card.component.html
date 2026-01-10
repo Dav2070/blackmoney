@@ -1,0 +1,20 @@
+<div class="product-offer-card slide-up-in-light" (click)="onCardClick()">
+	<div class="product-card-header">
+		<div class="product-card-info">
+			<div class="product-card-name">
+				<p>{{ locale.offerLabel }}</p>
+			</div>
+			<div class="product-card-price">
+				<p>{{ formatPrice(offer.offerValue) }}</p>
+			</div>
+		</div>
+		<div class="product-card-add">
+			<dav-icon-button size="xs" (click)="onAddClick($event)">
+				<fa-icon [icon]="faPlus"></fa-icon>
+			</dav-icon-button>
+		</div>
+	</div>
+	<div class="product-card-description">
+		<!-- Beschreibung kommt später -->
+	</div>
+</div>

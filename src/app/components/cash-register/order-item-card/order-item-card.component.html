@@ -13,28 +13,36 @@
 
 	<div class="order-item-card-name">
 		@if (isCollapsible()) {
-			<fa-icon
-				[icon]="isExpanded ? faChevronUp : faChevronDown"
-				class="expand-icon"
-				(click)="toggleExpanded($event)"
-			></fa-icon>
+			<dav-icon-button size="xs">
+				<fa-icon
+					[icon]="isExpanded ? faChevronUp : faChevronDown"
+					(click)="toggleExpanded($event)"
+				></fa-icon>
+			</dav-icon-button>
 		}
+
 		<p>{{ orderItem.product.name }}</p>
+
 		@if (orderItem.notes) {
-			<fa-icon
-				[icon]="faNoteSticky"
-				class="note-icon"
-				(click)="onNoteIconClick($event)"
-			></fa-icon>
+			<dav-icon-button size="xs">
+				<fa-icon
+					[icon]="faNoteSticky"
+					(click)="onNoteIconClick($event)"
+				></fa-icon>
+			</dav-icon-button>
 		}
+
 		@if (orderItem.takeAway) {
-			<fa-icon [icon]="faCupTogo" class="takeaway-icon"></fa-icon>
+			<dav-icon-button size="xs">
+				<fa-icon [icon]="faCupTogo"></fa-icon>
+			</dav-icon-button>
 		}
+
 		@if (orderItem.course) {
-			<span class="course-badge">
-				<fa-icon [icon]="faUtensils" class="course-icon"></fa-icon>
+			<dav-button size="sm" text>
+				<fa-icon [icon]="faUtensils" slot="icon-left"></fa-icon>
 				{{ orderItem.course }}
-			</span>
+			</dav-button>
 		}
 	</div>
 

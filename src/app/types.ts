@@ -225,6 +225,7 @@ export interface AddProductOrderItemInput {
 export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type ProductType = "FOOD" | "DRINK" | "SPECIAL" | "MENU"
 export type PrintRuleType = "BILLS" | "PRODUCT_TYPE" | "CATEGORIES" | "PRODUCTS"
+export type OrderType = "DELIVERY" | "PICKUP"
 
 export enum OrderItemType {
 	Product = "PRODUCT",
@@ -236,6 +237,7 @@ export enum OrderItemType {
 }
 
 export type TakeawayFilterType = "ALL" | "DELIVERY" | "PICKUP" | "DINEIN"
+export type ReviewFilterType = "newest" | "lowest" | "highest"
 
 export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
@@ -277,4 +279,12 @@ export interface TimeSlotSuggestion {
 		name: number
 		seats: number
 	}
+}
+
+export enum RatingNum {
+	One = 1,
+	Two = 2,
+	Three = 3,
+	Four = 4,
+	Five = 5
 }

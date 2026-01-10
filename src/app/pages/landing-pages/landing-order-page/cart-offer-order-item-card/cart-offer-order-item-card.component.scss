@@ -1,0 +1,227 @@
+.offer-order-item-card {
+	width: 100%;
+	background-color: var(--dav-color-surface);
+	color: var(--dav-color-on-surface);
+	border: 1px solid rgb(var(--dav-color-outline-rgb), 0.15);
+	border-radius: 12px;
+	box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+	padding: 16px;
+	box-sizing: border-box;
+	transition: 200ms;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+.product-name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1;
+	font-weight: 500;
+}
+
+.product-price {
+	font-weight: 600;
+	font-size: 16px;
+	white-space: nowrap;
+}
+
+.offer-items-list {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding-left: 12px;
+	font-size: 14px;
+	color: var(--dav-color-on-surface-variant);
+}
+
+.offer-item {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	position: relative;
+	padding-left: 16px;
+
+	&::before {
+		content: "•";
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+}
+
+.variation-detail {
+	padding-left: 20px;
+	font-size: 13px;
+	display: block;
+}
+
+.discount-info {
+	padding-left: 12px;
+	font-size: 14px;
+	color: var(--dav-color-error);
+	font-weight: 500;
+}
+
+.card-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.add-note-button {
+	background: none;
+	border: none;
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 14px;
+	padding: 8px 0;
+	transition: 200ms;
+
+	&:hover {
+		text-decoration: underline;
+		opacity: 0.8;
+	}
+}
+
+.controls {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.control-button {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	border: 1px solid var(--dav-color-outline);
+	background-color: var(--dav-color-surface);
+	color: var(--dav-color-on-surface);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: 200ms;
+
+	&:hover {
+		background-color: var(--dav-color-surface-hover);
+		transform: scale(1.05);
+	}
+
+	&:active {
+		background-color: var(--dav-color-surface-focus);
+		transform: scale(0.95);
+	}
+}
+
+.count {
+	font-weight: 500;
+	min-width: 30px;
+	text-align: center;
+	font-size: 16px;
+}
+
+.note-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 16px;
+	transition: transform 200ms;
+
+	&:hover {
+		transform: scale(1.15);
+	}
+
+	color: var(--dav-color-on-surface);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: 200ms;
+
+	&:hover {
+		background-color: var(--dav-color-surface-hover);
+		transform: scale(1.05);
+	}
+
+	&:active {
+		background-color: var(--dav-color-surface-focus);
+		transform: scale(0.95);
+	}
+}
+
+.offer-order-item-card-unit-price {
+	text-align: center;
+}
+
+.offer-order-item-card-total-price {
+	grid-column: 5;
+}
+
+.offer-order-item-card-total-price > p {
+	text-align: right;
+}
+
+.offer-order-item-card-variation-name {
+	grid-column: 2;
+	padding-left: 16px;
+}
+
+.offer-order-item-card-product-name {
+	grid-column: 2;
+}
+
+.offer-order-item-card-discount-name {
+	grid-column: 2;
+}
+
+.offer-order-item-card-name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.note-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 16px;
+	transition: transform 200ms;
+
+	&:hover {
+		transform: scale(1.15);
+	}
+}
+
+.takeaway-icon {
+	color: var(--dav-color-primary);
+	cursor: pointer;
+	font-size: 16px;
+}
+
+.course-badge {
+	gap: 2px;
+	color: var(--dav-color-primary);
+	font-size: 16px;
+}
+
+.course-icon {
+	font-size: 16px;
+}
+
+.offer-order-item-card-variation-unit-price {
+	grid-column: 4;
+	text-align: center;
+}
+
+.offer-order-item-variations-separator {
+	grid-column: span 5;
+	border-top: 1px solid var(--dav-color-outline-variant);
+	margin: 8px 0;
+}

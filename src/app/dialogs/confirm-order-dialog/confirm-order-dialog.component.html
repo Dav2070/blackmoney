@@ -1,0 +1,74 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[visible]="visible"
+	maxWidth="500"
+	(dismiss)="hide()"
+>
+	<div class="dialog-content">
+		<!-- Lieferung/Abholung Auswahl -->
+		<div class="delivery-type-selection">
+			<dav-tab-bar>
+				<dav-tab-bar-item
+					[active]="selectedOrderType === 'DELIVERY'"
+					(click)="selectDeliveryType('DELIVERY')"
+				>
+					{{ locale.delivery }}
+				</dav-tab-bar-item>
+				<dav-tab-bar-item
+					[active]="selectedOrderType === 'PICKUP'"
+					(click)="selectDeliveryType('PICKUP')"
+				>
+					{{ locale.pickup }}
+				</dav-tab-bar-item>
+			</dav-tab-bar>
+		</div>
+
+		<!-- Adresse Anzeige -->
+		<div class="address-section">
+			<h4 class="section-title">
+				@if (selectedOrderType === "DELIVERY") {
+					{{ locale.deliveryAddress }}
+				} @else {
+					{{ locale.pickupAddress }}
+				}
+			</h4>
+			<div class="address-info">
+				@if (selectedOrderType === "DELIVERY") {
+					<p class="name">{{ mockUser.name }}</p>
+				} @else {
+					<p class="name">{{ mockRestaurant.name }}</p>
+				}
+				<p class="address">{{ formatAddress(currentAddress) }}</p>
+			</div>
+		</div>
+
+		<!-- Gesamtpreis -->
+		<div class="total-section">
+			<span class="total-label">{{ locale.total }}:</span>
+			<span class="total-price">{{ formatPrice(totalPrice) }}</span>
+		</div>
+
+		<!-- Bezahlungsmethoden -->
+		<div class="payment-section">
+			<h4 class="section-title">{{ locale.selectPaymentMethod }}</h4>
+			<div class="payment-buttons">
+				<button class="payment-button" (click)="confirmWithPayment('CASH')">
+					<fa-icon class="payment-icon" [icon]="faMoneyBill1"></fa-icon>
+					<span class="payment-label">{{ locale.cash }}</span>
+				</button>
+				<button class="payment-button" (click)="confirmWithPayment('CARD')">
+					<fa-icon class="payment-icon" [icon]="faCreditCard"></fa-icon>
+					<span class="payment-label">{{ locale.card }}</span>
+				</button>
+			</div>
+		</div>
+
+		<!-- Abbrechen Button -->
+		<div class="cancel-section">
+			<button class="cancel-button" (click)="hide()">
+				{{ locale.cancel }}
+			</button>
+		</div>
+	</div>
+</dav-dialog>

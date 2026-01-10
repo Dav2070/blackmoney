@@ -1,0 +1,171 @@
+<div class="container slide-up-in">
+	<!-- Grid Container: Produkte und Warenkorb -->
+	<div class="products-cart-container">
+		<!-- Produkte-Bereich -->
+		<div class="products-section">
+			<!-- Kategorien-Bar -->
+			<div class="categories-bar">
+				<button
+					class="category-nav-button"
+					[disabled]="!canNavigatePrevious"
+					(click)="navigatePrevious()"
+				>
+					<fa-icon [icon]="faChevronLeft"></fa-icon>
+				</button>
+				<div class="tab-bar-wrapper">
+					<dav-tab-bar #categoryTabBar>
+						@if (offerProducts.length > 0) {
+							<dav-tab-bar-item
+								[active]="selectedCategory?.uuid === 'offers'"
+								(click)="
+									selectCategory({
+										uuid: 'offers',
+										name: locale.offers,
+										products: offerProducts
+									})
+								"
+							>
+								{{ locale.offers }}
+							</dav-tab-bar-item>
+						}
+						@for (category of menu?.categories; track category.uuid) {
+							<dav-tab-bar-item
+								[active]="selectedCategory?.uuid === category.uuid"
+								(click)="selectCategory(category)"
+							>
+								{{ category.name }}
+							</dav-tab-bar-item>
+						}
+					</dav-tab-bar>
+				</div>
+				<button
+					class="category-nav-button"
+					[disabled]="!canNavigateNext"
+					(click)="navigateNext()"
+				>
+					<fa-icon [icon]="faChevronRight"></fa-icon>
+				</button>
+			</div>
+			<!-- Angebote Kategorie -->
+			@if (offerProducts.length > 0) {
+				<div class="category-section" id="category-offers">
+					<h2 class="category-title">{{ locale.offers }}</h2>
+					<div class="product-items">
+						@for (product of offerProducts; track product.uuid) {
+							<app-order-product-offer-card
+								[offer]="product.offer"
+								(selectOffer)="clickItem(product)"
+							></app-order-product-offer-card>
+						}
+					</div>
+				</div>
+			}
+			<!-- Normale Kategorien -->
+			@for (category of menu?.categories; track category.uuid) {
+				@if (category.products.length > 0) {
+					<div class="category-section" [id]="'category-' + category.uuid">
+						<h2 class="category-title">{{ category.name }}</h2>
+						<div class="product-items">
+							@for (product of category.products; track product.uuid) {
+								@if (!product.offer) {
+									@if (
+										product.variations &&
+										product.variations.length > 0
+									) {
+										<app-order-product-variation-card
+											[product]="product"
+											(selectProduct)="clickItem($event)"
+										></app-order-product-variation-card>
+									} @else {
+										<app-order-product-card
+											[product]="product"
+											(addToCart)="clickItem($event)"
+										></app-order-product-card>
+									}
+								}
+							}
+						</div>
+					</div>
+				}
+			}
+		</div>
+
+		<!-- Warenkorb -->
+		<div class="cart-section">
+			<div class="cart-header">
+				<h3>{{ locale.cart }}</h3>
+			</div>
+
+			<div class="cart-items-container">
+				@if (cartItems.length === 0) {
+					<p class="cart-empty-message">{{ locale.cartEmptyMessage }}</p>
+				} @else {
+					<ul class="cart-items-list">
+						@for (item of cartItems; track item.uuid) {
+							@if (item.type === "MENU" || item.type === "SPECIAL") {
+								<app-cart-offer-order-item-card
+									[orderItem]="item"
+									[clickable]="false"
+									(plusClick)="increaseQuantity($event)"
+									(minusClick)="decreaseQuantity($event)"
+									(addNote)="openAddNoteDialog($event)"
+								></app-cart-offer-order-item-card>
+							} @else {
+								<app-cart-order-item-card
+									[orderItem]="item"
+									[clickable]="false"
+									(plusClick)="increaseQuantity($event)"
+									(minusClick)="decreaseQuantity($event)"
+									(addNote)="openAddNoteDialog($event)"
+								></app-cart-order-item-card>
+							}
+						}
+					</ul>
+				}
+			</div>
+
+			<div class="cart-footer">
+				<div class="cart-total">
+					<span class="cart-total-label">{{ locale.total }}:</span>
+					<span class="cart-total-price">
+						{{ formatPrice(getCartTotal()) }}
+					</span>
+				</div>
+
+				<dav-button
+					color="primary"
+					[disabled]="cartItems.length === 0"
+					(click)="submitOrder()"
+				>
+					{{ locale.order }}
+				</dav-button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<app-select-menu-special-products-dialog
+	#selectMenuSpecialProductsDialog
+	[product]="selectedProduct"
+	(primaryButtonClick)="
+		selectMenuSpecialProductsDialogPrimaryButtonClick($event)
+	"
+></app-select-menu-special-products-dialog>
+
+<app-select-product-variations-dialog
+	#selectProductVariationsDialog
+	[product]="selectedProduct"
+	(primaryButtonClick)="
+		selectProductVariationsDialogPrimaryButtonClick($event)
+	"
+></app-select-product-variations-dialog>
+
+<app-add-note-dialog
+	#addNoteDialog
+	(primaryButtonClick)="addNoteDialogPrimaryButtonClick($event)"
+></app-add-note-dialog>
+
+<app-confirm-order-dialog
+	#confirmOrderDialog
+	(confirmOrder)="confirmOrderDialogConfirmOrder($event)"
+></app-confirm-order-dialog>

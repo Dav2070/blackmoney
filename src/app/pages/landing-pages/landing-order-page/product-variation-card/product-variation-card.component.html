@@ -1,0 +1,37 @@
+<div class="product-variation-card slide-up-in-light" (click)="onCardClick()">
+	<div class="product-card-header">
+		<div class="product-card-info">
+			<div class="product-card-name">
+				<p>{{ product.name }}</p>
+			</div>
+			<div class="product-card-price">
+				<p>{{ formatPrice(product.price) }}</p>
+			</div>
+		</div>
+		<div class="product-card-add">
+			<dav-icon-button size="xs" (click)="onAddClick($event)">
+				<fa-icon [icon]="faPlus"></fa-icon>
+			</dav-icon-button>
+		</div>
+	</div>
+	<div class="product-card-footer">
+		<div class="product-card-description">
+			<!-- Beschreibung kommt später -->
+		</div>
+		@if (product.variations && product.variations.length > 0) {
+			<div class="product-card-variations">
+				<div class="variations-chips">
+					@for (variation of product.variations; track variation.uuid) {
+						<div
+							class="variation-chip"
+							[title]="getVariationTooltip(variation)"
+						>
+							<fa-icon [icon]="faList" class="variation-icon"></fa-icon>
+							<span class="variation-name">{{ variation.name }}</span>
+						</div>
+					}
+				</div>
+			</div>
+		}
+	</div>
+</div>

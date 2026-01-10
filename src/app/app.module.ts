@@ -1,4 +1,5 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, isDevMode } from "@angular/core"
+import { CommonModule } from "@angular/common"
 import {
 	BrowserModule,
 	provideClientHydration
@@ -72,7 +73,12 @@ import { ProductVariationsCombinationsDialogComponent } from "./dialogs/product-
 import { MoveMultipleProductsDialogComponent } from "./dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { AddNoteDialogComponent } from "./dialogs/add-note-dialog/add-note-dialog.component"
 import { ViewNoteDialogComponent } from "./dialogs/view-note-dialog/view-note-dialog.component"
+import { ConfirmOrderDialogComponent } from "./dialogs/confirm-order-dialog/confirm-order-dialog.component"
 import { AddDiverseProductDialogComponent } from "./dialogs/add-diverse-product-dialog/add-diverse-product-dialog.component"
+import { AddReviewDialogComponent } from "./dialogs/add-review-dialog/add-review-dialog.component"
+import { ViewMenuDialogComponent } from "./dialogs/view-menu-dialog/view-menu-dialog.component"
+import { ViewReviewsDialogComponent } from "./dialogs/view-reviews-dialog/view-reviews-dialog.component"
+import { UploadImageDialogComponent } from "./dialogs/upload-image-dialog/upload-image-dialog.component"
 import { AddTakeawayDialogComponent } from "./dialogs/add-takeaway-dialog/add-takeaway-dialog.component"
 import { EditTakeawayDialogComponent } from "./dialogs/edit-takeaway-dialog/edit-takeaway-dialog.component"
 import { TakeawayDialogComponent } from "./dialogs/takeaway-dialog/takeaway-dialog.component"
@@ -86,6 +92,12 @@ import { OfferAvailabilityComponent } from "./dialogs/add-offer-dialog/offer-ava
 // Pages
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
+import { LandingOrderPageComponent } from "./pages/landing-pages/landing-order-page/landing-order-page.component"
+import { OrderProductCardComponent } from "./pages/landing-pages/landing-order-page/product-card/product-card.component"
+import { OrderProductVariationCardComponent } from "./pages/landing-pages/landing-order-page/product-variation-card/product-variation-card.component"
+import { OrderProductOfferCardComponent } from "./pages/landing-pages/landing-order-page/product-offer-card/product-offer-card.component"
+import { CartOrderItemCardComponent } from "./pages/landing-pages/landing-order-page/cart-order-item-card/cart-order-item-card.component"
+import { CartOfferOrderItemCardComponent } from "./pages/landing-pages/landing-order-page/cart-offer-order-item-card/cart-offer-order-item-card.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
 import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
 import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-settings-page/general-settings-page.component"
@@ -131,6 +143,12 @@ import { PrintersPageComponent } from "./pages/landing-pages/printers-page/print
 import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
 import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
+import { LandingGuestsPageComponent } from "./pages/landing-pages/landing-guests-page/landing-guests-page.component"
+import { RestaurantInfoPageComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-info-page.component"
+import { RestaurantFiltersComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-filters/restaurant-filters.component"
+import { RestaurantDetailsComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-details/restaurant-details.component"
+import { RestaurantMenuComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-menu/restaurant-menu.component"
+import { RestaurantReviewsComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-reviews/restaurant-reviews.component"
 import { AddVariationDialogComponent } from "./dialogs/add-variation-dialog/add-variation-dialog.component"
 import { AddVariationItemDialogComponent } from "./dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
 import { EditVariationDialogComponent } from "./dialogs/edit-variation-dialog/edit-variation-dialog.component"
@@ -180,7 +198,12 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		MoveMultipleProductsDialogComponent,
 		AddNoteDialogComponent,
 		ViewNoteDialogComponent,
+		ConfirmOrderDialogComponent,
 		AddDiverseProductDialogComponent,
+		AddReviewDialogComponent,
+		ViewMenuDialogComponent,
+		ViewReviewsDialogComponent,
+		UploadImageDialogComponent,
 		AddTakeawayDialogComponent,
 		EditTakeawayDialogComponent,
 		TakeawayDialogComponent,
@@ -203,6 +226,12 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,
+		LandingOrderPageComponent,
+		OrderProductCardComponent,
+		OrderProductVariationCardComponent,
+		OrderProductOfferCardComponent,
+		CartOrderItemCardComponent,
+		CartOfferOrderItemCardComponent,
 		LandingPricingPageComponent,
 		UserPageComponent,
 		GeneralSettingsPageComponent,
@@ -225,6 +254,12 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		CategoryPageComponent,
 		CategoriesPageComponent,
 		MenuPageComponent,
+		LandingGuestsPageComponent,
+		RestaurantInfoPageComponent,
+		RestaurantFiltersComponent,
+		RestaurantDetailsComponent,
+		RestaurantMenuComponent,
+		RestaurantReviewsComponent,
 		PrintersPageComponent,
 		RoomsPageComponent,
 		RoomPageComponent,
@@ -238,6 +273,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 	bootstrap: [AppComponent],
 	imports: [
+		CommonModule,
 		BrowserModule,
 		BrowserAnimationsModule,
 		FormsModule,

@@ -1,0 +1,55 @@
+<li class="order-item-card slide-up-in-light">
+	<div class="card-header">
+		<div class="product-name">
+			<span>{{ orderItem.product.name }}</span>
+			@if (orderItem.notes) {
+				<fa-icon
+					[icon]="faNoteSticky"
+					class="note-icon"
+					(click)="onNoteIconClick($event)"
+				></fa-icon>
+			}
+		</div>
+		<div class="product-price">
+			<span>{{
+				formatPrice(calculateTotalPriceOfOrderItem(orderItem))
+			}}</span>
+		</div>
+	</div>
+
+	@if (orderItem.orderItemVariations.length > 0) {
+		<div class="variations-list">
+			@for (
+				orderItemVariation of orderItem.orderItemVariations;
+				track orderItemVariation.uuid
+			) {
+				<div class="variation-item">
+					<span>{{ getCombinedVariationNames(orderItemVariation) }}</span>
+				</div>
+			}
+		</div>
+	}
+
+	<div class="card-footer">
+		<button class="add-note-button" (click)="onAddNoteClick($event)">
+			@if (orderItem.notes) {
+				{{ locale.addNoteEdit }}
+			} @else {
+				{{ locale.addNoteAdd }}
+			}
+		</button>
+		<div class="controls">
+			<button class="control-button" (click)="onMinusClick($event)">
+				@if (orderItem.count === 1) {
+					<fa-icon [icon]="faTrash"></fa-icon>
+				} @else {
+					<fa-icon [icon]="faMinus"></fa-icon>
+				}
+			</button>
+			<span class="count">{{ orderItem.count }}</span>
+			<button class="control-button" (click)="onPlusClick($event)">
+				<fa-icon [icon]="faPlus"></fa-icon>
+			</button>
+		</div>
+	</div>
+</li>

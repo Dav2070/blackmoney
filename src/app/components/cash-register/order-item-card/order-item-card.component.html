@@ -31,11 +31,13 @@
 				></fa-icon>
 			</dav-icon-button>
 		}
+
 		@if (orderItem.takeAway) {
 			<dav-icon-button size="xs">
 				<fa-icon [icon]="faCupTogo"></fa-icon>
 			</dav-icon-button>
 		}
+
 		@if (orderItem.course) {
 			<dav-button size="sm" text>
 				<fa-icon [icon]="faUtensils" slot="icon-left"></fa-icon>

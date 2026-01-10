@@ -1,4 +1,9 @@
 import { Component } from "@angular/core"
+import {
+	faMobile,
+	faReceipt,
+	faPrint
+} from "@fortawesome/duotone-regular-svg-icons"
 import { Dav } from "dav-js"
 import { DataService } from "src/app/services/data-service"
 import { environment } from "src/environments/environment"
@@ -9,6 +14,10 @@ import { environment } from "src/environments/environment"
 	standalone: false
 })
 export class LandingOverviewPageComponent {
+	faMobile = faMobile
+	faReceipt = faReceipt
+	faPrint = faPrint
+
 	constructor(public dataService: DataService) {}
 
 	navigateToLoginPage() {

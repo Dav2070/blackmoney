@@ -136,6 +136,9 @@ export class EditTakeawayDialogComponent {
 	}
 
 	orderTypeRadioGroupChange(event: Event) {
-		this.orderType = (event as CustomEvent).detail.value as "delivery" | "pickUp" | "dineIn"
+		const value = (event as CustomEvent).detail?.checked
+		if (value === "delivery" || value === "pickUp" || value === "dineIn") {
+			this.orderType = value
+		}
 	}
 }

@@ -1,8 +1,11 @@
 import { Component } from "@angular/core"
 import {
+	faCalendarDays,
+	faBagShopping,
 	faMobile,
-	faReceipt,
-	faPrint
+	faUsers,
+	faDatabase,
+	faWrench
 } from "@fortawesome/duotone-regular-svg-icons"
 import { Dav } from "dav-js"
 import { DataService } from "src/app/services/data-service"
@@ -14,9 +17,12 @@ import { environment } from "src/environments/environment"
 	standalone: false
 })
 export class LandingOverviewPageComponent {
+	faCalendarDays = faCalendarDays
+	faBagShopping = faBagShopping
 	faMobile = faMobile
-	faReceipt = faReceipt
-	faPrint = faPrint
+	faUsers = faUsers
+	faDatabase = faDatabase
+	faWrench = faWrench
 
 	constructor(public dataService: DataService) {}
 

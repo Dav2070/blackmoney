@@ -39,50 +39,16 @@
 	text-align: center;
 }
 
-.order-item-card-total-price > p {
-	text-align: right;
+.order-item-card-total-price {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
 }
 
 .order-item-card-name {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-}
-
-.expand-icon {
-	color: var(--dav-color-primary);
-	cursor: pointer;
-	font-size: 14px;
-	transition: transform 200ms;
-
-	&:hover {
-		transform: scale(1.2);
-	}
-}
-
-.note-icon {
-	color: var(--dav-color-primary);
-	cursor: pointer;
-	font-size: 16px;
-	transition: transform 200ms;
-
-	&:hover {
-		transform: scale(1.15);
-	}
-}
-
-.takeaway-icon {
-	color: var(--dav-color-primary);
-	font-size: 16px;
-}
-
-.course-badge {
-	color: var(--dav-color-primary);
-	font-size: 16px;
-}
-
-.course-icon {
-	font-size: 16px;
 }
 
 .order-item-card-variation-name {

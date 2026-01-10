@@ -124,6 +124,7 @@ import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-pag
 import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
 import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
 import { VariationsPageComponent } from "./pages/landing-pages/variations-page/variations-page.component"
+import { VariationCardComponent } from "./pages/landing-pages/variations-page/variation-card/variation-card.component"
 import { OfferCardComponent } from "./pages/landing-pages/category-page/offer-card/offer-card.component"
 import { ProductCardComponent } from "./pages/landing-pages/category-page/product-card/product-card.component"
 
@@ -267,6 +268,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		OpeningTimePageComponent,
 		ReservationsPageComponent,
 		VariationsPageComponent,
+		VariationCardComponent,
 		OfferCardComponent,
 		ProductCardComponent
 	],

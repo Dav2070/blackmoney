@@ -13,63 +13,23 @@
 		@if (loading) {
 			<dav-progress-ring size="24"></dav-progress-ring>
 		} @else if (variations.length > 0) {
-			<div class="variations-list">
+			<div class="variations-grid">
 				@for (variation of variations; track variation.uuid) {
-					<dav-card>
-						<div class="variation-header">
-							<h3>{{ variation.name }}</h3>
-							<div class="variation-actions">
-								<dav-icon-button
-									size="xs"
-									[tooltip]="locale.options"
-									(click)="showVariationContextMenu($event, variation)"
-								>
-									<fa-icon [icon]="faEllipsis"></fa-icon>
-								</dav-icon-button>
-							</div>
-						</div>
-
-						<!-- VariationItems -->
-						<div class="variation-items">
-							@if (variation.variationItems?.length > 0) {
-								@for (
-									item of variation.variationItems;
-									track item.uuid
-								) {
-									<div class="variation-item">
-										<span>{{ item.name }}</span>
-										<span class="item-price">{{ formatPrice(item.additionalCost) }}</span>
-										<div class="item-actions">
-											<dav-icon-button
-												size="xs"
-												[tooltip]="locale.options"
-												(click)="
-													showVariationItemContextMenu(
-														$event,
-														variation,
-														item
-													)
-												"
-											>
-												<fa-icon [icon]="faEllipsis"></fa-icon>
-											</dav-icon-button>
-										</div>
-									</div>
-								}
-							} @else {
-								<p class="no-items-message">
-									{{ locale.noVariationItems }}
-								</p>
-							}
-						</div>
-
-						<dav-button
-							class="add-item-button"
-							(click)="showAddVariationItemDialog(variation)"
-						>
-							{{ locale.addVariationItem }}
-						</dav-button>
-					</dav-card>
+					<app-variation-card
+						[variation]="variation"
+						[locale]="locale"
+						(contextMenuClick)="
+							showVariationContextMenu($event.event, $event.variation)
+						"
+						(itemContextMenuClick)="
+							showVariationItemContextMenu(
+								$event.event,
+								$event.variation,
+								$event.item
+							)
+						"
+						(addItemClick)="showAddVariationItemDialog($event)"
+					></app-variation-card>
 				}
 			</div>
 		} @else {

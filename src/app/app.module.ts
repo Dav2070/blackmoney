@@ -47,7 +47,7 @@ import { CounterComponent } from "./components/cash-register/counter/counter.com
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
 import { EditRegisterClientNameDialogComponent } from "./dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
-import { EditAddressDialogComponent } from "./dialogs/edit-address-dialog/edit-address-dialog.component"
+import { EditRestaurantInfoDialogComponent } from "./dialogs/edit-restaurant-info-dialog/edit-restaurant-info-dialog.component"
 import { AddEmployeeDialogComponent } from "./dialogs/add-employee-dialog/add-employee-dialog.component"
 import { AddReservationDialogComponent } from "./dialogs/add-reservation-dialog/add-reservation-dialog.component"
 import { EditReservationDialogComponent } from "./dialogs/edit-reservation-dialog/edit-reservation-dialog.component"
@@ -141,8 +141,6 @@ import { MatPaginatorModule } from "@angular/material/paginator"
 import { MatSortModule } from "@angular/material/sort"
 import { MatTooltipModule } from "@angular/material/tooltip"
 import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
-import { EditOwnerDialogComponent } from "./dialogs/edit-owner-dialog/edit-owner-dialog.component"
-import { EditContactInfoDialogComponent } from "./dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { LandingGuestsPageComponent } from "./pages/landing-pages/landing-guests-page/landing-guests-page.component"
 import { RestaurantInfoPageComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-info-page.component"
@@ -173,7 +171,7 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		LogoutDialogComponent,
 		EditRegisterClientNameDialogComponent,
 		EditRestaurantNameDialogComponent,
-		EditAddressDialogComponent,
+		EditRestaurantInfoDialogComponent,
 		AddEmployeeDialogComponent,
 		AddReservationDialogComponent,
 		EditReservationDialogComponent,
@@ -208,8 +206,6 @@ import { ReservationsPageComponent } from "./pages/landing-pages/reservations-pa
 		AddTakeawayDialogComponent,
 		EditTakeawayDialogComponent,
 		TakeawayDialogComponent,
-		EditOwnerDialogComponent,
-		EditContactInfoDialogComponent,
 		AddCategoryDialogComponent,
 		AddOfferDialogComponent,
 		EditOfferDialogComponent,

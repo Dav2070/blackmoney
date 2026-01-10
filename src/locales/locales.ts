@@ -285,6 +285,20 @@ export const de = {
 			headline: "Name bearbeiten",
 			name: "Name des Restaurants"
 		},
+		editRestaurantInfoDialog: {
+			headline: "Restaurant-Informationen bearbeiten",
+			addressSection: "Adresse",
+			ownerSection: "Inhaberinformationen",
+			contactSection: "Kontaktinformationen",
+			city: "Stadt",
+			line1: "Adresszeile 1",
+			line2: "Adresszeile 2",
+			postalCode: "Postleitzahl",
+			owner: "Inhaber",
+			taxNumber: "Steuernummer",
+			mail: "E-Mail",
+			phoneNumber: "Telefonnummer"
+		},
 		editAddressDialog: {
 			headline: "Adresse bearbeiten",
 			city: "Stadt",

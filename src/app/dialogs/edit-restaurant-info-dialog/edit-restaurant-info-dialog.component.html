@@ -1,0 +1,133 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- Address Section -->
+		<h3
+			style="
+				margin-top: 0;
+				margin-bottom: 16px;
+				color: var(--dav-color-on-surface);
+			"
+		>
+			{{ locale.addressSection }}
+		</h3>
+
+		<!-- Line 1 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="line1"
+				[label]="locale.line1"
+				[disabled]="loading"
+				[errorMessage]="line1Error"
+				(change)="line1TextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Line 2 -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="line2"
+				[label]="locale.line2"
+				[disabled]="loading"
+				[errorMessage]="line2Error"
+				(change)="line2TextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<div class="dialog-horizontal-formfield-container">
+			<!-- Postal code -->
+			<dav-textfield
+				[value]="postalCode"
+				[label]="locale.postalCode"
+				[disabled]="loading"
+				[errorMessage]="postalCodeError"
+				(change)="postalCodeTextfieldChange($event)"
+			></dav-textfield>
+
+			<!-- City -->
+			<dav-textfield
+				[value]="city"
+				[label]="locale.city"
+				[disabled]="loading"
+				[errorMessage]="cityError"
+				(change)="cityTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Owner Section -->
+		<h3
+			style="
+				margin-top: 24px;
+				margin-bottom: 16px;
+				color: var(--dav-color-on-surface);
+			"
+		>
+			{{ locale.ownerSection }}
+		</h3>
+
+		<!-- Owner -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="owner"
+				[label]="locale.owner"
+				[disabled]="loading"
+				[errorMessage]="ownerError"
+				(change)="ownerTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Tax Number -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="taxNumber"
+				[label]="locale.taxNumber"
+				[disabled]="loading"
+				[errorMessage]="taxNumberError"
+				(change)="taxNumberTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Contact Section -->
+		<h3
+			style="
+				margin-top: 24px;
+				margin-bottom: 16px;
+				color: var(--dav-color-on-surface);
+			"
+		>
+			{{ locale.contactSection }}
+		</h3>
+
+		<!-- Mail -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="mail"
+				[label]="locale.mail"
+				[disabled]="loading"
+				[errorMessage]="mailError"
+				(change)="mailTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<!-- Phone Number -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="phoneNumber"
+				[label]="locale.phoneNumber"
+				[disabled]="loading"
+				[errorMessage]="phoneNumberError"
+				(change)="phoneNumberTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+	</form>
+</dav-dialog>

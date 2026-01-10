@@ -3,22 +3,20 @@ import { Router, ActivatedRoute } from "@angular/router"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import {
-	faLocationDot,
 	faPen,
 	faPrint,
 	faSeat,
 	faCashRegister,
-	faShop,
-	faAddressCard,
 	faClock,
-	faMap
+	faMap,
+	faLocationDot,
+	faShop,
+	faAddressCard
 } from "@fortawesome/pro-regular-svg-icons"
 import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
-import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
+import { EditRestaurantInfoDialogComponent } from "src/app/dialogs/edit-restaurant-info-dialog/edit-restaurant-info-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
 import * as ErrorCodes from "src/app/errorCodes"
-import { EditOwnerDialogComponent } from "src/app/dialogs/edit-owner-dialog/edit-owner-dialog.component"
-import { EditContactInfoDialogComponent } from "src/app/dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
 import { getGraphQLErrorCodes } from "src/app/utils"
 
 @Component({
@@ -30,15 +28,15 @@ export class RestaurantPageComponent {
 	locale = this.localizationService.locale.restaurantPage
 	errorsLocale = this.localizationService.locale.errors
 	actionsLocale = this.localizationService.locale.actions
-	faLocationDot = faLocationDot
 	faPen = faPen
 	faPrint = faPrint
 	faSeat = faSeat
 	faCashRegister = faCashRegister
-	faShop = faShop
-	faAddressCard = faAddressCard
 	faClock = faClock
 	faMap = faMap
+	faLocationDot = faLocationDot
+	faShop = faShop
+	faAddressCard = faAddressCard
 	uuid: string = null
 	name: string = ""
 	nameError: string = ""
@@ -70,20 +68,10 @@ export class RestaurantPageComponent {
 	editRestaurantNameDialogLoading: boolean = false
 	//#endregion
 
-	//#region EditAddressDialog
-	@ViewChild("editAddressDialog")
-	editAddressDialog: EditAddressDialogComponent
-	editAddressDialogLoading: boolean = false
-
-	//#region EditOwnderDialog
-	@ViewChild("editOwnerDialog")
-	editOwnerDialog: EditOwnerDialogComponent
-	editOwnerDialogLoading: boolean = false
-
-	//#region EditOwnderDialog
-	@ViewChild("editContactInfoDialog")
-	editContactInfoDialog: EditContactInfoDialogComponent
-	editContactInfoDialogLoading: boolean = false
+	//#region EditRestaurantInfoDialog
+	@ViewChild("editRestaurantInfoDialog")
+	editRestaurantInfoDialog: EditRestaurantInfoDialogComponent
+	editRestaurantInfoDialogLoading: boolean = false
 	//#endregion
 
 	constructor(
@@ -162,40 +150,9 @@ export class RestaurantPageComponent {
 		this.editRestaurantNameDialog.show()
 	}
 
-	showEditAddressDialog() {
-		this.editAddressDialogLoading = false
-		this.editAddressDialog.show()
-	}
-
-	showEditOwnerDialog() {
-		this.editOwnerDialogLoading = false
-		this.editOwnerDialog.line1Name = "Inhaber"
-		this.editOwnerDialog.line2Name = "Steuernummer"
-		this.editOwnerDialog.show()
-	}
-
-	showEditContactInfoDialog() {
-		this.editContactInfoDialogLoading = false
-		this.editContactInfoDialog.line1Name = "E-Mail"
-		this.editContactInfoDialog.line2Name = "Telefon"
-		this.editContactInfoDialog.show()
-	}
-
-	editOwnerDialogPrimaryButtonClick(event: { name: string }) {
-		this.owner = this.editOwnerDialog.line1
-		this.taxNumber = this.editOwnerDialog.line2
-		this.editOwnerDialog.hide()
-	}
-
-	editContactInfoDialogPrimaryButtonClick(event: { name: string }) {
-		this.mail = this.editContactInfoDialog.line1
-		this.phoneNumber = this.editContactInfoDialog.line2
-		this.editContactInfoDialog.hide()
-	}
-
-	showRoomAdministrationDialog() {
-		const currentUrl = this.router.url
-		this.router.navigateByUrl(`${currentUrl}/rooms`)
+	showEditRestaurantInfoDialog() {
+		this.editRestaurantInfoDialogLoading = false
+		this.editRestaurantInfoDialog.show()
 	}
 
 	async editRestaurantNameDialogPrimaryButtonClick(event: { name: string }) {
@@ -234,13 +191,17 @@ export class RestaurantPageComponent {
 		}
 	}
 
-	async editAddressDialogPrimaryButtonClick(event: {
+	async editRestaurantInfoDialogPrimaryButtonClick(event: {
 		city?: string
 		line1?: string
 		line2?: string
 		postalCode?: string
+		owner?: string
+		taxNumber?: string
+		mail?: string
+		phoneNumber?: string
 	}) {
-		this.editAddressDialogLoading = true
+		this.editRestaurantInfoDialogLoading = true
 
 		const updateRestaurantResponse = await this.apiService.updateRestaurant(
 			`
@@ -259,7 +220,7 @@ export class RestaurantPageComponent {
 			}
 		)
 
-		this.editAddressDialogLoading = false
+		this.editRestaurantInfoDialogLoading = false
 
 		if (updateRestaurantResponse.data?.updateRestaurant != null) {
 			const responseData = updateRestaurantResponse.data.updateRestaurant
@@ -269,7 +230,13 @@ export class RestaurantPageComponent {
 			this.line2 = responseData.line2 ?? ""
 			this.postalCode = responseData.postalCode ?? ""
 
-			this.editAddressDialog.hide()
+			// Update owner, tax number, mail and phone number locally
+			this.owner = event.owner ?? this.owner
+			this.taxNumber = event.taxNumber ?? this.taxNumber
+			this.mail = event.mail ?? this.mail
+			this.phoneNumber = event.phoneNumber ?? this.phoneNumber
+
+			this.editRestaurantInfoDialog.hide()
 		} else {
 			let errors = getGraphQLErrorCodes(updateRestaurantResponse)
 			if (errors == null) return

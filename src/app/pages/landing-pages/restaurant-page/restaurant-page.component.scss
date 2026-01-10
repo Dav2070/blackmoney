@@ -3,29 +3,42 @@
 	gap: 16px;
 }
 
-.address-card-container {
+.info-sections-container {
 	display: flex;
 	align-items: start;
-	margin: 0;
+	gap: 24px;
+	position: relative;
+}
+
+.info-section {
+	display: flex;
 	gap: 10px;
+	align-items: start;
+	flex: 1;
 
 	fa-icon {
 		padding: 4px;
+		margin-top: 4px;
 	}
 }
 
-.address-card-content {
+.info-content {
 	margin-top: 4px;
 	line-height: 20px;
+	flex: 1;
 }
 
-.address-card-content > p {
+.info-content > p {
 	margin: 0;
 	color: var(--dav-color-on-surface);
 }
 
 .no-address {
 	font-style: italic;
+}
+
+dav-icon-button {
+	margin-left: auto;
 }
 
 dav-card {

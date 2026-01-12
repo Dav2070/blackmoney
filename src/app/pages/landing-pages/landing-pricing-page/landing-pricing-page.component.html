@@ -1,3 +1,122 @@
 <div class="container slide-up-in">
-	<h1>Unsere Preise</h1>
+	<section class="hero" [class.dark]="dataService.darkTheme">
+		<div class="hero-content">
+			<h1>Transparente Preise<br />für dein Restaurant</h1>
+			<p class="subtitle">Finde den perfekten Tarif für dein Geschäft.</p>
+
+			<dav-button size="lg" (click)="navigateToLoginPage()">
+				Jetzt ausprobieren
+			</dav-button>
+		</div>
+	</section>
+
+	<section class="pricing" aria-label="Preispläne und Tarife">
+		<div class="pricing-grid">
+			<article class="pricing-card">
+				<div class="plan-name">Free</div>
+				<div class="price">
+					<span class="amount">4,7 %</span>
+					<span class="unit">Transaktionsgebühren <br /> bei Kartenzahlungen</span>
+				</div>
+			</article>
+
+			<article class="pricing-card featured">
+				<div class="badge">Beliebt</div>
+				<div class="plan-name">Basic</div>
+				<div class="price">
+					<span class="amount">89 €</span>
+					<span class="unit">pro Monat</span>
+				</div>
+				<p class="description">
+					+ 1,5 % Transaktionsgebühren + 0,10 € pro Transaktion
+				</p>
+			</article>
+		</div>
+	</section>
+
+	<section class="features" aria-label="Funktionen für alle Tarife">
+		<h2>Funktionen für alle Tarife</h2>
+		<div class="features-grid">
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faCalendarDays"></fa-icon>
+				</div>
+
+				<h3>Online-Tisch-Reservierungen</h3>
+				<p>
+					Deine Gäste können über unsere Webseite einen Tisch in deinem
+					Restaurant reservieren.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faBagShopping"></fa-icon>
+				</div>
+
+				<h3>Online-Bestellungen</h3>
+				<p>
+					Deine Gäste können über unsere Webseite in deinem Restaurant
+					Bestellungen aufgeben.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faMobile"></fa-icon>
+				</div>
+
+				<h3>Geräte-Vermietung</h3>
+				<p>
+					Miete Hardware wie Kartenzahlungsterminal, Kassen und Bon-Drucker für
+					einen günstigen monatlichen Preis.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faUsers"></fa-icon>
+				</div>
+
+				<h3>Mitarbeiter-Verwaltung</h3>
+				<p>
+					Verwalte deine Mitarbeiter und füge neue hinzu, die für
+					unterschiedliche Aspekte in deinem Restaurant zuständig sind.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faDatabase"></fa-icon>
+				</div>
+
+				<h3>TSE-Unterstützung</h3>
+				<p>
+					Sichere deine Daten mit Cloud-TSE und erfülle alle KassenSichV-Anforderungen
+					automatisch und zuverlässig.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faWrench"></fa-icon>
+				</div>
+
+				<h3>Weitere Funktionen</h3>
+				<p>
+					Kundenmanagement, Umsatzanalysen, Marketing-Tools und vieles
+					mehr.
+				</p>
+			</article>
+		</div>
+	</section>
+
+	<section class="cta-secondary">
+		<h2>Bereit, dein Restaurant zu optimieren?</h2>
+		<p>Finde den passenden Tarif und starte noch heute.</p>
+
+		<dav-button outline (click)="navigateToLoginPage()">
+			Jetzt ausprobieren
+		</dav-button>
+	</section>
 </div>

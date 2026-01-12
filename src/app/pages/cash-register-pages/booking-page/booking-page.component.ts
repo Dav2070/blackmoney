@@ -35,6 +35,8 @@ import { OrderItemCard } from "src/app/types/orderItemCard"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
 import { VariationItem } from "src/app/models/VariationItem"
+import { Variation } from "src/app/models/Variation"
+import { Offer } from "src/app/models/Offer"
 import { Order } from "src/app/models/Order"
 import { AddProductsInput, OrderItemType } from "src/app/types"
 import { BillsOverviewDialogComponent } from "src/app/dialogs/bills-overview-dialog/bills-overview-dialog.component"
@@ -50,7 +52,6 @@ import { digitKeyRegex, numpadKeyRegex } from "src/app/constants"
 import {
 	calculateTotalPriceOfOrderItem,
 	convertCategoryResourceToCategory,
-	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder,
 	formatPrice,
 	showToast
@@ -90,6 +91,8 @@ export class BookingPageComponent {
 	priceCalculator = new PriceCalculator()
 	categories: Category[] = []
 	selectedInventory: Product[] = []
+	offers: Offer[] = []
+	variations: Variation[] = []
 	selectedCategory: string = ""
 	productsLoading: boolean = true
 	ordersLoading: boolean = true
@@ -312,6 +315,22 @@ export class BookingPageComponent {
 			this.categories.push(
 				convertCategoryResourceToCategory(categoryResource)
 			)
+		}
+
+		// Extract offers and variations from loaded menu data
+		this.offers = []
+		this.variations = []
+		for (const category of this.categories) {
+			for (const product of category.products) {
+				if (product.offer) {
+					this.offers.push(product.offer)
+				}
+				for (const variation of product.variations) {
+					if (!this.variations.find(v => v.uuid === variation.uuid)) {
+						this.variations.push(variation)
+					}
+				}
+			}
 		}
 
 		if (this.categories.length > 0) {
@@ -918,6 +937,8 @@ export class BookingPageComponent {
 			})
 		}
 
+		// OPTIMIZATION: Minimale GraphQL-Query - Frontend hat bereits alle Product-Daten
+		// Wir brauchen nur die OrderItem UUIDs, Counts und Typen für das Backend-Merging
 		let items = await this.apiService.addProductsToOrder(
 			`
 				orderItems {
@@ -931,36 +952,11 @@ export class BookingPageComponent {
 						notes
 						takeAway
 						course
-						order {
-							uuid
-						}
 						product {
 							uuid
-							name
-							price
-							shortcut
-							variations {
-								total
-								items {
-									uuid
-									name
-									variationItems {
-										total
-										items {
-											uuid
-											name
-											additionalCost
-										}
-									}
-								}
-							}
 						}
 						offer {
-							id
 							uuid
-							offerType
-							discountType
-							offerValue
 						}
 						orderItemVariations {
 							total
@@ -971,8 +967,6 @@ export class BookingPageComponent {
 									total
 									items {
 										uuid
-										name
-										additionalCost
 									}
 								}
 							}
@@ -981,39 +975,8 @@ export class BookingPageComponent {
 							items {
 								uuid
 								count
-								type
-								discount
-								notes
-								takeAway
-								course
 								product {
 									uuid
-									name
-									type
-									price
-									shortcut
-									variations {
-										total
-										items {
-											uuid
-											name
-											variationItems {
-												total
-												items {
-													uuid
-													name
-													additionalCost
-												}
-											}
-										}
-									}
-								}
-								offer {
-									id
-									uuid
-									offerType
-									discountType
-									offerValue
 								}
 								orderItemVariations {
 									total
@@ -1024,8 +987,6 @@ export class BookingPageComponent {
 											total
 											items {
 												uuid
-												name
-												additionalCost
 											}
 										}
 									}
@@ -1041,18 +1002,108 @@ export class BookingPageComponent {
 			}
 		)
 
-		// Setze alle Items direkt ohne Merging-Logik (Backend hat bereits gemerged)
-		this.bookedItems.setItems(
-			items.data.addProductsToOrder.orderItems.items.map(item =>
-				convertOrderItemResourceToOrderItem(item)
-			)
-		)
+		// Merge returned OrderItems with existing frontend data
+		const returnedOrderItems = items.data.addProductsToOrder.orderItems.items
 
+		// Clear staged items first
 		this.stagedItems.clearItems()
+
+		// Build complete OrderItems by merging backend response with frontend product data
+		const completeOrderItems = returnedOrderItems.map(backendItem => {
+			// Find product data from menu (already loaded in frontend)
+			const productData = backendItem.product?.uuid
+				? this.findProductInMenu(backendItem.product.uuid)
+				: null
+
+			// Build complete OrderItem
+			return {
+				uuid: backendItem.uuid,
+				count: backendItem.count,
+				type: backendItem.type,
+				discount: backendItem.discount,
+				diversePrice: backendItem.diversePrice,
+				notes: backendItem.notes,
+				takeAway: backendItem.takeAway,
+				course: backendItem.course,
+				order: null as Order | null,
+				product: productData, // Use frontend-cached product data
+				offer: backendItem.offer?.uuid
+					? this.findOfferInMenu(backendItem.offer.uuid)
+					: (null as Offer | null),
+				orderItemVariations:
+					backendItem.orderItemVariations?.items?.map(variation => ({
+						uuid: variation.uuid,
+						count: variation.count,
+						variationItems:
+							variation.variationItems?.items?.map(vi => {
+								// Find variation item details from frontend cache
+								return this.findVariationItemInMenu(vi.uuid)
+							}) || []
+					})) || [],
+				orderItems:
+					backendItem.orderItems?.items?.map(childItem => {
+						const childProductData = this.findProductInMenu(
+							childItem.product.uuid
+						)
+						return {
+							uuid: childItem.uuid,
+							count: childItem.count,
+							type: OrderItemType.Product,
+							discount: 0,
+							notes: null as string | null,
+							takeAway: false,
+							course: null as number | null,
+							order: null as Order | null,
+							product: childProductData,
+							offer: null as Offer | null,
+							orderItemVariations:
+								childItem.orderItemVariations?.items?.map(
+									variation => ({
+										uuid: variation.uuid,
+										count: variation.count,
+										variationItems:
+											variation.variationItems?.items?.map(vi =>
+												this.findVariationItemInMenu(vi.uuid)
+											) || []
+									})
+								) || [],
+							orderItems: [] as OrderItem[]
+						}
+					}) || []
+			}
+		})
+
+		// Set complete items with all frontend data merged in
+		this.bookedItems.setItems(completeOrderItems)
 
 		this.showTotal()
 		this.sendOrderLoading = false
 		await showToast(this.locale.sendOrderToastText)
+	}
+
+	// Helper: Find product in loaded menu by UUID
+	private findProductInMenu(uuid: string) {
+		for (const category of this.categories) {
+			const product = category.products.find(p => p.uuid === uuid)
+			if (product) return product
+		}
+		return null
+	}
+
+	// Helper: Find offer in loaded menu by UUID
+	private findOfferInMenu(uuid: string): Offer | null {
+		return this.offers.find((o: Offer) => o.uuid === uuid) || null
+	}
+
+	// Helper: Find variation item in loaded menu by UUID
+	private findVariationItemInMenu(uuid: string): VariationItem | null {
+		for (const variation of this.variations) {
+			const item = variation.variationItems.find(
+				(vi: VariationItem) => vi.uuid === uuid
+			)
+			if (item) return item
+		}
+		return null
 	}
 
 	//Berechnet den Preis der hinzugefügten Items

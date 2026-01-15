@@ -18,6 +18,7 @@ import { EditRestaurantInfoDialogComponent } from "src/app/dialogs/edit-restaura
 import { LocalizationService } from "src/app/services/localization-service"
 import * as ErrorCodes from "src/app/errorCodes"
 import { getGraphQLErrorCodes } from "src/app/utils"
+import { Restaurant } from "src/app/models/Restaurant"
 
 @Component({
 	templateUrl: "./restaurant-page.component.html",
@@ -38,25 +39,22 @@ export class RestaurantPageComponent {
 	faShop = faShop
 	faAddressCard = faAddressCard
 	uuid: string = null
-	name: string = ""
 	nameError: string = ""
-	city: string = ""
 	cityError: string = ""
-	country: string = ""
-	line1: string = ""
 	line1Error: string = ""
-	line2: string = ""
+	housenumberError: string = ""
 	line2Error: string = ""
-	postalCode: string = ""
 	postalCodeError: string = ""
 
-	owner: string = "TestOwner"
+	restaurant: Restaurant = new Restaurant()
+
+	owner: string = ""
 	ownerError: string = ""
-	taxNumber: string = "TestTaxNumber"
+	taxNumber: string = ""
 	taxNumberError: string = ""
-	phoneNumber: string = "0179123456789"
+	phoneNumber: string = ""
 	phoneNumberError: string = ""
-	mail: string = "testmail@mail.de"
+	mail: string = ""
 	mailError: string = ""
 
 	imageDataUrl: string | null = null
@@ -90,25 +88,41 @@ export class RestaurantPageComponent {
 		const retrieveRestaurantResponse =
 			await this.apiService.retrieveRestaurant(
 				`
+
 					name
-					city
-					country
-					line1
-					line2
-					postalCode
+					owner
+					taxNumber
+					mail
+					phoneNumber
+					address {
+						city
+						country
+						addressLine1
+						addressLine2
+						housenumber
+						postalCode
+					}
 				`,
 				{ uuid: this.uuid }
 			)
 
-		if (retrieveRestaurantResponse.data.retrieveRestaurant == null) return
+		if (
+			!retrieveRestaurantResponse.data ||
+			retrieveRestaurantResponse.data.retrieveRestaurant == null
+		)
+			return
 
-		this.name = retrieveRestaurantResponse.data.retrieveRestaurant.name
-		this.city = retrieveRestaurantResponse.data.retrieveRestaurant.city
-		this.country = retrieveRestaurantResponse.data.retrieveRestaurant.country
-		this.line1 = retrieveRestaurantResponse.data.retrieveRestaurant.line1
-		this.line2 = retrieveRestaurantResponse.data.retrieveRestaurant.line2
-		this.postalCode =
-			retrieveRestaurantResponse.data.retrieveRestaurant.postalCode
+		this.restaurant.name =
+			retrieveRestaurantResponse.data.retrieveRestaurant.name
+
+		this.owner = retrieveRestaurantResponse.data.retrieveRestaurant.owner
+		this.taxNumber =
+			retrieveRestaurantResponse.data.retrieveRestaurant.taxNumber
+		this.mail = retrieveRestaurantResponse.data.retrieveRestaurant.mail
+		this.phoneNumber =
+			retrieveRestaurantResponse.data.retrieveRestaurant.phoneNumber
+		this.restaurant.address =
+			retrieveRestaurantResponse.data.retrieveRestaurant.address
 	}
 
 	navigateBack() {
@@ -168,7 +182,11 @@ export class RestaurantPageComponent {
 		if (updateRestaurantResponse.data?.updateRestaurant != null) {
 			const responseData = updateRestaurantResponse.data.updateRestaurant
 
-			this.name = responseData.name
+			// Create new restaurant object to trigger change detection
+			this.restaurant = {
+				...this.restaurant,
+				name: responseData.name
+			}
 
 			this.editRestaurantNameDialog.hide()
 		} else {
@@ -194,6 +212,7 @@ export class RestaurantPageComponent {
 	async editRestaurantInfoDialogPrimaryButtonClick(event: {
 		city?: string
 		line1?: string
+		housenumber?: string
 		line2?: string
 		postalCode?: string
 		owner?: string
@@ -205,18 +224,30 @@ export class RestaurantPageComponent {
 
 		const updateRestaurantResponse = await this.apiService.updateRestaurant(
 			`
-				city
-				line1
-				line2
-				postalCode
+				address {
+					city
+					addressLine1
+					addressLine2
+					housenumber
+					postalCode
+				}
+				owner
+				taxNumber
+				mail
+				phoneNumber
 			`,
 			{
 				uuid: this.uuid,
-				city: event.city ?? "",
-				line1: event.line1 ?? "",
-				line2: event.line2 ?? "",
-				postalCode: event.postalCode ?? "",
-				country: "DE"
+				city: event.city,
+				line1: event.line1,
+				housenumber: event.housenumber,
+				line2: event.line2,
+				postalCode: event.postalCode,
+				country: "DE",
+				owner: event.owner,
+				taxNumber: event.taxNumber,
+				mail: event.mail,
+				phoneNumber: event.phoneNumber
 			}
 		)
 
@@ -225,18 +256,22 @@ export class RestaurantPageComponent {
 		if (updateRestaurantResponse.data?.updateRestaurant != null) {
 			const responseData = updateRestaurantResponse.data.updateRestaurant
 
-			this.city = responseData.city ?? ""
-			this.line1 = responseData.line1 ?? ""
-			this.line2 = responseData.line2 ?? ""
-			this.postalCode = responseData.postalCode ?? ""
+			// Create new address object to trigger change detection
+			this.restaurant.address = {
+				uuid: this.restaurant.address?.uuid,
+				city: responseData.address?.city,
+				country: responseData.address?.country,
+				addressLine1: responseData.address?.addressLine1,
+				addressLine2: responseData.address?.addressLine2,
+				housenumber: responseData.address?.housenumber,
+				postalCode: responseData.address?.postalCode
+			}
 
-			// Update owner, tax number, mail and phone number locally
-			this.owner = event.owner ?? this.owner
-			this.taxNumber = event.taxNumber ?? this.taxNumber
-			this.mail = event.mail ?? this.mail
-			this.phoneNumber = event.phoneNumber ?? this.phoneNumber
-
-			this.editRestaurantInfoDialog.hide()
+			;((this.owner = responseData.owner),
+				(this.taxNumber = responseData.taxNumber),
+				(this.mail = responseData.mail),
+				(this.phoneNumber = responseData.phoneNumber),
+				this.editRestaurantInfoDialog.hide())
 		} else {
 			let errors = getGraphQLErrorCodes(updateRestaurantResponse)
 			if (errors == null) return

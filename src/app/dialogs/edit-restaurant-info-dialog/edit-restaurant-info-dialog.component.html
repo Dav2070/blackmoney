@@ -22,14 +22,24 @@
 			{{ locale.addressSection }}
 		</h3>
 
-		<!-- Line 1 -->
-		<div class="dialog-formfield-container">
+		<!-- Line 1 + Housenumber -->
+		<div class="dialog-horizontal-formfield-container">
 			<dav-textfield
+				class="line1-field"
 				[value]="line1"
 				[label]="locale.line1"
 				[disabled]="loading"
 				[errorMessage]="line1Error"
 				(change)="line1TextfieldChange($event)"
+			></dav-textfield>
+
+			<dav-textfield
+				class="housenumber-field"
+				[value]="housenumber"
+				[label]="locale.housenumber"
+				[disabled]="loading"
+				[errorMessage]="housenumberError"
+				(change)="housenumberTextfieldChange($event)"
 			></dav-textfield>
 		</div>
 

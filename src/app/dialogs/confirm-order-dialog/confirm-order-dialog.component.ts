@@ -60,7 +60,7 @@ export class ConfirmOrderDialogComponent {
 			uuid: "addr-2",
 			addressLine1: "Italienische Allee",
 			addressLine2: "Zum Italiener",
-			houseNumber: "45",
+			housenumber: "45",
 			postalCode: "54321",
 			city: "München",
 			country: "Deutschland"
@@ -116,7 +116,7 @@ export class ConfirmOrderDialogComponent {
 			: ({
 					uuid: this.mockRestaurant.uuid,
 					addressLine1: this.mockRestaurant.address.addressLine1,
-					houseNumber: this.mockRestaurant.address.houseNumber,
+					housenumber: this.mockRestaurant.address.housenumber,
 					postalCode: this.mockRestaurant.address.postalCode,
 					city: this.mockRestaurant.address.city,
 					country: this.mockRestaurant.address.country
@@ -126,7 +126,7 @@ export class ConfirmOrderDialogComponent {
 	formatAddress(address: Address): string {
 		const parts = []
 		if (address.addressLine1) parts.push(address.addressLine1)
-		if (address.houseNumber) parts.push(address.houseNumber)
+		if (address.housenumber) parts.push(address.housenumber)
 		const line1 = parts.join(" ")
 
 		const parts2 = []

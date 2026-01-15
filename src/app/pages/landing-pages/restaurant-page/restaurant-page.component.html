@@ -6,7 +6,7 @@
 			(backButtonClick)="navigateBack()"
 			(editButtonClick)="showEditRestaurantNameDialog()"
 		>
-			{{ name }}
+			{{ restaurant.name }}
 		</dav-header>
 
 		<dav-card>
@@ -14,18 +14,39 @@
 				<div class="info-section">
 					<fa-icon [icon]="faLocationDot"></fa-icon>
 					<div class="info-content">
-						@if (city || country || line1 || line2 || postalCode) {
-							@if (line1) {
-								<p>{{ line1 }}</p>
+						@if (
+							restaurant.address?.city ||
+							restaurant.address?.country ||
+							restaurant.address?.addressLine1 ||
+							restaurant.address?.addressLine2 ||
+							restaurant.address?.postalCode
+						) {
+							@if (restaurant.address?.addressLine1) {
+								<p class="address-line">
+									{{ restaurant.address.addressLine1 }}
+									{{ restaurant.address.housenumber }}
+								</p>
 							}
-							@if (line2) {
-								<p>{{ line2 }}</p>
+							@if (restaurant.address?.addressLine2) {
+								<p>{{ restaurant.address.addressLine2 }}</p>
 							}
-							@if (postalCode || city) {
-								<p>{{ postalCode }} {{ city }}</p>
+							@if (
+								restaurant.address?.postalCode ||
+								restaurant.address?.city
+							) {
+								<p>
+									{{ restaurant.address.postalCode }}
+									{{ restaurant.address.city }}
+								</p>
 							}
-							@if (country) {
-								<p>{{ country === "DE" ? "Deutschland" : "" }}</p>
+							@if (restaurant.address?.country) {
+								<p>
+									{{
+										restaurant.address.country === "DE"
+											? "Deutschland"
+											: ""
+									}}
+								</p>
 							}
 						} @else {
 							<p class="no-address">{{ locale.addAddress }}</p>
@@ -137,7 +158,7 @@
 <app-edit-restaurant-name-dialog
 	#editRestaurantNameDialog
 	[loading]="editRestaurantNameDialogLoading"
-	[name]="name"
+	[name]="restaurant.name"
 	[nameError]="nameError"
 	(primaryButtonClick)="editRestaurantNameDialogPrimaryButtonClick($event)"
 	(clearErrors)="nameError = ''"
@@ -146,13 +167,15 @@
 <app-edit-restaurant-info-dialog
 	#editRestaurantInfoDialog
 	[loading]="editRestaurantInfoDialogLoading"
-	[city]="city"
+	[city]="restaurant.address?.city"
 	[cityError]="cityError"
-	[line1]="line1"
+	[line1]="restaurant.address?.addressLine1"
 	[line1Error]="line1Error"
-	[line2]="line2"
+	[housenumber]="restaurant.address?.housenumber"
+	[housenumberError]="housenumberError"
+	[line2]="restaurant.address?.addressLine2"
 	[line2Error]="line2Error"
-	[postalCode]="postalCode"
+	[postalCode]="restaurant.address?.postalCode"
 	[postalCodeError]="postalCodeError"
 	[owner]="owner"
 	[ownerError]="ownerError"
@@ -166,6 +189,7 @@
 	(clearErrors)="
 		cityError = '';
 		line1Error = '';
+		housenumberError = '';
 		line2Error = '';
 		postalCodeError = '';
 		ownerError = '';

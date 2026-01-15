@@ -26,6 +26,8 @@ export class EditRestaurantInfoDialogComponent {
 	@Input() cityError: string = ""
 	@Input() line1: string = ""
 	@Input() line1Error: string = ""
+	@Input() housenumber: string = ""
+	@Input() housenumberError: string = ""
 	@Input() line2: string = ""
 	@Input() line2Error: string = ""
 	@Input() postalCode: string = ""
@@ -78,6 +80,11 @@ export class EditRestaurantInfoDialogComponent {
 		this.clearErrors.emit()
 	}
 
+	housenumberTextfieldChange(event: Event) {
+		this.housenumber = (event as CustomEvent).detail.value
+		this.clearErrors.emit()
+	}
+
 	line2TextfieldChange(event: Event) {
 		this.line2 = (event as CustomEvent).detail.value
 		this.clearErrors.emit()
@@ -112,6 +119,7 @@ export class EditRestaurantInfoDialogComponent {
 		this.primaryButtonClick.emit({
 			city: this.city,
 			line1: this.line1,
+			housenumber: this.housenumber,
 			line2: this.line2,
 			postalCode: this.postalCode,
 			owner: this.owner,

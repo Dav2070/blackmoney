@@ -31,6 +31,10 @@ export interface CompanyResource {
 export interface RestaurantResource {
 	uuid: string
 	name: string
+	owner?: string
+	taxNumber?: string
+	mail?: string
+	phoneNumber?: string
 	city: string
 	country: Country
 	line1: string
@@ -41,6 +45,17 @@ export interface RestaurantResource {
 	rooms: List<RoomResource>
 	registers: List<RegisterResource>
 	printers: List<PrinterResource>
+	address: AddressResource
+}
+
+export interface AddressResource {
+	uuid: string
+	city?: string
+	country?: Country
+	addressLine1?: string
+	addressLine2?: string
+	housenumber?: string
+	postalCode?: string
 }
 
 export interface RegisterResource {

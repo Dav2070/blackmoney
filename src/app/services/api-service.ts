@@ -300,8 +300,13 @@ export class ApiService {
 			city?: string
 			country?: string
 			line1?: string
+			housenumber?: string
 			line2?: string
 			postalCode?: string
+			owner?: string
+			taxNumber?: string
+			mail?: string
+			phoneNumber?: string
 		}
 	): Promise<ApolloResult<{ updateRestaurant: RestaurantResource }>> {
 		return await this.blackmoneyAuthApollo
@@ -313,8 +318,13 @@ export class ApiService {
 						$city: String
 						$country: Country
 						$line1: String
+						$housenumber: String
 						$line2: String
 						$postalCode: String
+						$owner: String
+						$taxNumber: String
+						$mail: String
+						$phoneNumber: String
 					) {
 						updateRestaurant(
 							uuid: $uuid
@@ -322,8 +332,13 @@ export class ApiService {
 							city: $city
 							country: $country
 							line1: $line1
+							housenumber: $housenumber
 							line2: $line2
 							postalCode: $postalCode
+							owner: $owner
+							taxNumber: $taxNumber
+							mail: $mail
+							phoneNumber: $phoneNumber
 						) {
 							${queryData}
 						}

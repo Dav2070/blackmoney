@@ -56,28 +56,104 @@
 					</p>
 				}
 
-				@for (
-					orderItem of stagedItems.getOrderItems();
-					track orderItem.uuid
-				) {
-					@if (orderItem.type === "MENU" || orderItem.type === "SPECIAL") {
-						<app-offer-order-item-card
-							[orderItem]="orderItem"
-							[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-							[selectedOrderItemNote]="selectedOrderItem?.notes"
-							[clickable]="true"
-							(click)="selectItem(orderItem, stagedItems)"
-							(noteIconClick)="orderItemNoteIconClick($event)"
-						></app-offer-order-item-card>
-					} @else {
-						<app-order-item-card
-							[orderItem]="orderItem"
-							[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-							[selectedOrderItemNote]="selectedOrderItem?.notes"
-							[clickable]="true"
-							(click)="selectItem(orderItem, stagedItems)"
-							(noteIconClick)="orderItemNoteIconClick($event)"
-						></app-order-item-card>
+				@if (!ordersLoading && stagedItems.getOrderItems().length > 0) {
+					@let grouped = getGroupedOrderItems(stagedItems);
+
+					<!-- Normal Items -->
+					@for (orderItem of grouped.normalItems; track orderItem.uuid) {
+						@if (
+							orderItem.type === "MENU" || orderItem.type === "SPECIAL"
+						) {
+							<app-offer-order-item-card
+								[orderItem]="orderItem"
+								[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+								[selectedOrderItemNote]="selectedOrderItem?.notes"
+								[clickable]="true"
+								(click)="selectItem(orderItem, stagedItems)"
+								(noteIconClick)="orderItemNoteIconClick($event)"
+							></app-offer-order-item-card>
+						} @else {
+							<app-order-item-card
+								[orderItem]="orderItem"
+								[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+								[selectedOrderItemNote]="selectedOrderItem?.notes"
+								[clickable]="true"
+								(click)="selectItem(orderItem, stagedItems)"
+								(noteIconClick)="orderItemNoteIconClick($event)"
+							></app-order-item-card>
+						}
+					}
+
+					<!-- Course Groups -->
+					@for (
+						courseGroup of grouped.courseGroups;
+						track courseGroup.courseNumber
+					) {
+						<div class="staged-items-separator">
+							<p>Gang {{ courseGroup.courseNumber }}</p>
+							<div class="separator"></div>
+						</div>
+
+						@for (orderItem of courseGroup.items; track orderItem.uuid) {
+							@if (
+								orderItem.type === "MENU" ||
+								orderItem.type === "SPECIAL"
+							) {
+								<app-offer-order-item-card
+									[orderItem]="orderItem"
+									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[clickable]="true"
+									(click)="selectItem(orderItem, stagedItems)"
+									(noteIconClick)="orderItemNoteIconClick($event)"
+								></app-offer-order-item-card>
+							} @else {
+								<app-order-item-card
+									[orderItem]="orderItem"
+									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[clickable]="true"
+									(click)="selectItem(orderItem, stagedItems)"
+									(noteIconClick)="orderItemNoteIconClick($event)"
+								></app-order-item-card>
+							}
+						}
+					}
+
+					<!-- Takeaway Items -->
+					@if (grouped.takeAwayItems.length > 0) {
+						<div class="staged-items-separator">
+							<p>Außer Haus</p>
+							<div class="separator"></div>
+						</div>
+
+						@for (
+							orderItem of grouped.takeAwayItems;
+							track orderItem.uuid
+						) {
+							@if (
+								orderItem.type === "MENU" ||
+								orderItem.type === "SPECIAL"
+							) {
+								<app-offer-order-item-card
+									[orderItem]="orderItem"
+									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[clickable]="true"
+									(click)="selectItem(orderItem, stagedItems)"
+									(noteIconClick)="orderItemNoteIconClick($event)"
+								></app-offer-order-item-card>
+							} @else {
+								<app-order-item-card
+									[orderItem]="orderItem"
+									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[clickable]="true"
+									(click)="selectItem(orderItem, stagedItems)"
+									(noteIconClick)="orderItemNoteIconClick($event)"
+								></app-order-item-card>
+							}
+						}
 					}
 				}
 			</ul>
@@ -90,28 +166,104 @@
 			}
 
 			<ul class="order-items-container">
-				@for (
-					orderItem of bookedItems.getOrderItems();
-					track orderItem.uuid
-				) {
-					@if (orderItem.type === "MENU" || orderItem.type === "SPECIAL") {
-						<app-offer-order-item-card
-							[orderItem]="orderItem"
-							[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-							[selectedOrderItemNote]="selectedOrderItem?.notes"
-							[clickable]="true"
-							(click)="selectItem(orderItem, bookedItems)"
-							(noteIconClick)="orderItemNoteIconClick($event)"
-						></app-offer-order-item-card>
-					} @else {
-						<app-order-item-card
-							[orderItem]="orderItem"
-							[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-							[selectedOrderItemNote]="selectedOrderItem?.notes"
-							[clickable]="true"
-							(click)="selectItem(orderItem, bookedItems)"
-							(noteIconClick)="orderItemNoteIconClick($event)"
-						></app-order-item-card>
+				@if (bookedItems.getOrderItems().length > 0) {
+					@let grouped = getGroupedOrderItems(bookedItems);
+
+					<!-- Normal Items -->
+					@for (orderItem of grouped.normalItems; track orderItem.uuid) {
+						@if (
+							orderItem.type === "MENU" || orderItem.type === "SPECIAL"
+						) {
+							<app-offer-order-item-card
+								[orderItem]="orderItem"
+								[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+								[selectedOrderItemNote]="selectedOrderItem?.notes"
+								[clickable]="true"
+								(click)="selectItem(orderItem, bookedItems)"
+								(noteIconClick)="orderItemNoteIconClick($event)"
+							></app-offer-order-item-card>
+						} @else {
+							<app-order-item-card
+								[orderItem]="orderItem"
+								[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+								[selectedOrderItemNote]="selectedOrderItem?.notes"
+								[clickable]="true"
+								(click)="selectItem(orderItem, bookedItems)"
+								(noteIconClick)="orderItemNoteIconClick($event)"
+							></app-order-item-card>
+						}
+					}
+
+					<!-- Course Groups -->
+					@for (
+						courseGroup of grouped.courseGroups;
+						track courseGroup.courseNumber
+					) {
+						<div class="staged-items-separator">
+							<p>Gang {{ courseGroup.courseNumber }}</p>
+							<div class="separator"></div>
+						</div>
+
+						@for (orderItem of courseGroup.items; track orderItem.uuid) {
+							@if (
+								orderItem.type === "MENU" ||
+								orderItem.type === "SPECIAL"
+							) {
+								<app-offer-order-item-card
+									[orderItem]="orderItem"
+									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[clickable]="true"
+									(click)="selectItem(orderItem, bookedItems)"
+									(noteIconClick)="orderItemNoteIconClick($event)"
+								></app-offer-order-item-card>
+							} @else {
+								<app-order-item-card
+									[orderItem]="orderItem"
+									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[clickable]="true"
+									(click)="selectItem(orderItem, bookedItems)"
+									(noteIconClick)="orderItemNoteIconClick($event)"
+								></app-order-item-card>
+							}
+						}
+					}
+
+					<!-- Takeaway Items -->
+					@if (grouped.takeAwayItems.length > 0) {
+						<div class="staged-items-separator">
+							<p>Außer Haus</p>
+							<div class="separator"></div>
+						</div>
+
+						@for (
+							orderItem of grouped.takeAwayItems;
+							track orderItem.uuid
+						) {
+							@if (
+								orderItem.type === "MENU" ||
+								orderItem.type === "SPECIAL"
+							) {
+								<app-offer-order-item-card
+									[orderItem]="orderItem"
+									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[clickable]="true"
+									(click)="selectItem(orderItem, bookedItems)"
+									(noteIconClick)="orderItemNoteIconClick($event)"
+								></app-offer-order-item-card>
+							} @else {
+								<app-order-item-card
+									[orderItem]="orderItem"
+									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
+									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[clickable]="true"
+									(click)="selectItem(orderItem, bookedItems)"
+									(noteIconClick)="orderItemNoteIconClick($event)"
+								></app-order-item-card>
+							}
+						}
 					}
 				}
 			</ul>
@@ -254,7 +406,11 @@
 				<dav-button
 					color="secondary"
 					text
-					[disabled]="!selectedOrderItem || isSelectedItemBooked()"
+					[disabled]="
+						!selectedOrderItem ||
+						isSelectedItemBooked() ||
+						selectedOrderItem.course
+					"
 					(click)="takeAwayButtonClick()"
 				>
 					<fa-icon [icon]="faCupTogo" slot="icon-left"></fa-icon>
@@ -275,7 +431,10 @@
 					color="secondary"
 					text
 					[disabled]="
-						!selectedOrderItem || !consoleActive || isSelectedItemBooked()
+						!selectedOrderItem ||
+						!consoleActive ||
+						isSelectedItemBooked() ||
+						selectedOrderItem.takeAway
 					"
 					(click)="setCourseButtonClick()"
 				>

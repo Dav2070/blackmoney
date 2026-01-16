@@ -1493,4 +1493,37 @@ export class BookingPageComponent {
 			}
 		}
 	}
+
+	/**
+	 * Groups order items into: normal items, courses (sorted), and takeaway items
+	 */
+	getGroupedOrderItems(items: AllItemHandler): {
+		normalItems: OrderItem[]
+		courseGroups: { courseNumber: number; items: OrderItem[] }[]
+		takeAwayItems: OrderItem[]
+	} {
+		const normalItems: OrderItem[] = []
+		const courseMap = new Map<number, OrderItem[]>()
+		const takeAwayItems: OrderItem[] = []
+
+		for (const item of items.getOrderItems()) {
+			if (item.takeAway) {
+				takeAwayItems.push(item)
+			} else if (item.course != null && item.course > 0) {
+				if (!courseMap.has(item.course)) {
+					courseMap.set(item.course, [])
+				}
+				courseMap.get(item.course).push(item)
+			} else {
+				normalItems.push(item)
+			}
+		}
+
+		// Sort courses ascending
+		const courseGroups = Array.from(courseMap.entries())
+			.map(([courseNumber, items]) => ({ courseNumber, items }))
+			.sort((a, b) => a.courseNumber - b.courseNumber)
+
+		return { normalItems, courseGroups, takeAwayItems }
+	}
 }

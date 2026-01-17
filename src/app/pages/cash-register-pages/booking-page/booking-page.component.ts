@@ -477,7 +477,7 @@ export class BookingPageComponent {
 			this.selectMenuSpecialProductsDialog.show()
 		} else {
 			let newItem: OrderItem = {
-				uuid: crypto.randomUUID(),
+				uuid: null,
 				type: orderItemType || OrderItemType.Product,
 				count: 0,
 				order: null,
@@ -739,7 +739,7 @@ export class BookingPageComponent {
 			.flat()
 
 		const newItem: OrderItemCard = {
-			uuid: crypto.randomUUID(),
+			uuid: null,
 			type: OrderItemType.Product,
 			count: 1,
 			order: null,
@@ -763,7 +763,7 @@ export class BookingPageComponent {
 			}
 
 			newItem.orderItemVariations.push({
-				uuid: crypto.randomUUID(),
+				uuid: null,
 				count: value,
 				variationItems
 			})
@@ -1238,14 +1238,14 @@ export class BookingPageComponent {
 
 				// Erstelle eine shallow copy mit allen Attributen und kopiere die Sub-Items tief
 				const copiedOrderItems = (orderItem.orderItems ?? []).map(sub => {
-					const copiedSub = { ...sub, uuid: crypto.randomUUID() }
+					const copiedSub = { ...sub }
 					const perUnitSubCount = (sub.count ?? 0) / originalParentCount
 					copiedSub.count = Math.round(perUnitSubCount * delta)
 
 					if (sub.orderItemVariations?.length) {
 						copiedSub.orderItemVariations = sub.orderItemVariations.map(
 							v => {
-								const copiedVar = { ...v, uuid: crypto.randomUUID() }
+								const copiedVar = { ...v }
 								const perUnitVarCount =
 									(v.count ?? 0) / originalParentCount
 								copiedVar.count = Math.round(perUnitVarCount * delta)
@@ -1259,7 +1259,7 @@ export class BookingPageComponent {
 
 				const incoming: OrderItemCard = {
 					...orderItem,
-					uuid: crypto.randomUUID(),
+					uuid: null,
 					count: delta,
 					isExpanded: true,
 					orderItems: copiedOrderItems
@@ -1375,7 +1375,7 @@ export class BookingPageComponent {
 
 		if (this.selectedProduct.type === "MENU") {
 			const menuOrderItem: OrderItemCard = {
-				uuid: crypto.randomUUID(),
+				uuid: null,
 				type: OrderItemType.Menu,
 				count: 1,
 				order: null,
@@ -1400,7 +1400,7 @@ export class BookingPageComponent {
 				)
 
 				const specialOrderItem: OrderItemCard = {
-					uuid: crypto.randomUUID(),
+					uuid: null,
 					type: OrderItemType.Special,
 					count: 1,
 					order: null,

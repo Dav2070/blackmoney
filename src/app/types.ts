@@ -200,6 +200,7 @@ export interface ReservationResource {
 
 export interface AddProductsInput {
 	uuid?: string
+	productUuid?: string
 	count: number
 	discount?: number
 	diversePrice?: number
@@ -213,6 +214,7 @@ export interface AddProductsInput {
 }
 
 export interface AddProductVariationInput {
+	uuid: string
 	variationItemUuids: string[]
 	count: number
 }
@@ -220,6 +222,12 @@ export interface AddProductVariationInput {
 export interface AddProductOrderItemInput {
 	productUuid: string
 	count: number
+	variations?: AddProductOrderItemVariationInput[]
+}
+
+export interface AddProductOrderItemVariationInput {
+	count: number
+	variationItemUuids: string[]
 }
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"

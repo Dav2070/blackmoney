@@ -298,6 +298,7 @@ export class PaymentPageComponent {
 
 				if (item.orderItemVariations.length > 0) {
 					variations = item.orderItemVariations.map(variation => ({
+						uuid: variation.uuid,
 						variationItemUuids: variation.variationItems.map(v => v.uuid),
 						count: variation.count
 					}))

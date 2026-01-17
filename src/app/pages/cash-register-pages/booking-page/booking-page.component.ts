@@ -58,6 +58,7 @@ import {
 } from "src/app/utils"
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
+import { VariationComparer } from "src/app/models/cash-register/order-item-handling/variation-comparer"
 import { ApiService } from "src/app/services/api-service"
 
 const mobileBreakpoint = 860
@@ -89,6 +90,7 @@ export class BookingPageComponent {
 	formatPrice = formatPrice
 	OrderItemType = OrderItemType
 	priceCalculator = new PriceCalculator()
+	variationComparer = new VariationComparer()
 	categories: Category[] = []
 	selectedInventory: Product[] = []
 	offers: Offer[] = []
@@ -489,7 +491,10 @@ export class BookingPageComponent {
 			if (product.variations.length === 0) {
 				newItem.count = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-				const addedItem = this.stagedItems.pushNewItem(newItem)
+				const addedItem = this.stagedItems.pushNewItem(
+					newItem,
+					this.bookedItems
+				)
 				this.selectedOrderItem = addedItem
 				this.tmpAllItemHandler = this.stagedItems
 				this.showTotal(false)
@@ -911,16 +916,18 @@ export class BookingPageComponent {
 			const isDiverseItem = this.isDiverseOrderItem(item)
 
 			tmpProductArray.push({
-				uuid: isDiverseItem ? undefined : item.product.uuid,
+				uuid: item.uuid ?? undefined,
+				productUuid: item.product.uuid,
 				count: item.count,
 				discount: item.discount,
 				diversePrice: isDiverseItem ? item.diversePrice : undefined,
-				type: isDiverseItem ? item.type : undefined,
+				type: item.type,
 				notes: item.notes,
 				takeAway: item.takeAway,
 				course: item.course,
 				offerUuid: item.offer?.uuid,
 				variations: item.orderItemVariations?.map(variation => ({
+					uuid: variation.uuid ?? undefined,
 					count: variation.count,
 					variationItemUuids: variation.variationItems.map(vi => vi.uuid)
 				})),

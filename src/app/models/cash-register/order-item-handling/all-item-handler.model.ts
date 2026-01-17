@@ -8,11 +8,13 @@ import {
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { Order } from "../../Order"
 import { OrderItemMerger } from "./order-item-merger"
+import { VariationComparer } from "./variation-comparer"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
 	private readonly merger: OrderItemMerger
 	private readonly priceCalculator = new PriceCalculator()
+	variationComparer = new VariationComparer()
 
 	constructor() {
 		this.merger = new OrderItemMerger(this.allPickedItems)
@@ -184,21 +186,38 @@ export class AllItemHandler {
 
 	// Entry: neues Item hinzufügen (delegiert an gemeinsame Merge-Logik)
 	// Gibt das tatsächliche Item zurück (entweder das neue oder das gemergte)
-	pushNewItem(pickedItem: OrderItem, index?: number): OrderItem {
-		const incoming = { ...pickedItem } // Kopie zum Schutz vor Seiteneffekten
+	pushNewItem(
+		pickedItem: OrderItem,
+		bookedItemHandler?: AllItemHandler,
+		index?: number
+	): OrderItem {
+		const incoming: OrderItem = { ...pickedItem } // Kopie zum Schutz vor Seiteneffekten
 
 		// Suche Merge-Ziel (gibt undefined zurück, wenn keines vorhanden)
 		const target = this.merger.findMergeTarget(incoming, this.allPickedItems)
 
 		if (target) {
-			// Match gefunden -> zusammenführen; gibt das existing Item zurück
+			// Match gefunden -> zusammenführen
 			this.merger.mergeIntoExisting(target, incoming)
+			// UUIDs vom gebuchten Item übernehmen
+			this.syncUuidsFromBookedItem(target, bookedItemHandler)
+			console.log("Target: ", target)
 			return target
 		} else {
-			// Kein Match -> neues Item einfügen und zurückgeben
+			// Kein Match -> neues Item einfügen
+			// UUIDs vom gebuchten Item übernehmen
+			this.syncUuidsFromBookedItem(incoming, bookedItemHandler)
 			this.insertAtIndex(incoming, index)
+			console.log("Incoming: ", incoming)
 			return incoming
 		}
+
+		
+	}
+
+	findSimilarItem(incoming: OrderItem): OrderItem | null {
+		const target = this.merger.findMergeTarget(incoming, this.allPickedItems)
+		return target ?? null
 	}
 
 	// TODO: In eigene Datei auslagern
@@ -252,6 +271,37 @@ export class AllItemHandler {
 			this.allPickedItems.splice(index, 0, item)
 		} else {
 			this.allPickedItems.push(item)
+		}
+	}
+
+	// Übernimmt UUIDs vom matchingBookedItem für das Item und dessen Variationen
+	private syncUuidsFromBookedItem(
+		item: OrderItem,
+		bookedItemHandler?: AllItemHandler
+	): void {
+		if (!bookedItemHandler) return
+
+		const matchingBookedItem = bookedItemHandler.findSimilarItem(item)
+		if (!matchingBookedItem) return
+
+		// Übernimm UUID vom gebuchten Item
+		item.uuid = matchingBookedItem.uuid
+
+		// Übernimm UUIDs von Variationen, falls vorhanden
+		if (
+			item.orderItemVariations?.length > 0 &&
+			matchingBookedItem.orderItemVariations?.length > 0
+		) {
+			for (const variation of item.orderItemVariations) {
+				const matchingVariation =
+					this.variationComparer.findSimilarVariationItem(
+						matchingBookedItem,
+						variation
+					)
+				if (matchingVariation) {
+					variation.uuid = matchingVariation.uuid
+				}
+			}
 		}
 	}
 

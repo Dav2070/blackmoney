@@ -780,7 +780,10 @@ export class BookingPageComponent {
 
 			incoming.orderItems = [newItem]
 			incoming.count = newItem.count
-			const addedItem = this.stagedItems.pushNewItem(incoming)
+			const addedItem = this.stagedItems.pushNewItem(
+				incoming,
+				this.bookedItems
+			)
 			this.selectedOrderItem = addedItem
 			this.tmpAllItemHandler = this.stagedItems
 		} else {
@@ -788,7 +791,10 @@ export class BookingPageComponent {
 			for (let variation of newItem.orderItemVariations) {
 				newItem.count += variation.count
 			}
-			const addedItem = this.stagedItems.pushNewItem(newItem)
+			const addedItem = this.stagedItems.pushNewItem(
+				newItem,
+				this.bookedItems
+			)
 			this.selectedOrderItem = addedItem
 			this.tmpAllItemHandler = this.stagedItems
 		}
@@ -1389,7 +1395,10 @@ export class BookingPageComponent {
 			const discount = this.priceCalculator.calculateDiscount(menuOrderItem)
 			menuOrderItem.discount = discount
 
-			const addedItem = this.stagedItems.pushNewItem(menuOrderItem)
+			const addedItem = this.stagedItems.pushNewItem(
+				menuOrderItem,
+				this.bookedItems
+			)
 			this.selectedOrderItem = addedItem
 			this.tmpAllItemHandler = this.stagedItems
 		} else {
@@ -1426,8 +1435,10 @@ export class BookingPageComponent {
 					this.priceCalculator.calculateDiscount(specialOrderItem)
 				specialOrderItem.discount = discount
 
-				lastSpecialOrderItem =
-					this.stagedItems.pushNewItem(specialOrderItem)
+				lastSpecialOrderItem = this.stagedItems.pushNewItem(
+					specialOrderItem,
+					this.bookedItems
+				)
 			}
 			this.selectedOrderItem = lastSpecialOrderItem
 			this.tmpAllItemHandler = this.stagedItems

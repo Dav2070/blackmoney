@@ -1272,7 +1272,7 @@ export class BookingPageComponent {
 				}
 
 				// Delegiere an den AllItemHandler / Merger
-				const addedItem = handler.pushNewItem(incoming)
+				const addedItem = handler.pushNewItem(incoming, this.bookedItems)
 
 				this.selectedOrderItem = addedItem
 				this.tmpAllItemHandler = handler

@@ -37,7 +37,7 @@ export class VariationComparer {
 	}
 
 	// Two OrderItemVariation are considered equal if their variationItems arrays
-	// contain the same item ids/uuids (count and variation/variation-uuid ignored).
+	// contain the same item ids (count and variation-uuid ignored).
 	isVariationItemEqual(a: OrderItemVariation, b: OrderItemVariation): boolean {
 		const aItems = (a?.variationItems ?? []).map(vi => vi.id)
 		const bItems = (b?.variationItems ?? []).map(vi => vi.id)
@@ -70,7 +70,31 @@ export class VariationComparer {
 			return null
 		}
 
+		console.log(
+			"        🔍 findSimilarVariationItem - searching for:",
+			incomingOrderItemVariation.variationItems
+				?.map(v => `${v.name}(id:${v.id})`)
+				.join(", ")
+		)
+		console.log("        Available variations in booked item:")
+		for (const bookedVar of orderItem.orderItemVariations) {
+			console.log(
+				"          -",
+				bookedVar.variationItems
+					?.map(v => `${v.name}(id:${v.id})`)
+					.join(", "),
+				"uuid:",
+				bookedVar.uuid
+			)
+		}
+
 		// Verwende bestehende findMergeTarget Methode
-		return this.findMergeTarget(orderItem, incomingOrderItemVariation) || null
+		const result =
+			this.findMergeTarget(orderItem, incomingOrderItemVariation) || null
+		console.log(
+			"        Result:",
+			result ? `Found match with uuid ${result.uuid}` : "No match"
+		)
+		return result
 	}
 }

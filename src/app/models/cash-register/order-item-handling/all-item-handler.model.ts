@@ -72,6 +72,7 @@ export class AllItemHandler {
 											variationItems {
 												total
 												items {
+													id
 													uuid
 													name
 													additionalCost
@@ -131,8 +132,7 @@ export class AllItemHandler {
 													name
 													variationItems {
 														total
-														items {
-															uuid
+														items {																id															uuid
 															name
 															additionalCost
 														}
@@ -148,6 +148,7 @@ export class AllItemHandler {
 												variationItems {
 													total
 													items {
+														id
 														uuid
 														name
 														additionalCost
@@ -207,7 +208,6 @@ export class AllItemHandler {
 			// UUIDs vom gebuchten Item übernehmen
 			this.syncUuidsFromBookedItem(incoming, bookedItemHandler)
 			this.insertAtIndex(incoming, index)
-			console.log("Incoming: ", incoming)
 			return incoming
 		}
 	}
@@ -276,7 +276,9 @@ export class AllItemHandler {
 		item: OrderItem,
 		bookedItemHandler?: AllItemHandler
 	): void {
-		if (!bookedItemHandler) return
+		if (!bookedItemHandler) {
+			return
+		}
 
 		const matchingBookedItem = bookedItemHandler.findSimilarItem(item)
 

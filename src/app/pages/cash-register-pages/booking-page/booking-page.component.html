@@ -56,10 +56,7 @@
 					</p>
 				}
 
-				@for (
-					orderItem of stagedItems.getOrderItems();
-					track orderItem.uuid
-				) {
+				@for (orderItem of stagedItems.getOrderItems(); track $index) {
 					@if (orderItem.type === "MENU" || orderItem.type === "SPECIAL") {
 						<app-offer-order-item-card
 							[orderItem]="orderItem"
@@ -90,10 +87,7 @@
 			}
 
 			<ul class="order-items-container">
-				@for (
-					orderItem of bookedItems.getOrderItems();
-					track orderItem.uuid
-				) {
+				@for (orderItem of bookedItems.getOrderItems(); track $index) {
 					@if (orderItem.type === "MENU" || orderItem.type === "SPECIAL") {
 						<app-offer-order-item-card
 							[orderItem]="orderItem"

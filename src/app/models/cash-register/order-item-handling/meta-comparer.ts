@@ -20,10 +20,14 @@ export class MetaComparer {
 
 	// Public entry: strikter Vergleich nur für Menus, sonst Basic-Check
 	isOrderItemMetaEqual(existing: OrderItem, incoming: OrderItem): boolean {
-		if (!existing || !incoming) return false
+		if (!existing || !incoming) {
+			return false
+		}
 
 		// basic comparison (ignores uuid, count, order and orderItemVariations)
-		if (!this.isOrderItemBasicEqual(existing, incoming)) return false
+		if (!this.isOrderItemBasicEqual(existing, incoming)) {
+			return false
+		}
 
 		// strict check for Specials: only product of subitem must match
 		if (
@@ -33,8 +37,9 @@ export class MetaComparer {
 			if (
 				existing.orderItems[0].product.shortcut !==
 				incoming.orderItems[0].product.shortcut
-			)
+			) {
 				return false
+			}
 		}
 
 		// strict subitem/variation check only for Menu types
@@ -45,12 +50,13 @@ export class MetaComparer {
 			const aSubs = existing.orderItems
 			const bSubs = incoming.orderItems
 
-			return this.areOrderItemsArrayEqualForMerge(
+			const result = this.areOrderItemsArrayEqualForMerge(
 				aSubs,
 				bSubs,
 				existing.count,
 				incoming.count
 			)
+			return result
 		}
 
 		//Zusatz Vergleich für Diverse Artikel
@@ -103,7 +109,9 @@ export class MetaComparer {
 		}
 
 		// gleiche Anzahl voraussetzen
-		if (aSubs.length !== bSubs.length) return false
+		if (aSubs.length !== bSubs.length) {
+			return false
+		}
 
 		// markiert bereits verwendete Einträge in "aSubs"
 		const used = new Array<boolean>(aSubs.length).fill(false)
@@ -116,7 +124,9 @@ export class MetaComparer {
 				const aItem = aSubs[i]
 
 				// Basic meta
-				if (!this.isOrderItemBasicEqual(aItem, bItem)) continue
+				if (!this.isOrderItemBasicEqual(aItem, bItem)) {
+					continue
+				}
 
 				// Sub-Counts müssen gesetzt und > 0 sein
 				const aCount = aItem.count
@@ -127,10 +137,9 @@ export class MetaComparer {
 
 				// Proportionale Count-Prüfung mittels Cross-Multiplikation (vermeidet division / float-issues)
 				// Vergleiche: aCount / parentExisting === bCount / parentIncoming  -> aCount * parentIncoming === bCount * parentExisting
-				if (
-					aCount * parentIncomingOrderItemCount !==
-					bCount * parentExistingOrderItemCount
-				) {
+				const leftSide = aCount * parentIncomingOrderItemCount
+				const rightSide = bCount * parentExistingOrderItemCount
+				if (leftSide !== rightSide) {
 					continue
 				}
 
@@ -142,13 +151,16 @@ export class MetaComparer {
 						parentExistingOrderItemCount,
 						parentIncomingOrderItemCount
 					)
-				)
+				) {
 					continue
+				}
 
 				// Verschachtelte Subitems (rekursiv prüfen)
 				const aNested = aItem.orderItems ?? []
 				const bNested = bItem.orderItems ?? []
-				if (aNested.length !== bNested.length) continue
+				if (aNested.length !== bNested.length) {
+					continue
+				}
 				if (
 					aNested.length > 0 &&
 					!this.areOrderItemsArrayEqualForMerge(
@@ -157,8 +169,9 @@ export class MetaComparer {
 						parentExistingOrderItemCount,
 						parentIncomingOrderItemCount
 					)
-				)
+				) {
 					continue
+				}
 
 				// Treffer: markiere und gehe zum nächsten incoming-Element
 				used[i] = true
@@ -166,7 +179,9 @@ export class MetaComparer {
 				break
 			}
 
-			if (!matched) return false
+			if (!matched) {
+				return false
+			}
 		}
 
 		// Alle incoming-Elemente fanden ein passendes existing-Element.
@@ -191,7 +206,9 @@ export class MetaComparer {
 
 		const aVars = aItem.orderItemVariations ?? []
 		const bVars = bItem.orderItemVariations ?? []
-		if (aVars.length !== bVars.length) return false
+		if (aVars.length !== bVars.length) {
+			return false
+		}
 
 		// copy of b to mark matched variations
 		const bCopy = bVars.map(v => structuredClone(v))
@@ -210,20 +227,24 @@ export class MetaComparer {
 				}
 
 				// variation items structurally equal
-				if (!this.variationComparer.isVariationItemEqual(aVar, bVar))
+				if (!this.variationComparer.isVariationItemEqual(aVar, bVar)) {
 					return false
+				}
 
 				// proportional counts vergleichen: aVar.count / parentExisting === bVar.count / parentIncoming
-				return (
-					aVarCount * parentIncomingOrderItemCount ===
-					bVarCount * parentExistingOrderItemCount
-				)
+				const leftSide = aVarCount * parentIncomingOrderItemCount
+				const rightSide = bVarCount * parentExistingOrderItemCount
+				const proportionalMatch = leftSide === rightSide
+				return proportionalMatch
 			})
 
-			if (idx === -1) return false
+			if (idx === -1) {
+				return false
+			}
 			bCopy.splice(idx, 1)
 		}
-		return bCopy.length === 0
+		const result = bCopy.length === 0
+		return result
 	}
 
 	// Comparison for diverse items: type, price and name must match

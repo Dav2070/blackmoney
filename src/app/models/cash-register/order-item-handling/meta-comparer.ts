@@ -5,6 +5,19 @@ import { OrderItemType } from "src/app/types"
 export class MetaComparer {
 	private readonly variationComparer = new VariationComparer()
 
+	// Normalize values for comparison: treat null, undefined, false, and "" as equivalent
+	private normalizeForComparison<T>(value: T): T | undefined {
+		if (
+			value === null ||
+			value === undefined ||
+			value === false ||
+			value === ""
+		) {
+			return undefined
+		}
+		return value
+	}
+
 	// Public entry: strikter Vergleich nur für Menus, sonst Basic-Check
 	isOrderItemMetaEqual(existing: OrderItem, incoming: OrderItem): boolean {
 		if (!existing || !incoming) return false
@@ -54,9 +67,21 @@ export class MetaComparer {
 		if (!a || !b) return false
 
 		if (a.type !== b.type) return false
-		if (a.notes !== b.notes) return false
-		if (a.takeAway !== b.takeAway) return false
-		if (a.course !== b.course) return false
+		if (
+			this.normalizeForComparison(a.notes) !==
+			this.normalizeForComparison(b.notes)
+		)
+			return false
+		if (
+			this.normalizeForComparison(a.takeAway) !==
+			this.normalizeForComparison(b.takeAway)
+		)
+			return false
+		if (
+			this.normalizeForComparison(a.course) !==
+			this.normalizeForComparison(b.course)
+		)
+			return false
 		if (a.offer?.id !== b.offer?.id) return false
 		if (a.product.shortcut !== b.product.shortcut) return false
 

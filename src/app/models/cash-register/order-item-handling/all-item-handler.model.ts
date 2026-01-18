@@ -210,8 +210,6 @@ export class AllItemHandler {
 			console.log("Incoming: ", incoming)
 			return incoming
 		}
-
-		
 	}
 
 	findSimilarItem(incoming: OrderItem): OrderItem | null {
@@ -287,6 +285,10 @@ export class AllItemHandler {
 		}
 
 		// Übernimm UUID vom gebuchten Item
+		item.uuid = matchingBookedItem.uuid
+
+		// Übernimm UUIDs von Variationen, falls vorhanden
+		if (
 			item.orderItemVariations?.length > 0 &&
 			matchingBookedItem.orderItemVariations?.length > 0
 		) {
@@ -297,12 +299,43 @@ export class AllItemHandler {
 						variation
 					)
 				if (matchingVariation) {
-					console.log("Syncing variation UUID from", matchingVariation.uuid)
 					variation.uuid = matchingVariation.uuid
 				}
 			}
 		}
-		console.log("=== End syncUuidsFromBookedItem ===")
+
+		// Übernimm UUIDs von Subitems (für Menüs), falls vorhanden
+		if (
+			item.orderItems?.length > 0 &&
+			matchingBookedItem.orderItems?.length > 0
+		) {
+			for (const subItem of item.orderItems) {
+				const matchingSubItem = matchingBookedItem.orderItems.find(
+					bookedSub =>
+						bookedSub.product.shortcut === subItem.product.shortcut
+				)
+				if (matchingSubItem) {
+					subItem.uuid = matchingSubItem.uuid
+
+					// Übernimm auch UUIDs von Variationen der Subitems
+					if (
+						subItem.orderItemVariations?.length > 0 &&
+						matchingSubItem.orderItemVariations?.length > 0
+					) {
+						for (const subVariation of subItem.orderItemVariations) {
+							const matchingSubVariation =
+								this.variationComparer.findSimilarVariationItem(
+									matchingSubItem,
+									subVariation
+								)
+							if (matchingSubVariation) {
+								subVariation.uuid = matchingSubVariation.uuid
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	// consolidateItems delegiert an dieselbe Merge-Implementierung

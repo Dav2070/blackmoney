@@ -5,7 +5,11 @@ import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { AddCategoryDialogComponent } from "src/app/dialogs/add-category-dialog/add-category-dialog.component"
-import { convertCategoryResourceToCategory } from "src/app/utils"
+import {
+	convertCategoryResourceToCategory,
+	getGraphQLErrorCodes
+} from "src/app/utils"
+import * as ErrorCodes from "src/app/errorCodes"
 
 @Component({
 	templateUrl: "./categories-page.component.html",
@@ -20,6 +24,7 @@ export class CategoriesPageComponent {
 
 	locale = this.localizationService.locale.categoriesPage
 	actionsLocale = this.localizationService.locale.actions
+	errorsLocale = this.localizationService.locale.errors
 
 	categories: Category[] = []
 	uuid: string = null
@@ -89,21 +94,52 @@ export class CategoriesPageComponent {
 
 	async addCategoryDialogPrimaryButtonClick(event: { name: string }) {
 		this.addCategoryDialogLoading = true
+		this.addCategoryDialogNameError = ""
 
-		// TODO: API - Create category
-		// Example: const created = await this.apiService.createCategory({
-		//   restaurantUuid: this.uuid,
-		//   name: event.name
-		// })
-
-		const newCategory: Category = {
-			uuid: crypto.randomUUID(),
-			name: event.name,
-			products: []
-		}
-		this.categories = [...this.categories, newCategory]
+		const createCategoryResponse = await this.apiService.createCategory(
+			`
+				uuid
+				name
+			`,
+			{
+				restaurantUuid: this.uuid,
+				name: event.name
+			}
+		)
 
 		this.addCategoryDialogLoading = false
-		this.addCategoryDialog.hide()
+
+		if (createCategoryResponse.data?.createCategory != null) {
+			const newCategory = convertCategoryResourceToCategory(
+				createCategoryResponse.data.createCategory
+			)
+			this.categories = [...this.categories, newCategory]
+
+			this.addCategoryDialog.hide()
+		} else {
+			const errors = getGraphQLErrorCodes(createCategoryResponse)
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.categoryNameAlreadyInUse:
+						this.addCategoryDialogNameError =
+							this.locale.categoryNameAlreadyExists
+						break
+					case ErrorCodes.nameTooShort:
+						this.addCategoryDialogNameError =
+							this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.addCategoryDialogNameError =
+							this.errorsLocale.nameTooLong
+						break
+					default:
+						this.addCategoryDialogNameError =
+							this.errorsLocale.unexpectedError
+						break
+				}
+			}
+		}
 	}
 }

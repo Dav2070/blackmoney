@@ -163,7 +163,11 @@ export const de = {
 	},
 	categoriesPage: {
 		headline: "Deine Kategorien",
-		noCategories: "Keine Kategorien vorhanden"
+		noCategories: "Keine Kategorien vorhanden",
+		categoryNameAlreadyExists:
+			"Eine Kategorie mit diesem Namen existiert bereits",
+		nameTooShort: "Der Name ist zu kurz",
+		nameTooLong: "Der Name ist zu lang"
 	},
 	categoryPage: {
 		noProductsMessage: "Keine Produkte vorhanden",

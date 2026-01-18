@@ -18,7 +18,12 @@
 				@for (category of categories; track category.uuid) {
 					<dav-list-item
 						[headline]="category.name"
-						[href]="'/user/restaurants/' + uuid + '/menu/categories/' + category.uuid"
+						[href]="
+							'/user/restaurants/' +
+							uuid +
+							'/menu/categories/' +
+							category.uuid
+						"
 						(click)="navigateToProducts($event, category)"
 					></dav-list-item>
 				}

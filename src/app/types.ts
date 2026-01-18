@@ -256,6 +256,7 @@ export type Weekday =
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
 	| typeof ErrorCodes.tableAlreadyExists
+	| typeof ErrorCodes.categoryNameAlreadyInUse
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword

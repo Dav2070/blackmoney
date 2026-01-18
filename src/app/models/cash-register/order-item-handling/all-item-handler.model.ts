@@ -201,7 +201,6 @@ export class AllItemHandler {
 			this.merger.mergeIntoExisting(target, incoming)
 			// UUIDs vom gebuchten Item übernehmen
 			this.syncUuidsFromBookedItem(target, bookedItemHandler)
-			console.log("Target: ", target)
 			return target
 		} else {
 			// Kein Match -> neues Item einfügen
@@ -282,13 +281,12 @@ export class AllItemHandler {
 		if (!bookedItemHandler) return
 
 		const matchingBookedItem = bookedItemHandler.findSimilarItem(item)
-		if (!matchingBookedItem) return
+
+		if (!matchingBookedItem) {
+			return
+		}
 
 		// Übernimm UUID vom gebuchten Item
-		item.uuid = matchingBookedItem.uuid
-
-		// Übernimm UUIDs von Variationen, falls vorhanden
-		if (
 			item.orderItemVariations?.length > 0 &&
 			matchingBookedItem.orderItemVariations?.length > 0
 		) {
@@ -299,10 +297,12 @@ export class AllItemHandler {
 						variation
 					)
 				if (matchingVariation) {
+					console.log("Syncing variation UUID from", matchingVariation.uuid)
 					variation.uuid = matchingVariation.uuid
 				}
 			}
 		}
+		console.log("=== End syncUuidsFromBookedItem ===")
 	}
 
 	// consolidateItems delegiert an dieselbe Merge-Implementierung

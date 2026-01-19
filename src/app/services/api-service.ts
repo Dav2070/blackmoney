@@ -300,7 +300,7 @@ export class ApiService {
 			city?: string
 			country?: string
 			line1?: string
-			housenumber?: string
+			houseNumber?: string
 			line2?: string
 			postalCode?: string
 			owner?: string
@@ -318,7 +318,7 @@ export class ApiService {
 						$city: String
 						$country: Country
 						$line1: String
-						$housenumber: String
+						$houseNumber: String
 						$line2: String
 						$postalCode: String
 						$owner: String
@@ -332,7 +332,7 @@ export class ApiService {
 							city: $city
 							country: $country
 							line1: $line1
-							housenumber: $housenumber
+							houseNumber: $houseNumber
 							line2: $line2
 							postalCode: $postalCode
 							owner: $owner

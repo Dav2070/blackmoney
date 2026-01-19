@@ -315,10 +315,6 @@ export class SelectMenuSpecialProductsDialogComponent {
 			this.primaryButtonClick.emit({
 				orderItems: this.allItemHandler.getAllPickedItems()
 			})
-			console.log(
-				"Submitted special products dialog",
-				this.allItemHandler.getAllPickedItems()
-			)
 		}
 	}
 }

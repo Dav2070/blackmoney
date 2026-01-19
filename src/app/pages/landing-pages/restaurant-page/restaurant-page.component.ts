@@ -42,7 +42,7 @@ export class RestaurantPageComponent {
 	nameError: string = ""
 	cityError: string = ""
 	line1Error: string = ""
-	housenumberError: string = ""
+	houseNumberError: string = ""
 	line2Error: string = ""
 	postalCodeError: string = ""
 
@@ -97,9 +97,9 @@ export class RestaurantPageComponent {
 					address {
 						city
 						country
-						addressLine1
-						addressLine2
-						housenumber
+						line1
+						line2
+						houseNumber
 						postalCode
 					}
 				`,
@@ -212,7 +212,7 @@ export class RestaurantPageComponent {
 	async editRestaurantInfoDialogPrimaryButtonClick(event: {
 		city?: string
 		line1?: string
-		housenumber?: string
+		houseNumber?: string
 		line2?: string
 		postalCode?: string
 		owner?: string
@@ -226,9 +226,9 @@ export class RestaurantPageComponent {
 			`
 				address {
 					city
-					addressLine1
-					addressLine2
-					housenumber
+					line1
+					line2
+					houseNumber
 					postalCode
 				}
 				owner
@@ -240,7 +240,7 @@ export class RestaurantPageComponent {
 				uuid: this.uuid,
 				city: event.city,
 				line1: event.line1,
-				housenumber: event.housenumber,
+				houseNumber: event.houseNumber,
 				line2: event.line2,
 				postalCode: event.postalCode,
 				country: "DE",
@@ -261,17 +261,17 @@ export class RestaurantPageComponent {
 				uuid: this.restaurant.address?.uuid,
 				city: responseData.address?.city,
 				country: responseData.address?.country,
-				addressLine1: responseData.address?.addressLine1,
-				addressLine2: responseData.address?.addressLine2,
-				housenumber: responseData.address?.housenumber,
+				line1: responseData.address?.line1,
+				line2: responseData.address?.line2,
+				houseNumber: responseData.address?.houseNumber,
 				postalCode: responseData.address?.postalCode
 			}
 
-			;((this.owner = responseData.owner),
-				(this.taxNumber = responseData.taxNumber),
-				(this.mail = responseData.mail),
-				(this.phoneNumber = responseData.phoneNumber),
-				this.editRestaurantInfoDialog.hide())
+			this.owner = responseData.owner
+			this.taxNumber = responseData.taxNumber
+			this.mail = responseData.mail
+			this.phoneNumber = responseData.phoneNumber
+			this.editRestaurantInfoDialog.hide()
 		} else {
 			let errors = getGraphQLErrorCodes(updateRestaurantResponse)
 			if (errors == null) return

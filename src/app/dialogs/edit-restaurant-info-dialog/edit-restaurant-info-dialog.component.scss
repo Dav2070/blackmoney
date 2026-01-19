@@ -6,6 +6,20 @@ form {
 	flex: 3;
 }
 
-.housenumber-field {
+.houseNumber-field {
 	flex: 1;
+}
+
+.section-heading {
+	margin-bottom: 16px;
+	color: var(--dav-color-on-surface);
+}
+
+.address-section-heading {
+	margin-top: 0;
+}
+
+.owner-section-heading,
+.contact-section-heading {
+	margin-top: 24px;
 }

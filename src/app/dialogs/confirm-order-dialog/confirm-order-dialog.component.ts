@@ -44,7 +44,7 @@ export class ConfirmOrderDialogComponent {
 		name: "Max Mustermann",
 		address: {
 			uuid: "addr-1",
-			addressLine1: "Musterstraße",
+			line1: "Musterstraße",
 			houseNumber: "123",
 			postalCode: "12345",
 			city: "Berlin",
@@ -58,9 +58,9 @@ export class ConfirmOrderDialogComponent {
 		name: "Ristorante Italia",
 		address: {
 			uuid: "addr-2",
-			addressLine1: "Italienische Allee",
-			addressLine2: "Zum Italiener",
-			housenumber: "45",
+			line1: "Italienische Allee",
+			line2: "Zum Italiener",
+			houseNumber: "45",
 			postalCode: "54321",
 			city: "München",
 			country: "Deutschland"
@@ -115,8 +115,8 @@ export class ConfirmOrderDialogComponent {
 			? this.mockUser.address
 			: ({
 					uuid: this.mockRestaurant.uuid,
-					addressLine1: this.mockRestaurant.address.addressLine1,
-					housenumber: this.mockRestaurant.address.housenumber,
+					line1: this.mockRestaurant.address.line1,
+					houseNumber: this.mockRestaurant.address.houseNumber,
 					postalCode: this.mockRestaurant.address.postalCode,
 					city: this.mockRestaurant.address.city,
 					country: this.mockRestaurant.address.country
@@ -125,8 +125,8 @@ export class ConfirmOrderDialogComponent {
 
 	formatAddress(address: Address): string {
 		const parts = []
-		if (address.addressLine1) parts.push(address.addressLine1)
-		if (address.housenumber) parts.push(address.housenumber)
+		if (address.line1) parts.push(address.line1)
+		if (address.houseNumber) parts.push(address.houseNumber)
 		const line1 = parts.join(" ")
 
 		const parts2 = []

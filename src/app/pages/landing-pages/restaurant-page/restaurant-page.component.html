@@ -17,18 +17,18 @@
 						@if (
 							restaurant.address?.city ||
 							restaurant.address?.country ||
-							restaurant.address?.addressLine1 ||
-							restaurant.address?.addressLine2 ||
+							restaurant.address?.line1 ||
+							restaurant.address?.line2 ||
 							restaurant.address?.postalCode
 						) {
-							@if (restaurant.address?.addressLine1) {
+							@if (restaurant.address?.line1) {
 								<p class="address-line">
-									{{ restaurant.address.addressLine1 }}
-									{{ restaurant.address.housenumber }}
+									{{ restaurant.address.line1 }}
+									{{ restaurant.address.houseNumber }}
 								</p>
 							}
-							@if (restaurant.address?.addressLine2) {
-								<p>{{ restaurant.address.addressLine2 }}</p>
+							@if (restaurant.address?.line2) {
+								<p>{{ restaurant.address.line2 }}</p>
 							}
 							@if (
 								restaurant.address?.postalCode ||
@@ -169,11 +169,11 @@
 	[loading]="editRestaurantInfoDialogLoading"
 	[city]="restaurant.address?.city"
 	[cityError]="cityError"
-	[line1]="restaurant.address?.addressLine1"
+	[line1]="restaurant.address?.line1"
 	[line1Error]="line1Error"
-	[housenumber]="restaurant.address?.housenumber"
-	[housenumberError]="housenumberError"
-	[line2]="restaurant.address?.addressLine2"
+	[houseNumber]="restaurant.address?.houseNumber"
+	[houseNumberError]="houseNumberError"
+	[line2]="restaurant.address?.line2"
 	[line2Error]="line2Error"
 	[postalCode]="restaurant.address?.postalCode"
 	[postalCodeError]="postalCodeError"
@@ -189,7 +189,7 @@
 	(clearErrors)="
 		cityError = '';
 		line1Error = '';
-		housenumberError = '';
+		houseNumberError = '';
 		line2Error = '';
 		postalCodeError = '';
 		ownerError = '';

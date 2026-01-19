@@ -52,9 +52,9 @@ export interface AddressResource {
 	uuid: string
 	city?: string
 	country?: Country
-	addressLine1?: string
-	addressLine2?: string
-	housenumber?: string
+	line1?: string
+	line2?: string
+	houseNumber?: string
 	postalCode?: string
 }
 

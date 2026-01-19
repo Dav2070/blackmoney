@@ -12,13 +12,7 @@
 >
 	<form>
 		<!-- Address Section -->
-		<h3
-			style="
-				margin-top: 0;
-				margin-bottom: 16px;
-				color: var(--dav-color-on-surface);
-			"
-		>
+		<h3 class="address-section-heading section-heading">
 			{{ locale.addressSection }}
 		</h3>
 
@@ -34,12 +28,12 @@
 			></dav-textfield>
 
 			<dav-textfield
-				class="housenumber-field"
-				[value]="housenumber"
-				[label]="locale.housenumber"
+				class="houseNumber-field"
+				[value]="houseNumber"
+				[label]="locale.houseNumber"
 				[disabled]="loading"
-				[errorMessage]="housenumberError"
-				(change)="housenumberTextfieldChange($event)"
+				[errorMessage]="houseNumberError"
+				(change)="houseNumberTextfieldChange($event)"
 			></dav-textfield>
 		</div>
 
@@ -75,13 +69,7 @@
 		</div>
 
 		<!-- Owner Section -->
-		<h3
-			style="
-				margin-top: 24px;
-				margin-bottom: 16px;
-				color: var(--dav-color-on-surface);
-			"
-		>
+		<h3 class="owner-section-heading section-heading">
 			{{ locale.ownerSection }}
 		</h3>
 
@@ -108,13 +96,7 @@
 		</div>
 
 		<!-- Contact Section -->
-		<h3
-			style="
-				margin-top: 24px;
-				margin-bottom: 16px;
-				color: var(--dav-color-on-surface);
-			"
-		>
+		<h3 class="contact-section-heading section-heading">
 			{{ locale.contactSection }}
 		</h3>
 

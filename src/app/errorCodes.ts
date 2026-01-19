@@ -2,6 +2,9 @@
 export const printerAlreadyExists = "PRINTER_ALREADY_EXISTS"
 export const tableAlreadyExists = "TABLE_ALREADY_EXISTS"
 export const categoryNameAlreadyInUse = "CATEGORY_NAME_ALREADY_IN_USE"
+export const productAlreadyHasOffer = "PRODUCT_ALREADY_HAS_OFFER"
+export const priceMustBePositive = "PRICE_MUST_BE_POSITIVE"
+export const offerValueMustBePositive = "OFFER_VALUE_MUST_BE_POSITIVE"
 //#endregion
 
 //#region Session & authentication

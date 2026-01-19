@@ -102,9 +102,13 @@ export class AddOfferDialogComponent {
 	}
 
 	showWithData(menu: any) {
-		this.basicData.id = menu.id
+		this.basicData.id = menu.shortcut || 0
 		this.basicData.name = menu.name
-		this.basicData.offerValue = menu.price
+		// Konvertiere offerValue von Cent zu Euro
+		const offerValueInCents = menu.offer?.offerValue || menu.price || 0
+		this.basicData.offerValue = parseFloat(
+			(offerValueInCents / 100).toFixed(2)
+		)
 		this.basicData.takeaway = menu.takeaway || false
 		this.basicData.offerType = menu.offer?.offerType || "FIXED_PRICE"
 		this.basicData.discountType = menu.offer?.discountType || "PERCENTAGE"

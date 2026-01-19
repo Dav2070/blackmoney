@@ -86,9 +86,13 @@ export class EditOfferDialogComponent {
 	}
 
 	show(menu: any) {
-		this.basicData.id = menu.id
+		this.basicData.id = menu.shortcut || 0
 		this.basicData.name = menu.name
-		this.basicData.offerValue = menu.price
+		// Konvertiere offerValue von Cent zu Euro
+		const offerValueInCents = menu.offer?.offerValue || menu.price || 0
+		this.basicData.offerValue = parseFloat(
+			(offerValueInCents / 100).toFixed(2)
+		)
 		this.basicData.takeaway = menu.takeaway || false
 		this.basicData.offerType = menu.offer?.offerType || "FIXED_PRICE"
 		this.basicData.discountType = menu.offer?.discountType || "PERCENTAGE"
@@ -160,13 +164,31 @@ export class EditOfferDialogComponent {
 			]
 		}
 
-		this.availabilityData.selectedWeekdays = menu.offer?.weekdays || []
-		this.availabilityData.startDate = menu.offer?.startDate
-			? new Date(menu.offer.startDate).toISOString().split("T")[0]
-			: ""
-		this.availabilityData.endDate = menu.offer?.endDate
-			? new Date(menu.offer.endDate).toISOString().split("T")[0]
-			: ""
+		// Erstelle eine Kopie des weekdays Arrays, um schreibgeschütztes Array Problem zu vermeiden
+		this.availabilityData.selectedWeekdays = menu.offer?.weekdays
+			? [...menu.offer.weekdays]
+			: []
+
+		// Validiere und konvertiere startDate
+		if (menu.offer?.startDate) {
+			const startDate = new Date(menu.offer.startDate)
+			this.availabilityData.startDate = !isNaN(startDate.getTime())
+				? startDate.toISOString().split("T")[0]
+				: ""
+		} else {
+			this.availabilityData.startDate = ""
+		}
+
+		// Validiere und konvertiere endDate
+		if (menu.offer?.endDate) {
+			const endDate = new Date(menu.offer.endDate)
+			this.availabilityData.endDate = !isNaN(endDate.getTime())
+				? endDate.toISOString().split("T")[0]
+				: ""
+		} else {
+			this.availabilityData.endDate = ""
+		}
+
 		this.availabilityData.startTime = menu.offer?.startTime || ""
 		this.availabilityData.endTime = menu.offer?.endTime || ""
 		this.visible = true

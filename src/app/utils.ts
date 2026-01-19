@@ -493,12 +493,14 @@ export function convertOfferResourceToOffer(
 		offerType: offerResource.offerType,
 		discountType: offerResource.discountType,
 		offerValue: offerResource.offerValue,
-		startDate: offerResource.startDate
-			? new Date(offerResource.startDate)
-			: undefined,
-		endDate: offerResource.endDate
-			? new Date(offerResource.endDate)
-			: undefined,
+		startDate:
+			offerResource.startDate != null
+				? new Date(Number(offerResource.startDate))
+				: undefined,
+		endDate:
+			offerResource.endDate != null
+				? new Date(Number(offerResource.endDate))
+				: undefined,
 		startTime: offerResource.startTime,
 		endTime: offerResource.endTime,
 		weekdays: offerResource.weekdays,

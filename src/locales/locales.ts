@@ -743,6 +743,10 @@ export const de = {
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
 		dateInPast: "Datum darf nicht in der Vergangenheit liegen",
+		productAlreadyHasOffer: "Dieses Produkt hat bereits ein Angebot.",
+		priceMustBePositive: "Der Preis muss eine positive Zahl sein.",
+		offerValueMustBePositive:
+			"Der Angebotswert muss eine positive Zahl sein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
 	}
 }

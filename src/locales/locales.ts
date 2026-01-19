@@ -213,7 +213,10 @@ export const de = {
 	variationsPage: {
 		options: "Weitere Optionen",
 		headline: "Variationen verwalten",
-		noVariations: "Keine Variationen vorhanden",
+		noVariations: "Keine Variationen vorhanden"
+	},
+	variationCard: {
+		options: "Weitere Optionen",
 		noVariationItems: "Keine Variations-Items vorhanden",
 		addVariationItem: "Item hinzufügen"
 	},

@@ -17,7 +17,6 @@
 				@for (variation of variations; track variation.uuid) {
 					<app-variation-card
 						[variation]="variation"
-						[locale]="locale"
 						(contextMenuClick)="
 							showVariationContextMenu($event.event, $event.variation)
 						"

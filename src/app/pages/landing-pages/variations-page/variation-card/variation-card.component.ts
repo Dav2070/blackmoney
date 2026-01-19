@@ -3,6 +3,7 @@ import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
 import { formatPrice } from "src/app/utils"
 import { faEllipsis } from "@fortawesome/pro-regular-svg-icons"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	selector: "app-variation-card",
@@ -11,8 +12,8 @@ import { faEllipsis } from "@fortawesome/pro-regular-svg-icons"
 	standalone: false
 })
 export class VariationCardComponent {
+	locale = this.localizationService.locale.variationCard
 	@Input() variation: Variation
-	@Input() locale: any
 	@Output() contextMenuClick = new EventEmitter<{
 		event: Event
 		variation: Variation
@@ -26,6 +27,8 @@ export class VariationCardComponent {
 
 	faEllipsis = faEllipsis
 	formatPrice = formatPrice
+
+	constructor(private localizationService: LocalizationService) {}
 
 	onContextMenuClick(event: Event) {
 		this.contextMenuClick.emit({ event, variation: this.variation })

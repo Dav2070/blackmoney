@@ -1,3 +1,7 @@
+form {
+	width: 500px;
+}
+
 .dialog-formfield-container {
 	margin-bottom: 16px;
 }
@@ -21,6 +25,8 @@
 	flex-direction: column;
 	gap: 8px;
 	margin-bottom: 16px;
+	max-height: 300px;
+	overflow-y: auto;
 }
 
 .item-row {
@@ -30,16 +36,22 @@
 	padding: 12px;
 	background: var(--dav-color-surface-variant);
 	border-radius: 8px;
+	gap: 8px;
 
 	.item-name {
 		flex: 1;
 		font-weight: 500;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		min-width: 0;
 	}
 
 	.item-cost {
 		margin-right: 16px;
 		font-weight: 600;
 		color: var(--dav-color-primary);
+		white-space: nowrap;
 	}
 }
 

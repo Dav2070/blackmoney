@@ -99,11 +99,11 @@
 			@if (selectedOrder?.takeawayDetails.delivery) {
 				<div class="delivery-address">
 					<p>
-						{{ selectedOrder.takeawayDetails.addressLine1 }}
+						{{ selectedOrder.takeawayDetails.line1 }}
 						{{ selectedOrder.takeawayDetails.houseNumber }}
 					</p>
-					@if (selectedOrder.takeawayDetails.addressLine2) {
-						<p>{{ selectedOrder.takeawayDetails.addressLine2 }}</p>
+					@if (selectedOrder.takeawayDetails.line2) {
+						<p>{{ selectedOrder.takeawayDetails.line2 }}</p>
 					}
 					<p>
 						{{ selectedOrder.takeawayDetails.postalCode }}

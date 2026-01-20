@@ -32,8 +32,8 @@ export class EditTakeawayDialogComponent {
 	originalUuid: string = ""
 	name: string = ""
 	phoneNumber: string = ""
-	addressLine1: string = ""
-	addressLine2: string = ""
+	line1: string = ""
+	line2: string = ""
 	houseNumber: string = ""
 	postalCode: string = ""
 	city: string = ""
@@ -60,8 +60,8 @@ export class EditTakeawayDialogComponent {
 		this.originalUuid = takeawayDetails.uuid
 		this.name = takeawayDetails.name
 		this.phoneNumber = takeawayDetails.phoneNumber
-		this.addressLine1 = takeawayDetails.addressLine1
-		this.addressLine2 = takeawayDetails.addressLine2
+		this.line1 = takeawayDetails.line1
+		this.line2 = takeawayDetails.line2
 		this.houseNumber = takeawayDetails.houseNumber
 		this.postalCode = takeawayDetails.postalCode
 		this.city = takeawayDetails.city
@@ -93,8 +93,8 @@ export class EditTakeawayDialogComponent {
 			uuid: this.originalUuid,
 			name: this.name.trim(),
 			phoneNumber: this.phoneNumber.trim(),
-			addressLine1: this.addressLine1.trim(),
-			addressLine2: this.addressLine2.trim(),
+			line1: this.line1.trim(),
+			line2: this.line2.trim(),
 			houseNumber: this.houseNumber.trim(),
 			postalCode: this.postalCode.trim(),
 			city: this.city.trim(),
@@ -116,11 +116,11 @@ export class EditTakeawayDialogComponent {
 	}
 
 	addressLine1TextfieldChange(event: Event) {
-		this.addressLine1 = (event.target as HTMLInputElement).value
+		this.line1 = (event.target as HTMLInputElement).value
 	}
 
 	addressLine2TextfieldChange(event: Event) {
-		this.addressLine2 = (event.target as HTMLInputElement).value
+		this.line2 = (event.target as HTMLInputElement).value
 	}
 
 	houseNumberTextfieldChange(event: Event) {
@@ -136,6 +136,9 @@ export class EditTakeawayDialogComponent {
 	}
 
 	orderTypeRadioGroupChange(event: Event) {
-		this.orderType = (event as CustomEvent).detail.value as "delivery" | "pickUp" | "dineIn"
+		const value = (event as CustomEvent).detail?.checked
+		if (value === "delivery" || value === "pickUp" || value === "dineIn") {
+			this.orderType = value
+		}
 	}
 }

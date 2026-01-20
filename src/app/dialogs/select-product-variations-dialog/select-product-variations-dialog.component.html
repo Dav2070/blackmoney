@@ -63,7 +63,13 @@
 												currentVariationKey
 											] === 0
 										"
-										[plusButtonDisabled]="isPlusButtonDisabled(currentVariation, currentTreeVariationItemCount, previousTreeVariationItemCount)"
+										[plusButtonDisabled]="
+											isPlusButtonDisabled(
+												currentVariation,
+												currentTreeVariationItemCount,
+												previousTreeVariationItemCount
+											)
+										"
 										(change)="counterChange(key, value, $event)"
 									></app-counter>
 								}

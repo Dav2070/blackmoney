@@ -477,7 +477,7 @@ export class BookingPageComponent {
 			this.selectMenuSpecialProductsDialog.show()
 		} else {
 			let newItem: OrderItem = {
-				uuid: null,
+				uuid: crypto.randomUUID(),
 				type: orderItemType || OrderItemType.Product,
 				count: 0,
 				order: null,
@@ -739,7 +739,7 @@ export class BookingPageComponent {
 			.flat()
 
 		const newItem: OrderItemCard = {
-			uuid: null,
+			uuid: crypto.randomUUID(),
 			type: OrderItemType.Product,
 			count: 1,
 			order: null,
@@ -921,8 +921,11 @@ export class BookingPageComponent {
 		for (const item of this.stagedItems.getAllPickedItems().values()) {
 			const isDiverseItem = this.isDiverseOrderItem(item)
 
+			// Generate UUID for new items (items without UUID)
+			const itemUuid = item.uuid || crypto.randomUUID()
+
 			tmpProductArray.push({
-				uuid: item.uuid ?? undefined,
+				uuid: itemUuid,
 				productUuid: item.product.uuid,
 				count: item.count,
 				discount: item.discount,
@@ -933,14 +936,16 @@ export class BookingPageComponent {
 				course: item.course,
 				offerUuid: item.offer?.uuid,
 				variations: item.orderItemVariations?.map(variation => ({
-					uuid: variation.uuid ?? undefined,
+					uuid: variation.uuid || crypto.randomUUID(),
 					count: variation.count,
 					variationItemUuids: variation.variationItems.map(vi => vi.uuid)
 				})),
 				orderItems: item.orderItems?.map(orderItem => ({
+					uuid: orderItem.uuid || crypto.randomUUID(),
 					productUuid: orderItem.product.uuid,
 					count: orderItem.count,
 					variations: orderItem.orderItemVariations?.map(variation => ({
+						uuid: variation.uuid || crypto.randomUUID(),
 						count: variation.count,
 						variationItemUuids: variation.variationItems.map(
 							vi => vi.uuid
@@ -948,175 +953,38 @@ export class BookingPageComponent {
 					}))
 				}))
 			})
+
+			// Set UUID on item if it was newly generated
+			if (!item.uuid) {
+				item.uuid = itemUuid
+			}
 		}
 
-		// OPTIMIZATION: Minimale GraphQL-Query - Frontend hat bereits alle Product-Daten
-		// Wir brauchen nur die OrderItem UUIDs, Counts und Typen für das Backend-Merging
-		let items = await this.apiService.addProductsToOrder(
-			`
-				orderItems {
-					total
-					items {
-						uuid
-						count
-						type
-						discount
-						diversePrice
-						notes
-						takeAway
-						course
-						product {
-							uuid
-						}
-						offer {
-							uuid
-						}
-						orderItemVariations {
-							total
-							items {
-								uuid
-								count
-								variationItems {
-									total
-									items {
-										uuid
-									}
-								}
-							}
-						}
-						orderItems {
-							items {
-								uuid
-								count
-								product {
-									uuid
-								}
-								orderItemVariations {
-									total
-									items {
-										uuid
-										count
-										variationItems {
-											total
-											items {
-												uuid
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			`,
-			{
-				uuid: this.orderUuid,
-				products: tmpProductArray
-			}
-		)
-
-		// Merge returned OrderItems with existing frontend data
-		const returnedOrderItems = items.data.addProductsToOrder.orderItems.items
-
-		// Clear staged items first
-		this.stagedItems.clearItems()
-
-		// Build complete OrderItems by merging backend response with frontend product data
-		const completeOrderItems = returnedOrderItems.map(backendItem => {
-			// Find product data from menu (already loaded in frontend)
-			const productData = backendItem.product?.uuid
-				? this.findProductInMenu(backendItem.product.uuid)
-				: null
-
-			// Build complete OrderItem
-			return {
-				uuid: backendItem.uuid,
-				count: backendItem.count,
-				type: backendItem.type,
-				discount: backendItem.discount,
-				diversePrice: backendItem.diversePrice,
-				notes: backendItem.notes,
-				takeAway: backendItem.takeAway,
-				course: backendItem.course,
-				order: null as Order | null,
-				product: productData, // Use frontend-cached product data
-				offer: backendItem.offer?.uuid
-					? this.findOfferInMenu(backendItem.offer.uuid)
-					: (null as Offer | null),
-				orderItemVariations:
-					backendItem.orderItemVariations?.items?.map(variation => ({
-						uuid: variation.uuid,
-						count: variation.count,
-						variationItems:
-							variation.variationItems?.items?.map(vi => {
-								// Find variation item details from frontend cache
-								return this.findVariationItemInMenu(vi.uuid)
-							}) || []
-					})) || [],
-				orderItems:
-					backendItem.orderItems?.items?.map(childItem => {
-						const childProductData = this.findProductInMenu(
-							childItem.product.uuid
-						)
-						return {
-							uuid: childItem.uuid,
-							count: childItem.count,
-							type: OrderItemType.Product,
-							discount: 0,
-							notes: null as string | null,
-							takeAway: false,
-							course: null as number | null,
-							order: null as Order | null,
-							product: childProductData,
-							offer: null as Offer | null,
-							orderItemVariations:
-								childItem.orderItemVariations?.items?.map(
-									variation => ({
-										uuid: variation.uuid,
-										count: variation.count,
-										variationItems:
-											variation.variationItems?.items?.map(vi =>
-												this.findVariationItemInMenu(vi.uuid)
-											) || []
-									})
-								) || [],
-							orderItems: [] as OrderItem[]
-						}
-					}) || []
-			}
+		// OPTIMIZATION: No need to fetch data from backend, just wait for success
+		let result = await this.apiService.addProductsToOrder(`uuid`, {
+			uuid: this.orderUuid,
+			products: tmpProductArray
 		})
 
-		// Set complete items with all frontend data merged in
-		this.bookedItems.setItems(completeOrderItems)
+		// Check for errors
+		if (!result || !result.data) {
+			console.error("GraphQL Error:", result)
+			showToast("Fehler beim Hinzufügen der Produkte")
+			this.sendOrderLoading = false
+			return
+		}
+
+		// Success! Merge staged items to booked items locally
+		for (const stagedItem of this.stagedItems.getAllPickedItems().values()) {
+			this.bookedItems.pushNewItem(stagedItem)
+		}
+
+		// Clear staged items
+		this.stagedItems.clearItems()
 
 		this.showTotal()
 		this.sendOrderLoading = false
 		await showToast(this.locale.sendOrderToastText)
-	}
-
-	// Helper: Find product in loaded menu by UUID
-	private findProductInMenu(uuid: string) {
-		for (const category of this.categories) {
-			const product = category.products.find(p => p.uuid === uuid)
-			if (product) return product
-		}
-		return null
-	}
-
-	// Helper: Find offer in loaded menu by UUID
-	private findOfferInMenu(uuid: string): Offer | null {
-		return this.offers.find((o: Offer) => o.uuid === uuid) || null
-	}
-
-	// Helper: Find variation item in loaded menu by UUID
-	private findVariationItemInMenu(uuid: string): VariationItem | null {
-		for (const variation of this.variations) {
-			const item = variation.variationItems.find(
-				(vi: VariationItem) => vi.uuid === uuid
-			)
-			if (item) return item
-		}
-		return null
 	}
 
 	//Berechnet den Preis der hinzugefügten Items
@@ -1265,7 +1133,7 @@ export class BookingPageComponent {
 
 				const incoming: OrderItemCard = {
 					...orderItem,
-					uuid: null,
+					uuid: crypto.randomUUID(),
 					count: delta,
 					isExpanded: true,
 					orderItems: copiedOrderItems
@@ -1381,7 +1249,7 @@ export class BookingPageComponent {
 
 		if (this.selectedProduct.type === "MENU") {
 			const menuOrderItem: OrderItemCard = {
-				uuid: null,
+				uuid: crypto.randomUUID(),
 				type: OrderItemType.Menu,
 				count: 1,
 				order: null,
@@ -1409,7 +1277,7 @@ export class BookingPageComponent {
 				)
 
 				const specialOrderItem: OrderItemCard = {
-					uuid: null,
+					uuid: crypto.randomUUID(),
 					type: OrderItemType.Special,
 					count: 1,
 					order: null,

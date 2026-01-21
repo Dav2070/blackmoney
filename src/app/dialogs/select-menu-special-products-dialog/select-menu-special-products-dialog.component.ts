@@ -91,7 +91,7 @@ export class SelectMenuSpecialProductsDialogComponent {
 	selectProduct(product: Product) {
 		if (product.variations.length === 0) {
 			this.allItemHandler.pushNewItem({
-				uuid: undefined,
+				uuid: crypto.randomUUID(),
 				type: OrderItemType.Product,
 				count: 1,
 				order: null,
@@ -190,7 +190,7 @@ export class SelectMenuSpecialProductsDialogComponent {
 
 		let totalCount = 0
 		let newItem: OrderItem = {
-			uuid: undefined,
+			uuid: crypto.randomUUID(),
 			type: OrderItemType.Product,
 			count: 1,
 			order: null,
@@ -213,12 +213,10 @@ export class SelectMenuSpecialProductsDialogComponent {
 			}
 
 			newItem.orderItemVariations.push({
-				uuid: undefined,
+				uuid: crypto.randomUUID(),
 				count: value,
 				variationItems
 			})
-
-			totalCount += value
 		}
 
 		if (this.selectedProduct?.type === OrderItemType.Special) {

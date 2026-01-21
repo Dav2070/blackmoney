@@ -421,7 +421,10 @@ export const de = {
 		},
 		editOpeningTimeDialog: {
 			headline: "Öffnungszeiten bearbeiten",
-			name: "Name"
+			name: "Name",
+			reason: "Anlass/Grund",
+			from: "von",
+			to: "bis"
 		},
 		deleteRoomDialog: {
 			headline: "Raum {name} löschen",

@@ -69,3 +69,16 @@ dav-card {
 	margin: 0;
 	color: var(--dav-color-on-surface);
 }
+
+.special-content-container .cards-container { 
+	display: flex; 
+	flex-direction: column; 
+	gap: 5px; 
+}
+
+.special-cards-container { 
+	display: flex; 
+	flex-direction: column; /* untereinander */ 
+	align-items: center; /* mittig */ 
+	gap: 5px; 
+}

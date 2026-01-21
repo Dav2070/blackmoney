@@ -5,16 +5,15 @@ import { DataService } from "src/app/services/data-service"
 import {
 	faLocationDot,
 	faPen,
+	faEllipsis,
 	faPrint,
 	faSeat
 } from "@fortawesome/pro-regular-svg-icons"
-import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
-import { EditAddressDialogComponent } from "src/app/dialogs/edit-address-dialog/edit-address-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
 import * as ErrorCodes from "src/app/errorCodes"
-import { EditContactInfoDialogComponent } from "src/app/dialogs/edit-contact-info-dialog/edit-contact-info-dialog.component"
-import { Day } from "src/app/models/Day"
+import { Day, SpecialOpeningTime } from "src/app/models/Day"
 import { EditOpeningTimeDialogComponent } from "src/app/dialogs/edit-opening-time-dialog/edit-opening-time-dialog.component"
+import { EditSpecialOpeningTimeDialogComponent } from "src/app/dialogs/edit-special-opening-time-dialog/edit-special-opening-time-dialog.component"
 
 @Component({
   selector: 'app-opening-time-page',
@@ -41,13 +40,8 @@ export class OpeningTimePageComponent {
 	Samstag: Day = {day: "Samstag", durchgehend: true, pause: false, startTime1: "00:00", endTime1: "00:00"}
 	Sonntag: Day = {day: "Sonntag", durchgehend: true, pause: false, startTime1: "00:00", endTime1: "00:00"}
 	Tage: Day[] = []
-	sonderTage: Day[] = []
-
-	DayError: String = ""
-	line1: string = ""
-	line1Error: string = ""
-	line2: string = ""
-	line2Error: string = ""
+	sonderTage: SpecialOpeningTime[] = []
+	currentEditIndex: number = null 
 
 	private weekdayOrder = [ 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag' ];
 	
@@ -57,6 +51,11 @@ export class OpeningTimePageComponent {
 	editOpeningTimeDialog: EditOpeningTimeDialogComponent
 	editOpeningTimeDialogLoading: boolean = false
 
+	//#region EditSpecialOpeningTimeDialog
+	@ViewChild("editSpecialOpeningTimeDialog")
+	editSpecialOpeningTimeDialog: EditSpecialOpeningTimeDialogComponent
+	editSpecialOpeningTimeDialogLoading: boolean = false
+
   constructor(
 		private dataService: DataService,
 		private apiService: ApiService,
@@ -65,37 +64,38 @@ export class OpeningTimePageComponent {
 		private activatedRoute: ActivatedRoute
 	) {}
 
-	
-
 	async ngOnInit() {
 		this.uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
-	}
-
-	tmp() {
-		
 	}
 
 	showEditOpeningTimeDialog() {
 		this.editOpeningTimeDialog.loading = false
 
-		console.log("Show")
-
 		if(this.Tage.length < 1){
-			console.log("< 1")
 			this.Tage = [
-			this.Montag,
-			this.Dienstag,
-			this.Mittwoch,
-			this.Donnerstag,
-			this.Freitag,
-			this.Samstag,
-			this.Sonntag
-		]
+				this.Montag,
+				this.Dienstag,
+				this.Mittwoch,
+				this.Donnerstag,
+				this.Freitag,
+				this.Samstag,
+				this.Sonntag
+			]
 		}
 
-		
 		this.editOpeningTimeDialog.show(this.Tage)
-		console.log("Ende von Show")
+	}
+
+	showEditSpecialOpeningTimeDialog(sonderTag: SpecialOpeningTime, index: number) { 
+		this.currentEditIndex = index 
+		this.editSpecialOpeningTimeDialog.loading = false 
+		this.editSpecialOpeningTimeDialog.show(sonderTag) 
+	}
+
+	showAddSpecialOpeningTimeDialog() { 
+		this.currentEditIndex = null 
+		this.editSpecialOpeningTimeDialog.loading = false 
+		this.editSpecialOpeningTimeDialog.showNew() 
 	}
 
 	editOpeningTimeDialogPrimaryButtonClick(event: { Tage: Day[] }) {
@@ -103,8 +103,20 @@ export class OpeningTimePageComponent {
 		this.editOpeningTimeDialog.hide()
 	}
 
+	editSpecialOpeningTimeDialogPrimaryButtonClick(event: { sonderTage: SpecialOpeningTime }) { 
+		if (this.currentEditIndex !== null) { // Bearbeiten 
+			this.sonderTage[this.currentEditIndex] = event.sonderTage 
+		} else { // Neu hinzufügen 
+			this.sonderTage = [...this.sonderTage, event.sonderTage] 
+		} 
+		this.currentEditIndex = null 
+		this.editSpecialOpeningTimeDialog.hide() 
+	}
+
 	navigateBack() {
 		this.router.navigate(["user", "restaurants", this.uuid])
 	}
   
 }
+
+

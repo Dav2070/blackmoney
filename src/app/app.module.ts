@@ -140,6 +140,7 @@ import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-prod
 import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-product-dialog.component"
 import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
 import { EditOpeningTimeDialogComponent } from "./dialogs/edit-opening-time-dialog/edit-opening-time-dialog.component"
+import { EditSpecialOpeningTimeDialogComponent } from "./dialogs/edit-special-opening-time-dialog/edit-special-opening-time-dialog.component"
 
 @NgModule({
 	declarations: [
@@ -201,6 +202,7 @@ import { EditOpeningTimeDialogComponent } from "./dialogs/edit-opening-time-dial
 		AddProductDialogComponent,
 		EditProductDialogComponent,
 		EditOpeningTimeDialogComponent,
+		EditSpecialOpeningTimeDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

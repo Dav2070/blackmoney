@@ -40,28 +40,55 @@
     </div>
 
     <div class="separator"></div>
-
     <div class="special-content-container">
         <dav-header
 			editButtonVisible
-			(editButtonClick)="tmp()"
+			(editButtonClick)="showAddSpecialOpeningTimeDialog()"
 		>
 			{{ specialOpeningTime }}
 		</dav-header>
 	@if (sonderTage && sonderTage.length > 0){
-        <div class="cards-container">
+        <div class="cards-container special-cards-container">
+			@for (sonderTag of sonderTage; track $index) { 	
 			<dav-card>
+			
 				<div class="openingTime-card-container">
+
+					<div class="openingTime-card-content">
+
+							@if (sonderTag.from !== sonderTag.to) {
+								@if (sonderTag.durchgehend) { 
+									<p>{{ sonderTag.reason }}</p>
+									<p>{{ sonderTag.from }} - {{ sonderTag.to }}: {{ sonderTag.startTime1 }} - {{ sonderTag.endTime1 }}</p> 
+								} @else {
+									<p>{{ sonderTag.reason }}</p> 
+									<p>{{ sonderTag.from }} - {{ sonderTag.to }}: {{ sonderTag.startTime1 }} - {{ sonderTag.endTime1 }} ; {{ sonderTag.startTime2 }} - {{ sonderTag.endTime2 }}</p> 
+								} 
+							}
+							@if (sonderTag.from == sonderTag.to) {
+								@if (sonderTag.durchgehend) { 
+									<p>{{ sonderTag.reason }}</p>
+									<p>{{ sonderTag.from }}: {{ sonderTag.startTime1 }} - {{ sonderTag.endTime1 }}</p> 
+								} @else {
+									<p>{{ sonderTag.reason }}</p> 
+									<p>{{ sonderTag.from }}: {{ sonderTag.startTime1 }} - {{ sonderTag.endTime1 }} ; {{ sonderTag.startTime2 }} - {{ sonderTag.endTime2 }}</p> 
+								} 
+							}
+					</div>
 
 					<dav-icon-button
 						size="xs"
 						[tooltip]="actionsLocale.edit"
-						(click)="tmp()"
+						(click)="showEditSpecialOpeningTimeDialog(sonderTag, $index)"
 					>
 						<fa-icon [icon]="faPen"></fa-icon>
 					</dav-icon-button>
+
 				</div>
+
 			</dav-card>
+		}	
+
 		</div>
 		}
     </div>
@@ -71,10 +98,12 @@
 <app-edit-opening-time-dialog
 	#editOpeningTimeDialog
 	[loading]="editOpeningTimeDialogLoading"
-	[Montag]=""
-	[DayError]=""
-	[Dienstag]=""
-	[DayError]=""
-	(primaryButtonClick)= "editOpeningTimeDialogPrimaryButtonClick($event)"           
-	(clearErrors)="DayError = ''"
+	(primaryButtonClick)= "editOpeningTimeDialogPrimaryButtonClick($event)" 
 ></app-edit-opening-time-dialog>
+
+<app-edit-special-opening-time-dialog
+	#editSpecialOpeningTimeDialog
+	[loading]="editSpecialOpeningTimeDialogLoading"
+	(primaryButtonClick)= "editSpecialOpeningTimeDialogPrimaryButtonClick($event)" 
+></app-edit-special-opening-time-dialog>
+

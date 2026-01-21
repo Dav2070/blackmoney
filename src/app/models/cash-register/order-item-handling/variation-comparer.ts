@@ -70,31 +70,9 @@ export class VariationComparer {
 			return null
 		}
 
-		console.log(
-			"        🔍 findSimilarVariationItem - searching for:",
-			incomingOrderItemVariation.variationItems
-				?.map(v => `${v.name}(id:${v.id})`)
-				.join(", ")
-		)
-		console.log("        Available variations in booked item:")
-		for (const bookedVar of orderItem.orderItemVariations) {
-			console.log(
-				"          -",
-				bookedVar.variationItems
-					?.map(v => `${v.name}(id:${v.id})`)
-					.join(", "),
-				"uuid:",
-				bookedVar.uuid
-			)
-		}
-
 		// Verwende bestehende findMergeTarget Methode
 		const result =
 			this.findMergeTarget(orderItem, incomingOrderItemVariation) || null
-		console.log(
-			"        Result:",
-			result ? `Found match with uuid ${result.uuid}` : "No match"
-		)
 		return result
 	}
 }

@@ -38,7 +38,7 @@ import { VariationItem } from "src/app/models/VariationItem"
 import { Variation } from "src/app/models/Variation"
 import { Offer } from "src/app/models/Offer"
 import { Order } from "src/app/models/Order"
-import { AddProductsInput, OrderItemType } from "src/app/types"
+import { AddOrderItemInput, OrderItemType } from "src/app/types"
 import { BillsOverviewDialogComponent } from "src/app/dialogs/bills-overview-dialog/bills-overview-dialog.component"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
@@ -916,7 +916,7 @@ export class BookingPageComponent {
 	async sendOrder() {
 		this.sendOrderLoading = true
 		this.bottomSheet.nativeElement.snap("bottom")
-		let tmpProductArray: AddProductsInput[] = []
+		let tmpProductArray: AddOrderItemInput[] = []
 
 		for (const item of this.stagedItems.getAllPickedItems().values()) {
 			const isDiverseItem = this.isDiverseOrderItem(item)

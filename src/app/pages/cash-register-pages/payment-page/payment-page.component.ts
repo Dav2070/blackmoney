@@ -12,6 +12,7 @@ import { ContextMenu } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
+import { MessageService } from "src/app/services/message-service"
 import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { ProductVariationsCombinationsDialogComponent } from "src/app/dialogs/product-variations-combinations-dialog/product-variations-combinations-dialog.component"
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
@@ -76,6 +77,7 @@ export class PaymentPageComponent {
 		private localizationService: LocalizationService,
 		private apiService: ApiService,
 		private dataService: DataService,
+		private messageService: MessageService,
 		private router: Router
 	) {}
 
@@ -276,7 +278,7 @@ export class PaymentPageComponent {
 		}
 	}
 
-	async createBill(payment: PaymentMethod) {
+	async createBill(paymentMethod: PaymentMethod) {
 		await this.dataService.registerClientPromiseHolder.AwaitResult()
 
 		// Update the current order with the remaining items
@@ -321,11 +323,18 @@ export class PaymentPageComponent {
 			this.billUuid = createBillResponseData.uuid
 		}
 
-		await this.apiService.completeOrder("uuid", {
-			uuid: newOrder.data.createOrder.uuid,
-			billUuid: this.billUuid,
-			paymentMethod: payment
-		})
+		if (paymentMethod === "CARD") {
+			this.messageService.postMessage({
+				type: "startPayment",
+				price: this.activeBill.calculateTotal()
+			})
+		} else {
+			await this.apiService.completeOrder("uuid", {
+				uuid: newOrder.data.createOrder.uuid,
+				billUuid: this.billUuid,
+				paymentMethod
+			})
+		}
 
 		this.removeBill()
 	}

@@ -19,6 +19,7 @@ export type ApolloResult<T> = Apollo.MutateResult<T> & {
 export type SendMessage =
 	| {
 			type: "startPayment"
+			price: number
 	  }
 	| {
 			type: "createStripeConnectionToken"

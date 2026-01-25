@@ -64,6 +64,10 @@ export class UserPageComponent {
 		this.router.navigate(["/"])
 	}
 
+	navigateToLandingOverviewPage() {
+		this.router.navigate(["/"])
+	}
+
 	navigateToGeneralSettingsPage(event: MouseEvent) {
 		event.preventDefault()
 

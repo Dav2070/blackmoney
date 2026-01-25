@@ -1,6 +1,9 @@
 <div class="container slide-up-in">
 	<div class="content-container">
-		<dav-header>
+		<dav-header
+			backButtonVisible
+			(backButtonClick)="navigateToLandingOverviewPage()"
+		>
 			{{ title }}
 
 			<div class="header-icons-container" slot="icons">

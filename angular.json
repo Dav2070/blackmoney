@@ -103,7 +103,12 @@
 							"buildTarget": "blackmoney:build:development"
 						}
 					},
-					"defaultConfiguration": "development"
+					"defaultConfiguration": "development",
+					"options": {
+						"allowedHosts": [
+							"blackmoney.ngrok.app"
+						]
+					}
 				},
 				"extract-i18n": {
 					"builder": "@angular/build:extract-i18n",

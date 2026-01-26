@@ -1485,11 +1485,18 @@ export class BookingPageComponent {
 	}
 
 	setCourseButtonClick() {
-		if (this.selectedOrderItem != null && this.consoleActive) {
-			const courseNumber = parseInt(this.console)
-			if (courseNumber >= 1 && courseNumber <= 9) {
-				this.selectedOrderItem.course = courseNumber
+		if (this.selectedOrderItem != null) {
+			// If item already has a course, remove it
+			if (this.selectedOrderItem.course) {
+				this.selectedOrderItem.course = null
 				this.showTotal()
+			} else if (this.consoleActive) {
+				// Otherwise, set course if console is active
+				const courseNumber = parseInt(this.console)
+				if (courseNumber >= 1 && courseNumber <= 9) {
+					this.selectedOrderItem.course = courseNumber
+					this.showTotal()
+				}
 			}
 		}
 	}

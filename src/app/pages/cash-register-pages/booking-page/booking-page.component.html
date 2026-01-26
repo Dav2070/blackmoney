@@ -432,9 +432,9 @@
 					text
 					[disabled]="
 						!selectedOrderItem ||
-						!consoleActive ||
 						isSelectedItemBooked() ||
-						selectedOrderItem.takeAway
+						(!selectedOrderItem.course &&
+							(!consoleActive || selectedOrderItem.takeAway))
 					"
 					(click)="setCourseButtonClick()"
 				>

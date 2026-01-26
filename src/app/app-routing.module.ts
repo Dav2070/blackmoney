@@ -34,6 +34,7 @@ import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/c
 import { VariationsPageComponent } from "./pages/landing-pages/variations-page/variations-page.component"
 import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
 import { RestaurantInfoPageComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-info-page.component"
+
 const routes: Routes = [
 	{
 		path: "",
@@ -70,7 +71,17 @@ const routes: Routes = [
 			{
 				path: "device-setup",
 				component: DeviceSetupPageComponent
-			},
+			}
+		]
+	},
+	{
+		path: "onboarding",
+		component: OnboardingPageComponent
+	},
+	{
+		path: "",
+		component: CashRegisterPageComponent,
+		children: [
 			{
 				path: "user",
 				component: UserPageComponent
@@ -146,31 +157,21 @@ const routes: Routes = [
 			{
 				path: "user/restaurants/:uuid/menu/variations",
 				component: VariationsPageComponent
-			}
-		]
-	},
-	{
-		path: "onboarding",
-		component: OnboardingPageComponent
-	},
-	{
-		path: "dashboard",
-		component: CashRegisterPageComponent,
-		children: [
+			},
 			{
-				path: "",
+				path: "dashboard",
 				component: TableOverviewPageComponent
 			},
 			{
-				path: "tables/:uuid",
+				path: "dashboard/tables/:uuid",
 				component: BookingPageComponent
 			},
 			{
-				path: "tables/:uuid/payment",
+				path: "dashboard/tables/:uuid/payment",
 				component: PaymentPageComponent
 			},
 			{
-				path: "tables/:uuid1/:uuid2",
+				path: "dashboard/tables/:uuid1/:uuid2",
 				component: TransferPageComponent
 			}
 		]

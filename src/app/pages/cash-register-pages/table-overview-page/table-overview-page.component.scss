@@ -1,9 +1,8 @@
 .container {
-	position: fixed;
 	display: grid;
 	grid-template-columns: 1fr auto;
 	grid-template-rows: 1fr;
-	height: 100%;
+	gap: 16px;
 	width: 100%;
 	background-color: var(--dav-color-surface);
 	padding: 0;
@@ -11,13 +10,11 @@
 
 .table-overview-container {
 	grid-column: 1;
-	margin: 0 16px 16px 16px;
 }
 
 .rooms-sidenav-container {
 	grid-column: 2;
 	background-color: var(--dav-color-surface);
-	padding: 0 4px;
 }
 
 .room-item-skeleton {

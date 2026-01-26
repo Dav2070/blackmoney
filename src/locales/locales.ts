@@ -163,11 +163,7 @@ export const de = {
 	},
 	categoriesPage: {
 		headline: "Deine Kategorien",
-		noCategories: "Keine Kategorien vorhanden",
-		categoryNameAlreadyExists:
-			"Eine Kategorie mit diesem Namen existiert bereits",
-		nameTooShort: "Der Name ist zu kurz",
-		nameTooLong: "Der Name ist zu lang"
+		noCategories: "Keine Kategorien vorhanden"
 	},
 	categoryPage: {
 		noProductsMessage: "Keine Produkte vorhanden",
@@ -727,6 +723,8 @@ export const de = {
 		printerAlreadyExists:
 			"Ein Drucker mit dieser IP-Adresse existiert bereits.",
 		tableAlreadyExists: "Ein Tisch mit dieser Nummer existiert bereits.",
+		categoryNameAlreadyExists:
+			"Eine Kategorie mit diesem Namen existiert bereits",
 		nameMissing: "Bitte gib einen Namen an.",
 		nameTooShort: "Der Name ist zu kurz.",
 		nameTooLong: "Der Name ist zu lang.",

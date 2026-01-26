@@ -124,7 +124,7 @@ export class CategoriesPageComponent {
 				switch (errorCode) {
 					case ErrorCodes.categoryNameAlreadyInUse:
 						this.addCategoryDialogNameError =
-							this.locale.categoryNameAlreadyExists
+							this.errorsLocale.categoryNameAlreadyExists
 						break
 					case ErrorCodes.nameTooShort:
 						this.addCategoryDialogNameError =

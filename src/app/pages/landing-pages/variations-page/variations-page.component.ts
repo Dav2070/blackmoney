@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, HostListener } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
-import { faPen, faTrash, faEllipsis } from "@fortawesome/pro-regular-svg-icons"
+import { faPen, faTrash } from "@fortawesome/pro-regular-svg-icons"
 import { ContextMenu } from "dav-ui-components"
 import { Variation } from "src/app/models/Variation"
 import { VariationItem } from "src/app/models/VariationItem"
@@ -11,10 +11,7 @@ import { AddVariationDialogComponent } from "src/app/dialogs/add-variation-dialo
 import { AddVariationItemDialogComponent } from "src/app/dialogs/add-variation-item-dialog/add-variation-item-dialog.component"
 import { EditVariationDialogComponent } from "src/app/dialogs/edit-variation-dialog/edit-variation-dialog.component"
 import { EditVariationItemDialogComponent } from "src/app/dialogs/edit-variation-item-dialog/edit-variation-item-dialog.component"
-import {
-	convertRestaurantResourceToRestaurant,
-	formatPrice
-} from "src/app/utils"
+import { convertRestaurantResourceToRestaurant } from "src/app/utils"
 
 @Component({
 	templateUrl: "./variations-page.component.html",
@@ -24,10 +21,8 @@ import {
 export class VariationsPageComponent {
 	locale = this.localizationService.locale.variationsPage
 	actionsLocale = this.localizationService.locale.actions
-	formatPrice = formatPrice
 	faPen = faPen
 	faTrash = faTrash
-	faEllipsis = faEllipsis
 
 	uuid: string = null
 	selectedVariation: Variation = null

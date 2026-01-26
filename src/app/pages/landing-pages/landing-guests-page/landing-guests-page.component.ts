@@ -53,7 +53,7 @@ export class LandingGuestsPageComponent implements OnInit {
 			name: "Wupper Grill",
 			address: {
 				uuid: crypto.randomUUID(),
-				addressLine1: "Musterstraße 1",
+				line1: "Musterstraße 1",
 				postalCode: "10115",
 				city: "Berlin",
 				country: "Germany"
@@ -197,7 +197,7 @@ export class LandingGuestsPageComponent implements OnInit {
 			name: "Pizzeria Roma",
 			address: {
 				uuid: crypto.randomUUID(),
-				addressLine1: "Italienerweg 5",
+				line1: "Italienerweg 5",
 				postalCode: "80331",
 				city: "München",
 				country: "Germany"
@@ -228,7 +228,7 @@ export class LandingGuestsPageComponent implements OnInit {
 			name: "Sushi House",
 			address: {
 				uuid: crypto.randomUUID(),
-				addressLine1: "Fischmarkt 12",
+				line1: "Fischmarkt 12",
 				postalCode: "20095",
 				city: "Hamburg",
 				country: "Germany"
@@ -259,7 +259,7 @@ export class LandingGuestsPageComponent implements OnInit {
 			name: "Bistro Grün",
 			address: {
 				uuid: crypto.randomUUID(),
-				addressLine1: "Parkallee 7",
+				line1: "Parkallee 7",
 				postalCode: "04109",
 				city: "Leipzig",
 				country: "Germany"

@@ -6,48 +6,57 @@
 			(backButtonClick)="navigateBack()"
 			(editButtonClick)="showEditRestaurantNameDialog()"
 		>
-			{{ name }}
+			{{ restaurant.name }}
 		</dav-header>
 
-		<div class="cards-container">
-			<dav-card>
-				<div class="address-card-container">
+		<dav-card>
+			<div class="info-sections-container">
+				<div class="info-section">
 					<fa-icon [icon]="faLocationDot"></fa-icon>
-
-					<div class="address-card-content">
-						@if (city || country || line1 || line2 || postalCode) {
-							@if (line1) {
-								<p>{{ line1 }}</p>
+					<div class="info-content">
+						@if (
+							restaurant.address?.city ||
+							restaurant.address?.country ||
+							restaurant.address?.line1 ||
+							restaurant.address?.line2 ||
+							restaurant.address?.postalCode
+						) {
+							@if (restaurant.address?.line1) {
+								<p class="address-line">
+									{{ restaurant.address.line1 }}
+									{{ restaurant.address.houseNumber }}
+								</p>
 							}
-							@if (line2) {
-								<p>{{ line2 }}</p>
+							@if (restaurant.address?.line2) {
+								<p>{{ restaurant.address.line2 }}</p>
 							}
-							@if (postalCode || city) {
-								<p>{{ postalCode }} {{ city }}</p>
+							@if (
+								restaurant.address?.postalCode ||
+								restaurant.address?.city
+							) {
+								<p>
+									{{ restaurant.address.postalCode }}
+									{{ restaurant.address.city }}
+								</p>
 							}
-							@if (country) {
-								<p>{{ country === "DE" ? "Deutschland" : "" }}</p>
+							@if (restaurant.address?.country) {
+								<p>
+									{{
+										restaurant.address.country === "DE"
+											? "Deutschland"
+											: ""
+									}}
+								</p>
 							}
 						} @else {
 							<p class="no-address">{{ locale.addAddress }}</p>
 						}
 					</div>
-
-					<dav-icon-button
-						size="xs"
-						[tooltip]="actionsLocale.edit"
-						(click)="showEditAddressDialog()"
-					>
-						<fa-icon [icon]="faPen"></fa-icon>
-					</dav-icon-button>
 				</div>
-			</dav-card>
 
-			<dav-card>
-				<div class="address-card-container">
+				<div class="info-section">
 					<fa-icon [icon]="faShop"></fa-icon>
-
-					<div class="address-card-content">
+					<div class="info-content">
 						@if (owner || taxNumber) {
 							@if (owner) {
 								<p>{{ owner }}</p>
@@ -57,18 +66,11 @@
 							}
 						}
 					</div>
-
-					<dav-icon-button size="xs" (click)="showEditOwnerDialog()">
-						<fa-icon [icon]="faPen"></fa-icon>
-					</dav-icon-button>
 				</div>
-			</dav-card>
 
-			<dav-card>
-				<div class="address-card-container">
+				<div class="info-section">
 					<fa-icon [icon]="faAddressCard"></fa-icon>
-
-					<div class="address-card-content">
+					<div class="info-content">
 						@if (mail || phoneNumber) {
 							@if (mail) {
 								<p>{{ mail }}</p>
@@ -78,13 +80,16 @@
 							}
 						}
 					</div>
-
-					<dav-icon-button size="xs" (click)="showEditContactInfoDialog()">
+					<dav-icon-button
+						size="xs"
+						[tooltip]="actionsLocale.edit"
+						(click)="showEditRestaurantInfoDialog()"
+					>
 						<fa-icon [icon]="faPen"></fa-icon>
 					</dav-icon-button>
 				</div>
-			</dav-card>
-		</div>
+			</div>
+		</dav-card>
 
 		<div class="separator"></div>
 
@@ -123,21 +128,21 @@
 
 			<!--Image for Restaurant-->
 			<!-- <dav-icon-card
-				[text]="locale.addPicture"
-				(click)="triggerFileInput(fileInput)"
-			>
-				<input
-					#fileInput
-					type="file"
-					accept="image/*"
-					(change)="onFileSelected($event)"
-					hidden
-				/>
-			</dav-icon-card>
+		[text]="locale.addPicture"
+		(click)="triggerFileInput(fileInput)"
+	>
+		<input
+			#fileInput
+			type="file"
+			accept="image/*"
+			(change)="onFileSelected($event)"
+			hidden
+		/>
+	</dav-icon-card>
 
-			<div class="image-preview" *ngIf="imageDataUrl">
-				<img [src]="imageDataUrl" />
-			</div> -->
+	<div class="image-preview" *ngIf="imageDataUrl">
+		<img [src]="imageDataUrl" />
+	</div> -->
 
 			<dav-icon-card
 				[text]="locale.manageMenu"
@@ -153,47 +158,43 @@
 <app-edit-restaurant-name-dialog
 	#editRestaurantNameDialog
 	[loading]="editRestaurantNameDialogLoading"
-	[name]="name"
+	[name]="restaurant.name"
 	[nameError]="nameError"
 	(primaryButtonClick)="editRestaurantNameDialogPrimaryButtonClick($event)"
 	(clearErrors)="nameError = ''"
 ></app-edit-restaurant-name-dialog>
 
-<app-edit-address-dialog
-	#editAddressDialog
-	[loading]="editAddressDialogLoading"
-	[city]="city"
+<app-edit-restaurant-info-dialog
+	#editRestaurantInfoDialog
+	[loading]="editRestaurantInfoDialogLoading"
+	[city]="restaurant.address?.city"
 	[cityError]="cityError"
-	[line1]="line1"
+	[line1]="restaurant.address?.line1"
 	[line1Error]="line1Error"
-	[line2]="line2"
+	[houseNumber]="restaurant.address?.houseNumber"
+	[houseNumberError]="houseNumberError"
+	[line2]="restaurant.address?.line2"
 	[line2Error]="line2Error"
-	[postalCode]="postalCode"
+	[postalCode]="restaurant.address?.postalCode"
 	[postalCodeError]="postalCodeError"
-	(primaryButtonClick)="editAddressDialogPrimaryButtonClick($event)"
-	(clearErrors)="
-		cityError = ''; line1Error = ''; line2Error = ''; postalCodeError = ''
-	"
-></app-edit-address-dialog>
-
-<app-edit-owner-dialog
-	#editOwnerDialog
-	[loading]="editOwnerDialogLoading"
 	[owner]="owner"
 	[ownerError]="ownerError"
 	[taxNumber]="taxNumber"
 	[taxNumberError]="taxNumberError"
-	(primaryButtonClick)="editOwnerDialogPrimaryButtonClick($event)"
-	(clearErrors)="ownerError = ''; taxNumberError = ''"
-></app-edit-owner-dialog>
-
-<app-edit-contact-info-dialog
-	#editContactInfoDialog
-	[loading]="editContactInfoDialogLoading"
 	[mail]="mail"
 	[mailError]="mailError"
 	[phoneNumber]="phoneNumber"
 	[phoneNumberError]="phoneNumberError"
-	(primaryButtonClick)="editContactInfoDialogPrimaryButtonClick($event)"
-	(clearErrors)="mailError = ''; phoneNumberError = ''"
-></app-edit-contact-info-dialog>
+	(primaryButtonClick)="editRestaurantInfoDialogPrimaryButtonClick($event)"
+	(clearErrors)="
+		cityError = '';
+		line1Error = '';
+		houseNumberError = '';
+		line2Error = '';
+		postalCodeError = '';
+		ownerError = '';
+		taxNumberError = '';
+		mailError = '';
+		phoneNumberError = ''
+	"
+></app-edit-restaurant-info-dialog>

@@ -213,7 +213,10 @@ export const de = {
 	variationsPage: {
 		options: "Weitere Optionen",
 		headline: "Variationen verwalten",
-		noVariations: "Keine Variationen vorhanden",
+		noVariations: "Keine Variationen vorhanden"
+	},
+	variationCard: {
+		options: "Weitere Optionen",
 		noVariationItems: "Keine Variations-Items vorhanden",
 		addVariationItem: "Item hinzufügen"
 	},
@@ -284,6 +287,21 @@ export const de = {
 		editRestaurantNameDialog: {
 			headline: "Name bearbeiten",
 			name: "Name des Restaurants"
+		},
+		editRestaurantInfoDialog: {
+			headline: "Restaurant-Informationen bearbeiten",
+			addressSection: "Adresse",
+			ownerSection: "Inhaberinformationen",
+			contactSection: "Kontaktinformationen",
+			city: "Stadt",
+			line1: "Straße",
+			houseNumber: "Nr.",
+			line2: "Adresszusatz",
+			postalCode: "Postleitzahl",
+			owner: "Inhaber",
+			taxNumber: "Steuernummer",
+			mail: "E-Mail",
+			phoneNumber: "Telefonnummer"
 		},
 		editAddressDialog: {
 			headline: "Adresse bearbeiten",
@@ -479,8 +497,8 @@ export const de = {
 			headline: "Außer Haus Bestellung",
 			name: "Name",
 			phoneNumber: "Telefonnummer",
-			addressLine1: "Straße",
-			addressLine2: "Adresszusatz",
+			line1: "Straße",
+			line2: "Adresszusatz",
 			houseNumber: "Hausnummer",
 			postalCode: "PLZ",
 			city: "Stadt",
@@ -503,8 +521,8 @@ export const de = {
 			headline: "Bestellung bearbeiten",
 			name: "Name",
 			phoneNumber: "Telefonnummer",
-			addressLine1: "Straße",
-			addressLine2: "Adresszusatz",
+			line1: "Straße",
+			line2: "Adresszusatz",
 			houseNumber: "Hausnummer",
 			postalCode: "PLZ",
 			city: "Stadt",

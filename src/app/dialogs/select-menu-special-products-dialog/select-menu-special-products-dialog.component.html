@@ -106,7 +106,7 @@
 				<dav-button
 					size="sm"
 					color="primary"
-					[disabled]="allItemHandler.isEmpty()"
+					[disabled]="isSubmitDisabled()"
 					(click)="submit()"
 				>
 					{{ actionsLocale.add }}

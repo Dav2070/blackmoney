@@ -1,0 +1,40 @@
+<div class="variation-card">
+	<div class="variation-card-header">
+		<h3>{{ variation.name }}</h3>
+		<dav-icon-button
+			size="xs"
+			[tooltip]="locale.options"
+			(click)="onContextMenuClick($event)"
+		>
+			<fa-icon [icon]="faEllipsis"></fa-icon>
+		</dav-icon-button>
+	</div>
+
+	<div class="variation-card-items">
+		@if (variation.variationItems?.length > 0) {
+			@for (item of variation.variationItems; track item.uuid) {
+				<div class="variation-item">
+					<span class="item-name">{{ item.name }}</span>
+					<span class="item-price">{{
+						formatPrice(item.additionalCost)
+					}}</span>
+					<dav-icon-button
+						size="xs"
+						[tooltip]="locale.options"
+						(click)="onItemContextMenuClick($event, item)"
+					>
+						<fa-icon [icon]="faEllipsis"></fa-icon>
+					</dav-icon-button>
+				</div>
+			}
+		} @else {
+			<p class="no-items-message">{{ locale.noVariationItems }}</p>
+		}
+	</div>
+
+	<div class="variation-card-footer">
+		<dav-button class="add-item-button" (click)="onAddItemClick()">
+			{{ locale.addVariationItem }}
+		</dav-button>
+	</div>
+</div>

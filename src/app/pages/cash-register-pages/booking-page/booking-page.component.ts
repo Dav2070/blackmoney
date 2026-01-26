@@ -807,7 +807,6 @@ export class BookingPageComponent {
 		variationCombinations: { [key: string]: number }
 	}) {
 		this.productVariationsCombinationsDialog.hide()
-
 		const variationCombinations = event.variationCombinations
 
 		// Determine which item contains the variations
@@ -824,6 +823,7 @@ export class BookingPageComponent {
 			const orderItemVariation = targetItem.orderItemVariations[i]
 			const key = orderItemVariation.variationItems
 				.map(vi => vi.uuid)
+				.sort()
 				.join(",")
 
 			if (variationCombinations[key] !== undefined) {
@@ -1009,18 +1009,37 @@ export class BookingPageComponent {
 	async sendOrderItem(orderItem: OrderItem) {
 		const orderItemVariations: { uuid: string; count: number }[] = []
 
-		for (let variation of orderItem.orderItemVariations) {
+		// Bei Special-Items sind die Variationen in orderItems[0] verschachtelt
+		const sourceItem =
+			orderItem.type === OrderItemType.Special &&
+			orderItem.orderItems?.length > 0
+				? orderItem.orderItems[0]
+				: orderItem
+
+		for (let variation of sourceItem.orderItemVariations || []) {
 			orderItemVariations.push({
 				uuid: variation.uuid,
 				count: variation.count
 			})
 		}
 
-		await this.apiService.updateOrderItem(`uuid`, {
-			uuid: orderItem.uuid,
-			count: orderItem.count,
-			orderItemVariations
-		})
+		// Bei Special-Items muss das verschachtelte orderItem aktualisiert werden
+		if (
+			orderItem.type === OrderItemType.Special &&
+			orderItem.orderItems?.length > 0
+		) {
+			await this.apiService.updateOrderItem(`uuid`, {
+				uuid: orderItem.orderItems[0].uuid,
+				count: orderItem.orderItems[0].count,
+				orderItemVariations
+			})
+		} else {
+			await this.apiService.updateOrderItem(`uuid`, {
+				uuid: orderItem.uuid,
+				count: orderItem.count,
+				orderItemVariations
+			})
+		}
 
 		this.showTotal()
 	}
@@ -1279,7 +1298,7 @@ export class BookingPageComponent {
 				const specialOrderItem: OrderItemCard = {
 					uuid: crypto.randomUUID(),
 					type: OrderItemType.Special,
-					count: 1,
+					count: processedItem.count,
 					order: null,
 					offer: this.selectedProduct.offer,
 					product: {

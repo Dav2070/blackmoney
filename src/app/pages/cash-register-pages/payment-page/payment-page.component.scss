@@ -2,6 +2,7 @@
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: 1fr;
+	gap: 32px;
 	height: 100%;
 	width: 100%;
 	background-color: var(--dav-color-surface);
@@ -13,7 +14,6 @@
 	display: grid;
 	grid-template-rows: 1fr auto;
 	overflow: hidden;
-	margin: 0 16px;
 }
 
 .orders-container {
@@ -54,7 +54,7 @@
 	z-index: 1;
 
 	p {
-		margin: 16px;
+		margin: 16px 16px 0;
 		text-align: right;
 		color: var(--dav-color-on-surface);
 	}
@@ -65,7 +65,6 @@
 	display: grid;
 	grid-template-rows: 1fr auto;
 	overflow: hidden;
-	margin: 0 16px;
 }
 
 .bills-container {

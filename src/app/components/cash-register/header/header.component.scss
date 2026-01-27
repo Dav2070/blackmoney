@@ -1,14 +1,23 @@
 .header-container {
+	margin: 0 16px;
+	border-bottom: 1px solid var(--dav-color-outline-variant);
+}
+
+.header-content {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	color: var(--dav-color-on-surface);
-	padding: 0 16px;
+	opacity: 0.75;
+	transition: 300ms;
+}
+
+.header-content:hover {
+	opacity: 1;
 }
 
 .logo-container {
 	display: inline-flex;
-	color: var(--dav-color-on-surface);
 	background-color: transparent;
 	font-size: 26px;
 	padding: 8px 16px;

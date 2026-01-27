@@ -938,6 +938,34 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createCategory(
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			name: string
+		}
+	): Promise<ApolloResult<{ createCategory: CategoryResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createCategory: CategoryResource }>({
+				mutation: gql`
+					mutation CreateCategory(
+						$restaurantUuid: String!
+						$name: String!
+					) {
+						createCategory(
+							restaurantUuid: $restaurantUuid
+							name: $name
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async updateCategory(
 		queryData: string,
 		variables: {

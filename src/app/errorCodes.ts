@@ -1,6 +1,7 @@
 //#region Api errors
 export const printerAlreadyExists = "PRINTER_ALREADY_EXISTS"
 export const tableAlreadyExists = "TABLE_ALREADY_EXISTS"
+export const categoryNameAlreadyInUse = "CATEGORY_NAME_ALREADY_IN_USE"
 //#endregion
 
 //#region Session & authentication

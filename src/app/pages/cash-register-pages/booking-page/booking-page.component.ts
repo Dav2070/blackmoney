@@ -35,8 +35,10 @@ import { OrderItemCard } from "src/app/types/orderItemCard"
 import { Table } from "src/app/models/Table"
 import { Room } from "src/app/models/Room"
 import { VariationItem } from "src/app/models/VariationItem"
+import { Variation } from "src/app/models/Variation"
+import { Offer } from "src/app/models/Offer"
 import { Order } from "src/app/models/Order"
-import { AddProductsInput, OrderItemType } from "src/app/types"
+import { AddOrderItemInput, OrderItemType } from "src/app/types"
 import { BillsOverviewDialogComponent } from "src/app/dialogs/bills-overview-dialog/bills-overview-dialog.component"
 import { SelectTableDialogComponent } from "src/app/dialogs/select-table-dialog/select-table-dialog.component"
 import { SelectProductDialogComponent } from "src/app/dialogs/select-product-dialog/select-product-dialog.component"
@@ -50,13 +52,13 @@ import { digitKeyRegex, numpadKeyRegex } from "src/app/constants"
 import {
 	calculateTotalPriceOfOrderItem,
 	convertCategoryResourceToCategory,
-	convertOrderItemResourceToOrderItem,
 	convertOrderResourceToOrder,
 	formatPrice,
 	showToast
 } from "src/app/utils"
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
+import { VariationComparer } from "src/app/models/cash-register/order-item-handling/variation-comparer"
 import { ApiService } from "src/app/services/api-service"
 
 const mobileBreakpoint = 860
@@ -88,8 +90,11 @@ export class BookingPageComponent {
 	formatPrice = formatPrice
 	OrderItemType = OrderItemType
 	priceCalculator = new PriceCalculator()
+	variationComparer = new VariationComparer()
 	categories: Category[] = []
 	selectedInventory: Product[] = []
+	offers: Offer[] = []
+	variations: Variation[] = []
 	selectedCategory: string = ""
 	productsLoading: boolean = true
 	ordersLoading: boolean = true
@@ -314,6 +319,22 @@ export class BookingPageComponent {
 			)
 		}
 
+		// Extract offers and variations from loaded menu data
+		this.offers = []
+		this.variations = []
+		for (const category of this.categories) {
+			for (const product of category.products) {
+				if (product.offer) {
+					this.offers.push(product.offer)
+				}
+				for (const variation of product.variations) {
+					if (!this.variations.find(v => v.uuid === variation.uuid)) {
+						this.variations.push(variation)
+					}
+				}
+			}
+		}
+
 		if (this.categories.length > 0) {
 			this.selectCategory(this.categories[0])
 		}
@@ -470,7 +491,10 @@ export class BookingPageComponent {
 			if (product.variations.length === 0) {
 				newItem.count = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
 
-				const addedItem = this.stagedItems.pushNewItem(newItem)
+				const addedItem = this.stagedItems.pushNewItem(
+					newItem,
+					this.bookedItems
+				)
 				this.selectedOrderItem = addedItem
 				this.tmpAllItemHandler = this.stagedItems
 				this.showTotal(false)
@@ -739,7 +763,7 @@ export class BookingPageComponent {
 			}
 
 			newItem.orderItemVariations.push({
-				uuid: crypto.randomUUID(),
+				uuid: null,
 				count: value,
 				variationItems
 			})
@@ -756,7 +780,10 @@ export class BookingPageComponent {
 
 			incoming.orderItems = [newItem]
 			incoming.count = newItem.count
-			const addedItem = this.stagedItems.pushNewItem(incoming)
+			const addedItem = this.stagedItems.pushNewItem(
+				incoming,
+				this.bookedItems
+			)
 			this.selectedOrderItem = addedItem
 			this.tmpAllItemHandler = this.stagedItems
 		} else {
@@ -764,7 +791,10 @@ export class BookingPageComponent {
 			for (let variation of newItem.orderItemVariations) {
 				newItem.count += variation.count
 			}
-			const addedItem = this.stagedItems.pushNewItem(newItem)
+			const addedItem = this.stagedItems.pushNewItem(
+				newItem,
+				this.bookedItems
+			)
 			this.selectedOrderItem = addedItem
 			this.tmpAllItemHandler = this.stagedItems
 		}
@@ -886,29 +916,36 @@ export class BookingPageComponent {
 	async sendOrder() {
 		this.sendOrderLoading = true
 		this.bottomSheet.nativeElement.snap("bottom")
-		let tmpProductArray: AddProductsInput[] = []
+		let tmpProductArray: AddOrderItemInput[] = []
 
 		for (const item of this.stagedItems.getAllPickedItems().values()) {
 			const isDiverseItem = this.isDiverseOrderItem(item)
 
+			// Generate UUID for new items (items without UUID)
+			const itemUuid = item.uuid || crypto.randomUUID()
+
 			tmpProductArray.push({
-				uuid: isDiverseItem ? undefined : item.product.uuid,
+				uuid: itemUuid,
+				productUuid: item.product.uuid,
 				count: item.count,
 				discount: item.discount,
 				diversePrice: isDiverseItem ? item.diversePrice : undefined,
-				type: isDiverseItem ? item.type : undefined,
+				type: item.type,
 				notes: item.notes,
 				takeAway: item.takeAway,
 				course: item.course,
 				offerUuid: item.offer?.uuid,
 				variations: item.orderItemVariations?.map(variation => ({
+					uuid: variation.uuid || crypto.randomUUID(),
 					count: variation.count,
 					variationItemUuids: variation.variationItems.map(vi => vi.uuid)
 				})),
 				orderItems: item.orderItems?.map(orderItem => ({
+					uuid: orderItem.uuid || crypto.randomUUID(),
 					productUuid: orderItem.product.uuid,
 					count: orderItem.count,
 					variations: orderItem.orderItemVariations?.map(variation => ({
+						uuid: variation.uuid || crypto.randomUUID(),
 						count: variation.count,
 						variationItemUuids: variation.variationItems.map(
 							vi => vi.uuid
@@ -916,138 +953,33 @@ export class BookingPageComponent {
 					}))
 				}))
 			})
+
+			// Set UUID on item if it was newly generated
+			if (!item.uuid) {
+				item.uuid = itemUuid
+			}
 		}
 
-		let items = await this.apiService.addProductsToOrder(
-			`
-				orderItems {
-					total
-					items {
-						uuid
-						count
-						type
-						discount
-						diversePrice
-						notes
-						takeAway
-						course
-						order {
-							uuid
-						}
-						product {
-							uuid
-							name
-							price
-							shortcut
-							variations {
-								total
-								items {
-									uuid
-									name
-									variationItems {
-										total
-										items {
-											uuid
-											name
-											additionalCost
-										}
-									}
-								}
-							}
-						}
-						offer {
-							id
-							uuid
-							offerType
-							discountType
-							offerValue
-						}
-						orderItemVariations {
-							total
-							items {
-								uuid
-								count
-								variationItems {
-									total
-									items {
-										uuid
-										name
-										additionalCost
-									}
-								}
-							}
-						}
-						orderItems {
-							items {
-								uuid
-								count
-								type
-								discount
-								notes
-								takeAway
-								course
-								product {
-									uuid
-									name
-									type
-									price
-									shortcut
-									variations {
-										total
-										items {
-											uuid
-											name
-											variationItems {
-												total
-												items {
-													uuid
-													name
-													additionalCost
-												}
-											}
-										}
-									}
-								}
-								offer {
-									id
-									uuid
-									offerType
-									discountType
-									offerValue
-								}
-								orderItemVariations {
-									total
-									items {
-										uuid
-										count
-										variationItems {
-											total
-											items {
-												uuid
-												name
-												additionalCost
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			`,
-			{
-				uuid: this.orderUuid,
-				products: tmpProductArray
-			}
-		)
+		// OPTIMIZATION: No need to fetch data from backend, just wait for success
+		let result = await this.apiService.addProductsToOrder(`uuid`, {
+			uuid: this.orderUuid,
+			products: tmpProductArray
+		})
 
-		// Setze alle Items direkt ohne Merging-Logik (Backend hat bereits gemerged)
-		this.bookedItems.setItems(
-			items.data.addProductsToOrder.orderItems.items.map(item =>
-				convertOrderItemResourceToOrderItem(item)
-			)
-		)
+		// Check for errors
+		if (!result || !result.data) {
+			console.error("GraphQL Error:", result)
+			showToast("Fehler beim Hinzufügen der Produkte")
+			this.sendOrderLoading = false
+			return
+		}
 
+		// Success! Merge staged items to booked items locally
+		for (const stagedItem of this.stagedItems.getAllPickedItems().values()) {
+			this.bookedItems.pushNewItem(stagedItem)
+		}
+
+		// Clear staged items
 		this.stagedItems.clearItems()
 
 		this.showTotal()
@@ -1199,14 +1131,14 @@ export class BookingPageComponent {
 
 				// Erstelle eine shallow copy mit allen Attributen und kopiere die Sub-Items tief
 				const copiedOrderItems = (orderItem.orderItems ?? []).map(sub => {
-					const copiedSub = { ...sub, uuid: crypto.randomUUID() }
+					const copiedSub = { ...sub }
 					const perUnitSubCount = (sub.count ?? 0) / originalParentCount
 					copiedSub.count = Math.round(perUnitSubCount * delta)
 
 					if (sub.orderItemVariations?.length) {
 						copiedSub.orderItemVariations = sub.orderItemVariations.map(
 							v => {
-								const copiedVar = { ...v, uuid: crypto.randomUUID() }
+								const copiedVar = { ...v }
 								const perUnitVarCount =
 									(v.count ?? 0) / originalParentCount
 								copiedVar.count = Math.round(perUnitVarCount * delta)
@@ -1227,7 +1159,7 @@ export class BookingPageComponent {
 				}
 
 				// Delegiere an den AllItemHandler / Merger
-				const addedItem = handler.pushNewItem(incoming)
+				const addedItem = handler.pushNewItem(incoming, this.bookedItems)
 
 				this.selectedOrderItem = addedItem
 				this.tmpAllItemHandler = handler
@@ -1350,7 +1282,10 @@ export class BookingPageComponent {
 			const discount = this.priceCalculator.calculateDiscount(menuOrderItem)
 			menuOrderItem.discount = discount
 
-			const addedItem = this.stagedItems.pushNewItem(menuOrderItem)
+			const addedItem = this.stagedItems.pushNewItem(
+				menuOrderItem,
+				this.bookedItems
+			)
 			this.selectedOrderItem = addedItem
 			this.tmpAllItemHandler = this.stagedItems
 		} else {
@@ -1387,8 +1322,10 @@ export class BookingPageComponent {
 					this.priceCalculator.calculateDiscount(specialOrderItem)
 				specialOrderItem.discount = discount
 
-				lastSpecialOrderItem =
-					this.stagedItems.pushNewItem(specialOrderItem)
+				lastSpecialOrderItem = this.stagedItems.pushNewItem(
+					specialOrderItem,
+					this.bookedItems
+				)
 			}
 			this.selectedOrderItem = lastSpecialOrderItem
 			this.tmpAllItemHandler = this.stagedItems

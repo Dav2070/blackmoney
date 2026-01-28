@@ -18,7 +18,7 @@ import { AllItemHandler } from "src/app/models/cash-register/order-item-handling
 import { OrderItem } from "src/app/models/OrderItem"
 import { Table } from "src/app/models/Table"
 import { calculateTotalPriceOfOrderItem, formatPrice } from "src/app/utils"
-import { AddProductVariationInput, PaymentMethod } from "src/app/types"
+import { AddOrderItemVariationInput, PaymentMethod } from "src/app/types"
 
 @Component({
 	templateUrl: "./payment-page.component.html",
@@ -294,10 +294,11 @@ export class PaymentPageComponent {
 		await this.apiService.addProductsToOrder("uuid", {
 			uuid: newOrder.data.createOrder.uuid,
 			products: this.activeBill.getAllPickedItems().map(item => {
-				let variations: AddProductVariationInput[] = []
+				let variations: AddOrderItemVariationInput[] = []
 
 				if (item.orderItemVariations.length > 0) {
 					variations = item.orderItemVariations.map(variation => ({
+						uuid: variation.uuid,
 						variationItemUuids: variation.variationItems.map(v => v.uuid),
 						count: variation.count
 					}))

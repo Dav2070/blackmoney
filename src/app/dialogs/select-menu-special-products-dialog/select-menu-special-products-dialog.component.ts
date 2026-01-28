@@ -217,8 +217,6 @@ export class SelectMenuSpecialProductsDialogComponent {
 				count: value,
 				variationItems
 			})
-
-			totalCount += value
 		}
 
 		if (this.selectedProduct?.type === OrderItemType.Special) {

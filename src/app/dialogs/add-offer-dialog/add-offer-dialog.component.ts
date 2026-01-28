@@ -90,7 +90,7 @@ export class AddOfferDialogComponent {
 			// Für Specials: Erstelle ein Standard-Item
 			this.offerItems = [
 				{
-					uuid: crypto.randomUUID(),
+					uuid: null,
 					name: "Produkte",
 					maxSelections: 1,
 					products: [],

@@ -19,10 +19,10 @@ import {
 	PrintRuleResource,
 	UserRole,
 	PrinterResource,
-	AddProductsInput,
 	ProductType,
 	PrintRuleType,
-	ReservationResource
+	ReservationResource,
+	AddOrderItemInput
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -1109,7 +1109,7 @@ export class ApiService {
 		queryData: string,
 		variables: {
 			uuid: string
-			products: AddProductsInput[]
+			products: AddOrderItemInput[]
 		}
 	): Promise<ApolloResult<{ addProductsToOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
@@ -1117,7 +1117,7 @@ export class ApiService {
 				mutation: gql`
 					mutation AddProductsToOrder(
 						$uuid: String!
-						$products: [AddProductsInput!]!
+						$products: [AddOrderItemInput!]!
 					) {
 						addProductsToOrder(
 							uuid: $uuid
@@ -1137,10 +1137,7 @@ export class ApiService {
 		queryData: string,
 		variables: {
 			uuid: string
-			products: {
-				uuid: string
-				count: number
-			}[]
+			products: AddOrderItemInput[]
 		}
 	): Promise<ApolloResult<{ removeProductsFromOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
@@ -1148,7 +1145,7 @@ export class ApiService {
 				mutation: gql`
 					mutation RemoveProductsFromOrder(
 						$uuid: String!
-						$products: [AddProductsInput!]!
+						$products: [AddOrderItemInput!]!
 					) {
 						removeProductsFromOrder(
 							uuid: $uuid

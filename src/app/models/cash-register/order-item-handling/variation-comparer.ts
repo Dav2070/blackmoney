@@ -1,5 +1,7 @@
+import { Order } from "../../Order"
 import { OrderItem } from "../../OrderItem"
 import { OrderItemVariation } from "../../OrderItemVariation"
+import { VariationItem } from "../../VariationItem"
 
 export class VariationComparer {
 	// Merge each incoming variation into existing.orderItemVariations:
@@ -15,9 +17,7 @@ export class VariationComparer {
 				match.count += incVar.count
 			} else {
 				// push deep copy to avoid mutating incoming
-				existing.orderItemVariations.push(
-					structuredClone(incVar)
-				)
+				existing.orderItemVariations.push(structuredClone(incVar))
 			}
 		}
 	}
@@ -37,19 +37,42 @@ export class VariationComparer {
 	}
 
 	// Two OrderItemVariation are considered equal if their variationItems arrays
-	// contain the same item ids/uuids (count and variation/variation-uuid ignored).
+	// contain the same item ids (count and variation-uuid ignored).
 	isVariationItemEqual(a: OrderItemVariation, b: OrderItemVariation): boolean {
 		const aItems = (a?.variationItems ?? []).map(vi => vi.id)
 		const bItems = (b?.variationItems ?? []).map(vi => vi.id)
 
 		if (aItems.length !== bItems.length) return false
 
-		aItems.sort((a, b) => (a - b))
-		bItems.sort((a, b) => (a - b))
+		aItems.sort((a, b) => a - b)
+		bItems.sort((a, b) => a - b)
 
 		for (let i = 0; i < aItems.length; i++) {
 			if (aItems[i] !== bItems[i]) return false
 		}
 		return true
+	}
+
+	/**
+	 * Findet eine ähnliche OrderItemVariation in einem OrderItem basierend auf den übergebenen VariationItems
+	 * @param orderItem Das OrderItem, in dem gesucht werden soll
+	 * @param incomingVariationItems Die VariationItems, für die eine passende Variation gesucht wird
+	 * @returns Die gefundene OrderItemVariation oder null
+	 */
+	findSimilarVariationItem(
+		orderItem: OrderItem,
+		incomingOrderItemVariation: OrderItemVariation
+	): OrderItemVariation | null {
+		if (
+			!orderItem?.orderItemVariations ||
+			orderItem.orderItemVariations.length === 0
+		) {
+			return null
+		}
+
+		// Verwende bestehende findMergeTarget Methode
+		const result =
+			this.findMergeTarget(orderItem, incomingOrderItemVariation) || null
+		return result
 	}
 }

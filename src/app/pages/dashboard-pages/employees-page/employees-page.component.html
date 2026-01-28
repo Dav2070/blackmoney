@@ -1,0 +1,35 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			addButtonVisible
+			backButtonVisible
+			(addButtonClick)="showAddEmployeeDialog()"
+			(backButtonClick)="navigateBack()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			<dav-list>
+				@for (user of users; track user.uuid) {
+					<dav-list-item
+						[headline]="user.name"
+						[href]="'/dashboard/employees/' + user.uuid"
+						(click)="navigateToEmployee($event, user)"
+					></dav-list-item>
+				}
+			</dav-list>
+		}
+	</div>
+</div>
+
+<app-add-employee-dialog
+	#addEmployeeDialog
+	[nameError]="nameError"
+	[loading]="addEmployeeDialogLoading"
+	[restaurants]="restaurants"
+	(primaryButtonClick)="addEmployeeDialogPrimaryButtonClick($event)"
+	(clearErrors)="nameError = ''"
+></app-add-employee-dialog>

@@ -73,7 +73,7 @@ export class LandingPageComponent {
 				`${window.location.origin}/login`
 			)
 		} else if ((await this.authService.getAccessToken()) != null) {
-			this.router.navigate(["user"])
+			this.router.navigate(["dashboard"])
 		} else {
 			this.router.navigate(["login"])
 		}

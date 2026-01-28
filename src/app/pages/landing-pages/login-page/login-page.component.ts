@@ -244,8 +244,8 @@ export class LoginPageComponent {
 				// Redirect to new device page, to set a name for this register client
 				this.router.navigate(["device-setup"])
 			} else {
-				// Redirect to user page
-				this.router.navigate(["user"])
+				// Redirect to dashboard page
+				this.router.navigate(["dashboard"])
 			}
 		} else {
 			const errors = getGraphQLErrorCodes(loginResponse)

@@ -1,0 +1,116 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			editButtonVisible
+			deleteButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddTableDialog()"
+			(editButtonClick)="showEditRoomDialog()"
+			(deleteButtonClick)="showDeleteRoomDialog()"
+		>
+			{{ room?.name }}
+
+			<div class="header-icons-container" slot="icons">
+				<dav-icon-button
+					size="sm"
+					[href]="
+						`/dashboard/restaurants/${restaurantUuid}/rooms/${roomUuid}/combinations`
+					"
+					[tooltip]="locale.showTableCombinations"
+					(click)="navigateToTableCombinationsPage($event)"
+				>
+					<fa-icon [icon]="faObjectUnion"></fa-icon>
+				</dav-icon-button>
+			</div>
+		</dav-header>
+
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			@for (table of tables; track table.name) {
+				<dav-card>
+					<div class="table-card-container">
+						<div class="table-card-content">
+							<p>
+								<strong>Nummer: {{ table.name }}</strong>
+							</p>
+							<p>Sitzplätze: {{ table.seats }}</p>
+						</div>
+
+						<dav-icon-button
+							size="xs"
+							[tooltip]="locale.options"
+							(click)="showTableItemContextMenu($event, table)"
+						>
+							<fa-icon [icon]="faEllipsis"></fa-icon>
+						</dav-icon-button>
+					</div>
+				</dav-card>
+			}
+		}
+	</div>
+</div>
+
+<app-edit-room-dialog
+	#editRoomDialog
+	[name]="editRoomDialogName"
+	[nameError]="editRoomDialogNameError"
+	[loading]="editRoomDialogLoading"
+	(primaryButtonClick)="editRoomDialogPrimaryButtonClick($event)"
+></app-edit-room-dialog>
+
+<app-delete-room-dialog
+	#deleteRoomDialog
+	[name]="room?.name ?? ''"
+	[loading]="deleteRoomDialogLoading"
+	(primaryButtonClick)="deleteRoomDialogPrimaryButtonClick()"
+></app-delete-room-dialog>
+
+<app-add-table-dialog
+	#addTableDialog
+	[loading]="addTableDialogLoading"
+	[nameError]="addTableDialogNameError"
+	[seatsError]="addTableDialogSeatsError"
+	(primaryButtonClick)="addTableDialogPrimaryButtonClick($event)"
+	(clearErrors)="addTableDialogNameError = ''; addTableDialogSeatsError = ''"
+></app-add-table-dialog>
+
+<app-edit-table-dialog
+	#editTableDialog
+	[loading]="editTableDialogLoading"
+	[name]="editTableDialogName"
+	[seats]="editTableDialogSeats"
+	[seatsError]="editTableDialogSeatsError"
+	(primaryButtonClick)="editTableDialogPrimaryButtonClick($event)"
+	(clearErrors)="editTableDialogSeatsError = ''"
+></app-edit-table-dialog>
+
+<app-delete-table-dialog
+	#deleteTableDialog
+	[loading]="deleteTableDialogLoading"
+	[name]="deleteTableDialogName"
+	(primaryButtonClick)="deleteTableDialogPrimaryButtonClick()"
+></app-delete-table-dialog>
+
+<dav-context-menu
+	#tableItemContextMenu
+	[visible]="tableItemContextMenuVisible"
+	[posX]="tableItemContextMenuPositionX"
+	[posY]="tableItemContextMenuPositionY"
+>
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="showEditTableDialog()"
+	>
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="showDeleteTableDialog()"
+	>
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>

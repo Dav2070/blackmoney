@@ -50,13 +50,12 @@ export class MetaComparer {
 			const aSubs = existing.orderItems
 			const bSubs = incoming.orderItems
 
-			const result = this.areOrderItemsArrayEqualForMerge(
+			return this.areOrderItemsArrayEqualForMerge(
 				aSubs,
 				bSubs,
 				existing.count,
 				incoming.count
 			)
-			return result
 		}
 
 		//Zusatz Vergleich für Diverse Artikel

@@ -132,7 +132,9 @@ export class AllItemHandler {
 													name
 													variationItems {
 														total
-														items {																id															uuid
+														items {
+															id
+															uuid
 															name
 															additionalCost
 														}

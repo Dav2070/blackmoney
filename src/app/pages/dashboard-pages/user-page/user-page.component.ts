@@ -61,40 +61,40 @@ export class UserPageComponent {
 	async logout() {
 		await this.authService.removeAccessToken()
 		this.logoutDialog.hide()
-		this.router.navigate(["/"])
+		this.router.navigate([""])
 	}
 
 	navigateToLandingOverviewPage() {
-		this.router.navigate(["/"])
+		this.router.navigate([""])
 	}
 
 	navigateToGeneralSettingsPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "settings"])
+		this.router.navigate(["dashboard", "settings"])
 	}
 
 	navigateToDashboardPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["dashboard"])
+		this.router.navigate(["dashboard", "tables"])
 	}
 
 	navigateToEmployeesPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "employees"])
+		this.router.navigate(["dashboard", "employees"])
 	}
 
 	navigateToRestaurantsPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants"])
+		this.router.navigate(["dashboard", "restaurants"])
 	}
 
 	navigateToReservationsPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "reservations"])
+		this.router.navigate(["dashboard", "reservations"])
 	}
 }

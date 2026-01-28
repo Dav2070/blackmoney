@@ -138,7 +138,7 @@ export class TableCombinationsPageComponent {
 
 	navigateBack() {
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.restaurantUuid,
 			"rooms",

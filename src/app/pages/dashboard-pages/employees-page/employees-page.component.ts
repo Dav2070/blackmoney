@@ -87,13 +87,13 @@ export class EmployeesPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user"])
+		this.router.navigate(["dashboard"])
 	}
 
 	navigateToEmployee(event: MouseEvent, user: User) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "employees", user.uuid])
+		this.router.navigate(["dashboard", "employees", user.uuid])
 	}
 
 	async addEmployeeDialogPrimaryButtonClick(event: {

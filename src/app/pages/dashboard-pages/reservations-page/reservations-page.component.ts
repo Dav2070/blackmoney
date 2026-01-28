@@ -93,7 +93,7 @@ export class ReservationsPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user"])
+		this.router.navigate(["dashboard"])
 	}
 
 	async loadReservations() {

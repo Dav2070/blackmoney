@@ -71,14 +71,14 @@ export class RegistersPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user", "restaurants", this.uuid])
+		this.router.navigate(["dashboard", "restaurants", this.uuid])
 	}
 
 	navigateToRegisterPage(event: MouseEvent, register: Register) {
 		event.preventDefault()
 
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.uuid,
 			"registers",

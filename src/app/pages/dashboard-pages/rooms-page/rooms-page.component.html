@@ -16,7 +16,7 @@
 				@for (room of rooms; track room.name) {
 					<dav-list-item
 						[headline]="room.name"
-						[href]="'/user/restaurants/' + uuid + '/rooms/' + room.uuid"
+						[href]="'/dashboard/restaurants/' + uuid + '/rooms/' + room.uuid"
 						(click)="navigateToTablePage($event, room)"
 					></dav-list-item>
 				}

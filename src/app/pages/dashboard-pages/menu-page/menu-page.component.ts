@@ -31,14 +31,14 @@ export class MenuPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user", "restaurants", this.uuid])
+		this.router.navigate(["dashboard", "restaurants", this.uuid])
 	}
 
 	navigateToCategoriesPage(event: MouseEvent) {
 		event.preventDefault()
 
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.uuid,
 			"menu",
@@ -50,7 +50,7 @@ export class MenuPageComponent {
 		event.preventDefault()
 
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.uuid,
 			"menu",

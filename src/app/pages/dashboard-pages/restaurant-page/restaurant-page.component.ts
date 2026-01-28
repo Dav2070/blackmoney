@@ -126,37 +126,37 @@ export class RestaurantPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user", "restaurants"])
+		this.router.navigate(["dashboard", "restaurants"])
 	}
 
 	navigateToRegistersPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", this.uuid, "registers"])
+		this.router.navigate(["dashboard", "restaurants", this.uuid, "registers"])
 	}
 
 	navigateToPrintersPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", this.uuid, "printers"])
+		this.router.navigate(["dashboard", "restaurants", this.uuid, "printers"])
 	}
 
 	navigateToRoomsPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", this.uuid, "rooms"])
+		this.router.navigate(["dashboard", "restaurants", this.uuid, "rooms"])
 	}
 
 	navigateToTimePage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", this.uuid, "openingTime"])
+		this.router.navigate(["dashboard", "restaurants", this.uuid, "openingTime"])
 	}
 
 	navigateToMenuPage(event: MouseEvent) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", this.uuid, "menu"])
+		this.router.navigate(["dashboard", "restaurants", this.uuid, "menu"])
 	}
 
 	showEditRestaurantNameDialog() {

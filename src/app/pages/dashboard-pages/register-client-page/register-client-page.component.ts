@@ -157,7 +157,7 @@ export class RegisterClientPageComponent {
 
 	navigateBack() {
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.restaurantUuid,
 			"registers",

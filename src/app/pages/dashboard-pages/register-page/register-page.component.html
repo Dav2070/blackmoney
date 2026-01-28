@@ -11,7 +11,7 @@
 				@for (registerClient of registerClients; track registerClient.uuid) {
 					<dav-list-item
 						[headline]="registerClient.name || registerClient.serialNumber"
-						[href]="'/user/restaurants/' + restaurantUuid + '/registers/' + register.uuid + '/clients/' + registerClient.uuid"
+						[href]="'/dashboard/restaurants/' + restaurantUuid + '/registers/' + register.uuid + '/clients/' + registerClient.uuid"
 						(click)="navigateToRegisterClientPage($event, registerClient)"
 					></dav-list-item>
 				}

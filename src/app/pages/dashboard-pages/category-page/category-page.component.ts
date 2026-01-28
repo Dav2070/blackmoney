@@ -141,7 +141,7 @@ export class CategoryPageComponent {
 
 	navigateBack() {
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.restaurantUuid,
 			"menu",

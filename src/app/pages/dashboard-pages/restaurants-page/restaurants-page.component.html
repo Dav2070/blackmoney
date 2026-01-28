@@ -11,7 +11,7 @@
 				@for (restaurant of restaurants; track restaurant.uuid) {
 					<dav-list-item
 						[headline]="restaurant.name"
-						[href]="'/user/restaurants/' + restaurant.uuid"
+						[href]="'/dashboard/restaurants/' + restaurant.uuid"
 						(click)="navigateToRestaurant($event, restaurant)"
 					></dav-list-item>
 				}

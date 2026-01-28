@@ -111,7 +111,7 @@ export class VariationsPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user", "restaurants", this.uuid, "menu"])
+		this.router.navigate(["dashboard", "restaurants", this.uuid, "menu"])
 	}
 
 	showAddVariationDialog() {

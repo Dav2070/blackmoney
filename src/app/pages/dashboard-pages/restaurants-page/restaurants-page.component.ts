@@ -53,12 +53,12 @@ export class RestaurantsPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user"])
+		this.router.navigate(["dashboard"])
 	}
 
 	navigateToRestaurant(event: MouseEvent, restaurant: Restaurant) {
 		event.preventDefault()
 
-		this.router.navigate(["user", "restaurants", restaurant.uuid])
+		this.router.navigate(["dashboard", "restaurants", restaurant.uuid])
 	}
 }

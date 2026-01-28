@@ -194,7 +194,7 @@ export class RoomPageComponent {
 
 		if (deleteRoomResponse.data?.deleteRoom != null) {
 			this.router.navigate([
-				"user",
+				"dashboard",
 				"restaurants",
 				this.restaurantUuid,
 				"rooms"
@@ -447,7 +447,7 @@ export class RoomPageComponent {
 		event.preventDefault()
 
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.restaurantUuid,
 			"rooms",
@@ -458,7 +458,7 @@ export class RoomPageComponent {
 
 	navigateBack() {
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.restaurantUuid,
 			"rooms"

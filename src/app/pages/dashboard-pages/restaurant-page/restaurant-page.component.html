@@ -96,7 +96,7 @@
 		<div class="actions-container">
 			<dav-icon-card
 				[text]="locale.manageRegisters"
-				[href]="'/user/restaurants/' + uuid + '/registers'"
+				[href]="'/dashboard/restaurants/' + uuid + '/registers'"
 				(click)="navigateToRegistersPage($event)"
 			>
 				<fa-icon [icon]="faCashRegister"></fa-icon>
@@ -104,7 +104,7 @@
 
 			<dav-icon-card
 				[text]="locale.managePrinters"
-				[href]="'/user/restaurants/' + uuid + '/printers'"
+				[href]="'/dashboard/restaurants/' + uuid + '/printers'"
 				(click)="navigateToPrintersPage($event)"
 			>
 				<fa-icon [icon]="faPrint"></fa-icon>
@@ -112,7 +112,7 @@
 
 			<dav-icon-card
 				[text]="locale.manageRooms"
-				[href]="'/user/restaurants/' + uuid + '/rooms'"
+				[href]="'/dashboard/restaurants/' + uuid + '/rooms'"
 				(click)="navigateToRoomsPage($event)"
 			>
 				<fa-icon [icon]="faSeat"></fa-icon>
@@ -120,7 +120,7 @@
 
 			<dav-icon-card
 				[text]="locale.manageTime"
-				[href]="'/user/restaurants/' + uuid + '/openingTime'"
+				[href]="'/dashboard/restaurants/' + uuid + '/openingTime'"
 				(click)="navigateToTimePage($event)"
 			>
 				<fa-icon [icon]="faClock"></fa-icon>
@@ -128,25 +128,25 @@
 
 			<!--Image for Restaurant-->
 			<!-- <dav-icon-card
-		[text]="locale.addPicture"
-		(click)="triggerFileInput(fileInput)"
-	>
-		<input
-			#fileInput
-			type="file"
-			accept="image/*"
-			(change)="onFileSelected($event)"
-			hidden
-		/>
-	</dav-icon-card>
+				[text]="locale.addPicture"
+				(click)="triggerFileInput(fileInput)"
+			>
+				<input
+					#fileInput
+					type="file"
+					accept="image/*"
+					(change)="onFileSelected($event)"
+					hidden
+				/>
+			</dav-icon-card>
 
-	<div class="image-preview" *ngIf="imageDataUrl">
-		<img [src]="imageDataUrl" />
-	</div> -->
+			<div class="image-preview" *ngIf="imageDataUrl">
+				<img [src]="imageDataUrl" />
+			</div> -->
 
 			<dav-icon-card
 				[text]="locale.manageMenu"
-				[href]="'/user/restaurants/' + uuid + '/menu'"
+				[href]="'/dashboard/restaurants/' + uuid + '/menu'"
 				(click)="navigateToMenuPage($event)"
 			>
 				<fa-icon [icon]="faMap"></fa-icon>

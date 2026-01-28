@@ -310,6 +310,6 @@ export class PrintersPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user", "restaurants", this.uuid])
+		this.router.navigate(["dashboard", "restaurants", this.uuid])
 	}
 }

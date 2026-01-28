@@ -14,7 +14,7 @@
 				@for (register of registers; track register.uuid) {
 					<dav-list-item
 						[headline]="register.name"
-						[href]="'/user/restaurants/' + uuid + '/registers/' + register.uuid"
+						[href]="'/dashboard/restaurants/' + uuid + '/registers/' + register.uuid"
 						(click)="navigateToRegisterPage($event, register)"
 					></dav-list-item>
 				}

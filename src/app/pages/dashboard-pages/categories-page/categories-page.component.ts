@@ -72,14 +72,14 @@ export class CategoriesPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user", "restaurants", this.uuid, "menu"])
+		this.router.navigate(["dashboard", "restaurants", this.uuid, "menu"])
 	}
 
 	navigateToProducts(event: Event, category: Category) {
 		event.preventDefault()
 
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.uuid,
 			"menu",

@@ -123,14 +123,14 @@ export class RoomsPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user", "restaurants", this.uuid])
+		this.router.navigate(["dashboard", "restaurants", this.uuid])
 	}
 
 	navigateToTablePage(event: MouseEvent, room: Room) {
 		event.preventDefault()
 
 		this.router.navigate([
-			"user",
+			"dashboard",
 			"restaurants",
 			this.uuid,
 			"rooms",

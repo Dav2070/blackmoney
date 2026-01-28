@@ -317,7 +317,7 @@ export class TableOverviewPageComponent {
 	}
 
 	navigateToUserPage() {
-		this.router.navigate(["user"])
+		this.router.navigate(["dashboard"])
 	}
 
 	navigateToTablePage(event: MouseEvent, tableUuid: string) {

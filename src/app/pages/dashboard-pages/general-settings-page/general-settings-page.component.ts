@@ -64,7 +64,7 @@ export class GeneralSettingsPageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user"])
+		this.router.navigate(["dashboard"])
 	}
 
 	themeDropdownChange(event: Event) {

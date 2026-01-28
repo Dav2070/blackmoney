@@ -16,7 +16,7 @@
 				@for (user of users; track user.uuid) {
 					<dav-list-item
 						[headline]="user.name"
-						[href]="'/user/employees/' + user.uuid"
+						[href]="'/dashboard/employees/' + user.uuid"
 						(click)="navigateToEmployee($event, user)"
 					></dav-list-item>
 				}

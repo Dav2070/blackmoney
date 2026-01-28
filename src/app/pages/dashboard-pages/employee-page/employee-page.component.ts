@@ -51,7 +51,7 @@ export class EmployeePageComponent {
 	}
 
 	navigateBack() {
-		this.router.navigate(["user", "employees"])
+		this.router.navigate(["dashboard", "employees"])
 	}
 
 	showResetPasswordDialog() {

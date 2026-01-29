@@ -1,0 +1,21 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header backButtonVisible (backButtonClick)="navigateBack()">
+			{{ register?.name }}
+		</dav-header>
+
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			<dav-list>
+				@for (registerClient of registerClients; track registerClient.uuid) {
+					<dav-list-item
+						[headline]="registerClient.name || registerClient.serialNumber"
+						[href]="'/dashboard/restaurants/' + restaurantUuid + '/registers/' + register.uuid + '/clients/' + registerClient.uuid"
+						(click)="navigateToRegisterClientPage($event, registerClient)"
+					></dav-list-item>
+				}
+			</dav-list>
+		}
+	</div>
+</div>

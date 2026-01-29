@@ -1,0 +1,33 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddRoomDialog()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else {
+			<dav-list>
+				@for (room of rooms; track room.name) {
+					<dav-list-item
+						[headline]="room.name"
+						[href]="'/dashboard/restaurants/' + uuid + '/rooms/' + room.uuid"
+						(click)="navigateToTablePage($event, room)"
+					></dav-list-item>
+				}
+			</dav-list>
+		}
+	</div>
+</div>
+
+<app-add-room-dialog
+	#addRoomDialog
+	[loading]="addRoomDialogLoading"
+	[nameError]="addRoomDialogNameError"
+	(primaryButtonClick)="addRoomDialogPrimaryButtonClick($event)"
+></app-add-room-dialog>

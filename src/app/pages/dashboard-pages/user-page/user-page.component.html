@@ -1,0 +1,73 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			(backButtonClick)="navigateToLandingOverviewPage()"
+		>
+			{{ title }}
+
+			<div class="header-icons-container" slot="icons">
+				<dav-icon-button
+					size="sm"
+					href="/user/settings"
+					[tooltip]="locale.generalSettings"
+					(click)="navigateToGeneralSettingsPage($event)"
+				>
+					<fa-icon [icon]="faGear"></fa-icon>
+				</dav-icon-button>
+
+				<dav-icon-button
+					size="sm"
+					[tooltip]="actionsLocale.logout"
+					(click)="showLogoutDialog()"
+				>
+					<fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
+				</dav-icon-button>
+			</div>
+		</dav-header>
+
+		<div class="actions-container">
+			<dav-icon-card
+				[text]="locale.goToDashboard"
+				href="dashboard"
+				(click)="navigateToDashboardPage($event)"
+			>
+				<fa-icon [icon]="faCashRegister"></fa-icon>
+			</dav-icon-card>
+
+			@if (
+				dataService.user != null &&
+				["OWNER", "ADMIN"].includes(dataService.user.role)
+			) {
+				<dav-icon-card
+					[text]="locale.manageEmployees"
+					href="user/employees"
+					(click)="navigateToEmployeesPage($event)"
+				>
+					<fa-icon [icon]="faUsers"></fa-icon>
+				</dav-icon-card>
+
+				<dav-icon-card
+					[text]="locale.manageRestaurants"
+					href="user/restaurants"
+					(click)="navigateToRestaurantsPage($event)"
+				>
+					<fa-icon [icon]="faShop"></fa-icon>
+				</dav-icon-card>
+
+				<dav-icon-card
+					[text]="locale.manageReservations"
+					href="user/reservations"
+					(click)="navigateToReservationsPage($event)"
+				>
+					<fa-icon [icon]="faCalendarCheck"></fa-icon>
+				</dav-icon-card>
+			}
+		</div>
+	</div>
+</div>
+
+<app-logout-dialog
+	#logoutDialog
+	(primaryButtonClick)="logout()"
+></app-logout-dialog>

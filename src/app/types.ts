@@ -232,8 +232,9 @@ export interface ReservationResource {
 	checkedIn: boolean
 }
 
-export interface AddProductsInput {
+export interface AddOrderItemInput {
 	uuid?: string
+	productUuid?: string
 	count: number
 	discount?: number
 	diversePrice?: number
@@ -242,18 +243,21 @@ export interface AddProductsInput {
 	takeAway?: boolean
 	course?: number
 	offerUuid?: string
-	variations?: AddProductVariationInput[]
-	orderItems?: AddProductOrderItemInput[]
+	variations?: AddOrderItemVariationInput[]
+	orderItems?: AddChildOrderItemInput[]
 }
 
-export interface AddProductVariationInput {
+export interface AddOrderItemVariationInput {
+	uuid?: string
 	variationItemUuids: string[]
 	count: number
 }
 
-export interface AddProductOrderItemInput {
+export interface AddChildOrderItemInput {
+	uuid?: string
 	productUuid: string
 	count: number
+	variations?: AddOrderItemVariationInput[]
 }
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"
@@ -290,6 +294,7 @@ export type Weekday =
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
 	| typeof ErrorCodes.tableAlreadyExists
+	| typeof ErrorCodes.categoryNameAlreadyInUse
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword

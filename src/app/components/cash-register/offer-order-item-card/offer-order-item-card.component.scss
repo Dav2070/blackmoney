@@ -41,6 +41,7 @@
 
 .offer-order-item-card-total-price {
 	grid-column: 4;
+	white-space: nowrap;
 }
 
 .offer-order-item-card-total-price > p {
@@ -70,6 +71,7 @@
 	color: var(--dav-color-outline);
 	font-weight: normal;
 	margin-left: 4px;
+	white-space: nowrap;
 }
 
 .offer-order-item-card-variation-unit-price {

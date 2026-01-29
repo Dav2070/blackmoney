@@ -114,8 +114,8 @@ export class SetPasswordPageComponent {
 					this.settingsService
 				)
 
-				// Redirect to user page
-				this.router.navigate(["user"])
+				// Redirect to dashboard page
+				this.router.navigate(["dashboard"])
 			} else {
 				// Redirect back to login page
 				this.router.navigate(["login"])

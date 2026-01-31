@@ -1342,4 +1342,50 @@ export class ApiService {
 			})
 			.toPromise()
 	}
+
+	async createStripeConnectionToken(): Promise<
+		ApolloResult<{
+			createStripeConnectionToken: { secret: string }
+		}>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				createStripeConnectionToken: { secret: string }
+			}>({
+				mutation: gql`
+					mutation CreateStripeConnectionToken {
+						createStripeConnectionToken {
+							secret
+						}
+					}
+				`,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async captureStripePaymentIntent(
+		queryData: string,
+		variables: { id: string }
+	): Promise<
+		ApolloResult<{
+			captureStripePaymentIntent: { id: string }
+		}>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				captureStripePaymentIntent: { id: string }
+			}>({
+				mutation: gql`
+					mutation CaptureStripePaymentIntent($id: String!) {
+						captureStripePaymentIntent(id: $id) {
+							${queryData}
+						}
+					}
+				`,
+				errorPolicy,
+				variables
+			})
+			.toPromise()
+	}
 }

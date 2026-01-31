@@ -26,7 +26,8 @@
 						"assets": [
 							"src/favicon.ico",
 							"src/assets",
-							"src/manifest.webmanifest"
+							"src/manifest.webmanifest",
+							"src/.well-known/assetlinks.json"
 						],
 						"styles": [
 							"@angular/material/prebuilt-themes/indigo-pink.css",
@@ -102,7 +103,12 @@
 							"buildTarget": "blackmoney:build:development"
 						}
 					},
-					"defaultConfiguration": "development"
+					"defaultConfiguration": "development",
+					"options": {
+						"allowedHosts": [
+							"blackmoney.ngrok.app"
+						]
+					}
 				},
 				"extract-i18n": {
 					"builder": "@angular/build:extract-i18n",

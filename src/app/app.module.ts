@@ -134,6 +134,7 @@ import { AuthService } from "./services/auth-service"
 import { DataService } from "./services/data-service"
 import { SettingsService } from "./services/settings-service"
 import { LocalizationService } from "./services/localization-service"
+import { MessageService } from "./services/message-service"
 
 import { ServiceWorkerModule } from "@angular/service-worker"
 import { MatTableModule } from "@angular/material/table"
@@ -316,6 +317,7 @@ import { ReservationsPageComponent } from "./pages/dashboard-pages/reservations-
 		DataService,
 		SettingsService,
 		LocalizationService,
+		MessageService,
 		provideClientHydration(),
 		provideHttpClient(withInterceptorsFromDi())
 	]

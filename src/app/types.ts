@@ -16,6 +16,25 @@ export type ApolloResult<T> = Apollo.MutateResult<T> & {
 	error?: { errors?: { extensions?: { code?: string; errors?: string[] } }[] }
 }
 
+export type SendMessage =
+	| {
+			type: "startPayment"
+			price: number
+	  }
+	| {
+			type: "createStripeConnectionToken"
+			secret: string
+	  }
+
+export type ReceiveMessage =
+	| {
+			type: "createStripeConnectionToken"
+	  }
+	| {
+			type: "captureStripePaymentIntent"
+			id: string
+	  }
+
 export interface SessionResource {
 	uuid: string
 	user: UserResource

@@ -7,7 +7,7 @@
 			</div>
 
 			@if (dataService.register?.status === "INACTIVE") {
-				<dav-badge color="error">
+				<dav-badge color="error" (click)="showActivateRegisterDialog()">
 					{{ locale.registerNotActivated }}
 				</dav-badge>
 			}
@@ -36,3 +36,9 @@
 		</div>
 	</div>
 </div>
+
+<app-activate-register-dialog
+	#activateRegisterDialog
+	[loading]="activateRegisterDialogLoading"
+	(primaryButtonClick)="activateRegisterDialogPrimaryButtonClick()"
+></app-activate-register-dialog>

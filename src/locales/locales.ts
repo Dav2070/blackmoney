@@ -1,6 +1,9 @@
 export const de = {
 	header: {
-		registerNotActivated: "Kasse nicht aktiviert"
+		registerNotActivated: "Kasse nicht aktiviert",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	loginPage: {
 		headline: "Anmelden",

@@ -399,6 +399,27 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async activateRegister(
+		queryData: string,
+		variables: {
+			uuid: string
+		}
+	): Promise<ApolloResult<{ activateRegister: RegisterResource }>> {
+		return await this.davAuthApollo
+			.mutate<{ activateRegister: RegisterResource }>({
+				mutation: gql`
+					mutation ActivateRegister($uuid: String!) {
+						activateRegister(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async retrieveRegisterClient(
 		queryData: string,
 		variables: { uuid: string }

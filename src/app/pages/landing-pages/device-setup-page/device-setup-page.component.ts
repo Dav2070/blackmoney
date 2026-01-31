@@ -37,7 +37,7 @@ export class DeviceSetupPageComponent {
 			this.dataService.registerClient.name != null
 		) {
 			// Redirect to user page
-			this.router.navigate(["user"])
+			this.router.navigate(["dashboard"])
 		}
 	}
 
@@ -81,7 +81,7 @@ export class DeviceSetupPageComponent {
 				convertRegisterClientResourceToRegisterClient(responseData)
 
 			// Redirect to user page
-			this.router.navigate(["user"])
+			this.router.navigate(["dashboard"])
 		} else {
 			const errors = getGraphQLErrorCodes(updateRegisterClientResponse)
 			if (errors == null) return
@@ -103,6 +103,6 @@ export class DeviceSetupPageComponent {
 	}
 
 	skipButtonClick() {
-		this.router.navigate(["user"])
+		this.router.navigate(["dashboard"])
 	}
 }

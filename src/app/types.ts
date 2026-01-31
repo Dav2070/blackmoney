@@ -80,6 +80,7 @@ export interface AddressResource {
 export interface RegisterResource {
 	uuid: string
 	name: string
+	status: RegisterStatus
 	registerClients: List<RegisterClientResource>
 }
 
@@ -87,6 +88,7 @@ export interface RegisterClientResource {
 	uuid: string
 	name: string
 	serialNumber: string
+	register: RegisterResource
 	printRules: List<PrintRuleResource>
 }
 
@@ -281,6 +283,7 @@ export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
 export type PaymentMethod = "CASH" | "CARD"
 export type Country = "DE"
+export type RegisterStatus = "ACTIVE" | "INACTIVE"
 
 export type Weekday =
 	| "MONDAY"
@@ -295,6 +298,7 @@ export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
 	| typeof ErrorCodes.tableAlreadyExists
 	| typeof ErrorCodes.categoryNameAlreadyInUse
+	| typeof ErrorCodes.registerAlreadyActive
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword

@@ -177,6 +177,12 @@
 	"
 ></app-product-variations-combinations-dialog>
 
+<app-activate-register-dialog
+	#activateRegisterDialog
+	[loading]="activateRegisterDialogLoading"
+	(primaryButtonClick)="activateRegisterDialogPrimaryButtonClick()"
+></app-activate-register-dialog>
+
 <dav-context-menu
 	#contextMenu
 	[visible]="contextMenuVisible"

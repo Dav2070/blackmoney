@@ -1,5 +1,6 @@
-import { Component } from "@angular/core"
+import { Component, ViewChild } from "@angular/core"
 import { Router, ActivatedRoute } from "@angular/router"
+import { ActivateRegisterDialogComponent } from "src/app/dialogs/activate-register-dialog/activate-register-dialog.component"
 import { Register } from "src/app/models/Register"
 import { RegisterClient } from "src/app/models/RegisterClient"
 import { ApiService } from "src/app/services/api-service"
@@ -19,6 +20,11 @@ export class RegisterPageComponent {
 	register: Register = null
 	registerClients: RegisterClient[] = []
 	loading: boolean = true
+
+	//#region ActivateRegisterDialog
+	@ViewChild("activateRegisterDialog")
+	activateRegisterDialog: ActivateRegisterDialogComponent
+	//#endregion
 
 	constructor(
 		private dataService: DataService,
@@ -90,5 +96,9 @@ export class RegisterPageComponent {
 			"clients",
 			registerClient.uuid
 		])
+	}
+
+	showActivateRegisterDialog() {
+		this.activateRegisterDialog.show()
 	}
 }

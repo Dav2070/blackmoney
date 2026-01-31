@@ -283,6 +283,12 @@ export const de = {
 			headline: "Abmelden",
 			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
 		},
+		activateRegisterDialog: {
+			headline: "Kasse aktivieren",
+			description:
+				"Aktiviere diese Kasse, um Zahlungen von deinen Kunden zu akzeptieren und alle Transaktionen in der TSE zu speichern.<br /><br />Bitte beachte, dass pro aktivierter Kasse zusätzlich 49 € pro Monat an Kosten anfallen.",
+			activate: "Aktivieren"
+		},
 		editRegisterClientNameDialog: {
 			headline: "Gerätename bearbeiten",
 			name: "Gerätename"

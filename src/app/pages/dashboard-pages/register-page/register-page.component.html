@@ -6,7 +6,7 @@
 			</dav-header>
 
 			@if (register?.status === "INACTIVE") {
-				<dav-badge color="error">
+				<dav-badge color="error" (click)="showActivateRegisterDialog()">
 					{{ locale.notActivated }}
 				</dav-badge>
 			}
@@ -39,3 +39,7 @@
 		}
 	</div>
 </div>
+
+<app-activate-register-dialog
+	#activateRegisterDialog
+></app-activate-register-dialog>

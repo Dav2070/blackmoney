@@ -45,6 +45,7 @@ import { CounterComponent } from "./components/cash-register/counter/counter.com
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
+import { ActivateRegisterDialogComponent } from "./dialogs/activate-register-dialog/activate-register-dialog.component"
 import { EditRegisterClientNameDialogComponent } from "./dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditRestaurantInfoDialogComponent } from "./dialogs/edit-restaurant-info-dialog/edit-restaurant-info-dialog.component"
@@ -170,6 +171,7 @@ import { ReservationsPageComponent } from "./pages/dashboard-pages/reservations-
 		CounterComponent,
 		// Dialogs
 		LogoutDialogComponent,
+		ActivateRegisterDialogComponent,
 		EditRegisterClientNameDialogComponent,
 		EditRestaurantNameDialogComponent,
 		EditRestaurantInfoDialogComponent,

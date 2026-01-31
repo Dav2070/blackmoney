@@ -24,11 +24,11 @@ import { convertStringToTheme } from "../utils"
 @Injectable()
 export class DataService {
 	dav = Dav
-	davUserPromiseHolder = new PromiseHolder()
-	blackmoneyUserPromiseHolder = new PromiseHolder()
-	companyPromiseHolder = new PromiseHolder()
-	restaurantPromiseHolder = new PromiseHolder()
-	registerClientPromiseHolder = new PromiseHolder()
+	davUserPromiseHolder = new PromiseHolder<User>()
+	blackmoneyUserPromiseHolder = new PromiseHolder<User>()
+	companyPromiseHolder = new PromiseHolder<Company>()
+	restaurantPromiseHolder = new PromiseHolder<Restaurant>()
+	registerClientPromiseHolder = new PromiseHolder<RegisterClient>()
 	user: User = null
 	company: Company = null
 	restaurant: Restaurant = null

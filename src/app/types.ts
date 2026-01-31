@@ -297,6 +297,7 @@ export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
 	| typeof ErrorCodes.tableAlreadyExists
 	| typeof ErrorCodes.categoryNameAlreadyInUse
+	| typeof ErrorCodes.registerAlreadyActive
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword

@@ -1,54 +1,56 @@
 import {
-   Component,
-   ElementRef,
-   EventEmitter,
-   Inject,
-   Output,
-   PLATFORM_ID,
-   ViewChild
+	Component,
+	ElementRef,
+	EventEmitter,
+	Inject,
+	Input,
+	Output,
+	PLATFORM_ID,
+	ViewChild
 } from "@angular/core"
 import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
-   selector: "app-activate-register-dialog",
-   templateUrl: "./activate-register-dialog.component.html",
-   standalone: false
+	selector: "app-activate-register-dialog",
+	templateUrl: "./activate-register-dialog.component.html",
+	standalone: false
 })
 export class ActivateRegisterDialogComponent {
-   locale = this.localizationService.locale.dialogs.activateRegisterDialog
-   actionsLocale = this.localizationService.locale.actions
-   @Output() primaryButtonClick = new EventEmitter()
-   @ViewChild("dialog") dialog: ElementRef<Dialog>
-   visible: boolean = false
+	locale = this.localizationService.locale.dialogs.activateRegisterDialog
+	actionsLocale = this.localizationService.locale.actions
+	@Input() loading: boolean = false
+	@Output() primaryButtonClick = new EventEmitter()
+	@ViewChild("dialog") dialog: ElementRef<Dialog>
+	visible: boolean = false
 
-   constructor(
-      private localizationService: LocalizationService,
-      @Inject(PLATFORM_ID) private platformId: object
-   ) {}
+	constructor(
+		private localizationService: LocalizationService,
+		@Inject(PLATFORM_ID) private platformId: object
+	) {}
 
-   ngAfterViewInit() {
-      if (isPlatformBrowser(this.platformId)) {
-         document.body.appendChild(this.dialog.nativeElement)
-      }
-   }
+	ngAfterViewInit() {
+		if (isPlatformBrowser(this.platformId)) {
+			document.body.appendChild(this.dialog.nativeElement)
+		}
+	}
 
-   ngOnDestroy() {
-      if (isPlatformBrowser(this.platformId)) {
-         document.body.removeChild(this.dialog.nativeElement)
-      }
-   }
+	ngOnDestroy() {
+		if (isPlatformBrowser(this.platformId)) {
+			document.body.removeChild(this.dialog.nativeElement)
+		}
+	}
 
-   show() {
-      this.visible = true
-   }
+	show() {
+		this.visible = true
+	}
 
-   hide() {
-      this.visible = false
-   }
+	hide() {
+		this.visible = false
+	}
 
-   submit() {
-      this.primaryButtonClick.emit()
-   }
+	submit() {
+		this.primaryButtonClick.emit()
+	}
 }

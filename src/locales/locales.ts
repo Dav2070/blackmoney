@@ -98,7 +98,10 @@ export const de = {
 		manageMenu: "Speisekarte verwalten"
 	},
 	registerPage: {
-		notActivated: "Nicht aktiviert"
+		notActivated: "Nicht aktiviert",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	registerClientPage: {
 		printRulesHeadline: "Druckregeln",

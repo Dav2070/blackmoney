@@ -211,7 +211,10 @@ export const de = {
 		removeBill: "Rechnung entfernen",
 		payByCash: "Bar bezahlen",
 		payByCard: "Mit Karte bezahlen",
-		moveMultipleProducts: "Mehrere verschieben"
+		moveMultipleProducts: "Mehrere verschieben",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	transferPage: {
 		tableHeadline: "Tisch {tableName} – {roomName}",

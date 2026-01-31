@@ -97,6 +97,9 @@ export const de = {
 		addPicture: "Bild hinzufügen",
 		manageMenu: "Speisekarte verwalten"
 	},
+	registerPage: {
+		notActivated: "Nicht aktiviert"
+	},
 	registerClientPage: {
 		printRulesHeadline: "Druckregeln",
 		printRuleText:

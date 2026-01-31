@@ -4,13 +4,16 @@ import { Register } from "src/app/models/Register"
 import { RegisterClient } from "src/app/models/RegisterClient"
 import { ApiService } from "src/app/services/api-service"
 import { DataService } from "src/app/services/data-service"
+import { LocalizationService } from "src/app/services/localization-service"
 import { convertRegisterResourceToRegister } from "src/app/utils"
 
 @Component({
 	templateUrl: "./register-page.component.html",
+	styleUrl: "./register-page.component.scss",
 	standalone: false
 })
 export class RegisterPageComponent {
+	locale = this.localizationService.locale.registerPage
 	restaurantUuid: string = null
 	registerUuid: string = null
 	register: Register = null
@@ -20,6 +23,7 @@ export class RegisterPageComponent {
 	constructor(
 		private dataService: DataService,
 		private apiService: ApiService,
+		private localizationService: LocalizationService,
 		private router: Router,
 		private activatedRoute: ActivatedRoute
 	) {}
@@ -36,6 +40,7 @@ export class RegisterPageComponent {
 			`
 				uuid
 				name
+				status
 				registerClients {
 					items {
 						uuid

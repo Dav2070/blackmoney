@@ -324,6 +324,7 @@ export function convertRegisterResourceToRegister(
 	return {
 		uuid: registerResource.uuid,
 		name: registerResource.name,
+		status: registerResource.status,
 		registerClients
 	}
 }

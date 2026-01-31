@@ -80,6 +80,7 @@ export interface AddressResource {
 export interface RegisterResource {
 	uuid: string
 	name: string
+	status: RegisterStatus
 	registerClients: List<RegisterClientResource>
 }
 
@@ -281,6 +282,7 @@ export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
 export type PaymentMethod = "CASH" | "CARD"
 export type Country = "DE"
+export type RegisterStatus = "ACTIVE" | "INACTIVE"
 
 export type Weekday =
 	| "MONDAY"

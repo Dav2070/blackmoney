@@ -9,7 +9,7 @@
 			<div class="header-icons-container" slot="icons">
 				<dav-icon-button
 					size="sm"
-					href="/user/settings"
+					href="/dashboard/settings"
 					[tooltip]="locale.generalSettings"
 					(click)="navigateToGeneralSettingsPage($event)"
 				>
@@ -29,7 +29,7 @@
 		<div class="actions-container">
 			<dav-icon-card
 				[text]="locale.goToDashboard"
-				href="dashboard"
+				href="/dashboard/tables"
 				(click)="navigateToDashboardPage($event)"
 			>
 				<fa-icon [icon]="faCashRegister"></fa-icon>
@@ -41,7 +41,7 @@
 			) {
 				<dav-icon-card
 					[text]="locale.manageEmployees"
-					href="user/employees"
+					href="/dashboard/employees"
 					(click)="navigateToEmployeesPage($event)"
 				>
 					<fa-icon [icon]="faUsers"></fa-icon>
@@ -49,7 +49,7 @@
 
 				<dav-icon-card
 					[text]="locale.manageRestaurants"
-					href="user/restaurants"
+					href="/dashboard/restaurants"
 					(click)="navigateToRestaurantsPage($event)"
 				>
 					<fa-icon [icon]="faShop"></fa-icon>
@@ -57,7 +57,7 @@
 
 				<dav-icon-card
 					[text]="locale.manageReservations"
-					href="user/reservations"
+					href="/dashboard/reservations"
 					(click)="navigateToReservationsPage($event)"
 				>
 					<fa-icon [icon]="faCalendarCheck"></fa-icon>

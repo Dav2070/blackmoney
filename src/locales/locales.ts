@@ -1,4 +1,7 @@
 export const de = {
+	header: {
+		registerNotActivated: "Kasse nicht aktiviert"
+	},
 	loginPage: {
 		headline: "Anmelden",
 		restaurant: "Restaurant",

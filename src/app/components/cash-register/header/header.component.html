@@ -1,8 +1,16 @@
 <div class="header-container">
 	<div class="header-content">
 		<div class="user-details-container">
-			<p>{{ dataService.user?.name ?? "" }}</p>
-			<p>{{ dataService.restaurant?.name ?? "" }}</p>
+			<div>
+				<p>{{ dataService.user?.name ?? "" }}</p>
+				<p>{{ dataService.restaurant?.name ?? "" }}</p>
+			</div>
+
+			@if (dataService.register?.status === "INACTIVE") {
+				<dav-badge color="error">
+					{{ locale.registerNotActivated }}
+				</dav-badge>
+			}
 		</div>
 
 		<div class="logo-container">

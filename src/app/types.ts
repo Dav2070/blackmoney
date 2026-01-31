@@ -88,6 +88,7 @@ export interface RegisterClientResource {
 	uuid: string
 	name: string
 	serialNumber: string
+	register: RegisterResource
 	printRules: List<PrintRuleResource>
 }
 

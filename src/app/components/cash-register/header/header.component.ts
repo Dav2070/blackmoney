@@ -1,5 +1,6 @@
 import { Component, NgZone } from "@angular/core"
 import { DataService } from "src/app/services/data-service"
+import { LocalizationService } from "src/app/services/localization-service"
 
 @Component({
 	selector: "app-header",
@@ -8,12 +9,14 @@ import { DataService } from "src/app/services/data-service"
 	standalone: false
 })
 export class HeaderComponent {
+	locale = this.localizationService.locale.header
 	timer: any
 	currentDate: string = ""
 	currentTime: string = ""
 
 	constructor(
 		public dataService: DataService,
+		private localizationService: LocalizationService,
 		private ngZone: NgZone
 	) {}
 
@@ -21,7 +24,7 @@ export class HeaderComponent {
 		this.ngZone.runOutsideAngular(() => {
 			this.timer = setInterval(() => {
 				this.ngZone.run(() => {
-					let date = new Date()
+					const date = new Date()
 
 					this.currentDate = date.toLocaleDateString()
 					this.currentTime = `${date

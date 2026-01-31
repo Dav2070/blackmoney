@@ -1,4 +1,3 @@
-import { Router } from "@angular/router"
 import FingerprintJS from "@fingerprintjs/fingerprintjs"
 import { Toast } from "dav-ui-components"
 import { ApiService } from "./services/api-service"
@@ -70,6 +69,11 @@ export async function loadRegisterClient(
 					uuid
 					name
 					serialNumber
+					register {
+						uuid
+						name
+						status
+					}
 				`,
 				{
 					registerUuid,
@@ -88,6 +92,11 @@ export async function loadRegisterClient(
 			retrieveRegisterClientResponse.data
 				?.retrieveRegisterClientBySerialNumber != null
 		) {
+			dataService.register = convertRegisterResourceToRegister(
+				retrieveRegisterClientResponse.data
+					.retrieveRegisterClientBySerialNumber.register
+			)
+
 			dataService.registerClient =
 				convertRegisterClientResourceToRegisterClient(
 					retrieveRegisterClientResponse.data
@@ -96,6 +105,7 @@ export async function loadRegisterClient(
 		}
 	}
 
+	dataService.registerPromiseHolder.Resolve()
 	dataService.registerClientPromiseHolder.Resolve()
 }
 
@@ -346,6 +356,9 @@ export function convertRegisterClientResourceToRegisterClient(
 		uuid: registerClientResource.uuid,
 		name: registerClientResource.name,
 		serialNumber: registerClientResource.serialNumber,
+		register: convertRegisterResourceToRegister(
+			registerClientResource.register
+		),
 		printRules
 	}
 }

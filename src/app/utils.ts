@@ -539,7 +539,12 @@ export function convertProductResourceToProduct(
 	const variations: Variation[] = []
 
 	for (const variation of productResource.variations?.items ?? []) {
-		variations.push(convertVariationResourceToVariation(variation))
+		// Create a deep copy to avoid shared references between products
+		const variationCopy = convertVariationResourceToVariation(variation)
+		variations.push({
+			...variationCopy,
+			variationItems: variationCopy.variationItems?.map(item => ({ ...item })) || []
+		})
 	}
 
 	return {

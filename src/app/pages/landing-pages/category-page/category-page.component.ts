@@ -26,6 +26,7 @@ import * as ErrorCodes from "src/app/errorCodes"
 import { ProductType } from "src/app/types"
 import {
 	convertCategoryResourceToCategory,
+	convertRestaurantResourceToRestaurant,
 	getGraphQLErrorCodes
 } from "src/app/utils"
 
@@ -119,7 +120,8 @@ export class CategoryPageComponent {
 		this.categoryUuid =
 			this.activatedRoute.snapshot.paramMap.get("categoryUuid")
 		await this.dataService.davUserPromiseHolder.AwaitResult()
-
+		// Load available variations once (uses cache-first)
+		await this.loadVariations()
 		// Load category with products from backend
 		await this.loadData()
 	}
@@ -174,6 +176,14 @@ export class CategoryPageComponent {
 							items {
 								uuid
 								name
+								variationItems {
+									items {
+										id
+										uuid
+										name
+										additionalCost
+									}
+								}
 							}
 						}
 						offer {
@@ -265,6 +275,39 @@ export class CategoryPageComponent {
 		}
 
 		this.loading = false
+	}
+
+	async loadVariations() {
+		// Load available variations from menu (uses cache-first by default)
+		const retrieveRestaurantResponse =
+			await this.apiService.retrieveRestaurant(
+				`
+					menu {
+						variations {
+							items {
+								uuid
+								name
+								variationItems {
+									items {
+										id
+										uuid
+										name
+										additionalCost
+									}
+								}
+							}
+						}
+					}
+				`,
+				{ uuid: this.restaurantUuid }
+			)
+
+		if (retrieveRestaurantResponse.data != null) {
+			const restaurant = convertRestaurantResourceToRestaurant(
+				retrieveRestaurantResponse.data.retrieveRestaurant
+			)
+			this.availableVariations = restaurant.menu?.variations || []
+		}
 	}
 
 	handleAddButtonClick(event: Event) {
@@ -428,6 +471,14 @@ export class CategoryPageComponent {
 					items {
 						uuid
 						name
+						variationItems {
+							items {
+								id
+								uuid
+								name
+								additionalCost
+							}
+						}
 					}
 				}
 			`,
@@ -441,12 +492,14 @@ export class CategoryPageComponent {
 			}
 		)
 
-		this.addProductDialogLoading = false
-
 		if (createProductResponse.data?.createProduct != null) {
+			// Für FOOD: Cache wurde evicted, lade Daten neu (aber aus Cache, falls verfügbar)
+			// Für andere: Lade komplett neu
 			await this.loadData()
 			this.addProductDialog.hide()
+			this.addProductDialogLoading = false
 		} else {
+			this.addProductDialogLoading = false
 			const errors = getGraphQLErrorCodes(createProductResponse)
 			if (errors == null) return
 
@@ -473,12 +526,20 @@ export class CategoryPageComponent {
 	}
 
 	showEditProductDialog(product: Product) {
+		console.log('[CATEGORY-PAGE] showEditProductDialog called for:', product.name, product.uuid)
+		console.log('[CATEGORY-PAGE] Product object variations:', product.variations?.map(v => ({ uuid: v.uuid, name: v.name })))
+		
 		if (this.editProductDialog) {
 			this.editProductDialog.show(product)
 		}
 	}
 
 	async editProductDialogPrimaryButtonClick(product: Product) {
+		console.log('[CATEGORY-PAGE] editProductDialogPrimaryButtonClick called')
+		console.log('[CATEGORY-PAGE] Product to update:', product.name, product.uuid)
+		console.log('[CATEGORY-PAGE] Product variations:', product.variations?.map(v => ({ uuid: v.uuid, name: v.name })))
+		console.log('[CATEGORY-PAGE] variationUuids to send:', product.variations?.map(v => v.uuid))
+		
 		this.editProductDialogLoading = true
 		this.editProductDialogNameError = ""
 		this.editProductDialogPriceError = ""
@@ -494,6 +555,14 @@ export class CategoryPageComponent {
 					items {
 						uuid
 						name
+						variationItems {
+							items {
+								id
+								uuid
+								name
+								additionalCost
+							}
+						}
 					}
 				}
 			`,
@@ -506,12 +575,23 @@ export class CategoryPageComponent {
 			}
 		)
 
-		this.editProductDialogLoading = false
-
 		if (updateProductResponse.data?.updateProduct != null) {
+			console.log('[CATEGORY-PAGE] Update successful, response:', updateProductResponse.data.updateProduct)
+			console.log('[CATEGORY-PAGE] Response variations:', updateProductResponse.data.updateProduct.variations?.items?.map(v => ({ uuid: v.uuid, name: v.name })))
+			
+			// Für FOOD: Cache wurde evicted, lade Daten neu (aber aus Cache, falls verfügbar)
+			// Für andere: Lade komplett neu
 			await this.loadData()
+			
+			console.log('[CATEGORY-PAGE] After loadData(), category products:')
+			this.category?.products?.forEach(p => {
+				console.log(`  - ${p.name} (${p.uuid}):`, p.variations?.map(v => ({ uuid: v.uuid, name: v.name, ref: v })))
+			})
+			
 			this.editProductDialog.hide()
+			this.editProductDialogLoading = false
 		} else {
+			this.editProductDialogLoading = false
 			const errors = getGraphQLErrorCodes(updateProductResponse)
 			if (errors == null) return
 
@@ -571,9 +651,9 @@ export class CategoryPageComponent {
 				? "SPECIAL"
 				: "MENU"
 
-			// Konvertiere Euro zu Cent
-			const priceInCents = Math.round(data.price * 100)
-			const offerValueInCents = Math.round(data.offer.offerValue * 100)
+			// Der Dialog konvertiert bereits zu Cent, keine weitere Konvertierung nötig
+			const priceInCents = data.price
+			const offerValueInCents = data.offer.offerValue
 
 			// 1. Erstelle zuerst das Produkt
 			const createProductResponse = await this.apiService.createProduct(
@@ -681,9 +761,9 @@ export class CategoryPageComponent {
 				return
 			}
 
-			// Konvertiere Euro zu Cent
-			const priceInCents = Math.round(data.price * 100)
-			const offerValueInCents = Math.round(data.offer.offerValue * 100)
+			// Der Dialog konvertiert bereits zu Cent, keine weitere Konvertierung nötig
+			const priceInCents = data.price
+			const offerValueInCents = data.offer.offerValue
 
 			// 1. Update das Produkt
 			await this.apiService.updateProduct(`uuid`, {

@@ -69,7 +69,7 @@
 							(click)="toggleVariationSelection(variation.uuid)"
 						>
 							<dav-checkbox
-								[value]="isVariationSelected(variation.uuid)"
+								[checked]="isVariationSelected(variation.uuid)"
 								[label]="variation.name"
 								[disabled]="loading"
 								(click)="$event.stopPropagation()"

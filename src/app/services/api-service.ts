@@ -871,7 +871,8 @@ export class ApiService {
 					}
 				`,
 				variables,
-				errorPolicy
+				errorPolicy,
+				fetchPolicy: "network-only"
 			})
 			.toPromise()
 	}

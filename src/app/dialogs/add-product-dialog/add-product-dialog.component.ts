@@ -79,6 +79,8 @@ export class AddProductDialogComponent {
 	}
 
 	show() {
+		// Reset first to clear previous state
+		this.reset()
 		this.visible = true
 	}
 
@@ -92,6 +94,7 @@ export class AddProductDialogComponent {
 		this.name = ""
 		this.price = ""
 		this.takeaway = false
+		// Create new array to ensure Angular detects changes
 		this.selectedVariationUuids = []
 		this.expandedVariationUuids.clear()
 		this.idError = ""
@@ -165,9 +168,13 @@ export class AddProductDialogComponent {
 	toggleVariationSelection(variationUuid: string) {
 		const index = this.selectedVariationUuids.indexOf(variationUuid)
 		if (index > -1) {
-			this.selectedVariationUuids.splice(index, 1)
+			// Create new array instead of mutating
+			this.selectedVariationUuids = this.selectedVariationUuids.filter(
+				uuid => uuid !== variationUuid
+			)
 		} else {
-			this.selectedVariationUuids.push(variationUuid)
+			// Create new array instead of mutating
+			this.selectedVariationUuids = [...this.selectedVariationUuids, variationUuid]
 		}
 	}
 

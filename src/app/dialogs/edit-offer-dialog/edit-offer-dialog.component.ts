@@ -88,14 +88,24 @@ export class EditOfferDialogComponent {
 	show(menu: any) {
 		this.basicData.id = menu.shortcut || 0
 		this.basicData.name = menu.name
-		// Konvertiere offerValue von Cent zu Euro
-		const offerValueInCents = menu.offer?.offerValue || menu.price || 0
-		this.basicData.offerValue = parseFloat(
-			(offerValueInCents / 100).toFixed(2)
-		)
 		this.basicData.takeaway = menu.takeaway || false
 		this.basicData.offerType = menu.offer?.offerType || "FIXED_PRICE"
 		this.basicData.discountType = menu.offer?.discountType || "PERCENTAGE"
+
+		// Konvertiere offerValue basierend auf Typ
+		const offerValueRaw = menu.offer?.offerValue || menu.price || 0
+		if (
+			menu.offer?.offerType === "DISCOUNT" &&
+			menu.offer?.discountType === "PERCENTAGE"
+		) {
+			// Bei Prozent: Wert direkt übernehmen (z.B. 50 für 50%)
+			this.basicData.offerValue = offerValueRaw
+		} else {
+			// Bei FIXED_PRICE und DISCOUNT+AMOUNT: von Cent zu Euro konvertieren
+			this.basicData.offerValue = parseFloat(
+				(offerValueRaw / 100).toFixed(2)
+			)
+		}
 		this.offerItems = menu.offer?.offerItems || []
 
 		// Konvertiere selectedVariations von Object zu Map und initialisiere fehlende Variationen
@@ -299,6 +309,22 @@ export class EditOfferDialogComponent {
 			return
 		}
 
+		// Konvertiere offerValue basierend auf Typ
+		let offerValueToSave: number
+		let priceToSave: number
+		if (
+			this.basicData.offerType === "DISCOUNT" &&
+			this.basicData.discountType === "PERCENTAGE"
+		) {
+			// Bei Prozent: Wert direkt speichern (z.B. 50 für 50%)
+			offerValueToSave = this.basicData.offerValue
+			priceToSave = this.basicData.offerValue
+		} else {
+			// Bei FIXED_PRICE und DISCOUNT+AMOUNT: in Cent konvertieren
+			offerValueToSave = Math.round(this.basicData.offerValue * 100)
+			priceToSave = Math.round(this.basicData.offerValue * 100)
+		}
+
 		const offer = {
 			id: this.basicData.id,
 			uuid: crypto.randomUUID(),
@@ -307,7 +333,7 @@ export class EditOfferDialogComponent {
 				this.basicData.offerType === "DISCOUNT"
 					? this.basicData.discountType
 					: undefined,
-			offerValue: this.basicData.offerValue,
+			offerValue: offerValueToSave,
 			weekdays: this.availabilityData.selectedWeekdays,
 			startDate: this.availabilityData.startDate
 				? new Date(this.availabilityData.startDate)
@@ -323,7 +349,7 @@ export class EditOfferDialogComponent {
 		this.primaryButtonClick.emit({
 			id: this.basicData.id,
 			name: this.basicData.name,
-			price: this.basicData.offerValue,
+			price: priceToSave,
 			takeaway: this.basicData.takeaway,
 			offer: offer
 		})

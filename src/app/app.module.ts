@@ -45,6 +45,7 @@ import { CounterComponent } from "./components/cash-register/counter/counter.com
 
 // Dialogs
 import { LogoutDialogComponent } from "./dialogs/logout-dialog/logout-dialog.component"
+import { ActivateRegisterDialogComponent } from "./dialogs/activate-register-dialog/activate-register-dialog.component"
 import { EditRegisterClientNameDialogComponent } from "./dialogs/edit-register-client-name-dialog/edit-register-client-name-dialog.component"
 import { EditRestaurantNameDialogComponent } from "./dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { EditRestaurantInfoDialogComponent } from "./dialogs/edit-restaurant-info-dialog/edit-restaurant-info-dialog.component"
@@ -112,7 +113,7 @@ import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.
 import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-page/set-password-page.component"
 import { DeviceSetupPageComponent } from "./pages/landing-pages/device-setup-page/device-setup-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
-import { CashRegisterPageComponent } from "./pages/dashboard-pages/cash-register-page/cash-register-page.component"
+import { DashboardPageComponent } from "./pages/dashboard-pages/dashboard-page/dashboard-page.component"
 import { TableOverviewPageComponent } from "./pages/dashboard-pages/table-overview-page/table-overview-page.component"
 import { BookingPageComponent } from "./pages/dashboard-pages/booking-page/booking-page.component"
 import { TransferPageComponent } from "./pages/dashboard-pages/transfer-page/transfer-page.component"
@@ -170,6 +171,7 @@ import { ReservationsPageComponent } from "./pages/dashboard-pages/reservations-
 		CounterComponent,
 		// Dialogs
 		LogoutDialogComponent,
+		ActivateRegisterDialogComponent,
 		EditRegisterClientNameDialogComponent,
 		EditRestaurantNameDialogComponent,
 		EditRestaurantInfoDialogComponent,
@@ -244,7 +246,7 @@ import { ReservationsPageComponent } from "./pages/dashboard-pages/reservations-
 		SetPasswordPageComponent,
 		DeviceSetupPageComponent,
 		OnboardingPageComponent,
-		CashRegisterPageComponent,
+		DashboardPageComponent,
 		TableOverviewPageComponent,
 		BookingPageComponent,
 		TransferPageComponent,

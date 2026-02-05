@@ -15,10 +15,16 @@ import { DataService } from "src/app/services/data-service"
 import { MessageService } from "src/app/services/message-service"
 import { MoveMultipleProductsDialogComponent } from "src/app/dialogs/move-multiple-products-dialog/move-multiple-products-dialog.component"
 import { ProductVariationsCombinationsDialogComponent } from "src/app/dialogs/product-variations-combinations-dialog/product-variations-combinations-dialog.component"
+import { ActivateRegisterDialogComponent } from "src/app/dialogs/activate-register-dialog/activate-register-dialog.component"
 import { AllItemHandler } from "src/app/models/cash-register/order-item-handling/all-item-handler.model"
 import { OrderItem } from "src/app/models/OrderItem"
 import { Table } from "src/app/models/Table"
-import { calculateTotalPriceOfOrderItem, formatPrice } from "src/app/utils"
+import {
+	calculateTotalPriceOfOrderItem,
+	formatPrice,
+	getGraphQLErrorCodes,
+	showToast
+} from "src/app/utils"
 import { AddOrderItemVariationInput, PaymentMethod } from "src/app/types"
 
 @Component({
@@ -60,6 +66,12 @@ export class PaymentPageComponent {
 	//#region ProductVariationsDialog variables
 	@ViewChild("productVariationsCombinationsDialog")
 	productVariationsCombinationsDialog: ProductVariationsCombinationsDialogComponent
+	//#endregion
+
+	//#region ActivateRegisterDialog
+	@ViewChild("activateRegisterDialog")
+	activateRegisterDialog: ActivateRegisterDialogComponent
+	activateRegisterDialogLoading: boolean = false
 	//#endregion
 
 	//#region ContextMenu variables
@@ -281,6 +293,12 @@ export class PaymentPageComponent {
 	async createBill(paymentMethod: PaymentMethod) {
 		await this.dataService.registerClientPromiseHolder.AwaitResult()
 
+		// Check if the register is activated
+		if (this.dataService.register.status === "INACTIVE") {
+			this.activateRegisterDialog.show()
+			return
+		}
+
 		// Update the current order with the remaining items
 		// TODO: Error handling
 		// TODO: Check if there are any remaining items, if not use the order for all items
@@ -393,5 +411,33 @@ export class PaymentPageComponent {
 				})
 			}
 		}
+	}
+
+	async activateRegisterDialogPrimaryButtonClick() {
+		this.activateRegisterDialogLoading = true
+
+		const activateRegisterResponse = await this.apiService.activateRegister(
+			`status`,
+			{ uuid: this.dataService.register.uuid }
+		)
+
+		this.activateRegisterDialogLoading = false
+
+		if (activateRegisterResponse.data?.activateRegister != null) {
+			this.dataService.register.status =
+				activateRegisterResponse.data.activateRegister.status
+			showToast(this.locale.activationSuccess)
+		} else {
+			let errors = getGraphQLErrorCodes(activateRegisterResponse)
+			if (errors == null) return
+
+			if (errors.includes("REGISTER_ALREADY_ACTIVE")) {
+				this.dataService.register.status = "ACTIVE"
+			} else {
+				showToast(this.locale.activationError)
+			}
+		}
+
+		this.activateRegisterDialog.hide()
 	}
 }

@@ -1,4 +1,10 @@
 export const de = {
+	header: {
+		registerNotActivated: "Kasse nicht aktiviert",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
+	},
 	loginPage: {
 		headline: "Anmelden",
 		restaurant: "Restaurant",
@@ -96,6 +102,12 @@ export const de = {
 		manageTime: "Öffnungszeiten verwalten",
 		addPicture: "Bild hinzufügen",
 		manageMenu: "Speisekarte verwalten"
+	},
+	registerPage: {
+		notActivated: "Nicht aktiviert",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	registerClientPage: {
 		printRulesHeadline: "Druckregeln",
@@ -199,7 +211,10 @@ export const de = {
 		removeBill: "Rechnung entfernen",
 		payByCash: "Bar bezahlen",
 		payByCard: "Mit Karte bezahlen",
-		moveMultipleProducts: "Mehrere verschieben"
+		moveMultipleProducts: "Mehrere verschieben",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	transferPage: {
 		tableHeadline: "Tisch {tableName} – {roomName}",
@@ -279,6 +294,12 @@ export const de = {
 		logoutDialog: {
 			headline: "Abmelden",
 			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
+		},
+		activateRegisterDialog: {
+			headline: "Kasse aktivieren",
+			description:
+				"Aktiviere diese Kasse, um Zahlungen von deinen Kunden zu akzeptieren und alle Transaktionen in der TSE zu speichern.<br /><br />Bitte beachte, dass pro aktivierter Kasse zusätzlich 49 € pro Monat an Kosten anfallen.",
+			activate: "Aktivieren"
 		},
 		editRegisterClientNameDialog: {
 			headline: "Gerätename bearbeiten",

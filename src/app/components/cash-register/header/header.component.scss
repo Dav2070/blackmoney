@@ -43,6 +43,12 @@
 
 .user-details-container {
 	display: flex;
+	gap: 16px;
+	align-items: center;
+}
+
+.user-details-container div {
+	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 }

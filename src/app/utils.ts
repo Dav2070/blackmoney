@@ -213,6 +213,22 @@ export async function initUserAfterLogin(
 	await settingsService.setRestaurant(restaurantUuid)
 }
 
+export async function navigateToStripeCheckout(apiService: ApiService) {
+	const createStripeSubscriptionCheckoutSessionResponse =
+		await apiService.createStripeSubscriptionCheckoutSession(`url`, {
+			successUrl: window.location.href,
+			cancelUrl: window.location.href
+		})
+
+	if (
+		createStripeSubscriptionCheckoutSessionResponse.data
+			?.createStripeSubscriptionCheckoutSession != null
+	) {
+		window.location.href =
+			createStripeSubscriptionCheckoutSessionResponse.data.createStripeSubscriptionCheckoutSession.url
+	}
+}
+
 export async function getSerialNumber(
 	settingsService: SettingsService
 ): Promise<string> {

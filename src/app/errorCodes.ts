@@ -3,6 +3,7 @@ export const printerAlreadyExists = "PRINTER_ALREADY_EXISTS"
 export const tableAlreadyExists = "TABLE_ALREADY_EXISTS"
 export const categoryNameAlreadyInUse = "CATEGORY_NAME_ALREADY_IN_USE"
 export const registerAlreadyActive = "REGISTER_ALREADY_ACTIVE"
+export const noActiveSubscription = "NO_ACTIVE_SUBSCRIPTION"
 //#endregion
 
 //#region Session & authentication

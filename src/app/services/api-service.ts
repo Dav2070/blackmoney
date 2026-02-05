@@ -1364,7 +1364,39 @@ export class ApiService {
 			.toPromise()
 	}
 
-	async createStripeConnectionToken(): Promise<
+	async createStripeSubscriptionCheckoutSession(
+		queryData: string,
+		variables: {
+			successUrl: string
+			cancelUrl: string
+		}
+	): Promise<
+		ApolloResult<{ createStripeSubscriptionCheckoutSession: { url: string } }>
+	> {
+		return await this.davAuthApollo
+			.mutate<{
+				createStripeSubscriptionCheckoutSession: { url: string }
+			}>({
+				mutation: gql`
+					mutation CreateStripeSubscriptionCheckoutSession(
+						$successUrl: String!
+						$cancelUrl: String!
+					) {
+						createStripeSubscriptionCheckoutSession(
+							successUrl: $successUrl
+							cancelUrl: $cancelUrl
+						) {
+							${queryData}
+						}
+					}
+				`,
+				errorPolicy,
+				variables
+			})
+			.toPromise()
+	}
+
+	async createStripeConnectionToken(queryData: string): Promise<
 		ApolloResult<{
 			createStripeConnectionToken: { secret: string }
 		}>
@@ -1376,7 +1408,7 @@ export class ApiService {
 				mutation: gql`
 					mutation CreateStripeConnectionToken {
 						createStripeConnectionToken {
-							secret
+							${queryData}
 						}
 					}
 				`,

@@ -299,6 +299,7 @@ export type ErrorCode =
 	| typeof ErrorCodes.tableAlreadyExists
 	| typeof ErrorCodes.categoryNameAlreadyInUse
 	| typeof ErrorCodes.registerAlreadyActive
+	| typeof ErrorCodes.noActiveSubscription
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword

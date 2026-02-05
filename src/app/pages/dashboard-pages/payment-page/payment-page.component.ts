@@ -23,6 +23,7 @@ import {
 	calculateTotalPriceOfOrderItem,
 	formatPrice,
 	getGraphQLErrorCodes,
+	navigateToStripeCheckout,
 	showToast
 } from "src/app/utils"
 import { AddOrderItemVariationInput, PaymentMethod } from "src/app/types"
@@ -421,18 +422,18 @@ export class PaymentPageComponent {
 			{ uuid: this.dataService.register.uuid }
 		)
 
-		this.activateRegisterDialogLoading = false
-
 		if (activateRegisterResponse.data?.activateRegister != null) {
 			this.dataService.register.status =
 				activateRegisterResponse.data.activateRegister.status
 			showToast(this.locale.activationSuccess)
 		} else {
-			let errors = getGraphQLErrorCodes(activateRegisterResponse)
+			const errors = getGraphQLErrorCodes(activateRegisterResponse)
 			if (errors == null) return
 
 			if (errors.includes("REGISTER_ALREADY_ACTIVE")) {
 				this.dataService.register.status = "ACTIVE"
+			} else if (errors.includes("NO_ACTIVE_SUBSCRIPTION")) {
+				await navigateToStripeCheckout(this.apiService)
 			} else {
 				showToast(this.locale.activationError)
 			}

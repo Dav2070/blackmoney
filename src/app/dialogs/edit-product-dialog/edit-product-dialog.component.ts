@@ -92,7 +92,7 @@ export class EditProductDialogComponent {
 		}
 		this.productId = product.shortcut.toString()
 		this.name = product.name
-		this.price = formatPrice(product.price)
+		this.price = (product.price / 100).toFixed(2)
 		this.takeaway = product.takeaway
 		// Create new array to ensure Angular detects changes
 		this.selectedVariationUuids = [

@@ -117,6 +117,7 @@ export class BookingPageComponent {
 	tmpAnzahl = 0
 
 	selectedOrderItem: OrderItem = null
+	selectedItemIsInStaged: boolean = false // true = stagedItems, false = bookedItems
 	selectedProduct: Product = null
 	tmpAllItemHandler: AllItemHandler = null
 	bills: Order[] = []
@@ -497,6 +498,7 @@ export class BookingPageComponent {
 				)
 				this.selectedOrderItem = addedItem
 				this.tmpAllItemHandler = this.stagedItems
+				this.selectedItemIsInStaged = true
 				this.showTotal(false)
 			} else {
 				this.selectedProduct = product
@@ -786,6 +788,7 @@ export class BookingPageComponent {
 			)
 			this.selectedOrderItem = addedItem
 			this.tmpAllItemHandler = this.stagedItems
+			this.selectedItemIsInStaged = true
 		} else {
 			newItem.count = 0
 			for (let variation of newItem.orderItemVariations) {
@@ -797,6 +800,7 @@ export class BookingPageComponent {
 			)
 			this.selectedOrderItem = addedItem
 			this.tmpAllItemHandler = this.stagedItems
+			this.selectedItemIsInStaged = true
 		}
 
 		this.showTotal(false)
@@ -1085,14 +1089,19 @@ export class BookingPageComponent {
 
 	//Selektiert das Item in der Liste
 	selectItem(pickedItem: OrderItem, AllItemHandler: AllItemHandler) {
-		if (this.selectedOrderItem === pickedItem) {
+		if (
+			this.selectedOrderItem === pickedItem &&
+			this.tmpAllItemHandler === AllItemHandler
+		) {
 			// Deselect the clicked item
 			this.selectedOrderItem = null
 			this.tmpAllItemHandler = null
+			this.selectedItemIsInStaged = false
 		} else {
 			// Select the clicked item
 			this.selectedOrderItem = pickedItem
 			this.tmpAllItemHandler = AllItemHandler
+			this.selectedItemIsInStaged = AllItemHandler === this.stagedItems
 		}
 	}
 
@@ -1119,7 +1128,8 @@ export class BookingPageComponent {
 				this.selectProductVariationsDialog.show()
 			} else {
 				// Wenn Item aus bookedItems ist, immer zu stagedItems hinzufügen
-				const handler = this.isSelectedItemBooked()
+				const isFromBookedItems = this.isSelectedItemBooked()
+				const handler = isFromBookedItems
 					? this.stagedItems
 					: this.tmpAllItemHandler || this.stagedItems
 
@@ -1163,6 +1173,7 @@ export class BookingPageComponent {
 
 				this.selectedOrderItem = addedItem
 				this.tmpAllItemHandler = handler
+				this.selectedItemIsInStaged = handler === this.stagedItems
 				this.tmpAnzahl = undefined
 				this.showTotal(false)
 			}
@@ -1288,6 +1299,7 @@ export class BookingPageComponent {
 			)
 			this.selectedOrderItem = addedItem
 			this.tmpAllItemHandler = this.stagedItems
+			this.selectedItemIsInStaged = true
 		} else {
 			let lastSpecialOrderItem: OrderItem = null
 			for (const orderItem of event.orderItems) {
@@ -1329,6 +1341,7 @@ export class BookingPageComponent {
 			}
 			this.selectedOrderItem = lastSpecialOrderItem
 			this.tmpAllItemHandler = this.stagedItems
+			this.selectedItemIsInStaged = true
 		}
 
 		this.selectMenuSpecialProductsDialog.hide()

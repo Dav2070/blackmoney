@@ -66,8 +66,16 @@
 						) {
 							<app-offer-order-item-card
 								[orderItem]="orderItem"
-								[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-								[selectedOrderItemNote]="selectedOrderItem?.notes"
+								[selectedOrderItemUuid]="
+									selectedItemIsInStaged
+										? selectedOrderItem?.uuid
+										: null
+								"
+								[selectedOrderItemNote]="
+									selectedItemIsInStaged
+										? selectedOrderItem?.notes
+										: null
+								"
 								[clickable]="true"
 								(click)="selectItem(orderItem, stagedItems)"
 								(noteIconClick)="orderItemNoteIconClick($event)"
@@ -75,8 +83,16 @@
 						} @else {
 							<app-order-item-card
 								[orderItem]="orderItem"
-								[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-								[selectedOrderItemNote]="selectedOrderItem?.notes"
+								[selectedOrderItemUuid]="
+									selectedItemIsInStaged
+										? selectedOrderItem?.uuid
+										: null
+								"
+								[selectedOrderItemNote]="
+									selectedItemIsInStaged
+										? selectedOrderItem?.notes
+										: null
+								"
 								[clickable]="true"
 								(click)="selectItem(orderItem, stagedItems)"
 								(noteIconClick)="orderItemNoteIconClick($event)"
@@ -101,8 +117,16 @@
 							) {
 								<app-offer-order-item-card
 									[orderItem]="orderItem"
-									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[selectedOrderItemUuid]="
+										selectedItemIsInStaged
+											? selectedOrderItem?.uuid
+											: null
+									"
+									[selectedOrderItemNote]="
+										selectedItemIsInStaged
+											? selectedOrderItem?.notes
+											: null
+									"
 									[clickable]="true"
 									(click)="selectItem(orderItem, stagedItems)"
 									(noteIconClick)="orderItemNoteIconClick($event)"
@@ -110,8 +134,16 @@
 							} @else {
 								<app-order-item-card
 									[orderItem]="orderItem"
-									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[selectedOrderItemUuid]="
+										selectedItemIsInStaged
+											? selectedOrderItem?.uuid
+											: null
+									"
+									[selectedOrderItemNote]="
+										selectedItemIsInStaged
+											? selectedOrderItem?.notes
+											: null
+									"
 									[clickable]="true"
 									(click)="selectItem(orderItem, stagedItems)"
 									(noteIconClick)="orderItemNoteIconClick($event)"
@@ -137,8 +169,16 @@
 							) {
 								<app-offer-order-item-card
 									[orderItem]="orderItem"
-									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[selectedOrderItemUuid]="
+										selectedItemIsInStaged
+											? selectedOrderItem?.uuid
+											: null
+									"
+									[selectedOrderItemNote]="
+										selectedItemIsInStaged
+											? selectedOrderItem?.notes
+											: null
+									"
 									[clickable]="true"
 									(click)="selectItem(orderItem, stagedItems)"
 									(noteIconClick)="orderItemNoteIconClick($event)"
@@ -146,8 +186,16 @@
 							} @else {
 								<app-order-item-card
 									[orderItem]="orderItem"
-									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[selectedOrderItemUuid]="
+										selectedItemIsInStaged
+											? selectedOrderItem?.uuid
+											: null
+									"
+									[selectedOrderItemNote]="
+										selectedItemIsInStaged
+											? selectedOrderItem?.notes
+											: null
+									"
 									[clickable]="true"
 									(click)="selectItem(orderItem, stagedItems)"
 									(noteIconClick)="orderItemNoteIconClick($event)"
@@ -176,8 +224,16 @@
 						) {
 							<app-offer-order-item-card
 								[orderItem]="orderItem"
-								[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-								[selectedOrderItemNote]="selectedOrderItem?.notes"
+								[selectedOrderItemUuid]="
+									!selectedItemIsInStaged
+										? selectedOrderItem?.uuid
+										: null
+								"
+								[selectedOrderItemNote]="
+									!selectedItemIsInStaged
+										? selectedOrderItem?.notes
+										: null
+								"
 								[clickable]="true"
 								(click)="selectItem(orderItem, bookedItems)"
 								(noteIconClick)="orderItemNoteIconClick($event)"
@@ -185,8 +241,16 @@
 						} @else {
 							<app-order-item-card
 								[orderItem]="orderItem"
-								[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-								[selectedOrderItemNote]="selectedOrderItem?.notes"
+								[selectedOrderItemUuid]="
+									!selectedItemIsInStaged
+										? selectedOrderItem?.uuid
+										: null
+								"
+								[selectedOrderItemNote]="
+									!selectedItemIsInStaged
+										? selectedOrderItem?.notes
+										: null
+								"
 								[clickable]="true"
 								(click)="selectItem(orderItem, bookedItems)"
 								(noteIconClick)="orderItemNoteIconClick($event)"
@@ -211,8 +275,16 @@
 							) {
 								<app-offer-order-item-card
 									[orderItem]="orderItem"
-									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[selectedOrderItemUuid]="
+										!selectedItemIsInStaged
+											? selectedOrderItem?.uuid
+											: null
+									"
+									[selectedOrderItemNote]="
+										!selectedItemIsInStaged
+											? selectedOrderItem?.notes
+											: null
+									"
 									[clickable]="true"
 									(click)="selectItem(orderItem, bookedItems)"
 									(noteIconClick)="orderItemNoteIconClick($event)"
@@ -220,8 +292,16 @@
 							} @else {
 								<app-order-item-card
 									[orderItem]="orderItem"
-									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[selectedOrderItemUuid]="
+										!selectedItemIsInStaged
+											? selectedOrderItem?.uuid
+											: null
+									"
+									[selectedOrderItemNote]="
+										!selectedItemIsInStaged
+											? selectedOrderItem?.notes
+											: null
+									"
 									[clickable]="true"
 									(click)="selectItem(orderItem, bookedItems)"
 									(noteIconClick)="orderItemNoteIconClick($event)"
@@ -247,8 +327,16 @@
 							) {
 								<app-offer-order-item-card
 									[orderItem]="orderItem"
-									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[selectedOrderItemUuid]="
+										!selectedItemIsInStaged
+											? selectedOrderItem?.uuid
+											: null
+									"
+									[selectedOrderItemNote]="
+										!selectedItemIsInStaged
+											? selectedOrderItem?.notes
+											: null
+									"
 									[clickable]="true"
 									(click)="selectItem(orderItem, bookedItems)"
 									(noteIconClick)="orderItemNoteIconClick($event)"
@@ -256,8 +344,16 @@
 							} @else {
 								<app-order-item-card
 									[orderItem]="orderItem"
-									[selectedOrderItemUuid]="selectedOrderItem?.uuid"
-									[selectedOrderItemNote]="selectedOrderItem?.notes"
+									[selectedOrderItemUuid]="
+										!selectedItemIsInStaged
+											? selectedOrderItem?.uuid
+											: null
+									"
+									[selectedOrderItemNote]="
+										!selectedItemIsInStaged
+											? selectedOrderItem?.notes
+											: null
+									"
 									[clickable]="true"
 									(click)="selectItem(orderItem, bookedItems)"
 									(noteIconClick)="orderItemNoteIconClick($event)"

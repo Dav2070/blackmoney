@@ -58,10 +58,15 @@ export const de = {
 			"Grüezi {name}!"
 		],
 		generalSettings: "Allgemeine Einstellungen",
-		goToDashboard: "Zur Kasse",
+		goToTableOverview: "Zur Tischübersicht",
 		manageEmployees: "Mitarbeiter verwalten",
 		manageRestaurants: "Restaurants verwalten",
-		manageReservations: "Reservierungen verwalten"
+		manageReservations: "Reservierungen verwalten",
+		activationActionsHeadline: "Bereit für echte Zahlungen?",
+		activationActionsDescription:
+			"Das fehlt noch, damit du durchstarten kannst:",
+		activateRegister: "Kasse aktivieren",
+		stripeOnboarding: "Onboarding abschließen"
 	},
 	reservationsPage: {
 		headline: "Reservierungen",

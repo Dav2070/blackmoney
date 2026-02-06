@@ -4,10 +4,12 @@ import { isPlatformServer } from "@angular/common"
 import {
 	faGear,
 	faArrowRightFromBracket,
-	faCashRegister,
+	faMap,
 	faUsers,
 	faShop,
-	faCalendarCheck
+	faCalendarCheck,
+	faBadgeCheck,
+	faGears
 } from "@fortawesome/pro-regular-svg-icons"
 import { LogoutDialogComponent } from "src/app/dialogs/logout-dialog/logout-dialog.component"
 import { DataService } from "src/app/services/data-service"
@@ -25,10 +27,12 @@ export class UserPageComponent {
 	actionsLocale = this.localizationService.locale.actions
 	faGear = faGear
 	faArrowRightFromBracket = faArrowRightFromBracket
-	faCashRegister = faCashRegister
+	faMap = faMap
 	faUsers = faUsers
 	faShop = faShop
 	faCalendarCheck = faCalendarCheck
+	faBadgeCheck = faBadgeCheck
+	faGears = faGears
 	@ViewChild("logoutDialog")
 	logoutDialog: LogoutDialogComponent
 	title = ""
@@ -74,7 +78,7 @@ export class UserPageComponent {
 		this.router.navigate(["dashboard", "settings"])
 	}
 
-	navigateToDashboardPage(event: MouseEvent) {
+	navigateToTableOverviewPage(event: MouseEvent) {
 		event.preventDefault()
 
 		this.router.navigate(["dashboard", "tables"])

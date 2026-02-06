@@ -28,11 +28,11 @@
 
 		<div class="actions-container">
 			<dav-icon-card
-				[text]="locale.goToDashboard"
+				[text]="locale.goToTableOverview"
 				href="/dashboard/tables"
-				(click)="navigateToDashboardPage($event)"
+				(click)="navigateToTableOverviewPage($event)"
 			>
-				<fa-icon [icon]="faCashRegister"></fa-icon>
+				<fa-icon [icon]="faMap"></fa-icon>
 			</dav-icon-card>
 
 			@if (
@@ -63,6 +63,21 @@
 					<fa-icon [icon]="faCalendarCheck"></fa-icon>
 				</dav-icon-card>
 			}
+		</div>
+
+		<div class="activation-actions-container">
+			<h2>{{ locale.activationActionsHeadline }}</h2>
+			<p>{{ locale.activationActionsDescription }}</p>
+
+			<div>
+				<dav-icon-card [text]="locale.activateRegister">
+					<fa-icon [icon]="faBadgeCheck"></fa-icon>
+				</dav-icon-card>
+
+				<dav-icon-card [text]="locale.stripeOnboarding">
+					<fa-icon [icon]="faGears"></fa-icon>
+				</dav-icon-card>
+			</div>
 		</div>
 	</div>
 </div>

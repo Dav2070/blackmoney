@@ -1114,6 +1114,34 @@ export class BookingPageComponent {
 		return this.bookedItems.getOrderItems().includes(this.selectedOrderItem)
 	}
 
+	/**
+	 * Prüft ob das Item noch ein Merge-Target hat.
+	 * Wenn nicht, wird es gelöscht und neu eingefügt, um den Merge-Prozess neu zu triggern.
+	 * Funktioniert nur für Items in stagedItems, da bookedItems nicht verändert werden können.
+	 */
+	private recheckMergeTargetAndReinsert(): void {
+		if (this.selectedOrderItem != null && this.tmpAllItemHandler != null) {
+			// Nur für stagedItems ausführen, nicht für bookedItems
+			if (this.tmpAllItemHandler !== this.stagedItems) {
+				return
+			}
+
+			const mergeTarget = this.tmpAllItemHandler.findSimilarItem(
+				this.selectedOrderItem
+			)
+			if (!mergeTarget) {
+				// Kein Match mehr - Item entfernen und neu einfügen für neue UUID
+				const itemCopy = { ...this.selectedOrderItem }
+				this.tmpAllItemHandler.deleteItem(this.selectedOrderItem)
+
+				// Neu einfügen (keine UUID-Übernahme)
+				const newItem = this.tmpAllItemHandler.pushNewItem(itemCopy)
+				this.selectedOrderItem = newItem
+				this.selectedItemIsInStaged = true
+			}
+		}
+	}
+
 	//Füge selektiertes Item hinzu
 	addSelectedItem(orderItem: OrderItem) {
 		if (
@@ -1361,13 +1389,13 @@ export class BookingPageComponent {
 	}
 
 	addNoteDialogPrimaryButtonClick(event: { note: string }) {
-		if (this.selectedOrderItem != null) {
+		if (this.selectedOrderItem != null && this.tmpAllItemHandler != null) {
 			this.selectedOrderItem.notes = event.note
 
 			// Prüfe ob Items mit gleicher Notiz zusammengefasst werden können
-			if (this.tmpAllItemHandler != null) {
-				this.tmpAllItemHandler.consolidateItems(this.selectedOrderItem)
-			}
+			this.tmpAllItemHandler.consolidateItems(this.selectedOrderItem)
+
+			this.recheckMergeTargetAndReinsert()
 		}
 	}
 
@@ -1450,6 +1478,7 @@ export class BookingPageComponent {
 	takeAwayButtonClick() {
 		if (this.selectedOrderItem != null) {
 			this.selectedOrderItem.takeAway = !this.selectedOrderItem.takeAway
+			this.recheckMergeTargetAndReinsert()
 		}
 	}
 
@@ -1467,6 +1496,8 @@ export class BookingPageComponent {
 					this.showTotal()
 				}
 			}
+
+			this.recheckMergeTargetAndReinsert()
 		}
 	}
 

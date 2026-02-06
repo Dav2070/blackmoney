@@ -14,14 +14,13 @@ import { LocalizationService } from "src/app/services/localization-service"
 import { SpecialOpeningTime } from "src/app/models/Day"
 
 @Component({
-  selector: 'app-edit-special-opening-time-dialog',
-  templateUrl: './edit-special-opening-time-dialog.component.html',
-  styleUrl: './edit-special-opening-time-dialog.component.scss',
-  standalone: false
+	selector: "app-edit-special-opening-time-dialog",
+	templateUrl: "./edit-special-opening-time-dialog.component.html",
+	styleUrl: "./edit-special-opening-time-dialog.component.scss",
+	standalone: false
 })
 export class EditSpecialOpeningTimeDialogComponent {
-
-    locale = this.localizationService.locale.dialogs.editOpeningTimeDialog
+	locale = this.localizationService.locale.dialogs.editOpeningTimeDialog
 	actionsLocale = this.localizationService.locale.actions
 	@Input() loading: boolean = false
 	@Input() reason: string = ""
@@ -44,12 +43,12 @@ export class EditSpecialOpeningTimeDialogComponent {
 
 	specialOpeningTime: SpecialOpeningTime = null
 
-  	constructor(
+	constructor(
 		private localizationService: LocalizationService,
 		@Inject(PLATFORM_ID) private platformId: object
 	) {}
 
-  	ngAfterViewInit() {
+	ngAfterViewInit() {
 		if (isPlatformBrowser(this.platformId)) {
 			document.body.appendChild(this.dialog.nativeElement)
 		}
@@ -61,7 +60,7 @@ export class EditSpecialOpeningTimeDialogComponent {
 		}
 	}
 
-  	show(specialOpeningTime: SpecialOpeningTime) {
+	show(specialOpeningTime: SpecialOpeningTime) {
 		this.reason = specialOpeningTime.reason
 		this.startTime1 = specialOpeningTime.startTime1
 		this.endTime1 = specialOpeningTime.endTime1
@@ -75,7 +74,7 @@ export class EditSpecialOpeningTimeDialogComponent {
 		this.visible = true
 	}
 
-  	showNew() {
+	showNew() {
 		this.clear()
 		this.visible = true
 	}
@@ -99,24 +98,19 @@ export class EditSpecialOpeningTimeDialogComponent {
 		this.clearErrors.emit()
 	}
 
-	onDurchgehendChange() {
-		if (this.durchgehend) {
+	onOpeningTypeChange(value: string) {
+		if (value === "durchgehend") {
+			this.durchgehend = true
 			this.pause = false
 			this.geschlossen = false
-		}
-	}
-
-	onPauseChange() {
-		if (this.pause) {
+		} else if (value === "pause") {
 			this.durchgehend = false
+			this.pause = true
 			this.geschlossen = false
-		}
-	}
-
-	onGeschlossenChange(){
-		if (this.geschlossen) {
+		} else if (value === "geschlossen") {
 			this.durchgehend = false
 			this.pause = false
+			this.geschlossen = true
 		}
 	}
 
@@ -155,5 +149,4 @@ export class EditSpecialOpeningTimeDialogComponent {
 		this.pause = false
 		this.geschlossen = false
 	}
-
 }

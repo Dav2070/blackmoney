@@ -4,53 +4,52 @@
 	}
 }
 
-
-.block-container { 
-	margin-bottom: 24px; 
-} 
-
-.day-row { 
-	display: flex;
-	align-items: center; 
-	gap: 12px; 
-} 
-
-.day-select { 
-	flex: 1; 
-} 
-
-.remove-btn { 
-	margin-top: 4px; 
-} 
-
-.checkbox-row { 
-	display: flex; 
-	gap: 16px; 
-	margin-top: 12px; 
-} 
-
-.time-row { 
-	display: flex; 
-	gap: 16px; 
-	margin-top: 12px; 
-} 
-
-.add-row { 
-	text-align: center; 
-	margin-top: 16px; 
-} 
-
-.separator { 
-	height: 1px; 
-	background: #ddd; 
-	margin: 16px 0; 
+.block-container {
+	margin-bottom: 24px;
 }
 
-.pause-layout { 
-	display: flex; 
-	flex-wrap: wrap; 
+.day-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.day-select {
+	flex: 1;
+}
+
+.remove-btn {
+	margin-top: 4px;
+}
+
+.radio-row {
+	display: flex;
 	gap: 16px;
-	 mat-form-field { 
-		flex: 1 1 calc(50% - 8px);  
-	} 
+	margin-top: 12px;
+}
+
+.time-row {
+	display: flex;
+	gap: 16px;
+	margin-top: 12px;
+}
+
+.add-row {
+	text-align: center;
+	margin-top: 16px;
+}
+
+.separator {
+	height: 1px;
+	background: #ddd;
+	margin: 16px 0;
+}
+
+.pause-layout {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	dav-textfield {
+		flex: 1 1 calc(50% - 8px);
+	}
 }

@@ -11,96 +11,117 @@
 	(defaultButtonClick)="hide()"
 >
 	<form>
-
-	<!-- reason -->
-	<div class="dialog-formfield-container">
-		<dav-textfield
-			[value]="reason"
-			[label]=locale.reason
-			[disabled]="loading"
-			[errorMessage]="reasonError"
-			(change)="reasonTextfieldChange($event)"
-		></dav-textfield>
-	</div>
-
-	<div class="date-row">
-		<!-- from -->
+		<!-- reason -->
 		<div class="dialog-formfield-container">
 			<dav-textfield
-				[value]="fromDate"
-				[label]="locale.from"
-				type="date"
+				[value]="reason"
+				[label]="locale.reason"
 				[disabled]="loading"
 				[errorMessage]="reasonError"
-				(change)="fromDatefieldChange($event)"
+				(change)="reasonTextfieldChange($event)"
 			></dav-textfield>
 		</div>
 
-		<!-- to -->
-		<div class="dialog-formfield-container">
-			<dav-textfield
-				[value]="toDate"
-				[label]="locale.to"
-				type="date"
-				[disabled]="loading"
-				[errorMessage]="reasonError"
-				(change)="toDatefieldChange($event)"
-			></dav-textfield>
+		<div class="date-row">
+			<!-- from -->
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="fromDate"
+					[label]="locale.from"
+					type="date"
+					[disabled]="loading"
+					[errorMessage]="reasonError"
+					(change)="fromDatefieldChange($event)"
+				></dav-textfield>
+			</div>
+
+			<!-- to -->
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="toDate"
+					[label]="locale.to"
+					type="date"
+					[disabled]="loading"
+					[errorMessage]="reasonError"
+					(change)="toDatefieldChange($event)"
+				></dav-textfield>
+			</div>
 		</div>
 
-	</div>
+		<div class="radio-row">
+			<dav-radio-group
+				(change)="onOpeningTypeChange($any($event).detail.checked)"
+			>
+				<dav-radio-button
+					[label]="'Durchgehend geöffnet'"
+					value="durchgehend"
+					[checked]="durchgehend"
+				></dav-radio-button>
 
-	<div fxLayout="row" class="checkbox-row">
-		<mat-checkbox [(ngModel)]="durchgehend" name="durchgehend" (change)="onDurchgehendChange()">
-		Durchgehend geöffnet
-		</mat-checkbox>
+				<dav-radio-button
+					[label]="'Mit Pause geöffnet'"
+					value="pause"
+					[checked]="pause"
+				></dav-radio-button>
 
-		<mat-checkbox [(ngModel)]="pause" name="pause" (change)="onPauseChange()">
-		Mit Pause geöffnet
-		</mat-checkbox>
+				<dav-radio-button
+					[label]="'Geschlossen'"
+					value="geschlossen"
+					[checked]="geschlossen"
+				></dav-radio-button>
+			</dav-radio-group>
+		</div>
 
-		<mat-checkbox [(ngModel)]="geschlossen" name="geschlossen" (change)="onGeschlossenChange()">
-		Geschlossen
-		</mat-checkbox>
-	</div>
+		<!-- Durchgehend -->
+		@if (durchgehend) {
+			<div class="time-row">
+				<dav-textfield
+					[value]="startTime1"
+					label="Startzeit"
+					type="time"
+					(change)="startTime1 = $any($event).detail.value"
+				></dav-textfield>
 
-	
-	<!-- Durchgehend -->
-	<div *ngIf="durchgehend && !pause" class="time-row">
-		<mat-form-field appearance="fill">
-		<mat-label>Startzeit</mat-label>
-		<input matInput [(ngModel)]="startTime1" name="startTime1" type="time">
-		</mat-form-field>
+				<dav-textfield
+					[value]="endTime1"
+					label="Endzeit"
+					type="time"
+					(change)="endTime1 = $any($event).detail.value"
+				></dav-textfield>
+			</div>
+		}
 
-		<mat-form-field appearance="fill">
-		<mat-label>Endzeit</mat-label>
-		<input matInput [(ngModel)]="endTime1" name="endTime1" type="time">
-		</mat-form-field>
-	</div>
+		<!-- Pause -->
+		@if (pause) {
+			<div class="time-row pause-layout">
+				<dav-textfield
+					[value]="startTime1"
+					label="Startzeit 1"
+					type="time"
+					(change)="startTime1 = $any($event).detail.value"
+				></dav-textfield>
 
-	<!-- Pause -->
-	<div *ngIf="pause" class="time-row pause-layout">
-		<mat-form-field appearance="fill">
-		<mat-label>Startzeit 1</mat-label>
-		<input matInput [(ngModel)]="startTime1" name="startTime1p" type="time">
-		</mat-form-field>
+				<dav-textfield
+					[value]="endTime1"
+					label="Endzeit 1"
+					type="time"
+					(change)="endTime1 = $any($event).detail.value"
+				></dav-textfield>
 
-		<mat-form-field appearance="fill">
-		<mat-label>Endzeit 1</mat-label>
-		<input matInput [(ngModel)]="endTime1" name="endTime1p" type="time">
-		</mat-form-field>
+				<dav-textfield
+					[value]="startTime2"
+					label="Startzeit 2"
+					type="time"
+					(change)="startTime2 = $any($event).detail.value"
+				></dav-textfield>
 
-		<mat-form-field appearance="fill">
-		<mat-label>Startzeit 2</mat-label>
-		<input matInput [(ngModel)]="startTime2" name="startTime2" type="time">
-		</mat-form-field>
-
-		<mat-form-field appearance="fill">
-		<mat-label>Endzeit 2</mat-label>
-		<input matInput [(ngModel)]="endTime2" name="endTime2" type="time">
-		</mat-form-field>
-	</div>
-
+				<dav-textfield
+					[value]="endTime2"
+					label="Endzeit 2"
+					type="time"
+					(change)="endTime2 = $any($event).detail.value"
+				></dav-textfield>
+			</div>
+		}
 	</form>
-	
 </dav-dialog>

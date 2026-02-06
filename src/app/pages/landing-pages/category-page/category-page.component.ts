@@ -13,6 +13,7 @@ import { ContextMenu } from "dav-ui-components"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
+import { OfferItem } from "src/app/models/OfferItem"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
@@ -53,8 +54,6 @@ export class CategoryPageComponent {
 	loading: boolean = true
 	category: Category = null
 	availableVariations: Variation[] = []
-	menus: Product[] = []
-	specials: Product[] = []
 	availableProducts: Product[] = []
 
 	//#region AddButtonContextMenu
@@ -103,8 +102,7 @@ export class CategoryPageComponent {
 	@ViewChild("editOfferDialog")
 	editOfferDialog!: EditOfferDialogComponent
 	editOfferDialogLoading: boolean = false
-	editingMenu: Product | null = null
-	editingSpecial: Product | null = null
+	editingOffer: Product | null = null
 
 	constructor(
 		private readonly dataService: DataService,
@@ -493,8 +491,6 @@ export class CategoryPageComponent {
 		)
 
 		if (createProductResponse.data?.createProduct != null) {
-			// Für FOOD: Cache wurde evicted, lade Daten neu (aber aus Cache, falls verfügbar)
-			// Für andere: Lade komplett neu
 			await this.loadData()
 			this.addProductDialog.hide()
 			this.addProductDialogLoading = false
@@ -526,20 +522,12 @@ export class CategoryPageComponent {
 	}
 
 	showEditProductDialog(product: Product) {
-		console.log('[CATEGORY-PAGE] showEditProductDialog called for:', product.name, product.uuid)
-		console.log('[CATEGORY-PAGE] Product object variations:', product.variations?.map(v => ({ uuid: v.uuid, name: v.name })))
-		
 		if (this.editProductDialog) {
 			this.editProductDialog.show(product)
 		}
 	}
 
 	async editProductDialogPrimaryButtonClick(product: Product) {
-		console.log('[CATEGORY-PAGE] editProductDialogPrimaryButtonClick called')
-		console.log('[CATEGORY-PAGE] Product to update:', product.name, product.uuid)
-		console.log('[CATEGORY-PAGE] Product variations:', product.variations?.map(v => ({ uuid: v.uuid, name: v.name })))
-		console.log('[CATEGORY-PAGE] variationUuids to send:', product.variations?.map(v => v.uuid))
-		
 		this.editProductDialogLoading = true
 		this.editProductDialogNameError = ""
 		this.editProductDialogPriceError = ""
@@ -576,18 +564,7 @@ export class CategoryPageComponent {
 		)
 
 		if (updateProductResponse.data?.updateProduct != null) {
-			console.log('[CATEGORY-PAGE] Update successful, response:', updateProductResponse.data.updateProduct)
-			console.log('[CATEGORY-PAGE] Response variations:', updateProductResponse.data.updateProduct.variations?.items?.map(v => ({ uuid: v.uuid, name: v.name })))
-			
-			// Für FOOD: Cache wurde evicted, lade Daten neu (aber aus Cache, falls verfügbar)
-			// Für andere: Lade komplett neu
 			await this.loadData()
-			
-			console.log('[CATEGORY-PAGE] After loadData(), category products:')
-			this.category?.products?.forEach(p => {
-				console.log(`  - ${p.name} (${p.uuid}):`, p.variations?.map(v => ({ uuid: v.uuid, name: v.name, ref: v })))
-			})
-			
 			this.editProductDialog.hide()
 			this.editProductDialogLoading = false
 		} else {
@@ -676,10 +653,10 @@ export class CategoryPageComponent {
 			const productUuid = createProductResponse.data.createProduct.uuid
 
 			// 2. Konvertiere offerItems für das Backend
-			const offerItems = data.offer.offerItems.map((item: any) => ({
+			const offerItems = data.offer.offerItems.map((item: OfferItem) => ({
 				name: item.name,
 				maxSelections: item.maxSelections,
-				productUuids: item.products.map((p: any) => p.uuid)
+				productUuids: item.products.map((p: Product) => p.uuid)
 			}))
 
 			// 3. Erstelle das Offer
@@ -729,17 +706,8 @@ export class CategoryPageComponent {
 	}
 
 	showEditOfferDialog(offer: Product) {
-		// Determine if it's a special or menu based on the source array
-		const isSpecial = this.specials.some(s => s.uuid === offer.uuid)
-
-		if (isSpecial) {
-			this.editingSpecial = offer
-			this.editOfferDialog.isSpecialMode = true
-		} else {
-			this.editingMenu = offer
-			this.editOfferDialog.isSpecialMode = false
-		}
-
+		this.editingOffer = offer
+		this.editOfferDialog.isSpecialMode = offer.type === "SPECIAL"
 		this.editOfferDialog.show(offer)
 	}
 
@@ -753,9 +721,7 @@ export class CategoryPageComponent {
 		this.editOfferDialogLoading = true
 
 		try {
-			const currentProduct = this.editingSpecial || this.editingMenu
-
-			if (!currentProduct) {
+			if (!this.editingOffer) {
 				console.error("No product being edited")
 				this.editOfferDialogLoading = false
 				return
@@ -767,31 +733,22 @@ export class CategoryPageComponent {
 
 			// 1. Update das Produkt
 			await this.apiService.updateProduct(`uuid`, {
-				uuid: currentProduct.uuid,
+				uuid: this.editingOffer.uuid,
 				name: data.name,
 				price: priceInCents,
 				shortcut: data.id
 			})
 
 			// 2. Update das Offer, falls vorhanden
-			if (currentProduct.offer?.uuid) {
-				const offerItems = data.offer.offerItems.map((item: any) => ({
+			if (this.editingOffer.offer?.uuid) {
+				const offerItems = data.offer.offerItems.map((item: OfferItem) => ({
 					name: item.name,
 					maxSelections: item.maxSelections,
-					productUuids: item.products.map((p: any) => p.uuid)
+					productUuids: item.products.map((p: Product) => p.uuid)
 				}))
 
-				console.log("DEBUG: Offer data before sending:", {
-					originalOffer: data.offer,
-					startDate: data.offer.startDate,
-					endDate: data.offer.endDate,
-					startTime: data.offer.startTime,
-					endTime: data.offer.endTime,
-					weekdays: data.offer.weekdays
-				})
-
 				const updatePayload = {
-					uuid: currentProduct.offer.uuid,
+					uuid: this.editingOffer.offer.uuid,
 					offerType: data.offer.offerType,
 					discountType: data.offer.discountType,
 					offerValue: offerValueInCents,
@@ -825,20 +782,16 @@ export class CategoryPageComponent {
 					offerItems: offerItems
 				}
 
-				console.log("DEBUG: Update payload:", updatePayload)
-
 				const response = await this.apiService.updateOffer(
 					`uuid`,
 					updatePayload
 				)
-				console.log("DEBUG: Update response:", response)
 			}
 
 			// Lade die Daten neu
 			await this.loadData()
 			this.editOfferDialog.hide()
-			this.editingSpecial = null
-			this.editingMenu = null
+			this.editingOffer = null
 		} catch (error) {
 			console.error("Error updating offer:", error)
 		} finally {
@@ -847,9 +800,7 @@ export class CategoryPageComponent {
 	}
 
 	async deleteOffer(offer: Product) {
-		// Determine if it's a special or menu
-		const isSpecial = this.specials.some(s => s.uuid === offer.uuid)
-		const offerType = isSpecial ? "Special" : "Menü"
+		const offerType = offer.type === "SPECIAL" ? "Special" : "Menü"
 
 		const confirmed = confirm(
 			`${offerType} "${offer.name}" wirklich löschen?`

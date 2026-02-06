@@ -14,6 +14,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
+import { formatPrice } from "src/app/utils"
 
 @Component({
 	selector: "app-edit-product-dialog",
@@ -78,12 +79,9 @@ export class EditProductDialogComponent {
 	}
 
 	show(product: Product) {
-		console.log('[EDIT-DIALOG] show() called for product:', product.name, product.uuid)
-		console.log('[EDIT-DIALOG] Product variations:', product.variations?.map(v => ({ uuid: v.uuid, name: v.name })))
-		
 		// Force re-render of checkboxes
 		this.renderCheckboxes = false
-		
+
 		// Reset first to clear previous state
 		this.reset()
 
@@ -94,17 +92,16 @@ export class EditProductDialogComponent {
 		}
 		this.productId = product.shortcut.toString()
 		this.name = product.name
-		this.price = (product.price / 100).toFixed(2)
+		this.price = formatPrice(product.price)
 		this.takeaway = product.takeaway
 		// Create new array to ensure Angular detects changes
 		this.selectedVariationUuids = [
 			...(product.variations?.map(v => v.uuid) || [])
 		]
-		
-		console.log('[EDIT-DIALOG] selectedVariationUuids after init:', this.selectedVariationUuids)
+
 		this.expandedVariationUuids.clear()
 		this.visible = true
-		
+
 		// Re-enable checkboxes rendering after Angular processes the change
 		setTimeout(() => {
 			this.renderCheckboxes = true
@@ -117,7 +114,6 @@ export class EditProductDialogComponent {
 	}
 
 	reset() {
-		console.log('[EDIT-DIALOG] reset() called')
 		this.product = null
 		this.productId = ""
 		this.name = ""
@@ -129,7 +125,6 @@ export class EditProductDialogComponent {
 		this.idError = ""
 		this.nameError = ""
 		this.priceError = ""
-		console.log('[EDIT-DIALOG] reset() done, selectedVariationUuids:', this.selectedVariationUuids)
 	}
 
 	submit() {
@@ -158,9 +153,6 @@ export class EditProductDialogComponent {
 		const selectedVariations = this.availableVariations.filter(v =>
 			this.selectedVariationUuids.includes(v.uuid)
 		)
-		
-		console.log('[EDIT-DIALOG] submit() - selectedVariationUuids:', [...this.selectedVariationUuids])
-		console.log('[EDIT-DIALOG] submit() - selectedVariations:', selectedVariations.map(v => ({ uuid: v.uuid, name: v.name })))
 
 		const updatedProduct: Product = {
 			...this.product,
@@ -170,8 +162,6 @@ export class EditProductDialogComponent {
 			variations: selectedVariations,
 			takeaway: this.takeaway
 		}
-		
-		console.log('[EDIT-DIALOG] submit() - updatedProduct:', updatedProduct.name, updatedProduct.variations.map(v => ({ uuid: v.uuid, name: v.name })))
 
 		this.primaryButtonClick.emit(updatedProduct)
 	}
@@ -199,45 +189,39 @@ export class EditProductDialogComponent {
 	}
 
 	toggleVariationSelection(variationUuid: string) {
-		console.log('[EDIT-DIALOG] toggleVariationSelection called for:', variationUuid)
-		console.log('[EDIT-DIALOG] Before toggle:', [...this.selectedVariationUuids])
-		
 		const index = this.selectedVariationUuids.indexOf(variationUuid)
 		if (index > -1) {
 			// Create new array instead of mutating
 			this.selectedVariationUuids = this.selectedVariationUuids.filter(
 				uuid => uuid !== variationUuid
 			)
-			console.log('[EDIT-DIALOG] Removed variation')
 		} else {
 			// Create new array instead of mutating
-			this.selectedVariationUuids = [...this.selectedVariationUuids, variationUuid]
-			console.log('[EDIT-DIALOG] Added variation')
+			this.selectedVariationUuids = [
+				...this.selectedVariationUuids,
+				variationUuid
+			]
 		}
-		
-		console.log('[EDIT-DIALOG] After toggle:', [...this.selectedVariationUuids])
 	}
 
 	checkboxChanged(variationUuid: string, checked: boolean) {
-		console.log('[EDIT-DIALOG] checkboxChanged:', variationUuid, 'checked:', checked)
-		const isCurrentlySelected = this.selectedVariationUuids.includes(variationUuid)
-		
+		const isCurrentlySelected =
+			this.selectedVariationUuids.includes(variationUuid)
+
 		if (checked && !isCurrentlySelected) {
-			this.selectedVariationUuids = [...this.selectedVariationUuids, variationUuid]
-			console.log('[EDIT-DIALOG] Added via checkbox')
+			this.selectedVariationUuids = [
+				...this.selectedVariationUuids,
+				variationUuid
+			]
 		} else if (!checked && isCurrentlySelected) {
 			this.selectedVariationUuids = this.selectedVariationUuids.filter(
 				uuid => uuid !== variationUuid
 			)
-			console.log('[EDIT-DIALOG] Removed via checkbox')
 		}
-		
-		console.log('[EDIT-DIALOG] After checkbox change:', [...this.selectedVariationUuids])
 	}
 
 	isVariationSelected(variationUuid: string): boolean {
 		const isSelected = this.selectedVariationUuids.includes(variationUuid)
-		// console.log('[EDIT-DIALOG] isVariationSelected', variationUuid, ':', isSelected, 'from', this.selectedVariationUuids)
 		return isSelected
 	}
 

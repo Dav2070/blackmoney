@@ -61,7 +61,6 @@ export class EditCategoryDialogComponent {
 	}
 
 	reset() {
-		this.category = null
 		this.name = ""
 		this.nameError = ""
 	}

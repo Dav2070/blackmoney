@@ -81,7 +81,10 @@ export class AddProductDialogComponent {
 	show() {
 		// Reset first to clear previous state
 		this.reset()
-		this.visible = true
+		// Use setTimeout to ensure Angular processes the reset before showing
+		setTimeout(() => {
+			this.visible = true
+		}, 0)
 	}
 
 	hide() {
@@ -165,6 +168,22 @@ export class AddProductDialogComponent {
 		this.takeaway = newValue
 	}
 
+	onVariationCheckboxChange(variationUuid: string, checked: boolean) {
+		if (checked && !this.selectedVariationUuids.includes(variationUuid)) {
+			this.selectedVariationUuids = [
+				...this.selectedVariationUuids,
+				variationUuid
+			]
+		} else if (
+			!checked &&
+			this.selectedVariationUuids.includes(variationUuid)
+		) {
+			this.selectedVariationUuids = this.selectedVariationUuids.filter(
+				uuid => uuid !== variationUuid
+			)
+		}
+	}
+
 	toggleVariationSelection(variationUuid: string) {
 		const index = this.selectedVariationUuids.indexOf(variationUuid)
 		if (index > -1) {
@@ -174,7 +193,10 @@ export class AddProductDialogComponent {
 			)
 		} else {
 			// Create new array instead of mutating
-			this.selectedVariationUuids = [...this.selectedVariationUuids, variationUuid]
+			this.selectedVariationUuids = [
+				...this.selectedVariationUuids,
+				variationUuid
+			]
 		}
 	}
 

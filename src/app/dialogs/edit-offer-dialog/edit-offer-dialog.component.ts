@@ -85,7 +85,7 @@ export class EditOfferDialogComponent {
 		}
 	}
 
-	show(menu: any) {
+	show(menu: Product) {
 		this.basicData.id = menu.shortcut || 0
 		this.basicData.name = menu.name
 		this.basicData.takeaway = menu.takeaway || false

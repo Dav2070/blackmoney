@@ -9,7 +9,9 @@ export class OrderItemsArrayMerger {
 
 	// Merge alle orderItems von incoming in existing.orderItems (fügt zusammen oder hängt an)
 	mergeOrderItemArray(existing: OrderItem, incoming: OrderItem) {
-		if (!incoming?.orderItems?.length) return
+		if (!incoming?.orderItems?.length) {
+			return
+		}
 		if (!existing.orderItems) existing.orderItems = []
 
 		// Spezialbehandlung für Specials: nur ein Subitem, das gemerged wird

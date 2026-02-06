@@ -1,0 +1,24 @@
+.container {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: 1fr;
+	gap: 16px;
+	width: 100%;
+	background-color: var(--dav-color-surface);
+	padding: 0;
+}
+
+.table-overview-container {
+	grid-column: 1;
+}
+
+.rooms-sidenav-container {
+	grid-column: 2;
+	background-color: var(--dav-color-surface);
+}
+
+.room-item-skeleton {
+	width: 133px;
+	height: 34px;
+	border-radius: 20px;
+}

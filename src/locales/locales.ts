@@ -1,4 +1,10 @@
 export const de = {
+	header: {
+		registerNotActivated: "Kasse nicht aktiviert",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
+	},
 	loginPage: {
 		headline: "Anmelden",
 		restaurant: "Restaurant",
@@ -97,6 +103,12 @@ export const de = {
 		addPicture: "Bild hinzufügen",
 		manageMenu: "Speisekarte verwalten"
 	},
+	registerPage: {
+		notActivated: "Nicht aktiviert",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
+	},
 	registerClientPage: {
 		printRulesHeadline: "Druckregeln",
 		printRuleText:
@@ -163,11 +175,7 @@ export const de = {
 	},
 	categoriesPage: {
 		headline: "Deine Kategorien",
-		noCategories: "Keine Kategorien vorhanden",
-		categoryNameAlreadyExists:
-			"Eine Kategorie mit diesem Namen existiert bereits",
-		nameTooShort: "Der Name ist zu kurz",
-		nameTooLong: "Der Name ist zu lang"
+		noCategories: "Keine Kategorien vorhanden"
 	},
 	categoryPage: {
 		noProductsMessage: "Keine Produkte vorhanden",
@@ -203,7 +211,10 @@ export const de = {
 		removeBill: "Rechnung entfernen",
 		payByCash: "Bar bezahlen",
 		payByCard: "Mit Karte bezahlen",
-		moveMultipleProducts: "Mehrere verschieben"
+		moveMultipleProducts: "Mehrere verschieben",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	transferPage: {
 		tableHeadline: "Tisch {tableName} – {roomName}",
@@ -283,6 +294,12 @@ export const de = {
 		logoutDialog: {
 			headline: "Abmelden",
 			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
+		},
+		activateRegisterDialog: {
+			headline: "Kasse aktivieren",
+			description:
+				"Aktiviere diese Kasse, um Zahlungen von deinen Kunden zu akzeptieren und alle Transaktionen in der TSE zu speichern.<br /><br />Bitte beachte, dass pro aktivierter Kasse zusätzlich 49 € pro Monat an Kosten anfallen.",
+			activate: "Aktivieren"
 		},
 		editRegisterClientNameDialog: {
 			headline: "Gerätename bearbeiten",
@@ -745,6 +762,8 @@ export const de = {
 		printerAlreadyExists:
 			"Ein Drucker mit dieser IP-Adresse existiert bereits.",
 		tableAlreadyExists: "Ein Tisch mit dieser Nummer existiert bereits.",
+		categoryNameAlreadyExists:
+			"Eine Kategorie mit diesem Namen existiert bereits",
 		nameMissing: "Bitte gib einen Namen an.",
 		nameTooShort: "Der Name ist zu kurz.",
 		nameTooLong: "Der Name ist zu lang.",

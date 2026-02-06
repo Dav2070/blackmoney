@@ -19,7 +19,6 @@ import {
 	PrintRuleResource,
 	UserRole,
 	PrinterResource,
-	AddProductsInput,
 	ProductType,
 	PrintRuleType,
 	ReservationResource,
@@ -27,7 +26,8 @@ import {
 	OfferResource,
 	OfferType,
 	DiscountType,
-	Weekday
+	Weekday,
+	AddOrderItemInput
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
 
@@ -394,6 +394,27 @@ export class ApiService {
 							restaurantUuid: $restaurantUuid
 							name: $name
 						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async activateRegister(
+		queryData: string,
+		variables: {
+			uuid: string
+		}
+	): Promise<ApolloResult<{ activateRegister: RegisterResource }>> {
+		return await this.davAuthApollo
+			.mutate<{ activateRegister: RegisterResource }>({
+				mutation: gql`
+					mutation ActivateRegister($uuid: String!) {
+						activateRegister(uuid: $uuid) {
 							${queryData}
 						}
 					}
@@ -1342,7 +1363,7 @@ export class ApiService {
 		queryData: string,
 		variables: {
 			uuid: string
-			products: AddProductsInput[]
+			products: AddOrderItemInput[]
 		}
 	): Promise<ApolloResult<{ addProductsToOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
@@ -1350,7 +1371,7 @@ export class ApiService {
 				mutation: gql`
 					mutation AddProductsToOrder(
 						$uuid: String!
-						$products: [AddProductsInput!]!
+						$products: [AddOrderItemInput!]!
 					) {
 						addProductsToOrder(
 							uuid: $uuid
@@ -1370,10 +1391,7 @@ export class ApiService {
 		queryData: string,
 		variables: {
 			uuid: string
-			products: {
-				uuid: string
-				count: number
-			}[]
+			products: AddOrderItemInput[]
 		}
 	): Promise<ApolloResult<{ removeProductsFromOrder: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
@@ -1381,7 +1399,7 @@ export class ApiService {
 				mutation: gql`
 					mutation RemoveProductsFromOrder(
 						$uuid: String!
-						$products: [AddProductsInput!]!
+						$products: [AddOrderItemInput!]!
 					) {
 						removeProductsFromOrder(
 							uuid: $uuid
@@ -1575,6 +1593,52 @@ export class ApiService {
 				`,
 				variables,
 				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createStripeConnectionToken(): Promise<
+		ApolloResult<{
+			createStripeConnectionToken: { secret: string }
+		}>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				createStripeConnectionToken: { secret: string }
+			}>({
+				mutation: gql`
+					mutation CreateStripeConnectionToken {
+						createStripeConnectionToken {
+							secret
+						}
+					}
+				`,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async captureStripePaymentIntent(
+		queryData: string,
+		variables: { id: string }
+	): Promise<
+		ApolloResult<{
+			captureStripePaymentIntent: { id: string }
+		}>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				captureStripePaymentIntent: { id: string }
+			}>({
+				mutation: gql`
+					mutation CaptureStripePaymentIntent($id: String!) {
+						captureStripePaymentIntent(id: $id) {
+							${queryData}
+						}
+					}
+				`,
+				errorPolicy,
+				variables
 			})
 			.toPromise()
 	}

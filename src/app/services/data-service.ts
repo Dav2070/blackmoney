@@ -9,6 +9,7 @@ import * as DavUIComponents from "dav-ui-components"
 import { User } from "../models/User"
 import { Company } from "../models/Company"
 import { Restaurant } from "../models/Restaurant"
+import { Register } from "../models/Register"
 import { RegisterClient } from "../models/RegisterClient"
 import { SettingsService } from "./settings-service"
 import { environment } from "src/environments/environment"
@@ -24,14 +25,16 @@ import { convertStringToTheme } from "../utils"
 @Injectable()
 export class DataService {
 	dav = Dav
-	davUserPromiseHolder = new PromiseHolder()
-	blackmoneyUserPromiseHolder = new PromiseHolder()
-	companyPromiseHolder = new PromiseHolder()
-	restaurantPromiseHolder = new PromiseHolder()
-	registerClientPromiseHolder = new PromiseHolder()
+	davUserPromiseHolder = new PromiseHolder<User>()
+	blackmoneyUserPromiseHolder = new PromiseHolder<User>()
+	companyPromiseHolder = new PromiseHolder<Company>()
+	restaurantPromiseHolder = new PromiseHolder<Restaurant>()
+	registerPromiseHolder = new PromiseHolder<Register>()
+	registerClientPromiseHolder = new PromiseHolder<RegisterClient>()
 	user: User = null
 	company: Company = null
 	restaurant: Restaurant = null
+	register: Register = null
 	registerClient: RegisterClient = null
 	isMobile: boolean = false
 	darkTheme: boolean = false

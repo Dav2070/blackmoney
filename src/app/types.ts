@@ -16,6 +16,25 @@ export type ApolloResult<T> = Apollo.MutateResult<T> & {
 	error?: { errors?: { extensions?: { code?: string; errors?: string[] } }[] }
 }
 
+export type SendMessage =
+	| {
+			type: "startPayment"
+			price: number
+	  }
+	| {
+			type: "createStripeConnectionToken"
+			secret: string
+	  }
+
+export type ReceiveMessage =
+	| {
+			type: "createStripeConnectionToken"
+	  }
+	| {
+			type: "captureStripePaymentIntent"
+			id: string
+	  }
+
 export interface SessionResource {
 	uuid: string
 	user: UserResource
@@ -61,6 +80,7 @@ export interface AddressResource {
 export interface RegisterResource {
 	uuid: string
 	name: string
+	status: RegisterStatus
 	registerClients: List<RegisterClientResource>
 }
 
@@ -68,6 +88,7 @@ export interface RegisterClientResource {
 	uuid: string
 	name: string
 	serialNumber: string
+	register: RegisterResource
 	printRules: List<PrintRuleResource>
 }
 
@@ -213,8 +234,9 @@ export interface ReservationResource {
 	checkedIn: boolean
 }
 
-export interface AddProductsInput {
+export interface AddOrderItemInput {
 	uuid?: string
+	productUuid?: string
 	count: number
 	discount?: number
 	diversePrice?: number
@@ -223,18 +245,21 @@ export interface AddProductsInput {
 	takeAway?: boolean
 	course?: number
 	offerUuid?: string
-	variations?: AddProductVariationInput[]
-	orderItems?: AddProductOrderItemInput[]
+	variations?: AddOrderItemVariationInput[]
+	orderItems?: AddChildOrderItemInput[]
 }
 
-export interface AddProductVariationInput {
+export interface AddOrderItemVariationInput {
+	uuid?: string
 	variationItemUuids: string[]
 	count: number
 }
 
-export interface AddProductOrderItemInput {
+export interface AddChildOrderItemInput {
+	uuid?: string
 	productUuid: string
 	count: number
+	variations?: AddOrderItemVariationInput[]
 }
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"
@@ -258,6 +283,7 @@ export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
 export type PaymentMethod = "CASH" | "CARD"
 export type Country = "DE"
+export type RegisterStatus = "ACTIVE" | "INACTIVE"
 
 export type Weekday =
 	| "MONDAY"
@@ -275,6 +301,7 @@ export type ErrorCode =
 	| typeof ErrorCodes.productAlreadyHasOffer
 	| typeof ErrorCodes.priceMustBePositive
 	| typeof ErrorCodes.offerValueMustBePositive
+	| typeof ErrorCodes.registerAlreadyActive
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword

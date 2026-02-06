@@ -1,0 +1,15 @@
+[
+   {
+      "relation": [
+         "delegate_permission/common.handle_all_urls",
+         "delegate_permission/common.use_as_origin"
+      ],
+      "target": {
+         "namespace": "android_app",
+         "package_name": "de.butler_kassensysteme.twa",
+         "sha256_cert_fingerprints": [
+            "8D:E3:58:DD:D6:84:D8:B1:02:C4:DB:DD:42:E4:0D:FB:8E:58:A3:FC:0B:3A:E4:79:74:32:32:79:C7:C7:F3:8E"
+         ]
+      }
+   }
+]

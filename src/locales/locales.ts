@@ -66,7 +66,10 @@ export const de = {
 		activationActionsDescription:
 			"Das fehlt noch, damit du durchstarten kannst:",
 		activateRegister: "Kasse aktivieren",
-		stripeOnboarding: "Onboarding abschließen"
+		stripeOnboarding: "Onboarding abschließen",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	reservationsPage: {
 		headline: "Reservierungen",

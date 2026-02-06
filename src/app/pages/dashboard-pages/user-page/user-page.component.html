@@ -65,20 +65,30 @@
 			}
 		</div>
 
-		<div class="activation-actions-container">
-			<h2>{{ locale.activationActionsHeadline }}</h2>
-			<p>{{ locale.activationActionsDescription }}</p>
+		@if (
+			dataService.user != null &&
+			["OWNER", "ADMIN"].includes(dataService.user.role)
+		) {
+			<div class="activation-actions-container">
+				<h2>{{ locale.activationActionsHeadline }}</h2>
+				<p>{{ locale.activationActionsDescription }}</p>
 
-			<div>
-				<dav-icon-card [text]="locale.activateRegister">
-					<fa-icon [icon]="faBadgeCheck"></fa-icon>
-				</dav-icon-card>
+				<div>
+					@if (dataService.register.status === "INACTIVE") {
+						<dav-icon-card
+							[text]="locale.activateRegister"
+							(click)="showActivateRegisterDialog()"
+						>
+							<fa-icon [icon]="faBadgeCheck"></fa-icon>
+						</dav-icon-card>
+					}
 
-				<dav-icon-card [text]="locale.stripeOnboarding">
-					<fa-icon [icon]="faGears"></fa-icon>
-				</dav-icon-card>
+					<dav-icon-card [text]="locale.stripeOnboarding">
+						<fa-icon [icon]="faGears"></fa-icon>
+					</dav-icon-card>
+				</div>
 			</div>
-		</div>
+		}
 	</div>
 </div>
 
@@ -86,3 +96,9 @@
 	#logoutDialog
 	(primaryButtonClick)="logout()"
 ></app-logout-dialog>
+
+<app-activate-register-dialog
+	#activateRegisterDialog
+	[loading]="activateRegisterDialogLoading"
+	(primaryButtonClick)="activateRegisterDialogPrimaryButtonClick()"
+></app-activate-register-dialog>

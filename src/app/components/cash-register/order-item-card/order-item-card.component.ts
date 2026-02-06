@@ -58,7 +58,7 @@ export class OrderItemCardComponent {
 		if (this.isDiverseOrderItem(orderItem)) {
 			return "0"
 		}
-		return orderItem.product.shortcut.toString()
+		return orderItem.product?.shortcut?.toString()
 	}
 
 	calculateTotalPriceOfOrderItem(orderItem: OrderItem): number {

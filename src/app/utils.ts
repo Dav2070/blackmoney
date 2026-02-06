@@ -297,8 +297,8 @@ export function convertRestaurantResourceToRestaurant(
 		images: [],
 		address: {
 			uuid: restaurantResource.uuid,
-			addressLine1: restaurantResource.line1,
-			addressLine2: restaurantResource.line2,
+			line1: restaurantResource.line1,
+			line2: restaurantResource.line2,
 			postalCode: restaurantResource.postalCode,
 			city: restaurantResource.city,
 			country: restaurantResource.country

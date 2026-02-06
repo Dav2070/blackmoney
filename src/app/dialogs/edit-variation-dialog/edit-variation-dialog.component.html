@@ -4,7 +4,7 @@
 	[primaryButtonText]="actionsLocale.save"
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
-	maxWidth="600"
+	maxWidth="500"
 	[loading]="loading"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
@@ -34,7 +34,9 @@
 					@for (item of variationItems; track item.uuid) {
 						<div class="item-row">
 							<span class="item-name">{{ item.name }}</span>
-							<span class="item-cost">{{ formatPrice(item.additionalCost) }}</span>
+							<span class="item-cost">{{
+								formatPrice(item.additionalCost)
+							}}</span>
 							<dav-icon-button
 								size="xs"
 								(click)="removeVariationItem(item)"

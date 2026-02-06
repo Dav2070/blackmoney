@@ -1,14 +1,16 @@
 <dav-dialog
 	#dialog
-	[headline]="mode === 'select' ? locale.selectHeadline : locale.removeHeadline"
-	[primaryButtonText]="mode === 'select' ? actionsLocale.select : actionsLocale.delete"
+	[headline]="
+		mode === 'select' ? locale.selectHeadline : locale.removeHeadline
+	"
+	[primaryButtonText]="
+		mode === 'select' ? actionsLocale.select : actionsLocale.delete
+	"
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
 	maxWidth="450"
 	[primaryButtonDisabled]="
-		mode === 'select'
-			? getAllVariationItemCount() === 0
-			: false
+		mode === 'select' ? getAllVariationItemCount() === 0 : false
 	"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"

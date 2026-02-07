@@ -43,6 +43,7 @@ export interface SessionResource {
 export interface CompanyResource {
 	uuid: string
 	name: string
+	stripeOnboardingStatus: StripeOnboardingStatus
 	restaurants: List<RestaurantResource>
 	users: List<UserResource>
 }
@@ -284,6 +285,7 @@ export type DiscountType = "PERCENTAGE" | "AMOUNT"
 export type PaymentMethod = "CASH" | "CARD"
 export type Country = "DE"
 export type RegisterStatus = "ACTIVE" | "INACTIVE"
+export type StripeOnboardingStatus = "PENDING" | "COMPLETED"
 
 export type Weekday =
 	| "MONDAY"

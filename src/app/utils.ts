@@ -276,6 +276,7 @@ export function convertCompanyResourceToCompany(
 	return {
 		uuid: companyResource.uuid,
 		name: companyResource.name,
+		stripeOnboardingStatus: companyResource.stripeOnboardingStatus,
 		users,
 		restaurants
 	}

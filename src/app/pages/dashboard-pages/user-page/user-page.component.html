@@ -67,14 +67,16 @@
 
 		@if (
 			dataService.user != null &&
-			["OWNER", "ADMIN"].includes(dataService.user.role)
+			["OWNER", "ADMIN"].includes(dataService.user.role) &&
+			(dataService.register?.status === "INACTIVE" ||
+				dataService.company?.stripeOnboardingStatus === "PENDING")
 		) {
 			<div class="activation-actions-container">
 				<h2>{{ locale.activationActionsHeadline }}</h2>
 				<p>{{ locale.activationActionsDescription }}</p>
 
 				<div>
-					@if (dataService.register.status === "INACTIVE") {
+					@if (dataService.register?.status === "INACTIVE") {
 						<dav-icon-card
 							[text]="locale.activateRegister"
 							(click)="showActivateRegisterDialog()"
@@ -83,9 +85,11 @@
 						</dav-icon-card>
 					}
 
-					<dav-icon-card [text]="locale.stripeOnboarding">
-						<fa-icon [icon]="faGears"></fa-icon>
-					</dav-icon-card>
+					@if (dataService.company?.stripeOnboardingStatus === "PENDING") {
+						<dav-icon-card [text]="locale.stripeOnboarding">
+							<fa-icon [icon]="faGears"></fa-icon>
+						</dav-icon-card>
+					}
 				</div>
 			</div>
 		}

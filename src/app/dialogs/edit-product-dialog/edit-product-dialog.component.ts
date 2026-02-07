@@ -14,6 +14,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
+import { formatPrice } from "src/app/utils"
 
 @Component({
 	selector: "app-edit-product-dialog",
@@ -36,6 +37,7 @@ export class EditProductDialogComponent {
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 
 	visible: boolean = false
+	renderCheckboxes: boolean = true
 	product: Product = null
 	productId: string = ""
 	name: string = ""
@@ -77,14 +79,33 @@ export class EditProductDialogComponent {
 	}
 
 	show(product: Product) {
-		this.product = product
+		// Force re-render of checkboxes
+		this.renderCheckboxes = false
+
+		// Reset first to clear previous state
+		this.reset()
+
+		// Create a deep copy of the product to avoid mutating the original
+		this.product = {
+			...product,
+			variations: product.variations ? [...product.variations] : []
+		}
 		this.productId = product.shortcut.toString()
 		this.name = product.name
 		this.price = (product.price / 100).toFixed(2)
 		this.takeaway = product.takeaway
-		this.selectedVariationUuids = product.variations?.map(v => v.uuid) || []
+		// Create new array to ensure Angular detects changes
+		this.selectedVariationUuids = [
+			...(product.variations?.map(v => v.uuid) || [])
+		]
+
 		this.expandedVariationUuids.clear()
 		this.visible = true
+
+		// Re-enable checkboxes rendering after Angular processes the change
+		setTimeout(() => {
+			this.renderCheckboxes = true
+		}, 0)
 	}
 
 	hide() {
@@ -98,6 +119,7 @@ export class EditProductDialogComponent {
 		this.name = ""
 		this.price = ""
 		this.takeaway = false
+		// Create new array to ensure Angular detects changes
 		this.selectedVariationUuids = []
 		this.expandedVariationUuids.clear()
 		this.idError = ""
@@ -169,14 +191,38 @@ export class EditProductDialogComponent {
 	toggleVariationSelection(variationUuid: string) {
 		const index = this.selectedVariationUuids.indexOf(variationUuid)
 		if (index > -1) {
-			this.selectedVariationUuids.splice(index, 1)
+			// Create new array instead of mutating
+			this.selectedVariationUuids = this.selectedVariationUuids.filter(
+				uuid => uuid !== variationUuid
+			)
 		} else {
-			this.selectedVariationUuids.push(variationUuid)
+			// Create new array instead of mutating
+			this.selectedVariationUuids = [
+				...this.selectedVariationUuids,
+				variationUuid
+			]
+		}
+	}
+
+	checkboxChanged(variationUuid: string, checked: boolean) {
+		const isCurrentlySelected =
+			this.selectedVariationUuids.includes(variationUuid)
+
+		if (checked && !isCurrentlySelected) {
+			this.selectedVariationUuids = [
+				...this.selectedVariationUuids,
+				variationUuid
+			]
+		} else if (!checked && isCurrentlySelected) {
+			this.selectedVariationUuids = this.selectedVariationUuids.filter(
+				uuid => uuid !== variationUuid
+			)
 		}
 	}
 
 	isVariationSelected(variationUuid: string): boolean {
-		return this.selectedVariationUuids.includes(variationUuid)
+		const isSelected = this.selectedVariationUuids.includes(variationUuid)
+		return isSelected
 	}
 
 	isVariationExpanded(variationUuid: string): boolean {

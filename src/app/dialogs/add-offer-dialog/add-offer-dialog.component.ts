@@ -101,93 +101,6 @@ export class AddOfferDialogComponent {
 		this.visible = true
 	}
 
-	showWithData(menu: any) {
-		this.basicData.id = menu.id
-		this.basicData.name = menu.name
-		this.basicData.offerValue = menu.price
-		this.basicData.takeaway = menu.takeaway || false
-		this.basicData.offerType = menu.offer?.offerType || "FIXED_PRICE"
-		this.basicData.discountType = menu.offer?.discountType || "PERCENTAGE"
-		this.offerItems = menu.offer?.offerItems || []
-
-		// Konvertiere selectedVariations von Object zu Map und initialisiere fehlende Variationen
-		if (this.offerItems.length > 0) {
-			this.offerItems.forEach(item => {
-				// Initialisiere selectedVariations falls nicht vorhanden
-				if (!item.selectedVariations) {
-					item.selectedVariations = new Map()
-				}
-
-				// Konvertiere selectedVariations von Object/JSON zu Map falls nötig
-				if (!(item.selectedVariations instanceof Map)) {
-					const convertedMap = new Map<string, Map<string, any[]>>()
-
-					// selectedVariations ist ein Object, konvertiere es zu Map
-					Object.entries(item.selectedVariations).forEach(
-						([productUuid, variationsObj]: [string, any]) => {
-							const variationsMap = new Map<string, any[]>()
-
-							if (variationsObj && typeof variationsObj === "object") {
-								Object.entries(variationsObj).forEach(
-									([variationUuid, items]: [string, any]) => {
-										variationsMap.set(
-											variationUuid,
-											Array.isArray(items) ? items : []
-										)
-									}
-								)
-							}
-
-							convertedMap.set(productUuid, variationsMap)
-						}
-					)
-
-					item.selectedVariations = convertedMap
-				}
-
-				// Für jedes Produkt: Initialisiere fehlende selectedVariations mit allen VariationItems
-				item.products.forEach(product => {
-					if (product.variations && product.variations.length > 0) {
-						if (!item.selectedVariations.has(product.uuid)) {
-							// Kein Eintrag für dieses Produkt -> initialisiere mit allen Items
-							const variationsMap = new Map<string, any[]>()
-							product.variations.forEach(variation => {
-								variationsMap.set(variation.uuid, [
-									...variation.variationItems
-								])
-							})
-							item.selectedVariations.set(product.uuid, variationsMap)
-						}
-					}
-				})
-			})
-		}
-
-		// Für Specials: Stelle sicher, dass ein Standard-Item existiert
-		if (this.isSpecialMode && this.offerItems.length === 0) {
-			this.offerItems = [
-				{
-					uuid: crypto.randomUUID(),
-					name: "Produkte",
-					maxSelections: 1,
-					products: [],
-					selectedVariations: new Map()
-				}
-			]
-		}
-
-		this.availabilityData.selectedWeekdays = menu.offer?.weekdays || []
-		this.availabilityData.startDate = menu.offer?.startDate
-			? new Date(menu.offer.startDate).toISOString().split("T")[0]
-			: ""
-		this.availabilityData.endDate = menu.offer?.endDate
-			? new Date(menu.offer.endDate).toISOString().split("T")[0]
-			: ""
-		this.availabilityData.startTime = menu.offer?.startTime || ""
-		this.availabilityData.endTime = menu.offer?.endTime || ""
-		this.visible = true
-	}
-
 	hide() {
 		this.visible = false
 		this.reset()
@@ -293,6 +206,19 @@ export class AddOfferDialogComponent {
 			return
 		}
 
+		// Konvertiere offerValue basierend auf Typ
+		let offerValueToSave: number
+		if (
+			this.basicData.offerType === "DISCOUNT" &&
+			this.basicData.discountType === "PERCENTAGE"
+		) {
+			// Bei Prozent: Wert direkt speichern (z.B. 50 für 50%)
+			offerValueToSave = this.basicData.offerValue
+		} else {
+			// Bei Betrag und Fixed Price: in Cent konvertieren
+			offerValueToSave = Math.round(this.basicData.offerValue * 100)
+		}
+
 		const offer = {
 			id: this.basicData.id,
 			uuid: crypto.randomUUID(),
@@ -301,7 +227,7 @@ export class AddOfferDialogComponent {
 				this.basicData.offerType === "DISCOUNT"
 					? this.basicData.discountType
 					: undefined,
-			offerValue: this.basicData.offerValue,
+			offerValue: offerValueToSave,
 			weekdays: this.availabilityData.selectedWeekdays,
 			startDate: this.availabilityData.startDate
 				? new Date(this.availabilityData.startDate)
@@ -317,7 +243,7 @@ export class AddOfferDialogComponent {
 		this.primaryButtonClick.emit({
 			id: this.basicData.id,
 			name: this.basicData.name,
-			price: this.basicData.offerValue,
+			price: offerValueToSave,
 			takeaway: this.basicData.takeaway,
 			offer: offer
 		})

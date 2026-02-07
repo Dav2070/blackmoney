@@ -37,14 +37,19 @@ export class OfferCardComponent {
 				year: "numeric"
 			})
 
-			if (offer.startDate && offer.endDate) {
-				const start = dateFormat.format(new Date(offer.startDate))
-				const end = dateFormat.format(new Date(offer.endDate))
+			const startDate = offer.startDate ? new Date(offer.startDate) : null
+			const endDate = offer.endDate ? new Date(offer.endDate) : null
+			const hasValidStartDate = startDate && !isNaN(startDate.getTime())
+			const hasValidEndDate = endDate && !isNaN(endDate.getTime())
+
+			if (hasValidStartDate && hasValidEndDate) {
+				const start = dateFormat.format(startDate)
+				const end = dateFormat.format(endDate)
 				parts.push(`${start} - ${end}`)
-			} else if (offer.startDate) {
-				parts.push(`ab ${dateFormat.format(new Date(offer.startDate))}`)
-			} else if (offer.endDate) {
-				parts.push(`bis ${dateFormat.format(new Date(offer.endDate))}`)
+			} else if (hasValidStartDate) {
+				parts.push(`ab ${dateFormat.format(startDate)}`)
+			} else if (hasValidEndDate) {
+				parts.push(`bis ${dateFormat.format(endDate)}`)
 			}
 		}
 
@@ -85,7 +90,8 @@ export class OfferCardComponent {
 			"SUNDAY"
 		]
 
-		const sortedWeekdays = weekdays.sort(
+		// Erstelle eine Kopie des Arrays, bevor wir es sortieren
+		const sortedWeekdays = [...weekdays].sort(
 			(a, b) => orderedWeekdays.indexOf(a) - orderedWeekdays.indexOf(b)
 		)
 

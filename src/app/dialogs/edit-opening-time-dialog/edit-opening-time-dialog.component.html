@@ -19,11 +19,12 @@
 						appearance="fill"
 						class="dialog-formfield-container"
 					>
-						<mat-label>Tage</mat-label>
+						<mat-label>{{ locale.days }}</mat-label>
 						<mat-select
 							[(ngModel)]="block.selectedDays"
 							name="days{{ i }}"
 							multiple
+							(selectionChange)="onTimeChange()"
 						>
 							@for (d of getAvailableDays(i); track d) {
 								<mat-option [value]="d">
@@ -33,32 +34,32 @@
 						</mat-select>
 					</mat-form-field>
 
-					<!-- Minus Button -->
-
-					<button
-						mat-icon-button
-						color="warn"
+					<!-- Remove Button -->
+					<dav-icon-button
+						size="sm"
 						(click)="removeBlock(i)"
 						[disabled]="blocks.length === 1"
+						[tooltip]="locale.blockActions.remove"
 					>
-						<mat-icon>-</mat-icon>
-					</button>
+						<fa-icon [icon]="faTrash"></fa-icon>
+					</dav-icon-button>
 				</div>
 
 				<div class="radio-row">
 					<dav-radio-group
 						(change)="
-							onOpeningTypeChange(block, $any($event).detail.checked)
+							onOpeningTypeChange(block, $any($event).detail.checked);
+							onTimeChange()
 						"
 					>
 						<dav-radio-button
-							[label]="'Durchgehend geöffnet'"
+							[label]="locale.openingTypes.continuous"
 							value="durchgehend"
 							[checked]="block.durchgehend"
 						></dav-radio-button>
 
 						<dav-radio-button
-							[label]="'Mit Pause geöffnet'"
+							[label]="locale.openingTypes.withBreak"
 							value="pause"
 							[checked]="block.pause"
 						></dav-radio-button>
@@ -70,16 +71,23 @@
 					<div class="time-row">
 						<dav-textfield
 							[value]="block.startTime1"
-							label="Startzeit"
+							[label]="locale.timeLabels.opening"
 							type="time"
-							(change)="block.startTime1 = $any($event).detail.value"
+							[errorMessage]="getBlockError(i)"
+							(change)="
+								block.startTime1 = $any($event).detail.value;
+								onTimeChange()
+							"
 						></dav-textfield>
 
 						<dav-textfield
 							[value]="block.endTime1"
-							label="Endzeit"
+							[label]="locale.timeLabels.closing"
 							type="time"
-							(change)="block.endTime1 = $any($event).detail.value"
+							(change)="
+								block.endTime1 = $any($event).detail.value;
+								onTimeChange()
+							"
 						></dav-textfield>
 					</div>
 				}
@@ -89,30 +97,43 @@
 					<div class="time-row pause-layout">
 						<dav-textfield
 							[value]="block.startTime1"
-							label="Startzeit 1"
+							[label]="locale.timeLabels.opening"
 							type="time"
-							(change)="block.startTime1 = $any($event).detail.value"
+							[errorMessage]="getBlockError(i)"
+							(change)="
+								block.startTime1 = $any($event).detail.value;
+								onTimeChange()
+							"
 						></dav-textfield>
 
 						<dav-textfield
 							[value]="block.endTime1"
-							label="Endzeit 1"
+							[label]="locale.timeLabels.breakStart"
 							type="time"
-							(change)="block.endTime1 = $any($event).detail.value"
+							(change)="
+								block.endTime1 = $any($event).detail.value;
+								onTimeChange()
+							"
 						></dav-textfield>
 
 						<dav-textfield
 							[value]="block.startTime2"
-							label="Startzeit 2"
+							[label]="locale.timeLabels.breakEnd"
 							type="time"
-							(change)="block.startTime2 = $any($event).detail.value"
+							(change)="
+								block.startTime2 = $any($event).detail.value;
+								onTimeChange()
+							"
 						></dav-textfield>
 
 						<dav-textfield
 							[value]="block.endTime2"
-							label="Endzeit 2"
+							[label]="locale.timeLabels.closing"
 							type="time"
-							(change)="block.endTime2 = $any($event).detail.value"
+							(change)="
+								block.endTime2 = $any($event).detail.value;
+								onTimeChange()
+							"
 						></dav-textfield>
 					</div>
 				}
@@ -122,9 +143,13 @@
 
 		<!-- Plus-Button -->
 		<div class="add-row">
-			<button mat-icon-button color="primary" (click)="addBlock()">
-				<mat-icon>+</mat-icon>
-			</button>
+			<dav-icon-button
+				size="sm"
+				(click)="addBlock()"
+				[tooltip]="locale.blockActions.add"
+			>
+				<fa-icon [icon]="faPlus"></fa-icon>
+			</dav-icon-button>
 		</div>
 	</form>
 </dav-dialog>

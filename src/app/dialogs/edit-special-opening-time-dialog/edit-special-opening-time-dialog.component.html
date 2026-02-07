@@ -30,7 +30,7 @@
 					[label]="locale.from"
 					type="date"
 					[disabled]="loading"
-					[errorMessage]="reasonError"
+					[errorMessage]="dateError"
 					(change)="fromDatefieldChange($event)"
 				></dav-textfield>
 			</div>
@@ -42,7 +42,6 @@
 					[label]="locale.to"
 					type="date"
 					[disabled]="loading"
-					[errorMessage]="reasonError"
 					(change)="toDatefieldChange($event)"
 				></dav-textfield>
 			</div>
@@ -53,73 +52,73 @@
 				(change)="onOpeningTypeChange($any($event).detail.checked)"
 			>
 				<dav-radio-button
-					[label]="'Durchgehend geöffnet'"
+					[label]="locale.openingTypes.continuous"
 					value="durchgehend"
 					[checked]="durchgehend"
 				></dav-radio-button>
 
 				<dav-radio-button
-					[label]="'Mit Pause geöffnet'"
+					[label]="locale.openingTypes.withBreak"
 					value="pause"
 					[checked]="pause"
 				></dav-radio-button>
 
 				<dav-radio-button
-					[label]="'Geschlossen'"
+					[label]="locale.openingTypes.closed"
 					value="geschlossen"
 					[checked]="geschlossen"
 				></dav-radio-button>
 			</dav-radio-group>
 		</div>
-
 		<!-- Durchgehend -->
 		@if (durchgehend) {
 			<div class="time-row">
 				<dav-textfield
 					[value]="startTime1"
-					label="Startzeit"
+					[label]="locale.timeLabels.opening"
 					type="time"
-					(change)="startTime1 = $any($event).detail.value"
+					[errorMessage]="timeError"
+					(change)="startTime1 = $any($event).detail.value; onTimeChange()"
 				></dav-textfield>
 
 				<dav-textfield
 					[value]="endTime1"
-					label="Endzeit"
+					[label]="locale.timeLabels.closing"
 					type="time"
-					(change)="endTime1 = $any($event).detail.value"
+					(change)="endTime1 = $any($event).detail.value; onTimeChange()"
 				></dav-textfield>
 			</div>
 		}
-
 		<!-- Pause -->
 		@if (pause) {
 			<div class="time-row pause-layout">
 				<dav-textfield
 					[value]="startTime1"
-					label="Startzeit 1"
+					[label]="locale.timeLabels.opening"
 					type="time"
-					(change)="startTime1 = $any($event).detail.value"
+					[errorMessage]="timeError"
+					(change)="startTime1 = $any($event).detail.value; onTimeChange()"
 				></dav-textfield>
 
 				<dav-textfield
 					[value]="endTime1"
-					label="Endzeit 1"
+					[label]="locale.timeLabels.breakStart"
 					type="time"
-					(change)="endTime1 = $any($event).detail.value"
+					(change)="endTime1 = $any($event).detail.value; onTimeChange()"
 				></dav-textfield>
 
 				<dav-textfield
 					[value]="startTime2"
-					label="Startzeit 2"
+					[label]="locale.timeLabels.breakEnd"
 					type="time"
-					(change)="startTime2 = $any($event).detail.value"
+					(change)="startTime2 = $any($event).detail.value; onTimeChange()"
 				></dav-textfield>
 
 				<dav-textfield
 					[value]="endTime2"
-					label="Endzeit 2"
+					[label]="locale.timeLabels.closing"
 					type="time"
-					(change)="endTime2 = $any($event).detail.value"
+					(change)="endTime2 = $any($event).detail.value; onTimeChange()"
 				></dav-textfield>
 			</div>
 		}

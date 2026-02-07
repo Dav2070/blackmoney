@@ -13,6 +13,7 @@ import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { FormControl } from "@angular/forms"
 import { Day, Block } from "src/app/models/Day"
+import { faPlus, faTrash } from "@fortawesome/pro-regular-svg-icons"
 
 @Component({
 	selector: "app-edit-opening-time-dialog",
@@ -23,6 +24,8 @@ import { Day, Block } from "src/app/models/Day"
 export class EditOpeningTimeDialogComponent {
 	locale = this.localizationService.locale.dialogs.editOpeningTimeDialog
 	actionsLocale = this.localizationService.locale.actions
+	faPlus = faPlus
+	faTrash = faTrash
 	@Input() loading: boolean = false
 	@Input() line1: string = ""
 	@Input() selectedDay: string = ""
@@ -56,6 +59,7 @@ export class EditOpeningTimeDialogComponent {
 	@Input() Tage: string = "t"
 	Days: Day[] = []
 	blocks: Block[] = []
+	blockErrors: Map<number, { timeError?: string }> = new Map()
 
 	constructor(
 		private localizationService: LocalizationService,
@@ -108,6 +112,11 @@ export class EditOpeningTimeDialogComponent {
 	}
 
 	submit() {
+		// Validiere alle Blöcke
+		if (!this.validateAllBlocks()) {
+			return
+		}
+
 		this.saveBlocksToDays()
 		this.Days = this.sortDays(this.Days)
 
@@ -115,6 +124,87 @@ export class EditOpeningTimeDialogComponent {
 		this.primaryButtonClick.emit({
 			Tage: this.Days
 		})
+	}
+
+	validateAllBlocks(): boolean {
+		this.blockErrors.clear()
+		let isValid = true
+
+		this.blocks.forEach((block, index) => {
+			const error = this.validateBlock(block)
+			if (error) {
+				this.blockErrors.set(index, { timeError: error })
+				isValid = false
+			}
+		})
+
+		return isValid
+	}
+
+	validateBlock(block: Block): string | null {
+		// Prüfe ob Tage ausgewählt wurden
+		if (!block.selectedDays || block.selectedDays.length === 0) {
+			return this.locale.errors.selectAtLeastOneDay
+		}
+
+		// Prüfe ob Zeiten ausgefüllt sind
+		if (!block.startTime1 || !block.endTime1) {
+			return this.locale.errors.fillAllTimeFields
+		}
+
+		if (block.durchgehend) {
+			// Durchgehend: Schließung muss nach Öffnung sein
+			if (this.compareTime(block.startTime1, block.endTime1) >= 0) {
+				return this.locale.errors.closingAfterOpening
+			}
+		} else if (block.pause) {
+			// Mit Pause: Prüfe alle Zeiten
+			if (!block.startTime2 || !block.endTime2) {
+				return this.locale.errors.fillAllTimeFields
+			}
+
+			// Pause muss nach Öffnung beginnen
+			if (this.compareTime(block.startTime1, block.endTime1) >= 0) {
+				return this.locale.errors.breakAfterOpening
+			}
+
+			// Pause muss vor Schließung enden
+			if (this.compareTime(block.startTime2, block.endTime2) >= 0) {
+				return this.locale.errors.closingAfterBreak
+			}
+
+			// Pause Ende muss nach Pause Beginn sein
+			if (this.compareTime(block.endTime1, block.startTime2) >= 0) {
+				return this.locale.errors.breakEndAfterBreakStart
+			}
+		}
+
+		return null
+	}
+
+	// Hilfsfunktion zum Vergleichen von Zeitstrings (HH:MM)
+	// Gibt zurück: -1 wenn time1 < time2, 0 wenn gleich, 1 wenn time1 > time2
+	compareTime(time1: string, time2: string): number {
+		if (!time1 || !time2) return 0
+
+		const [h1, m1] = time1.split(":").map(Number)
+		const [h2, m2] = time2.split(":").map(Number)
+
+		const minutes1 = h1 * 60 + m1
+		const minutes2 = h2 * 60 + m2
+
+		if (minutes1 < minutes2) return -1
+		if (minutes1 > minutes2) return 1
+		return 0
+	}
+
+	getBlockError(index: number): string | undefined {
+		return this.blockErrors.get(index)?.timeError
+	}
+
+	onTimeChange() {
+		// Lösche Fehler wenn Benutzer Änderungen vornimmt
+		this.blockErrors.clear()
 	}
 
 	groupDaysByTime(days: Day[]): Block[] {

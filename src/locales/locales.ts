@@ -424,7 +424,34 @@ export const de = {
 			name: "Name",
 			reason: "Anlass/Grund",
 			from: "von",
-			to: "bis"
+			to: "bis",
+			days: "Tage",
+			openingTypes: {
+				continuous: "Durchgehend geöffnet",
+				withBreak: "Mit Pause geöffnet",
+				closed: "Geschlossen"
+			},
+			timeLabels: {
+				opening: "Öffnung",
+				closing: "Schließung",
+				breakStart: "Pause beginnt",
+				breakEnd: "Pause endet"
+			},
+			blockActions: {
+				add: "Block hinzufügen",
+				remove: "Block entfernen"
+			},
+			errors: {
+				selectAtLeastOneDay: "Bitte mindestens einen Tag auswählen",
+				fillAllTimeFields: "Bitte alle Zeitfelder ausfüllen",
+				closingAfterOpening: "Schließung muss nach Öffnung sein",
+				breakAfterOpening: "Pause muss nach Öffnung beginnen",
+				closingAfterBreak: "Schließung muss nach Pause sein",
+				breakEndAfterBreakStart: "Pause Ende muss nach Pause Beginn sein",
+				fillBothDateFields: "Bitte beide Datumsfelder ausfüllen",
+				endDateAfterStartDate:
+					"Enddatum muss nach oder gleich Startdatum sein"
+			}
 		},
 		deleteRoomDialog: {
 			headline: "Raum {name} löschen",

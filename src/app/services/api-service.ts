@@ -1182,7 +1182,7 @@ export class ApiService {
 			.toPromise()
 	}
 
-	async updateOrderItem(
+	async syncOrderItem(
 		queryData: string,
 		variables: {
 			uuid: string
@@ -1192,16 +1192,16 @@ export class ApiService {
 				count: number
 			}[]
 		}
-	): Promise<ApolloResult<{ updateOrderItem: OrderResource }>> {
+	): Promise<ApolloResult<{ syncOrderItem: OrderResource }>> {
 		return await this.blackmoneyAuthApollo
-			.mutate<{ updateOrderItem: OrderResource }>({
+			.mutate<{ syncOrderItem: OrderResource }>({
 				mutation: gql`
-					mutation UpdateOrderItem(
+					mutation SyncOrderItem(
 						$uuid: String!
 						$count: Int
 						$orderItemVariations: [OrderItemVariationInput!]
 					) {
-						updateOrderItem(
+						syncOrderItem(
 							uuid: $uuid
 							count: $count
 							orderItemVariations: $orderItemVariations

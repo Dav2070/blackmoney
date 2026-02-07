@@ -693,12 +693,22 @@ export class BookingPageComponent {
 					}
 					this.showTotal(false)
 				} else {
-					// Wenn Variationen vorhanden sind - öffne den Subtract Dialog
-					this.productVariationsCombinationsDialog.show()
+					// Wenn nur eine Variation vorhanden ist, direkt reduzieren
+					if (this.selectedOrderItem.orderItemVariations.length === 1) {
+						await this.reduceSingleVariation(this.bookedItems)
+					} else {
+						// Mehrere Variationen - öffne den Subtract Dialog
+						this.productVariationsCombinationsDialog.show()
+					}
 				}
 			} else if (this.selectedOrderItem.orderItemVariations.length > 0) {
-				// Wenn Item Variationen enthält - öffne den Subtract Dialog
-				this.productVariationsCombinationsDialog.show()
+				// Wenn nur eine Variation vorhanden ist, direkt reduzieren
+				if (this.selectedOrderItem.orderItemVariations.length === 1) {
+					await this.reduceSingleVariation(this.stagedItems)
+				} else {
+					// Mehrere Variationen - öffne den Subtract Dialog
+					this.productVariationsCombinationsDialog.show()
+				}
 			} else if (this.tmpAnzahl > 0) {
 				// Wenn zu löschende Anzahl eingegeben wurde (4 X -)
 				if (this.selectedOrderItem.count >= this.tmpAnzahl) {
@@ -807,7 +817,7 @@ export class BookingPageComponent {
 		this.tmpAnzahl = undefined
 	}
 
-	productVariationsCombinationsDialogPrimaryButtonClick(event: {
+	async productVariationsCombinationsDialogPrimaryButtonClick(event: {
 		variationCombinations: { [key: string]: number }
 	}) {
 		this.productVariationsCombinationsDialog.hide()
@@ -833,13 +843,8 @@ export class BookingPageComponent {
 			if (variationCombinations[key] !== undefined) {
 				const newCount = variationCombinations[key]
 
-				// Update count
+				// Update count (aber noch nicht aus Array entfernen!)
 				orderItemVariation.count = newCount
-
-				// Remove if count is 0
-				if (orderItemVariation.count === 0) {
-					targetItem.orderItemVariations.splice(i, 1)
-				}
 			}
 		}
 
@@ -859,9 +864,12 @@ export class BookingPageComponent {
 		}
 
 		if (this.tmpAllItemHandler === this.bookedItems) {
-			this.sendOrderItem(this.selectedOrderItem)
+			// Erst ans Backend senden (mit Variationen die count 0 haben)
+			await this.sendOrderItem(this.selectedOrderItem)
+			// Dann lokal bereinigen
 			this.bookedItems.removeEmptyItems()
 		} else {
+			// Für stagedItems: Erst lokal bereinigen
 			this.stagedItems.removeEmptyItems()
 		}
 
@@ -964,11 +972,35 @@ export class BookingPageComponent {
 			}
 		}
 
-		// OPTIMIZATION: No need to fetch data from backend, just wait for success
-		let result = await this.apiService.addProductsToOrder(`uuid`, {
-			uuid: this.orderUuid,
-			products: tmpProductArray
-		})
+		// Hole die OrderItems mit ihren neuen UUIDs vom Backend
+		let result = await this.apiService.addProductsToOrder(
+			`
+				orderItems {
+					items {
+						uuid
+						orderItemVariations {
+							items {
+								uuid
+							}
+						}
+						orderItems {
+							items {
+								uuid
+								orderItemVariations {
+									items {
+										uuid
+									}
+								}
+							}
+						}
+					}
+				}
+			`,
+			{
+				uuid: this.orderUuid,
+				products: tmpProductArray
+			}
+		)
 
 		// Check for errors
 		if (!result || !result.data) {
@@ -978,7 +1010,61 @@ export class BookingPageComponent {
 			return
 		}
 
-		// Success! Merge staged items to booked items locally
+		// Update UUIDs der neu hinzugefügten Items
+		const orderItems = result.data.addProductsToOrder.orderItems.items
+		let stagedItemIndex = 0
+
+		for (const stagedItem of this.stagedItems.getAllPickedItems().values()) {
+			const backendItem = orderItems[stagedItemIndex]
+			if (!backendItem) continue
+
+			// Update OrderItem UUID
+			stagedItem.uuid = backendItem.uuid
+
+			// Update OrderItemVariation UUIDs
+			if (
+				stagedItem.orderItemVariations &&
+				backendItem.orderItemVariations
+			) {
+				for (let i = 0; i < stagedItem.orderItemVariations.length; i++) {
+					if (backendItem.orderItemVariations.items[i]) {
+						stagedItem.orderItemVariations[i].uuid =
+							backendItem.orderItemVariations.items[i].uuid
+					}
+				}
+			}
+
+			// Update verschachtelte OrderItems (für Menu/Special)
+			if (stagedItem.orderItems && backendItem.orderItems) {
+				for (let i = 0; i < stagedItem.orderItems.length; i++) {
+					const nestedBackendItem = backendItem.orderItems.items[i]
+					if (!nestedBackendItem) continue
+
+					stagedItem.orderItems[i].uuid = nestedBackendItem.uuid
+
+					// Update verschachtelte Variationen
+					if (
+						stagedItem.orderItems[i].orderItemVariations &&
+						nestedBackendItem.orderItemVariations
+					) {
+						for (
+							let j = 0;
+							j < stagedItem.orderItems[i].orderItemVariations.length;
+							j++
+						) {
+							if (nestedBackendItem.orderItemVariations.items[j]) {
+								stagedItem.orderItems[i].orderItemVariations[j].uuid =
+									nestedBackendItem.orderItemVariations.items[j].uuid
+							}
+						}
+					}
+				}
+			}
+
+			stagedItemIndex++
+		}
+
+		// Merge staged items zu booked items (jetzt mit echten UUIDs)
 		for (const stagedItem of this.stagedItems.getAllPickedItems().values()) {
 			this.bookedItems.pushNewItem(stagedItem)
 		}
@@ -1032,13 +1118,13 @@ export class BookingPageComponent {
 			orderItem.type === OrderItemType.Special &&
 			orderItem.orderItems?.length > 0
 		) {
-			await this.apiService.updateOrderItem(`uuid`, {
+			await this.apiService.syncOrderItem(`uuid`, {
 				uuid: orderItem.orderItems[0].uuid,
 				count: orderItem.orderItems[0].count,
 				orderItemVariations
 			})
 		} else {
-			await this.apiService.updateOrderItem(`uuid`, {
+			await this.apiService.syncOrderItem(`uuid`, {
 				uuid: orderItem.uuid,
 				count: orderItem.count,
 				orderItemVariations
@@ -1140,6 +1226,63 @@ export class BookingPageComponent {
 				this.selectedItemIsInStaged = true
 			}
 		}
+	}
+
+	/**
+	 * Reduziert eine einzelne Variation um die angegebene Anzahl.
+	 * Funktioniert sowohl für bookedItems (mit Backend-Sync) als auch für stagedItems.
+	 */
+	private async reduceSingleVariation(handler: AllItemHandler): Promise<void> {
+		const reduceAmount = this.tmpAnzahl > 0 ? this.tmpAnzahl : 1
+
+		// Validierung am Anfang für beide Fälle
+		const variation = this.selectedOrderItem.orderItemVariations[0]
+		const newVariationCount = variation.count - reduceAmount
+		const newItemCount = this.selectedOrderItem.count - reduceAmount
+
+		if (newVariationCount < 0 || newItemCount < 0) {
+			showToast("Anzahl ist zu hoch")
+			return
+		}
+
+		// Für bookedItems: Backend-Call mit bereits berechneten neuen Werten
+		if (handler === this.bookedItems) {
+			const orderItemVariations = [
+				{
+					uuid: variation.uuid,
+					count: newVariationCount
+				}
+			]
+
+
+			const result = await this.apiService.syncOrderItem(`uuid`, {
+				uuid: this.selectedOrderItem.uuid,
+				count: newItemCount,
+				orderItemVariations
+			})
+
+			if (!result || !result.data) {
+				showToast("Fehler beim Synchronisieren")
+				return
+			}
+
+			// Bei Erfolg die berechneten Werte übernehmen
+			variation.count = newVariationCount
+			this.selectedOrderItem.count = newItemCount
+
+			// Entferne leere Items/Variationen
+			handler.removeEmptyItems()
+		} else {
+			// Für stagedItems: Nur lokal
+			handler.reduceSingleVariation(this.selectedOrderItem, reduceAmount)
+		}
+
+		// Prüfe ob Item nach removeEmptyItems noch existiert
+		if (!handler.getOrderItems().includes(this.selectedOrderItem)) {
+			this.selectedOrderItem = null
+		}
+
+		this.showTotal(false)
 	}
 
 	//Füge selektiertes Item hinzu

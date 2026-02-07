@@ -422,6 +422,35 @@ export class AllItemHandler {
 		}
 	}
 
+	/**
+	 * Reduziert eine einzelne Variation eines Items um die angegebene Anzahl.
+	 * Reduziert sowohl den Variation-Count als auch den OrderItem-Count.
+	 * Entfernt automatisch leere Items/Variationen.
+	 * @param item Das zu reduzierende OrderItem
+	 * @param amount Die zu reduzierende Anzahl
+	 * @returns true wenn das Item noch existiert, false wenn es gelöscht wurde
+	 */
+	reduceSingleVariation(item: OrderItem, amount: number): boolean {
+		if (!item.orderItemVariations || item.orderItemVariations.length !== 1) {
+			throw new Error(
+				"reduceSingleVariation kann nur mit genau einer Variation verwendet werden"
+			)
+		}
+
+		const variation = item.orderItemVariations[0]
+
+		if (variation.count < amount) {
+			return false // Anzahl zu hoch
+		}
+
+		variation.count -= amount
+		item.count -= amount
+
+		this.removeEmptyItems()
+
+		return this.allPickedItems.includes(item)
+	}
+
 	// Gibt die Anzahl von allen Items zurück
 	getNumberOfItems() {
 		let number = 0

@@ -13,6 +13,7 @@ import { ContextMenu } from "dav-ui-components"
 import { Category } from "src/app/models/Category"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
+import { OfferItem } from "src/app/models/OfferItem"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { ApiService } from "src/app/services/api-service"
@@ -26,6 +27,7 @@ import * as ErrorCodes from "src/app/errorCodes"
 import { ProductType } from "src/app/types"
 import {
 	convertCategoryResourceToCategory,
+	convertRestaurantResourceToRestaurant,
 	getGraphQLErrorCodes
 } from "src/app/utils"
 
@@ -52,8 +54,6 @@ export class CategoryPageComponent {
 	loading: boolean = true
 	category: Category = null
 	availableVariations: Variation[] = []
-	menus: Product[] = []
-	specials: Product[] = []
 	availableProducts: Product[] = []
 
 	//#region AddButtonContextMenu
@@ -102,8 +102,7 @@ export class CategoryPageComponent {
 	@ViewChild("editOfferDialog")
 	editOfferDialog!: EditOfferDialogComponent
 	editOfferDialogLoading: boolean = false
-	editingMenu: Product | null = null
-	editingSpecial: Product | null = null
+	editingOffer: Product | null = null
 
 	constructor(
 		private readonly dataService: DataService,
@@ -119,7 +118,8 @@ export class CategoryPageComponent {
 		this.categoryUuid =
 			this.activatedRoute.snapshot.paramMap.get("categoryUuid")
 		await this.dataService.davUserPromiseHolder.AwaitResult()
-
+		// Load available variations once (uses cache-first)
+		await this.loadVariations()
 		// Load category with products from backend
 		await this.loadData()
 	}
@@ -158,6 +158,7 @@ export class CategoryPageComponent {
 	async loadData() {
 		this.loading = true
 
+		// Load category with filtered products
 		const retrieveCategoryResponse = await this.apiService.retrieveCategory(
 			`
 				uuid
@@ -171,10 +172,28 @@ export class CategoryPageComponent {
 						price
 						variations {
 							items {
+								uuid
 								name
+								variationItems {
+									items {
+										id
+										uuid
+										name
+										additionalCost
+									}
+								}
 							}
 						}
 						offer {
+							uuid
+							offerType
+							discountType
+							offerValue
+							startDate
+							endDate
+							startTime
+							endTime
+							weekdays
 							offerItems {
 								items {
 									uuid
@@ -201,7 +220,92 @@ export class CategoryPageComponent {
 			)
 		}
 
+		// Load all available products for the offer dialogs (FOOD and DRINK only)
+		const allCategoriesResponse = await this.apiService.listCategories(
+			`
+				items {
+					uuid
+					products {
+						items {
+							uuid
+							name
+							type
+							price
+							variations {
+								items {
+									uuid
+									name
+									variationItems {
+										items {
+											uuid
+											name
+											additionalCost
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			`,
+			{ restaurantUuid: this.restaurantUuid }
+		)
+
+		if (
+			allCategoriesResponse.data != null &&
+			allCategoriesResponse.data.listCategories?.items
+		) {
+			const categories = allCategoriesResponse.data.listCategories.items
+			const allProducts: Product[] = []
+
+			// Alle Produkte aus allen Kategorien sammeln
+			for (const categoryResource of categories) {
+				const category = convertCategoryResourceToCategory(categoryResource)
+				if (category.products) {
+					allProducts.push(...category.products)
+				}
+			}
+
+			// Filter nur FOOD und DRINK Produkte für Offers
+			this.availableProducts = allProducts.filter(
+				p => p.type === "FOOD" || p.type === "DRINK"
+			)
+		}
+
 		this.loading = false
+	}
+
+	async loadVariations() {
+		// Load available variations from menu (uses cache-first by default)
+		const retrieveRestaurantResponse =
+			await this.apiService.retrieveRestaurant(
+				`
+					menu {
+						variations {
+							items {
+								uuid
+								name
+								variationItems {
+									items {
+										id
+										uuid
+										name
+										additionalCost
+									}
+								}
+							}
+						}
+					}
+				`,
+				{ uuid: this.restaurantUuid }
+			)
+
+		if (retrieveRestaurantResponse.data != null) {
+			const restaurant = convertRestaurantResourceToRestaurant(
+				retrieveRestaurantResponse.data.retrieveRestaurant
+			)
+			this.availableVariations = restaurant.menu?.variations || []
+		}
 	}
 
 	handleAddButtonClick(event: Event) {
@@ -349,18 +453,72 @@ export class CategoryPageComponent {
 		}
 	}
 
-	addProductDialogPrimaryButtonClick(product: Product) {
+	async addProductDialogPrimaryButtonClick(product: Product) {
 		this.addProductDialogLoading = true
+		this.addProductDialogNameError = ""
+		this.addProductDialogPriceError = ""
 
-		// TODO: API - Create product
-		// Example: await this.apiService.createProduct({ ...product, categoryUuid: this.category.uuid })
+		const createProductResponse = await this.apiService.createProduct(
+			`
+				uuid
+				name
+				type
+				price
+				shortcut
+				variations {
+					items {
+						uuid
+						name
+						variationItems {
+							items {
+								id
+								uuid
+								name
+								additionalCost
+							}
+						}
+					}
+				}
+			`,
+			{
+				categoryUuid: this.category.uuid,
+				name: product.name,
+				price: product.price,
+				type: this.addProductDialogProductType,
+				shortcut: product.shortcut,
+				variationUuids: product.variations?.map(v => v.uuid)
+			}
+		)
 
-		if (this.category) {
-			this.category.products = [...this.category.products, product]
+		if (createProductResponse.data?.createProduct != null) {
+			await this.loadData()
+			this.addProductDialog.hide()
+			this.addProductDialogLoading = false
+		} else {
+			this.addProductDialogLoading = false
+			const errors = getGraphQLErrorCodes(createProductResponse)
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.addProductDialogNameError =
+							this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.addProductDialogNameError = this.errorsLocale.nameTooLong
+						break
+					case ErrorCodes.priceInvalid:
+						this.addProductDialogPriceError =
+							this.errorsLocale.priceInvalid
+						break
+					default:
+						this.addProductDialogNameError =
+							this.errorsLocale.unexpectedError
+						break
+				}
+			}
 		}
-
-		this.addProductDialogLoading = false
-		this.addProductDialog.hide()
 	}
 
 	showEditProductDialog(product: Product) {
@@ -369,41 +527,80 @@ export class CategoryPageComponent {
 		}
 	}
 
-	editProductDialogPrimaryButtonClick(product: Product) {
+	async editProductDialogPrimaryButtonClick(product: Product) {
 		this.editProductDialogLoading = true
+		this.editProductDialogNameError = ""
+		this.editProductDialogPriceError = ""
 
-		// TODO: API - Update product
-		// Example: await this.apiService.updateProduct(product.uuid, product)
+		const updateProductResponse = await this.apiService.updateProduct(
+			`
+				uuid
+				name
+				type
+				price
+				shortcut
+				variations {
+					items {
+						uuid
+						name
+						variationItems {
+							items {
+								id
+								uuid
+								name
+								additionalCost
+							}
+						}
+					}
+				}
+			`,
+			{
+				uuid: product.uuid,
+				name: product.name,
+				price: product.price,
+				shortcut: product.shortcut,
+				variationUuids: product.variations?.map(v => v.uuid)
+			}
+		)
 
-		if (this.category) {
-			const index = this.category.products.findIndex(
-				p => p.uuid === product.uuid
-			)
-			if (index !== -1) {
-				this.category.products = [
-					...this.category.products.slice(0, index),
-					product,
-					...this.category.products.slice(index + 1)
-				]
+		if (updateProductResponse.data?.updateProduct != null) {
+			await this.loadData()
+			this.editProductDialog.hide()
+			this.editProductDialogLoading = false
+		} else {
+			this.editProductDialogLoading = false
+			const errors = getGraphQLErrorCodes(updateProductResponse)
+			if (errors == null) return
+
+			for (const errorCode of errors) {
+				switch (errorCode) {
+					case ErrorCodes.nameTooShort:
+						this.editProductDialogNameError =
+							this.errorsLocale.nameTooShort
+						break
+					case ErrorCodes.nameTooLong:
+						this.editProductDialogNameError =
+							this.errorsLocale.nameTooLong
+						break
+					case ErrorCodes.priceInvalid:
+						this.editProductDialogPriceError =
+							this.errorsLocale.priceInvalid
+						break
+					default:
+						this.editProductDialogNameError =
+							this.errorsLocale.unexpectedError
+						break
+				}
 			}
 		}
-
-		this.editProductDialogLoading = false
-		this.editProductDialog.hide()
 	}
 
-	deleteProduct(product: Product) {
+	async deleteProduct(product: Product) {
 		const confirmed = confirm(`Produkt "${product.name}" wirklich löschen?`)
 		if (!confirmed) return
 
-		// TODO: API - Delete product
-		// Example: await this.apiService.deleteProduct(product.uuid)
-
-		if (this.category) {
-			this.category.products = this.category.products.filter(
-				p => p.uuid !== product.uuid
-			)
-		}
+		await this.apiService.deleteProduct(`uuid`, { uuid: product.uuid })
+		await this.loadData()
 	}
 
 	showAddOfferDialog() {
@@ -416,7 +613,7 @@ export class CategoryPageComponent {
 		this.addOfferDialog.show()
 	}
 
-	addOfferDialogPrimaryButtonClick(data: {
+	async addOfferDialogPrimaryButtonClick(data: {
 		id: number
 		name: string
 		price: number
@@ -425,100 +622,96 @@ export class CategoryPageComponent {
 	}) {
 		this.addOfferDialogLoading = true
 
-		if (this.addOfferDialog.isSpecialMode) {
-			// Special-Modus
-			if (this.editingSpecial) {
-				// TODO: API - Update special
-				// Example: await this.apiService.updateSpecial(this.editingSpecial.uuid, data)
+		try {
+			// Bestimme den ProductType basierend auf isSpecialMode
+			const productType: ProductType = this.addOfferDialog.isSpecialMode
+				? "SPECIAL"
+				: "MENU"
 
-				const index = this.specials.findIndex(
-					s => s.uuid === this.editingSpecial!.uuid
-				)
-				if (index !== -1) {
-					this.specials[index] = {
-						...this.specials[index],
-						name: data.name,
-						price: data.price,
-						shortcut: data.id,
-						takeaway: data.takeaway,
-						offer: data.offer
-					}
-				}
-				this.editingSpecial = null
-			} else {
-				// TODO: API - Create new special
-				// Example: const newSpecial = await this.apiService.createSpecial({ ...data, restaurantUuid: this.uuid })
+			// Der Dialog konvertiert bereits zu Cent, keine weitere Konvertierung nötig
+			const priceInCents = data.price
+			const offerValueInCents = data.offer.offerValue
 
-				const newSpecial: Product = {
-					uuid: crypto.randomUUID(),
-					type: "SPECIAL",
+			// 1. Erstelle zuerst das Produkt
+			const createProductResponse = await this.apiService.createProduct(
+				`uuid`,
+				{
+					categoryUuid: this.category.uuid,
 					name: data.name,
-					price: data.price,
-					shortcut: data.id,
-					variations: [],
-					takeaway: data.takeaway,
-					offer: data.offer
+					price: priceInCents,
+					type: productType,
+					shortcut: data.id
 				}
-				this.specials.push(newSpecial)
-			}
-		} else {
-			// Menü-Modus
-			if (this.editingMenu) {
-				// TODO: API - Update menu
-				// Example: await this.apiService.updateMenu(this.editingMenu.uuid, data)
+			)
 
-				const index = this.menus.findIndex(
-					m => m.uuid === this.editingMenu!.uuid
-				)
-				if (index !== -1) {
-					this.menus[index] = {
-						...this.menus[index],
-						name: data.name,
-						price: data.price,
-						shortcut: data.id,
-						takeaway: data.takeaway,
-						offer: data.offer
-					}
-				}
-				this.editingMenu = null
-			} else {
-				// TODO: API - Create new menu
-				// Example: const newMenu = await this.apiService.createMenu({ ...data, restaurantUuid: this.uuid })
-
-				const newMenu: Product = {
-					uuid: crypto.randomUUID(),
-					type: "MENU",
-					name: data.name,
-					price: data.price,
-					shortcut: data.id,
-					variations: [],
-					takeaway: data.takeaway,
-					offer: data.offer
-				}
-				this.menus.push(newMenu)
+			if (createProductResponse.data?.createProduct == null) {
+				console.error("Failed to create product")
+				this.addOfferDialogLoading = false
+				return
 			}
+
+			const productUuid = createProductResponse.data.createProduct.uuid
+
+			// 2. Konvertiere offerItems für das Backend
+			const offerItems = data.offer.offerItems.map((item: OfferItem) => ({
+				name: item.name,
+				maxSelections: item.maxSelections,
+				productUuids: item.products.map((p: Product) => p.uuid)
+			}))
+
+			// 3. Erstelle das Offer
+			await this.apiService.createOffer(`uuid`, {
+				productUuid: productUuid,
+				offerType: data.offer.offerType,
+				discountType: data.offer.discountType,
+				offerValue: offerValueInCents,
+				startDate:
+					data.offer.startDate &&
+					(typeof data.offer.startDate === "string"
+						? data.offer.startDate.trim() !== ""
+						: true)
+						? new Date(data.offer.startDate).toISOString()
+						: undefined,
+				endDate:
+					data.offer.endDate &&
+					(typeof data.offer.endDate === "string"
+						? data.offer.endDate.trim() !== ""
+						: true)
+						? new Date(data.offer.endDate).toISOString()
+						: undefined,
+				startTime:
+					data.offer.startTime &&
+					typeof data.offer.startTime === "string" &&
+					data.offer.startTime.trim() !== ""
+						? data.offer.startTime
+						: undefined,
+				endTime:
+					data.offer.endTime &&
+					typeof data.offer.endTime === "string" &&
+					data.offer.endTime.trim() !== ""
+						? data.offer.endTime
+						: undefined,
+				weekdays: data.offer.weekdays,
+				offerItems: offerItems
+			})
+
+			// Lade die Daten neu
+			await this.loadData()
+			this.addOfferDialog.hide()
+		} catch (error) {
+			console.error("Error creating offer:", error)
+		} finally {
+			this.addOfferDialogLoading = false
 		}
-
-		this.addOfferDialogLoading = false
-		this.addOfferDialog.hide()
 	}
 
 	showEditOfferDialog(offer: Product) {
-		// Determine if it's a special or menu based on the source array
-		const isSpecial = this.specials.some(s => s.uuid === offer.uuid)
-
-		if (isSpecial) {
-			this.editingSpecial = offer
-			this.editOfferDialog.isSpecialMode = true
-		} else {
-			this.editingMenu = offer
-			this.editOfferDialog.isSpecialMode = false
-		}
-
+		this.editingOffer = offer
+		this.editOfferDialog.isSpecialMode = offer.type === "SPECIAL"
 		this.editOfferDialog.show(offer)
 	}
 
-	editOfferDialogPrimaryButtonClick(data: {
+	async editOfferDialogPrimaryButtonClick(data: {
 		id: number
 		name: string
 		price: number
@@ -527,66 +720,95 @@ export class CategoryPageComponent {
 	}) {
 		this.editOfferDialogLoading = true
 
-		if (this.editingSpecial) {
-			// TODO: API - Update special
-			// Example: await this.apiService.updateSpecial(this.editingSpecial.uuid, data)
-
-			const index = this.specials.findIndex(
-				s => s.uuid === this.editingSpecial!.uuid
-			)
-			if (index !== -1) {
-				this.specials[index] = {
-					...this.specials[index],
-					name: data.name,
-					price: data.price,
-					shortcut: data.id,
-					takeaway: data.takeaway,
-					offer: data.offer
-				}
+		try {
+			if (!this.editingOffer) {
+				console.error("No product being edited")
+				this.editOfferDialogLoading = false
+				return
 			}
-			this.editingSpecial = null
-		} else if (this.editingMenu) {
-			// TODO: API - Update menu
-			// Example: await this.apiService.updateMenu(this.editingMenu.uuid, data)
 
-			const index = this.menus.findIndex(
-				m => m.uuid === this.editingMenu!.uuid
-			)
-			if (index !== -1) {
-				this.menus[index] = {
-					...this.menus[index],
-					name: data.name,
-					price: data.price,
-					shortcut: data.id,
-					takeaway: data.takeaway,
-					offer: data.offer
+			// Der Dialog konvertiert bereits zu Cent, keine weitere Konvertierung nötig
+			const priceInCents = data.price
+			const offerValueInCents = data.offer.offerValue
+
+			// 1. Update das Produkt
+			await this.apiService.updateProduct(`uuid`, {
+				uuid: this.editingOffer.uuid,
+				name: data.name,
+				price: priceInCents,
+				shortcut: data.id
+			})
+
+			// 2. Update das Offer, falls vorhanden
+			if (this.editingOffer.offer?.uuid) {
+				const offerItems = data.offer.offerItems.map((item: OfferItem) => ({
+					name: item.name,
+					maxSelections: item.maxSelections,
+					productUuids: item.products.map((p: Product) => p.uuid)
+				}))
+
+				const updatePayload = {
+					uuid: this.editingOffer.offer.uuid,
+					offerType: data.offer.offerType,
+					discountType: data.offer.discountType,
+					offerValue: offerValueInCents,
+					startDate:
+						data.offer.startDate &&
+						(typeof data.offer.startDate === "string"
+							? data.offer.startDate.trim() !== ""
+							: true)
+							? new Date(data.offer.startDate).toISOString()
+							: null,
+					endDate:
+						data.offer.endDate &&
+						(typeof data.offer.endDate === "string"
+							? data.offer.endDate.trim() !== ""
+							: true)
+							? new Date(data.offer.endDate).toISOString()
+							: null,
+					startTime:
+						data.offer.startTime &&
+						typeof data.offer.startTime === "string" &&
+						data.offer.startTime.trim() !== ""
+							? data.offer.startTime
+							: null,
+					endTime:
+						data.offer.endTime &&
+						typeof data.offer.endTime === "string" &&
+						data.offer.endTime.trim() !== ""
+							? data.offer.endTime
+							: null,
+					weekdays: data.offer.weekdays,
+					offerItems: offerItems
 				}
+
+				const response = await this.apiService.updateOffer(
+					`uuid`,
+					updatePayload
+				)
 			}
-			this.editingMenu = null
+
+			// Lade die Daten neu
+			await this.loadData()
+			this.editOfferDialog.hide()
+			this.editingOffer = null
+		} catch (error) {
+			console.error("Error updating offer:", error)
+		} finally {
+			this.editOfferDialogLoading = false
 		}
-
-		this.editOfferDialogLoading = false
-		this.editOfferDialog.hide()
 	}
 
-	deleteOffer(offer: Product) {
-		// Determine if it's a special or menu
-		const isSpecial = this.specials.some(s => s.uuid === offer.uuid)
-		const offerType = isSpecial ? "Special" : "Menü"
+	async deleteOffer(offer: Product) {
+		const offerType = offer.type === "SPECIAL" ? "Special" : "Menü"
 
 		const confirmed = confirm(
 			`${offerType} "${offer.name}" wirklich löschen?`
 		)
 		if (!confirmed) return
 
-		if (isSpecial) {
-			// TODO: API - Delete special
-			// Example: await this.apiService.deleteSpecial(offer.uuid)
-			this.specials = this.specials.filter(s => s.uuid !== offer.uuid)
-		} else {
-			// TODO: API - Delete menu
-			// Example: await this.apiService.deleteMenu(offer.uuid)
-			this.menus = this.menus.filter(m => m.uuid !== offer.uuid)
-		}
+		// Lösche das Produkt (das Offer wird durch Cascade gelöscht)
+		await this.apiService.deleteProduct(`uuid`, { uuid: offer.uuid })
+		await this.loadData()
 	}
 }

@@ -507,12 +507,14 @@ export function convertOfferResourceToOffer(
 		offerType: offerResource.offerType,
 		discountType: offerResource.discountType,
 		offerValue: offerResource.offerValue,
-		startDate: offerResource.startDate
-			? new Date(offerResource.startDate)
-			: undefined,
-		endDate: offerResource.endDate
-			? new Date(offerResource.endDate)
-			: undefined,
+		startDate:
+			offerResource.startDate != null
+				? new Date(Number(offerResource.startDate))
+				: undefined,
+		endDate:
+			offerResource.endDate != null
+				? new Date(Number(offerResource.endDate))
+				: undefined,
 		startTime: offerResource.startTime,
 		endTime: offerResource.endTime,
 		weekdays: offerResource.weekdays,
@@ -551,7 +553,12 @@ export function convertProductResourceToProduct(
 	const variations: Variation[] = []
 
 	for (const variation of productResource.variations?.items ?? []) {
-		variations.push(convertVariationResourceToVariation(variation))
+		// Create a deep copy to avoid shared references between products
+		const variationCopy = convertVariationResourceToVariation(variation)
+		variations.push({
+			...variationCopy,
+			variationItems: variationCopy.variationItems?.map(item => ({ ...item })) || []
+		})
 	}
 
 	return {

@@ -239,7 +239,9 @@ export const de = {
 		discount: "Rabatt"
 	},
 	offerCard: {
-		options: "Optionen"
+		options: "Optionen",
+		from: "ab",
+		until: "bis"
 	},
 	landingOrderPage: {
 		offers: "Angebote",
@@ -780,6 +782,9 @@ export const de = {
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
 		dateInPast: "Datum darf nicht in der Vergangenheit liegen",
+		productAlreadyHasOffer: "Dieses Produkt hat bereits ein Angebot.",
+		priceInvalid: "Der Preis muss eine positive Zahl sein.",
+		offerValueInvalid: "Der Angebotswert muss eine positive Zahl sein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
 	}
 }

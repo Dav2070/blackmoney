@@ -62,6 +62,18 @@
 				>
 					<fa-icon [icon]="faCalendarCheck"></fa-icon>
 				</dav-icon-card>
+
+				@if (
+					dataService.company?.stripeSubscriptionStatus !==
+					"NOT_SUBSCRIBED"
+				) {
+					<dav-icon-card
+						[text]="locale.manageSubscription"
+						(click)="navigateToStripeBillingPortal()"
+					>
+						<fa-icon [icon]="faMoneyCheckDollar"></fa-icon>
+					</dav-icon-card>
+				}
 			}
 		</div>
 

@@ -62,6 +62,7 @@ export const de = {
 		manageEmployees: "Mitarbeiter verwalten",
 		manageRestaurants: "Restaurants verwalten",
 		manageReservations: "Reservierungen verwalten",
+		manageSubscription: "Abonnement verwalten",
 		activationActionsHeadline: "Bereit für echte Zahlungen?",
 		activationActionsDescription:
 			"Das fehlt noch, damit du durchstarten kannst:",

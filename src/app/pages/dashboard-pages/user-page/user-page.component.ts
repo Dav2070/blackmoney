@@ -8,6 +8,7 @@ import {
 	faUsers,
 	faShop,
 	faCalendarCheck,
+	faMoneyCheckDollar,
 	faBadgeCheck,
 	faGears
 } from "@fortawesome/pro-regular-svg-icons"
@@ -38,6 +39,7 @@ export class UserPageComponent {
 	faUsers = faUsers
 	faShop = faShop
 	faCalendarCheck = faCalendarCheck
+	faMoneyCheckDollar = faMoneyCheckDollar
 	faBadgeCheck = faBadgeCheck
 	faGears = faGears
 	@ViewChild("logoutDialog")
@@ -114,6 +116,18 @@ export class UserPageComponent {
 		event.preventDefault()
 
 		this.router.navigate(["dashboard", "reservations"])
+	}
+
+	async navigateToStripeBillingPortal() {
+		const createStripeBillingPortalSessionResponse =
+			await this.apiService.createStripeBillingPortalSession(`url`, {
+				returnUrl: window.location.href
+			})
+
+		if (createStripeBillingPortalSessionResponse.data) {
+			window.location.href =
+				createStripeBillingPortalSessionResponse.data.createStripeBillingPortalSession.url
+		}
 	}
 
 	showActivateRegisterDialog() {

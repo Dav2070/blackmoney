@@ -277,6 +277,7 @@ export function convertCompanyResourceToCompany(
 		uuid: companyResource.uuid,
 		name: companyResource.name,
 		stripeOnboardingStatus: companyResource.stripeOnboardingStatus,
+		stripeSubscriptionStatus: companyResource.stripeSubscriptionStatus,
 		users,
 		restaurants
 	}

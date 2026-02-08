@@ -44,6 +44,7 @@ export interface CompanyResource {
 	uuid: string
 	name: string
 	stripeOnboardingStatus: StripeOnboardingStatus
+	stripeSubscriptionStatus: StripeSubscriptionStatus
 	restaurants: List<RestaurantResource>
 	users: List<UserResource>
 }
@@ -286,6 +287,7 @@ export type PaymentMethod = "CASH" | "CARD"
 export type Country = "DE"
 export type RegisterStatus = "ACTIVE" | "INACTIVE"
 export type StripeOnboardingStatus = "PENDING" | "COMPLETED"
+export type StripeSubscriptionStatus = "NOT_SUBSCRIBED" | "ACTIVE" | "INACTIVE"
 
 export type Weekday =
 	| "MONDAY"

@@ -1394,6 +1394,31 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createStripeBillingPortalSession(
+		queryData: string,
+		variables: {
+			returnUrl: string
+		}
+	): Promise<
+		ApolloResult<{ createStripeBillingPortalSession: { url: string } }>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				createStripeBillingPortalSession: { url: string }
+			}>({
+				mutation: gql`
+					mutation CreateStripeBillingPortalSession($returnUrl: String!) {
+						createStripeBillingPortalSession(returnUrl: $returnUrl) {
+							${queryData}
+						}
+					}
+				`,
+				errorPolicy,
+				variables
+			})
+			.toPromise()
+	}
+
 	async createStripeSubscriptionCheckoutSession(
 		queryData: string,
 		variables: {

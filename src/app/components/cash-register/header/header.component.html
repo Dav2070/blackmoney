@@ -2,8 +2,11 @@
 	<div class="header-content">
 		<div class="user-details-container">
 			<div>
-				<p>{{ dataService.user?.name ?? "" }}</p>
-				<p>{{ dataService.restaurant?.name ?? "" }}</p>
+				<p>
+					{{ dataService.user?.name ?? "" }} –
+					{{ dataService.restaurant?.name ?? "" }}
+				</p>
+				<p>{{ dataService.register?.name ?? "" }}</p>
 			</div>
 
 			@if (dataService.register?.status === "INACTIVE") {

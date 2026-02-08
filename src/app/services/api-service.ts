@@ -22,6 +22,11 @@ import {
 	ProductType,
 	PrintRuleType,
 	ReservationResource,
+	ProductResource,
+	OfferResource,
+	OfferType,
+	DiscountType,
+	Weekday,
 	AddOrderItemInput
 } from "../types"
 import { davAuthClientName, blackmoneyAuthClientName } from "../constants"
@@ -902,7 +907,8 @@ export class ApiService {
 					}
 				`,
 				variables,
-				errorPolicy
+				errorPolicy,
+				fetchPolicy: "network-only"
 			})
 			.toPromise()
 	}
@@ -1024,6 +1030,233 @@ export class ApiService {
 				mutation: gql`
 					mutation DeleteCategory($uuid: String!) {
 						deleteCategory(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createProduct(
+		queryData: string,
+		variables: {
+			categoryUuid: string
+			name: string
+			price: number
+			type: ProductType
+			shortcut?: number
+			variationUuids?: string[]
+		}
+	): Promise<ApolloResult<{ createProduct: ProductResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createProduct: ProductResource }>({
+				mutation: gql`
+					mutation CreateProduct(
+						$categoryUuid: String!
+						$name: String!
+						$price: Int!
+						$type: ProductType!
+						$shortcut: Int
+						$variationUuids: [String!]
+					) {
+						createProduct(
+							categoryUuid: $categoryUuid
+							name: $name
+							price: $price
+							type: $type
+							shortcut: $shortcut
+							variationUuids: $variationUuids
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updateProduct(
+		queryData: string,
+		variables: {
+			uuid: string
+			name?: string
+			price?: number
+			shortcut?: number
+			variationUuids?: string[]
+		}
+	): Promise<ApolloResult<{ updateProduct: ProductResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateProduct: ProductResource }>({
+				mutation: gql`
+					mutation UpdateProduct(
+						$uuid: String!
+						$name: String
+						$price: Int
+						$shortcut: Int
+						$variationUuids: [String!]
+					) {
+						updateProduct(
+							uuid: $uuid
+							name: $name
+							price: $price
+							shortcut: $shortcut
+							variationUuids: $variationUuids
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async deleteProduct(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloResult<{ deleteProduct: ProductResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ deleteProduct: ProductResource }>({
+				mutation: gql`
+					mutation DeleteProduct($uuid: String!) {
+						deleteProduct(uuid: $uuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createOffer(
+		queryData: string,
+		variables: {
+			productUuid: string
+			offerType: OfferType
+			discountType?: DiscountType
+			offerValue: number
+			startDate?: string
+			endDate?: string
+			startTime?: string
+			endTime?: string
+			weekdays: Weekday[]
+			offerItems: {
+				name: string
+				maxSelections: number
+				productUuids: string[]
+			}[]
+		}
+	): Promise<ApolloResult<{ createOffer: OfferResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createOffer: OfferResource }>({
+				mutation: gql`
+					mutation CreateOffer(
+						$productUuid: String!
+						$offerType: OfferType!
+						$discountType: DiscountType
+						$offerValue: Int!
+						$startDate: String
+						$endDate: String
+						$startTime: String
+						$endTime: String
+						$weekdays: [Weekday!]!
+						$offerItems: [OfferItemInput!]!
+					) {
+						createOffer(
+							productUuid: $productUuid
+							offerType: $offerType
+							discountType: $discountType
+							offerValue: $offerValue
+							startDate: $startDate
+							endDate: $endDate
+							startTime: $startTime
+							endTime: $endTime
+							weekdays: $weekdays
+							offerItems: $offerItems
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async updateOffer(
+		queryData: string,
+		variables: {
+			uuid: string
+			offerType?: OfferType
+			discountType?: DiscountType
+			offerValue?: number
+			startDate?: string
+			endDate?: string
+			startTime?: string
+			endTime?: string
+			weekdays?: Weekday[]
+			offerItems?: {
+				name: string
+				maxSelections: number
+				productUuids: string[]
+			}[]
+		}
+	): Promise<ApolloResult<{ updateOffer: OfferResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ updateOffer: OfferResource }>({
+				mutation: gql`
+					mutation UpdateOffer(
+						$uuid: String!
+						$offerType: OfferType
+						$discountType: DiscountType
+						$offerValue: Int
+						$startDate: String
+						$endDate: String
+						$startTime: String
+						$endTime: String
+						$weekdays: [Weekday!]
+						$offerItems: [OfferItemInput!]
+					) {
+						updateOffer(
+							uuid: $uuid
+							offerType: $offerType
+							discountType: $discountType
+							offerValue: $offerValue
+							startDate: $startDate
+							endDate: $endDate
+							startTime: $startTime
+							endTime: $endTime
+							weekdays: $weekdays
+							offerItems: $offerItems
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async deleteOffer(
+		queryData: string,
+		variables: { uuid: string }
+	): Promise<ApolloResult<{ deleteOffer: OfferResource }>> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ deleteOffer: OfferResource }>({
+				mutation: gql`
+					mutation DeleteOffer($uuid: String!) {
+						deleteOffer(uuid: $uuid) {
 							${queryData}
 						}
 					}

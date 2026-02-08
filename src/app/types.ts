@@ -302,6 +302,9 @@ export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
 	| typeof ErrorCodes.tableAlreadyExists
 	| typeof ErrorCodes.categoryNameAlreadyInUse
+	| typeof ErrorCodes.productAlreadyHasOffer
+	| typeof ErrorCodes.priceInvalid
+	| typeof ErrorCodes.offerValueInvalid
 	| typeof ErrorCodes.registerAlreadyActive
 	| typeof ErrorCodes.noActiveSubscription
 	| typeof ErrorCodes.notAuthenticated

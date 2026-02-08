@@ -370,9 +370,9 @@ export class BookingPageComponent {
 		this.selectedInventory = category.products
 	}
 
-	navigateToDashboard(event: MouseEvent) {
+	navigateToTablesPage(event: MouseEvent) {
 		event.preventDefault()
-		this.router.navigate(["dashboard"])
+		this.router.navigate(["dashboard", "tables"])
 	}
 
 	selectTableButtonClick() {

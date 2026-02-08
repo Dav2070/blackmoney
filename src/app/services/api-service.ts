@@ -1204,7 +1204,7 @@ export class ApiService {
 			startTime?: string
 			endTime?: string
 			weekdays?: Weekday[]
-			offerItems: {
+			offerItems?: {
 				name: string
 				maxSelections: number
 				productUuids: string[]

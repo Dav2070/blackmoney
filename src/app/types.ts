@@ -299,8 +299,8 @@ export type ErrorCode =
 	| typeof ErrorCodes.tableAlreadyExists
 	| typeof ErrorCodes.categoryNameAlreadyInUse
 	| typeof ErrorCodes.productAlreadyHasOffer
-	| typeof ErrorCodes.priceMustBePositive
-	| typeof ErrorCodes.offerValueMustBePositive
+	| typeof ErrorCodes.priceInvalid
+	| typeof ErrorCodes.offerValueInvalid
 	| typeof ErrorCodes.registerAlreadyActive
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword

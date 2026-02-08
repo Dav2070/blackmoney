@@ -47,9 +47,9 @@ export class OfferCardComponent {
 				const end = dateFormat.format(endDate)
 				parts.push(`${start} - ${end}`)
 			} else if (hasValidStartDate) {
-				parts.push(`ab ${dateFormat.format(startDate)}`)
+				parts.push(`${this.locale.from} ${dateFormat.format(startDate)}`)
 			} else if (hasValidEndDate) {
-				parts.push(`bis ${dateFormat.format(endDate)}`)
+				parts.push(`${this.locale.until} ${dateFormat.format(endDate)}`)
 			}
 		}
 
@@ -58,9 +58,9 @@ export class OfferCardComponent {
 			if (offer.startTime && offer.endTime) {
 				parts.push(`${offer.startTime} - ${offer.endTime}`)
 			} else if (offer.startTime) {
-				parts.push(`ab ${offer.startTime}`)
+				parts.push(`${this.locale.from} ${offer.startTime}`)
 			} else if (offer.endTime) {
-				parts.push(`bis ${offer.endTime}`)
+				parts.push(`${this.locale.until} ${offer.endTime}`)
 			}
 		}
 
@@ -90,7 +90,6 @@ export class OfferCardComponent {
 			"SUNDAY"
 		]
 
-		// Erstelle eine Kopie des Arrays, bevor wir es sortieren
 		const sortedWeekdays = [...weekdays].sort(
 			(a, b) => orderedWeekdays.indexOf(a) - orderedWeekdays.indexOf(b)
 		)

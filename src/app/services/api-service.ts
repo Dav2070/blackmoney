@@ -1148,11 +1148,11 @@ export class ApiService {
 			startTime?: string
 			endTime?: string
 			weekdays: Weekday[]
-			offerItems: Array<{
+			offerItems: {
 				name: string
 				maxSelections: number
 				productUuids: string[]
-			}>
+			}[]
 		}
 	): Promise<ApolloResult<{ createOffer: OfferResource }>> {
 		return await this.blackmoneyAuthApollo
@@ -1204,11 +1204,11 @@ export class ApiService {
 			startTime?: string
 			endTime?: string
 			weekdays?: Weekday[]
-			offerItems?: Array<{
+			offerItems: {
 				name: string
 				maxSelections: number
 				productUuids: string[]
-			}>
+			}[]
 		}
 	): Promise<ApolloResult<{ updateOffer: OfferResource }>> {
 		return await this.blackmoneyAuthApollo

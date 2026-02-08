@@ -61,19 +61,18 @@
 		<div class="dialog-formfield-container">
 			<label class="variations-label">Variationen (Mehrfachauswahl)</label>
 			<div class="variations-selection">
-				@if (renderCheckboxes) {
-					@for (variation of availableVariations; track variation.uuid) {
-						<div class="variation-container">
-							<div
-								class="variation-header"
-								[class.selected]="isVariationSelected(variation.uuid)"
-							>
-								<dav-checkbox
-									[attr.checked]="isVariationSelected(variation.uuid) ? true : null"
-									[label]="variation.name"
-									[disabled]="loading"
-									(change)="checkboxChanged(variation.uuid, $any($event).detail.checked)"
-								></dav-checkbox>
+				@for (variation of availableVariations; track variation.uuid) {
+					<div class="variation-container">
+						<div
+							class="variation-header"
+							[class.selected]="isVariationSelected(variation.uuid)"
+						>
+							<dav-checkbox
+								[checked]="isVariationSelected(variation.uuid)"
+								[label]="variation.name"
+								[disabled]="loading"
+								(change)="checkboxChanged(variation.uuid, $event)"
+							></dav-checkbox>
 							<dav-icon-button
 								size="xs"
 								(click)="
@@ -113,4 +112,7 @@
 						}
 					</div>
 				}
-				}
+			</div>
+		</div>
+	</form>
+</dav-dialog>

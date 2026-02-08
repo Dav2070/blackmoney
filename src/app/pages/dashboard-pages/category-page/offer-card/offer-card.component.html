@@ -24,18 +24,12 @@
 					<span class="price">{{
 						formatPrice(offer.offer.offerValue)
 					}}</span>
+				} @else if (offer.offer.discountType === "PERCENTAGE") {
+					<span class="price"> {{ offer.offer.offerValue }}% </span>
 				} @else {
-					@if (offer.offer.discountType === "PERCENTAGE") {
-						<span class="price"> {{ offer.offer.offerValue }}% </span>
-					} @else {
-						<span class="price"
-							>-{{ formatPrice(offer.offer.offerValue) }}
-						</span>
-					}
-				}
-
-				@if (offer.takeaway) {
-					<span class="badge takeaway">Takeaway</span>
+					<span class="price"
+						>-{{ formatPrice(offer.offer.offerValue) }}
+					</span>
 				}
 			</div>
 

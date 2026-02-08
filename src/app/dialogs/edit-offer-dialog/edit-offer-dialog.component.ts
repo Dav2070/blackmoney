@@ -10,6 +10,7 @@ import {
 } from "@angular/core"
 import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
+import { DateTime } from "luxon"
 import { LocalizationService } from "src/app/services/localization-service"
 import { OfferItem } from "src/app/models/OfferItem"
 import { Product } from "src/app/models/Product"
@@ -181,9 +182,9 @@ export class EditOfferDialogComponent {
 
 		// Validiere und konvertiere startDate
 		if (menu.offer?.startDate) {
-			const startDate = new Date(menu.offer.startDate)
+			const startDate = menu.offer.startDate
 			this.availabilityData.startDate = !isNaN(startDate.getTime())
-				? startDate.toISOString().split("T")[0]
+				? DateTime.fromJSDate(startDate).toFormat("yyyy-MM-dd")
 				: ""
 		} else {
 			this.availabilityData.startDate = ""
@@ -191,9 +192,9 @@ export class EditOfferDialogComponent {
 
 		// Validiere und konvertiere endDate
 		if (menu.offer?.endDate) {
-			const endDate = new Date(menu.offer.endDate)
+			const endDate = menu.offer.endDate
 			this.availabilityData.endDate = !isNaN(endDate.getTime())
-				? endDate.toISOString().split("T")[0]
+				? DateTime.fromJSDate(endDate).toFormat("yyyy-MM-dd")
 				: ""
 		} else {
 			this.availabilityData.endDate = ""

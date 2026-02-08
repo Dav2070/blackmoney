@@ -508,9 +508,9 @@ export class CategoryPageComponent {
 					case ErrorCodes.nameTooLong:
 						this.addProductDialogNameError = this.errorsLocale.nameTooLong
 						break
-					case ErrorCodes.priceMustBePositive:
+					case ErrorCodes.priceInvalid:
 						this.addProductDialogPriceError =
-							this.errorsLocale.priceMustBePositive
+							this.errorsLocale.priceInvalid
 						break
 					default:
 						this.addProductDialogNameError =
@@ -582,9 +582,9 @@ export class CategoryPageComponent {
 						this.editProductDialogNameError =
 							this.errorsLocale.nameTooLong
 						break
-					case ErrorCodes.priceMustBePositive:
+					case ErrorCodes.priceInvalid:
 						this.editProductDialogPriceError =
-							this.errorsLocale.priceMustBePositive
+							this.errorsLocale.priceInvalid
 						break
 					default:
 						this.editProductDialogNameError =
@@ -624,7 +624,7 @@ export class CategoryPageComponent {
 
 		try {
 			// Bestimme den ProductType basierend auf isSpecialMode
-			const productType = this.addOfferDialog.isSpecialMode
+			const productType: ProductType = this.addOfferDialog.isSpecialMode
 				? "SPECIAL"
 				: "MENU"
 
@@ -639,7 +639,7 @@ export class CategoryPageComponent {
 					categoryUuid: this.category.uuid,
 					name: data.name,
 					price: priceInCents,
-					type: productType as any,
+					type: productType,
 					shortcut: data.id
 				}
 			)

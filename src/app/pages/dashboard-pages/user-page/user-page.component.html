@@ -86,7 +86,10 @@
 					}
 
 					@if (dataService.company?.stripeOnboardingStatus === "PENDING") {
-						<dav-icon-card [text]="locale.stripeOnboarding">
+						<dav-icon-card
+							[text]="locale.stripeOnboarding"
+							(click)="navigateToStripeOnboardingPage()"
+						>
 							<fa-icon [icon]="faGears"></fa-icon>
 						</dav-icon-card>
 					}

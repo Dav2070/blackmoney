@@ -147,4 +147,17 @@ export class UserPageComponent {
 
 		this.activateRegisterDialog.hide()
 	}
+
+	async navigateToStripeOnboardingPage() {
+		const createStripeAccountOnboardingLinkResponse =
+			await this.apiService.createStripeAccountOnboardingLink(`url`, {
+				refreshUrl: window.location.href,
+				returnUrl: window.location.href
+			})
+
+		if (createStripeAccountOnboardingLinkResponse.data) {
+			window.location.href =
+				createStripeAccountOnboardingLinkResponse.data.createStripeAccountOnboardingLink.url
+		}
+	}
 }

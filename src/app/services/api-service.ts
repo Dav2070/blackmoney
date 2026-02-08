@@ -1364,6 +1364,36 @@ export class ApiService {
 			.toPromise()
 	}
 
+	async createStripeAccountOnboardingLink(
+		queryData: string,
+		variables: {
+			refreshUrl: string
+			returnUrl: string
+		}
+	): Promise<
+		ApolloResult<{ createStripeAccountOnboardingLink: { url: string } }>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createStripeAccountOnboardingLink: { url: string } }>({
+				mutation: gql`
+					mutation CreateStripeAccountOnboardingLink(
+						$refreshUrl: String!
+						$returnUrl: String!
+					) {
+						createStripeAccountOnboardingLink(
+							refreshUrl: $refreshUrl
+							returnUrl: $returnUrl
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
 	async createStripeSubscriptionCheckoutSession(
 		queryData: string,
 		variables: {
@@ -1373,7 +1403,7 @@ export class ApiService {
 	): Promise<
 		ApolloResult<{ createStripeSubscriptionCheckoutSession: { url: string } }>
 	> {
-		return await this.davAuthApollo
+		return await this.blackmoneyAuthApollo
 			.mutate<{
 				createStripeSubscriptionCheckoutSession: { url: string }
 			}>({

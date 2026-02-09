@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Apollo, ApolloBase, gql } from "apollo-angular"
-import { ErrorPolicy } from "@apollo/client/core"
+import { ErrorPolicy, TypedDocumentNode } from "@apollo/client/core"
 import {
 	List,
 	ApolloResult,
@@ -37,6 +37,7 @@ const errorPolicy: ErrorPolicy = "all"
 export class ApiService {
 	private davAuthApollo: ApolloBase
 	private blackmoneyAuthApollo: ApolloBase
+	private refetchQueries: string[] = []
 
 	constructor(private apolloProvider: Apollo) {
 		this.loadApolloClients()
@@ -49,7 +50,73 @@ export class ApiService {
 		)
 	}
 
-	async login(
+	addRefetchQuery(...functions: Function[]) {
+		for (const func of functions) {
+			const name = func.name.toLowerCase()
+
+			if (!this.refetchQueries.includes(name)) {
+				this.refetchQueries.push(name)
+			}
+		}
+	}
+
+	private async query<Result>(args: {
+		apollo: ApolloBase
+		query: TypedDocumentNode<Result>
+		variables?: object
+	}): Promise<ApolloResult<Result>> {
+		let queryName = null
+
+		if (
+			args.query.kind === "Document" &&
+			args.query.definitions.length > 0 &&
+			args.query.definitions[0].kind === "OperationDefinition"
+		) {
+			queryName = args.query.definitions[0].name?.value
+		}
+
+		const refetch =
+			queryName != null && this.refetchQueries.includes(queryName)
+
+		const response = await args.apollo
+			.query<Result>({
+				query: args.query,
+				variables: args.variables,
+				errorPolicy,
+				fetchPolicy: refetch ? "network-only" : null
+			})
+			.toPromise()
+
+		if (refetch && response.error == null) {
+			const i = this.refetchQueries.indexOf(queryName)
+			if (i != -1) this.refetchQueries.splice(i, 1)
+		}
+
+		return response
+	}
+
+	private async mutate<Result>(args: {
+		apollo: ApolloBase
+		mutation: TypedDocumentNode<Result>
+		variables?: object
+		refetchQueries?: Function[]
+	}): Promise<ApolloResult<Result>> {
+		const response = await args.apollo
+			.mutate<Result>({
+				mutation: args.mutation,
+				variables: args.variables,
+				errorPolicy
+			})
+			.toPromise()
+
+		if (args.refetchQueries != null && response.error == null) {
+			this.addRefetchQuery(...args.refetchQueries)
+		}
+
+		return response
+	}
+
+	login = async (
 		queryData: string,
 		variables: {
 			companyUuid: string
@@ -58,102 +125,85 @@ export class ApiService {
 			registerUuid: string
 			registerClientSerialNumber: string
 		}
-	): Promise<ApolloResult<{ login: SessionResource }>> {
-		return await this.davAuthApollo
-			.mutate<{ login: SessionResource }>({
-				mutation: gql`
-					mutation Login(
-						$companyUuid: String!
-						$userName: String!
-						$password: String!
-						$registerUuid: String!
-						$registerClientSerialNumber: String!
+	) =>
+		this.mutate<{ login: SessionResource }>({
+			apollo: this.davAuthApollo,
+			mutation: gql`
+				mutation Login(
+					$companyUuid: String!
+					$userName: String!
+					$password: String!
+					$registerUuid: String!
+					$registerClientSerialNumber: String!
+				) {
+					login(
+						companyUuid: $companyUuid
+						userName: $userName
+						password: $password
+						registerUuid: $registerUuid
+						registerClientSerialNumber: $registerClientSerialNumber
 					) {
-						login(
-							companyUuid: $companyUuid
-							userName: $userName
-							password: $password
-							registerUuid: $registerUuid
-							registerClientSerialNumber: $registerClientSerialNumber
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async retrieveOwnUser(
-		queryData: string
-	): Promise<ApolloResult<{ retrieveOwnUser: UserResource }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ retrieveOwnUser: UserResource }>({
-				query: gql`
-					query RetrieveOwnUser {
-						retrieveOwnUser {
-							${queryData}
-						}
+	retrieveOwnUser = async (queryData: string) =>
+		this.query<{ retrieveOwnUser: UserResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query RetrieveOwnUser {
+					retrieveOwnUser {
+						${queryData}
 					}
-				`,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`
+		})
 
-	async retrieveUser(
-		queryData: string,
-		variables: { uuid: string }
-	): Promise<ApolloResult<{ retrieveUser: UserResource }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ retrieveUser: UserResource }>({
-				query: gql`
-					query RetrieveUser($uuid: String!) {
-						retrieveUser(uuid: $uuid) {
-							${queryData}
-						}
+	retrieveUser = async (queryData: string, variables: { uuid: string }) =>
+		this.query<{ retrieveUser: UserResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query RetrieveUser($uuid: String!) {
+					retrieveUser(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createOwner(
+	createOwner = async (
 		queryData: string,
 		variables: {
 			companyUuid: string
 			name: string
 			password: string
 		}
-	): Promise<ApolloResult<{ createOwner: UserResource }>> {
-		return await this.davAuthApollo
-			.mutate<{ createOwner: UserResource }>({
-				mutation: gql`
-					mutation CreateOwner(
-						$companyUuid: String!
-						$name: String!
-						$password: String!
+	) =>
+		this.mutate<{ createOwner: UserResource }>({
+			apollo: this.davAuthApollo,
+			mutation: gql`
+				mutation CreateOwner(
+					$companyUuid: String!
+					$name: String!
+					$password: String!
+				) {
+					createOwner(
+						companyUuid: $companyUuid
+						name: $name
+						password: $password
 					) {
-						createOwner(
-							companyUuid: $companyUuid
-							name: $name
-							password: $password
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createUser(
+	createUser = async (
 		queryData: string,
 		variables: {
 			companyUuid: string
@@ -161,143 +211,115 @@ export class ApiService {
 			role?: UserRole
 			restaurants: string[]
 		}
-	): Promise<ApolloResult<{ createUser: UserResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ createUser: UserResource }>({
-				mutation: gql`
-					mutation CreateUser(
-						$companyUuid: String!
-						$name: String!
-						$role: UserRole
-						$restaurants: [String!]!
+	) =>
+		this.mutate<{ createUser: UserResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateUser(
+					$companyUuid: String!
+					$name: String!
+					$role: UserRole
+					$restaurants: [String!]!
+				) {
+					createUser(
+						companyUuid: $companyUuid
+						name: $name
+						role: $role
+						restaurants: $restaurants
 					) {
-						createUser(
-							companyUuid: $companyUuid
-							name: $name
-							role: $role
-							restaurants: $restaurants
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveCompany]
+		})
 
-	async setPasswordForUser(
+	setPasswordForUser = async (
 		queryData: string,
 		variables: {
 			uuid: string
 			password: string
 		}
-	): Promise<ApolloResult<{ setPasswordForUser: UserResource }>> {
-		return await this.davAuthApollo
-			.mutate<{
-				setPasswordForUser: UserResource
-			}>({
-				mutation: gql`
-					mutation SetPasswordForUser(
-						$uuid: String!
-						$password: String!
+	) =>
+		this.mutate<{ setPasswordForUser: UserResource }>({
+			apollo: this.davAuthApollo,
+			mutation: gql`
+				mutation SetPasswordForUser(
+					$uuid: String!
+					$password: String!
+				) {
+					setPasswordForUser(
+						uuid: $uuid
+						password: $password
 					) {
-						setPasswordForUser(
-							uuid: $uuid
-							password: $password
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async resetPasswordOfUser(
+	resetPasswordOfUser = async (
 		queryData: string,
 		variables: {
 			uuid: string
 		}
-	): Promise<ApolloResult<{ resetPasswordOfUser: UserResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{
-				resetPasswordOfUser: UserResource
-			}>({
-				mutation: gql`
-					mutation ResetPasswordOfUser($uuid: String!) {
-						resetPasswordOfUser(uuid: $uuid) {
-							${queryData}
-						}
+	) =>
+		this.mutate<{ resetPasswordOfUser: UserResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation ResetPasswordOfUser($uuid: String!) {
+					resetPasswordOfUser(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async retrieveCompany(
-		queryData: string
-	): Promise<ApolloResult<{ retrieveCompany: CompanyResource }>> {
-		return await this.davAuthApollo
-			.query<{ retrieveCompany: CompanyResource }>({
-				query: gql`
-					query RetrieveCompany {
-						retrieveCompany {
-							${queryData}
-						}
+	retrieveCompany = async (queryData: string) =>
+		this.query<{ retrieveCompany: CompanyResource }>({
+			apollo: this.davAuthApollo,
+			query: gql`
+				query RetrieveCompany {
+					retrieveCompany {
+						${queryData}
 					}
-				`,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`
+		})
 
-	async createCompany(
-		queryData: string,
-		variables: { name: string }
-	): Promise<ApolloResult<{ createCompany: CompanyResource }>> {
-		return await this.davAuthApollo
-			.mutate<{ createCompany: CompanyResource }>({
-				mutation: gql`
-					mutation CreateCompany($name: String!) {
-						createCompany(name: $name) {
-							${queryData}
-						}
+	createCompany = async (queryData: string, variables: { name: string }) =>
+		this.mutate<{ createCompany: CompanyResource }>({
+			apollo: this.davAuthApollo,
+			mutation: gql`
+				mutation CreateCompany($name: String!) {
+					createCompany(name: $name) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async retrieveRestaurant(
+	retrieveRestaurant = async (
 		queryData: string,
 		variables: { uuid: string }
-	): Promise<ApolloResult<{ retrieveRestaurant: RestaurantResource }>> {
-		return await this.davAuthApollo
-			.query<{
-				retrieveRestaurant: RestaurantResource
-			}>({
-				query: gql`
-					query RetrieveRestaurant($uuid: String!) {
-						retrieveRestaurant(uuid: $uuid) {
-							${queryData}
-						}
+	) =>
+		this.query<{ retrieveRestaurant: RestaurantResource }>({
+			apollo: this.davAuthApollo,
+			query: gql`
+				query RetrieveRestaurant($uuid: String!) {
+					retrieveRestaurant(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async updateRestaurant(
+	updateRestaurant = async (
 		queryData: string,
 		variables: {
 			uuid: string
@@ -313,299 +335,262 @@ export class ApiService {
 			mail?: string
 			phoneNumber?: string
 		}
-	): Promise<ApolloResult<{ updateRestaurant: RestaurantResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updateRestaurant: RestaurantResource }>({
-				mutation: gql`
-					mutation UpdateRestaurant(
-						$uuid: String!
-						$name: String
-						$city: String
-						$country: Country
-						$line1: String
-						$houseNumber: String
-						$line2: String
-						$postalCode: String
-						$owner: String
-						$taxNumber: String
-						$mail: String
-						$phoneNumber: String
+	) =>
+		this.mutate<{ updateRestaurant: RestaurantResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateRestaurant(
+					$uuid: String!
+					$name: String
+					$city: String
+					$country: Country
+					$line1: String
+					$houseNumber: String
+					$line2: String
+					$postalCode: String
+					$owner: String
+					$taxNumber: String
+					$mail: String
+					$phoneNumber: String
+				) {
+					updateRestaurant(
+						uuid: $uuid
+						name: $name
+						city: $city
+						country: $country
+						line1: $line1
+						houseNumber: $houseNumber
+						line2: $line2
+						postalCode: $postalCode
+						owner: $owner
+						taxNumber: $taxNumber
+						mail: $mail
+						phoneNumber: $phoneNumber
 					) {
-						updateRestaurant(
-							uuid: $uuid
-							name: $name
-							city: $city
-							country: $country
-							line1: $line1
-							houseNumber: $houseNumber
-							line2: $line2
-							postalCode: $postalCode
-							owner: $owner
-							taxNumber: $taxNumber
-							mail: $mail
-							phoneNumber: $phoneNumber
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveCompany, this.retrieveRestaurant]
+		})
 
-	async retrieveRegister(
-		queryData: string,
-		variables: { uuid: string }
-	): Promise<ApolloResult<{ retrieveRegister: RegisterResource }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ retrieveRegister: RegisterResource }>({
-				query: gql`
-					query RetrieveRegister($uuid: String!) {
-						retrieveRegister(uuid: $uuid) {
-							${queryData}
-						}
+	retrieveRegister = async (queryData: string, variables: { uuid: string }) =>
+		this.query<{ retrieveRegister: RegisterResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query RetrieveRegister($uuid: String!) {
+					retrieveRegister(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createRegister(
+	createRegister = async (
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			name: string
 		}
-	): Promise<ApolloResult<{ createRegister: RegisterResource }>> {
-		return await this.davAuthApollo
-			.mutate<{
-				createRegister: RegisterResource
-			}>({
-				mutation: gql`
-					mutation CreateRegister(
-						$restaurantUuid: String!
-						$name: String!
+	) =>
+		this.mutate<{ createRegister: RegisterResource }>({
+			apollo: this.davAuthApollo,
+			mutation: gql`
+				mutation CreateRegister(
+					$restaurantUuid: String!
+					$name: String!
+				) {
+					createRegister(
+						restaurantUuid: $restaurantUuid
+						name: $name
 					) {
-						createRegister(
-							restaurantUuid: $restaurantUuid
-							name: $name
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async activateRegister(
+	activateRegister = async (
 		queryData: string,
 		variables: {
 			uuid: string
 		}
-	): Promise<ApolloResult<{ activateRegister: RegisterResource }>> {
-		return await this.davAuthApollo
-			.mutate<{ activateRegister: RegisterResource }>({
-				mutation: gql`
-					mutation ActivateRegister($uuid: String!) {
-						activateRegister(uuid: $uuid) {
-							${queryData}
-						}
+	) =>
+		this.mutate<{ activateRegister: RegisterResource }>({
+			apollo: this.davAuthApollo,
+			mutation: gql`
+				mutation ActivateRegister($uuid: String!) {
+					activateRegister(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRegister]
+		})
 
-	async retrieveRegisterClient(
+	retrieveRegisterClient = async (
 		queryData: string,
 		variables: { uuid: string }
-	): Promise<
-		ApolloResult<{ retrieveRegisterClient: RegisterClientResource }>
-	> {
-		return await this.blackmoneyAuthApollo
-			.query<{ retrieveRegisterClient: RegisterClientResource }>({
-				query: gql`
-					query RetrieveRegisterClient($uuid: String!) {
-						retrieveRegisterClient(uuid: $uuid) {
-							${queryData}
-						}
+	) =>
+		this.query<{ retrieveRegisterClient: RegisterClientResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query RetrieveRegisterClient($uuid: String!) {
+					retrieveRegisterClient(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async retrieveRegisterClientBySerialNumber(
+	retrieveRegisterClientBySerialNumber = async (
 		queryData: string,
 		variables: {
 			registerUuid: string
 			serialNumber: string
 		}
-	): Promise<
-		ApolloResult<{
+	) =>
+		this.query<{
 			retrieveRegisterClientBySerialNumber: RegisterClientResource
-		}>
-	> {
-		return await this.blackmoneyAuthApollo
-			.query<{
-				retrieveRegisterClientBySerialNumber: RegisterClientResource
-			}>({
-				query: gql`
-					query RetrieveRegisterClientBySerialNumber(
-						$registerUuid: String!
-						$serialNumber: String!
+		}>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query RetrieveRegisterClientBySerialNumber(
+					$registerUuid: String!
+					$serialNumber: String!
+				) {
+					retrieveRegisterClientBySerialNumber(
+						registerUuid: $registerUuid
+						serialNumber: $serialNumber
 					) {
-						retrieveRegisterClientBySerialNumber(
-							registerUuid: $registerUuid
-							serialNumber: $serialNumber
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async updateRegisterClient(
+	updateRegisterClient = async (
 		queryData: string,
 		variables: {
 			uuid: string
 			name?: string
 		}
-	): Promise<ApolloResult<{ updateRegisterClient: RegisterClientResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{
-				updateRegisterClient: RegisterClientResource
-			}>({
-				mutation: gql`
-					mutation UpdateRegisterClient(
-						$uuid: String!
-						$name: String
+	) =>
+		this.mutate<{ updateRegisterClient: RegisterClientResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateRegisterClient(
+					$uuid: String!
+					$name: String
+				) {
+					updateRegisterClient(
+						uuid: $uuid
+						name: $name
 					) {
-						updateRegisterClient(
-							uuid: $uuid
-							name: $name
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [
+				this.retrieveRegisterClient,
+				this.retrieveRegisterClientBySerialNumber
+			]
+		})
 
-	async searchPrinters(
+	searchPrinters = async (
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			query: string
 			exclude?: string[]
 		}
-	): Promise<ApolloResult<{ searchPrinters: List<PrinterResource> }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ searchPrinters: List<PrinterResource> }>({
-				query: gql`
-					query SearchPrinters(
-						$restaurantUuid: String!
-						$query: String!
-						$exclude: [String!]
+	) =>
+		this.query<{ searchPrinters: List<PrinterResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query SearchPrinters(
+					$restaurantUuid: String!
+					$query: String!
+					$exclude: [String!]
+				) {
+					searchPrinters(
+						restaurantUuid: $restaurantUuid
+						query: $query
+						exclude: $exclude
 					) {
-						searchPrinters(
-							restaurantUuid: $restaurantUuid
-							query: $query
-							exclude: $exclude
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createPrinter(
+	createPrinter = async (
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			name: string
 			ipAddress: string
 		}
-	): Promise<ApolloResult<{ createPrinter: PrinterResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{
-				createPrinter: PrinterResource
-			}>({
-				mutation: gql`
-					mutation CreatePrinter(
-						$restaurantUuid: String!
-						$name: String!
-						$ipAddress: String!
+	) =>
+		this.mutate<{ createPrinter: PrinterResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreatePrinter(
+					$restaurantUuid: String!
+					$name: String!
+					$ipAddress: String!
+				) {
+					createPrinter(
+						restaurantUuid: $restaurantUuid
+						name: $name
+						ipAddress: $ipAddress
 					) {
-						createPrinter(
-							restaurantUuid: $restaurantUuid
-							name: $name
-							ipAddress: $ipAddress
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRestaurant, this.searchPrinters]
+		})
 
-	async updatePrinter(
+	updatePrinter = async (
 		queryData: string,
 		variables: {
 			uuid: string
 			name: string
 			ipAddress: string
 		}
-	): Promise<ApolloResult<{ updatePrinter: PrinterResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updatePrinter: PrinterResource }>({
-				mutation: gql`
-					mutation UpdatePrinter(
-						$uuid: String!
-						$name: String!
-						$ipAddress: String!
+	) =>
+		this.mutate<{ updatePrinter: PrinterResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdatePrinter(
+					$uuid: String!
+					$name: String!
+					$ipAddress: String!
+				) {
+					updatePrinter(
+						uuid: $uuid
+						name: $name
+						ipAddress: $ipAddress
 					) {
-						updatePrinter(
-							uuid: $uuid
-							name: $name
-							ipAddress: $ipAddress
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRestaurant, this.searchPrinters]
+		})
 
-	async createPrintRule(
+	createPrintRule = async (
 		queryData: string,
 		variables: {
 			registerClientUuid: string
@@ -615,43 +600,35 @@ export class ApiService {
 			categoryUuids?: string[]
 			productUuids?: string[]
 		}
-	): Promise<
-		ApolloResult<{
-			createPrintRule: PrintRuleResource
-		}>
-	> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{
-				createPrintRule: PrintRuleResource
-			}>({
-				mutation: gql`
-					mutation CreatePrintRule(
-						$registerClientUuid: String!
-						$type: PrintRuleType!
-						$productType: ProductType
-						$printerUuids: [String!]!
-						$categoryUuids: [String!]
-						$productUuids: [String!]
+	) =>
+		this.mutate<{ createPrintRule: PrintRuleResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreatePrintRule(
+					$registerClientUuid: String!
+					$type: PrintRuleType!
+					$productType: ProductType
+					$printerUuids: [String!]!
+					$categoryUuids: [String!]
+					$productUuids: [String!]
+				) {
+					createPrintRule(
+						registerClientUuid: $registerClientUuid
+						type: $type
+						productType: $productType
+						printerUuids: $printerUuids
+						categoryUuids: $categoryUuids
+						productUuids: $productUuids
 					) {
-						createPrintRule(
-							registerClientUuid: $registerClientUuid
-							type: $type
-							productType: $productType
-							printerUuids: $printerUuids
-							categoryUuids: $categoryUuids
-							productUuids: $productUuids
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRegisterClient]
+		})
 
-	async updatePrintRule(
+	updatePrintRule = async (
 		queryData: string,
 		variables: {
 			uuid: string
@@ -659,388 +636,384 @@ export class ApiService {
 			categoryUuids?: string[]
 			productUuids?: string[]
 		}
-	): Promise<ApolloResult<{ updatePrintRule: PrintRuleResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updatePrintRule: PrintRuleResource }>({
-				mutation: gql`
-					mutation UpdatePrintRule(
-						$uuid: String!
-						$printerUuids: [String!]!
-						$categoryUuids: [String!]
-						$productUuids: [String!]
+	) => {
+		return this.mutate<{ updatePrintRule: PrintRuleResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdatePrintRule(
+					$uuid: String!
+					$printerUuids: [String!]!
+					$categoryUuids: [String!]
+					$productUuids: [String!]
+				) {
+					updatePrintRule(
+						uuid: $uuid
+						printerUuids: $printerUuids
+						categoryUuids: $categoryUuids
+						productUuids: $productUuids
 					) {
-						updatePrintRule(
-							uuid: $uuid
-							printerUuids: $printerUuids
-							categoryUuids: $categoryUuids
-							productUuids: $productUuids
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRegisterClient]
+		})
 	}
 
-	async deletePrintRule(
-		queryData: string,
-		variables: { uuid: string }
-	): Promise<ApolloResult<{ deletePrintRule: PrintRuleResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ deletePrintRule: PrintRuleResource }>({
-				mutation: gql`
-					mutation DeletePrintRule($uuid: String!) {
-						deletePrintRule(uuid: $uuid) {
-							${queryData}
-						}
+	deletePrintRule = async (queryData: string, variables: { uuid: string }) =>
+		this.mutate<{ deletePrintRule: PrintRuleResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation DeletePrintRule($uuid: String!) {
+					deletePrintRule(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRegisterClient]
+		})
 
-	async retrieveRoom(
+	retrieveRoom = async (
 		queryData: string,
 		variables: {
 			uuid: string
 		}
-	): Promise<ApolloResult<{ retrieveRoom: RoomResource }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ retrieveRoom: RoomResource }>({
-				query: gql`
-					query RetrieveRoom($uuid: String!) {
-						retrieveRoom(uuid: $uuid) {
-							${queryData}
-						}
+	) =>
+		this.query<{ retrieveRoom: RoomResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query RetrieveRoom($uuid: String!) {
+					retrieveRoom(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async listRooms(
+	listRooms = async (
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 		}
-	): Promise<ApolloResult<{ listRooms: List<RoomResource> }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ listRooms: List<RoomResource> }>({
-				query: gql`
-					query ListRooms($restaurantUuid: String!) {
-						listRooms(restaurantUuid: $restaurantUuid) {
-							${queryData}
-						}
+	) =>
+		this.query<{ listRooms: List<RoomResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query ListRooms($restaurantUuid: String!) {
+					listRooms(restaurantUuid: $restaurantUuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createRoom(
+	createRoom = async (
 		queryData: string,
 		variables: { restaurantUuid: string; name: string }
-	): Promise<ApolloResult<{ createRoom: RoomResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ createRoom: RoomResource }>({
-				mutation: gql`
-					mutation CreateRoom(
-						$restaurantUuid: String!
-						$name: String!
+	) =>
+		this.mutate<{ createRoom: RoomResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateRoom(
+					$restaurantUuid: String!
+					$name: String!
+				) {
+					createRoom(
+						restaurantUuid: $restaurantUuid
+						name: $name
 					) {
-						createRoom(
-							restaurantUuid: $restaurantUuid
-							name: $name
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRestaurant, this.listRooms]
+		})
 
-	async updateRoom(
+	updateRoom = async (
 		queryData: string,
 		variables: { uuid: string; name: string }
-	): Promise<ApolloResult<{ updateRoom: RoomResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updateRoom: RoomResource }>({
-				mutation: gql`
-					mutation UpdateRoom(
-						$uuid: String!
-						$name: String
+	) =>
+		this.mutate<{ updateRoom: RoomResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateRoom(
+					$uuid: String!
+					$name: String
+				) {
+					updateRoom(
+						uuid: $uuid
+						name: $name
 					) {
-						updateRoom(
-							uuid: $uuid
-							name: $name
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [
+				this.retrieveRestaurant,
+				this.retrieveRoom,
+				this.listRooms
+			]
+		})
 
-	async deleteRoom(
-		queryData: string,
-		variables: { uuid: string }
-	): Promise<ApolloResult<{ deleteRoom: RoomResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ deleteRoom: RoomResource }>({
-				mutation: gql`
-					mutation DeleteRoom($uuid: String!) {
-						deleteRoom(uuid: $uuid) {
-							${queryData}
-						}
+	deleteRoom = async (queryData: string, variables: { uuid: string }) =>
+		this.mutate<{ deleteRoom: RoomResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation DeleteRoom($uuid: String!) {
+					deleteRoom(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [
+				this.retrieveRestaurant,
+				this.retrieveRoom,
+				this.listRooms
+			]
+		})
 
-	async createTable(
+	createTable = async (
 		queryData: string,
 		variables: { roomUuid: string; name: number; seats: number }
-	): Promise<ApolloResult<{ createTable: TableResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ createTable: TableResource }>({
-				mutation: gql`
-					mutation CreateTable(
-						$roomUuid: String!
-						$name: Int!
-						$seats: Int!
+	) =>
+		this.mutate<{ createTable: TableResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateTable(
+					$roomUuid: String!
+					$name: Int!
+					$seats: Int!
+				) {
+					createTable(
+						roomUuid: $roomUuid
+						name: $name
+						seats: $seats
 					) {
-						createTable(
-							roomUuid: $roomUuid
-							name: $name
-							seats: $seats
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRestaurant, this.retrieveRoom]
+		})
 
-	async updateTable(
+	updateTable = async (
 		queryData: string,
 		variables: { uuid: string; seats?: number }
-	): Promise<ApolloResult<{ updateTable: TableResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updateTable: TableResource }>({
-				mutation: gql`
-					mutation UpdateTable(
-						$uuid: String!
-						$seats: Int
+	) =>
+		this.mutate<{ updateTable: TableResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateTable(
+					$uuid: String!
+					$seats: Int
+				) {
+					updateTable(
+						uuid: $uuid
+						seats: $seats
 					) {
-						updateTable(
-							uuid: $uuid
-							seats: $seats
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRestaurant]
+		})
 
-	async deleteTable(
-		queryData: string,
-		variables: { uuid: string }
-	): Promise<ApolloResult<{ deleteTable: TableResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ deleteTable: TableResource }>({
-				mutation: gql`
-					mutation DeleteTable($uuid: String!) {
-						deleteTable(uuid: $uuid) {
-							${queryData}
-						}
+	deleteTable = async (queryData: string, variables: { uuid: string }) =>
+		this.mutate<{ deleteTable: TableResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation DeleteTable($uuid: String!) {
+					deleteTable(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.retrieveRestaurant]
+		})
 
-	async retrieveCategory(
+	retrieveCategory = async (
 		queryData: string,
 		variables: { uuid: string; type?: ProductType }
-	): Promise<ApolloResult<{ retrieveCategory: CategoryResource }>> {
+	) => {
 		const typeParam = queryData.includes("products")
 			? "$type: ProductType"
 			: ""
 
-		return await this.blackmoneyAuthApollo
-			.query<{ retrieveCategory: CategoryResource }>({
-				query: gql`
-					query RetrieveCategory(
-						$uuid: String!
-						${typeParam}
-					) {
-						retrieveCategory(uuid: $uuid) {
-							${queryData}
-						}
+		return this.query<{ retrieveCategory: CategoryResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query RetrieveCategory(
+					$uuid: String!
+					${typeParam}
+				) {
+					retrieveCategory(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy,
-				fetchPolicy: "network-only"
-			})
-			.toPromise()
+				}
+			`,
+			variables
+		})
 	}
 
-	async searchCategories(
+	searchCategories = async (
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			query: string
 			exclude?: string[]
 		}
-	): Promise<ApolloResult<{ searchCategories: List<CategoryResource> }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ searchCategories: List<CategoryResource> }>({
-				query: gql`
-					query SearchCategories(
-						$restaurantUuid: String!
-						$query: String!
-						$exclude: [String!]
+	) =>
+		this.query<{ searchCategories: List<CategoryResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query SearchCategories(
+					$restaurantUuid: String!
+					$query: String!
+					$exclude: [String!]
+				) {
+					searchCategories(
+						restaurantUuid: $restaurantUuid
+						query: $query
+						exclude: $exclude
 					) {
-						searchCategories(
-							restaurantUuid: $restaurantUuid
-							query: $query
-							exclude: $exclude
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async listCategories(
+	listCategories = async (
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 		}
-	): Promise<ApolloResult<{ listCategories: List<CategoryResource> }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ listCategories: List<CategoryResource> }>({
-				query: gql`
-					query ListCategories($restaurantUuid: String!) {
-						listCategories(restaurantUuid: $restaurantUuid) {
-							${queryData}
-						}
+	) =>
+		this.query<{ listCategories: List<CategoryResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query ListCategories($restaurantUuid: String!) {
+					listCategories(restaurantUuid: $restaurantUuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createCategory(
+	createCategory = async (
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			name: string
 		}
-	): Promise<ApolloResult<{ createCategory: CategoryResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ createCategory: CategoryResource }>({
-				mutation: gql`
-					mutation CreateCategory(
-						$restaurantUuid: String!
-						$name: String!
+	) =>
+		this.mutate<{ createCategory: CategoryResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateCategory(
+					$restaurantUuid: String!
+					$name: String!
+				) {
+					createCategory(
+						restaurantUuid: $restaurantUuid
+						name: $name
 					) {
-						createCategory(
-							restaurantUuid: $restaurantUuid
-							name: $name
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.searchCategories, this.listCategories]
+		})
 
-	async updateCategory(
+	updateCategory = async (
 		queryData: string,
 		variables: {
 			uuid: string
 			name?: string
 		}
-	): Promise<ApolloResult<{ updateCategory: CategoryResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updateCategory: CategoryResource }>({
-				mutation: gql`
-					mutation UpdateCategory(
-						$uuid: String!
-						$name: String
+	) =>
+		this.mutate<{ updateCategory: CategoryResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateCategory(
+					$uuid: String!
+					$name: String
+				) {
+					updateCategory(
+						uuid: $uuid
+						name: $name
 					) {
-						updateCategory(
-							uuid: $uuid
-							name: $name
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [
+				this.retrieveCategory,
+				this.searchCategories,
+				this.listCategories
+			]
+		})
 
-	async deleteCategory(
+	deleteCategory = async (queryData: string, variables: { uuid: string }) =>
+		this.mutate<{ deleteCategory: CategoryResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation DeleteCategory($uuid: String!) {
+					deleteCategory(uuid: $uuid) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [
+				this.retrieveCategory,
+				this.searchCategories,
+				this.listCategories
+			]
+		})
+
+	searchProducts = async (
 		queryData: string,
-		variables: { uuid: string }
-	): Promise<ApolloResult<{ deleteCategory: CategoryResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ deleteCategory: CategoryResource }>({
-				mutation: gql`
-					mutation DeleteCategory($uuid: String!) {
-						deleteCategory(uuid: $uuid) {
-							${queryData}
-						}
+		variables: {
+			restaurantUuid: string
+			query: string
+			exclude?: string[]
+		}
+	) =>
+		this.query<{ searchProducts: List<CategoryResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query SearchProducts(
+					$restaurantUuid: String!
+					$query: String!
+					$exclude: [String!]
+				) {
+					searchProducts(
+						restaurantUuid: $restaurantUuid
+						query: $query
+						exclude: $exclude
+					) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createProduct(
+	createProduct = async (
 		queryData: string,
 		variables: {
 			categoryUuid: string
@@ -1050,37 +1023,35 @@ export class ApiService {
 			shortcut?: number
 			variationUuids?: string[]
 		}
-	): Promise<ApolloResult<{ createProduct: ProductResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ createProduct: ProductResource }>({
-				mutation: gql`
-					mutation CreateProduct(
-						$categoryUuid: String!
-						$name: String!
-						$price: Int!
-						$type: ProductType!
-						$shortcut: Int
-						$variationUuids: [String!]
+	) =>
+		this.mutate<{ createProduct: ProductResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateProduct(
+					$categoryUuid: String!
+					$name: String!
+					$price: Int!
+					$type: ProductType!
+					$shortcut: Int
+					$variationUuids: [String!]
+				) {
+					createProduct(
+						categoryUuid: $categoryUuid
+						name: $name
+						price: $price
+						type: $type
+						shortcut: $shortcut
+						variationUuids: $variationUuids
 					) {
-						createProduct(
-							categoryUuid: $categoryUuid
-							name: $name
-							price: $price
-							type: $type
-							shortcut: $shortcut
-							variationUuids: $variationUuids
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.searchProducts]
+		})
 
-	async updateProduct(
+	updateProduct = async (
 		queryData: string,
 		variables: {
 			uuid: string
@@ -1089,54 +1060,47 @@ export class ApiService {
 			shortcut?: number
 			variationUuids?: string[]
 		}
-	): Promise<ApolloResult<{ updateProduct: ProductResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updateProduct: ProductResource }>({
-				mutation: gql`
-					mutation UpdateProduct(
-						$uuid: String!
-						$name: String
-						$price: Int
-						$shortcut: Int
-						$variationUuids: [String!]
+	) =>
+		this.mutate<{ updateProduct: ProductResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateProduct(
+					$uuid: String!
+					$name: String
+					$price: Int
+					$shortcut: Int
+					$variationUuids: [String!]
+				) {
+					updateProduct(
+						uuid: $uuid
+						name: $name
+						price: $price
+						shortcut: $shortcut
+						variationUuids: $variationUuids
 					) {
-						updateProduct(
-							uuid: $uuid
-							name: $name
-							price: $price
-							shortcut: $shortcut
-							variationUuids: $variationUuids
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.searchProducts]
+		})
 
-	async deleteProduct(
-		queryData: string,
-		variables: { uuid: string }
-	): Promise<ApolloResult<{ deleteProduct: ProductResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ deleteProduct: ProductResource }>({
-				mutation: gql`
-					mutation DeleteProduct($uuid: String!) {
-						deleteProduct(uuid: $uuid) {
-							${queryData}
-						}
+	deleteProduct = async (queryData: string, variables: { uuid: string }) =>
+		this.mutate<{ deleteProduct: ProductResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation DeleteProduct($uuid: String!) {
+					deleteProduct(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables,
+			refetchQueries: [this.searchProducts]
+		})
 
-	async createOffer(
+	createOffer = async (
 		queryData: string,
 		variables: {
 			productUuid: string
@@ -1154,45 +1118,42 @@ export class ApiService {
 				productUuids: string[]
 			}[]
 		}
-	): Promise<ApolloResult<{ createOffer: OfferResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ createOffer: OfferResource }>({
-				mutation: gql`
-					mutation CreateOffer(
-						$productUuid: String!
-						$offerType: OfferType!
-						$discountType: DiscountType
-						$offerValue: Int!
-						$startDate: String
-						$endDate: String
-						$startTime: String
-						$endTime: String
-						$weekdays: [Weekday!]!
-						$offerItems: [OfferItemInput!]!
+	) =>
+		this.mutate<{ createOffer: OfferResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateOffer(
+					$productUuid: String!
+					$offerType: OfferType!
+					$discountType: DiscountType
+					$offerValue: Int!
+					$startDate: String
+					$endDate: String
+					$startTime: String
+					$endTime: String
+					$weekdays: [Weekday!]!
+					$offerItems: [OfferItemInput!]!
+				) {
+					createOffer(
+						productUuid: $productUuid
+						offerType: $offerType
+						discountType: $discountType
+						offerValue: $offerValue
+						startDate: $startDate
+						endDate: $endDate
+						startTime: $startTime
+						endTime: $endTime
+						weekdays: $weekdays
+						offerItems: $offerItems
 					) {
-						createOffer(
-							productUuid: $productUuid
-							offerType: $offerType
-							discountType: $discountType
-							offerValue: $offerValue
-							startDate: $startDate
-							endDate: $endDate
-							startTime: $startTime
-							endTime: $endTime
-							weekdays: $weekdays
-							offerItems: $offerItems
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async updateOffer(
+	updateOffer = async (
 		queryData: string,
 		variables: {
 			uuid: string
@@ -1210,119 +1171,108 @@ export class ApiService {
 				productUuids: string[]
 			}[]
 		}
-	): Promise<ApolloResult<{ updateOffer: OfferResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updateOffer: OfferResource }>({
-				mutation: gql`
-					mutation UpdateOffer(
-						$uuid: String!
-						$offerType: OfferType
-						$discountType: DiscountType
-						$offerValue: Int
-						$startDate: String
-						$endDate: String
-						$startTime: String
-						$endTime: String
-						$weekdays: [Weekday!]
-						$offerItems: [OfferItemInput!]
+	) =>
+		this.mutate<{ updateOffer: OfferResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateOffer(
+					$uuid: String!
+					$offerType: OfferType
+					$discountType: DiscountType
+					$offerValue: Int
+					$startDate: String
+					$endDate: String
+					$startTime: String
+					$endTime: String
+					$weekdays: [Weekday!]
+					$offerItems: [OfferItemInput!]
+				) {
+					updateOffer(
+						uuid: $uuid
+						offerType: $offerType
+						discountType: $discountType
+						offerValue: $offerValue
+						startDate: $startDate
+						endDate: $endDate
+						startTime: $startTime
+						endTime: $endTime
+						weekdays: $weekdays
+						offerItems: $offerItems
 					) {
-						updateOffer(
-							uuid: $uuid
-							offerType: $offerType
-							discountType: $discountType
-							offerValue: $offerValue
-							startDate: $startDate
-							endDate: $endDate
-							startTime: $startTime
-							endTime: $endTime
-							weekdays: $weekdays
-							offerItems: $offerItems
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
+				}
+			`,
+			variables
+		})
+
+	deleteOffer = async (queryData: string, variables: { uuid: string }) => {
+		return this.mutate<{ deleteOffer: OfferResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation DeleteOffer($uuid: String!) {
+					deleteOffer(uuid: $uuid) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
 	}
 
-	async deleteOffer(
-		queryData: string,
-		variables: { uuid: string }
-	): Promise<ApolloResult<{ deleteOffer: OfferResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ deleteOffer: OfferResource }>({
-				mutation: gql`
-					mutation DeleteOffer($uuid: String!) {
-						deleteOffer(uuid: $uuid) {
-							${queryData}
-						}
-					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
-
-	async searchProducts(
-		queryData: string,
-		variables: {
-			restaurantUuid: string
-			query: string
-			exclude?: string[]
-		}
-	): Promise<ApolloResult<{ searchProducts: List<CategoryResource> }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ searchProducts: List<CategoryResource> }>({
-				query: gql`
-					query SearchProducts(
-						$restaurantUuid: String!
-						$query: String!
-						$exclude: [String!]
-					) {
-						searchProducts(
-							restaurantUuid: $restaurantUuid
-							query: $query
-							exclude: $exclude
-						) {
-							${queryData}
-						}
-					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
-
-	async retrieveTable(
+	retrieveTable = async (
 		queryData: string,
 		variables: { uuid: string; paid?: boolean }
-	): Promise<ApolloResult<{ retrieveTable: TableResource }>> {
+	) => {
 		const paidParam = queryData.includes("paid") ? "$paid: Boolean" : ""
 
-		return await this.blackmoneyAuthApollo
-			.query<{ retrieveTable: TableResource }>({
-				query: gql`
-					query retrieveTable(
-						$uuid:String!
-						${paidParam}
-					) {
-						retrieveTable(uuid: $uuid) {
-							${queryData}
-						}
+		return this.query<{ retrieveTable: TableResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query retrieveTable(
+					$uuid:String!
+					${paidParam}
+				) {
+					retrieveTable(uuid: $uuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
+				}
+			`,
+			variables
+		})
 	}
 
-	async updateOrder(
+	listOrders = async (queryData: string, variables: { completed?: boolean }) =>
+		this.query<{ listOrders: List<OrderResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query ListOrders($completed:Boolean) {
+					listOrders(completed:$completed) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
+
+	createOrder = async (queryData: string, variables: { tableUuid: string }) =>
+		this.mutate<{ createOrder: OrderResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateOrder(
+					$tableUuid: String!
+				) {
+					createOrder(
+						tableUuid: $tableUuid
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
+
+	updateOrder = async (
 		queryData: string,
 		variables: {
 			uuid: string
@@ -1337,85 +1287,105 @@ export class ApiService {
 				}[]
 			}[]
 		}
-	): Promise<ApolloResult<{ updateOrder: OrderResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updateOrder: OrderResource }>({
-				mutation: gql`
-					mutation UpdateOrder(
-						$uuid: String!
-						$orderItems: [OrderItemInput!]!
+	) =>
+		this.mutate<{ updateOrder: OrderResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateOrder(
+					$uuid: String!
+					$orderItems: [OrderItemInput!]!
+				) {
+					updateOrder(
+						uuid: $uuid
+						orderItems: $orderItems
 					) {
-						updateOrder(
-							uuid: $uuid
-							orderItems: $orderItems
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async addProductsToOrder(
+	addProductsToOrder = async (
 		queryData: string,
 		variables: {
 			uuid: string
 			products: AddOrderItemInput[]
 		}
-	): Promise<ApolloResult<{ addProductsToOrder: OrderResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ addProductsToOrder: OrderResource }>({
-				mutation: gql`
-					mutation AddProductsToOrder(
-						$uuid: String!
-						$products: [AddOrderItemInput!]!
+	) =>
+		this.mutate<{ addProductsToOrder: OrderResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation AddProductsToOrder(
+					$uuid: String!
+					$products: [AddOrderItemInput!]!
+				) {
+					addProductsToOrder(
+						uuid: $uuid
+						products: $products
 					) {
-						addProductsToOrder(
-							uuid: $uuid
-							products: $products
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async removeProductsFromOrder(
+	removeProductsFromOrder = async (
 		queryData: string,
 		variables: {
 			uuid: string
 			products: AddOrderItemInput[]
 		}
-	): Promise<ApolloResult<{ removeProductsFromOrder: OrderResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ removeProductsFromOrder: OrderResource }>({
-				mutation: gql`
-					mutation RemoveProductsFromOrder(
-						$uuid: String!
-						$products: [AddOrderItemInput!]!
+	) =>
+		this.mutate<{ removeProductsFromOrder: OrderResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation RemoveProductsFromOrder(
+					$uuid: String!
+					$products: [AddOrderItemInput!]!
+				) {
+					removeProductsFromOrder(
+						uuid: $uuid
+						products: $products
 					) {
-						removeProductsFromOrder(
-							uuid: $uuid
-							products: $products
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async updateOrderItem(
+	completeOrder = async (
+		queryData: string,
+		variables: {
+			uuid: string
+			billUuid: string
+			paymentMethod: PaymentMethod
+		}
+	) =>
+		this.mutate<{ completeOrder: OrderResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CompleteOrder(
+					$uuid: String!
+					$billUuid: String!
+					$paymentMethod: PaymentMethod!
+				) {
+					completeOrder(
+						uuid: $uuid
+						billUuid: $billUuid
+						paymentMethod: $paymentMethod
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [this.listOrders]
+		})
+
+	updateOrderItem = async (
 		queryData: string,
 		variables: {
 			uuid: string
@@ -1425,246 +1395,146 @@ export class ApiService {
 				count: number
 			}[]
 		}
-	): Promise<ApolloResult<{ updateOrderItem: OrderResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updateOrderItem: OrderResource }>({
-				mutation: gql`
-					mutation UpdateOrderItem(
-						$uuid: String!
-						$count: Int
-						$orderItemVariations: [OrderItemVariationInput!]
+	) =>
+		this.mutate<{ updateOrderItem: OrderResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateOrderItem(
+					$uuid: String!
+					$count: Int
+					$orderItemVariations: [OrderItemVariationInput!]
+				) {
+					updateOrderItem(
+						uuid: $uuid
+						count: $count
+						orderItemVariations: $orderItemVariations
 					) {
-						updateOrderItem(
-							uuid: $uuid
-							count: $count
-							orderItemVariations: $orderItemVariations
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async completeOrder(
-		queryData: string,
-		variables: {
-			uuid: string
-			billUuid: string
-			paymentMethod: PaymentMethod
-		}
-	): Promise<ApolloResult<{ completeOrder: OrderResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ completeOrder: OrderResource }>({
-				mutation: gql`
-					mutation CompleteOrder(
-						$uuid: String!
-						$billUuid: String!
-						$paymentMethod: PaymentMethod!
-					) {
-						completeOrder(
-							uuid: $uuid
-							billUuid: $billUuid
-							paymentMethod: $paymentMethod
-						) {
-							${queryData}
-						}
-					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
-
-	async listOrders(
-		queryData: string,
-		variables: { completed?: boolean }
-	): Promise<ApolloResult<{ listOrders: List<OrderResource> }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ listOrders: List<OrderResource> }>({
-				query: gql`
-					query ListOrders($completed:Boolean) {
-						listOrders(completed:$completed) {
-							${queryData}
-						}
-					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
-
-	async createOrder(
-		queryData: string,
-		variables: { tableUuid: string }
-	): Promise<ApolloResult<{ createOrder: OrderResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ createOrder: OrderResource }>({
-				mutation: gql`
-					mutation CreateOrder(
-						$tableUuid: String!
-					) {
-						createOrder(
-							tableUuid: $tableUuid
-						) {
-							${queryData}
-						}
-					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
-
-	async createBill(
+	createBill = async (
 		queryData: string,
 		variables: { registerClientUuid: string }
-	): Promise<ApolloResult<{ createBill: BillResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ createBill: BillResource }>({
-				mutation: gql`
-					mutation CreateBill($registerClientUuid: String!) {
-						createBill(registerClientUuid: $registerClientUuid) {
-							${queryData}
-						}
+	) =>
+		this.mutate<{ createBill: BillResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateBill($registerClientUuid: String!) {
+					createBill(registerClientUuid: $registerClientUuid) {
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async listReservations(
+	listReservations = (
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			date: string
 		}
-	): Promise<ApolloResult<{ listReservations: List<ReservationResource> }>> {
-		return await this.blackmoneyAuthApollo
-			.query<{ listReservations: List<ReservationResource> }>({
-				query: gql`
-					query ListReservations(
-						$restaurantUuid: String!
-						$date: String!
+	) =>
+		this.query<{ listReservations: List<ReservationResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query ListReservations(
+					$restaurantUuid: String!
+					$date: String!
+				) {
+					listReservations(
+						restaurantUuid: $restaurantUuid
+						date: $date
 					) {
-						listReservations(
-							restaurantUuid: $restaurantUuid
-							date: $date
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async updateReservation(
+	updateReservation = async (
 		queryData: string,
 		variables: {
 			uuid: string
 			checkedIn?: boolean
 		}
-	): Promise<ApolloResult<{ updateReservation: ReservationResource }>> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ updateReservation: ReservationResource }>({
-				mutation: gql`
-					mutation UpdateReservation(
-						$uuid: String!
-						$checkedIn: Boolean
+	) =>
+		this.mutate<{ updateReservation: ReservationResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateReservation(
+					$uuid: String!
+					$checkedIn: Boolean
+				) {
+					updateReservation(
+						uuid: $uuid
+						checkedIn: $checkedIn
 					) {
-						updateReservation(
-							uuid: $uuid
-							checkedIn: $checkedIn
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createStripeAccountOnboardingLink(
+	createStripeAccountOnboardingLink = async (
 		queryData: string,
 		variables: {
 			refreshUrl: string
 			returnUrl: string
 		}
-	): Promise<
-		ApolloResult<{ createStripeAccountOnboardingLink: { url: string } }>
-	> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{ createStripeAccountOnboardingLink: { url: string } }>({
-				mutation: gql`
-					mutation CreateStripeAccountOnboardingLink(
-						$refreshUrl: String!
-						$returnUrl: String!
+	) =>
+		this.mutate<{ createStripeAccountOnboardingLink: { url: string } }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateStripeAccountOnboardingLink(
+					$refreshUrl: String!
+					$returnUrl: String!
+				) {
+					createStripeAccountOnboardingLink(
+						refreshUrl: $refreshUrl
+						returnUrl: $returnUrl
 					) {
-						createStripeAccountOnboardingLink(
-							refreshUrl: $refreshUrl
-							returnUrl: $returnUrl
-						) {
-							${queryData}
-						}
+						${queryData}
 					}
-				`,
-				variables,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createStripeBillingPortalSession(
+	createStripeBillingPortalSession = async (
 		queryData: string,
 		variables: {
 			returnUrl: string
 		}
-	): Promise<
-		ApolloResult<{ createStripeBillingPortalSession: { url: string } }>
-	> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{
-				createStripeBillingPortalSession: { url: string }
-			}>({
-				mutation: gql`
-					mutation CreateStripeBillingPortalSession($returnUrl: String!) {
-						createStripeBillingPortalSession(returnUrl: $returnUrl) {
-							${queryData}
-						}
+	) =>
+		this.mutate<{ createStripeBillingPortalSession: { url: string } }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateStripeBillingPortalSession($returnUrl: String!) {
+					createStripeBillingPortalSession(returnUrl: $returnUrl) {
+						${queryData}
 					}
-				`,
-				errorPolicy,
-				variables
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 
-	async createStripeSubscriptionCheckoutSession(
+	createStripeSubscriptionCheckoutSession = async (
 		queryData: string,
 		variables: {
 			successUrl: string
 			cancelUrl: string
 		}
-	): Promise<
-		ApolloResult<{ createStripeSubscriptionCheckoutSession: { url: string } }>
-	> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{
-				createStripeSubscriptionCheckoutSession: { url: string }
-			}>({
+	) =>
+		this.mutate<{ createStripeSubscriptionCheckoutSession: { url: string } }>(
+			{
+				apollo: this.blackmoneyAuthApollo,
 				mutation: gql`
 					mutation CreateStripeSubscriptionCheckoutSession(
 						$successUrl: String!
@@ -1678,55 +1548,35 @@ export class ApiService {
 						}
 					}
 				`,
-				errorPolicy,
 				variables
-			})
-			.toPromise()
-	}
+			}
+		)
 
-	async createStripeConnectionToken(queryData: string): Promise<
-		ApolloResult<{
-			createStripeConnectionToken: { secret: string }
-		}>
-	> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{
-				createStripeConnectionToken: { secret: string }
-			}>({
-				mutation: gql`
-					mutation CreateStripeConnectionToken {
-						createStripeConnectionToken {
-							${queryData}
-						}
+	createStripeConnectionToken = async (queryData: string) =>
+		this.mutate<{ createStripeConnectionToken: { secret: string } }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateStripeConnectionToken {
+					createStripeConnectionToken {
+						${queryData}
 					}
-				`,
-				errorPolicy
-			})
-			.toPromise()
-	}
+				}
+			`
+		})
 
-	async captureStripePaymentIntent(
+	captureStripePaymentIntent = async (
 		queryData: string,
 		variables: { id: string }
-	): Promise<
-		ApolloResult<{
-			captureStripePaymentIntent: { id: string }
-		}>
-	> {
-		return await this.blackmoneyAuthApollo
-			.mutate<{
-				captureStripePaymentIntent: { id: string }
-			}>({
-				mutation: gql`
-					mutation CaptureStripePaymentIntent($id: String!) {
-						captureStripePaymentIntent(id: $id) {
-							${queryData}
-						}
+	) =>
+		this.mutate<{ captureStripePaymentIntent: { id: string } }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CaptureStripePaymentIntent($id: String!) {
+					captureStripePaymentIntent(id: $id) {
+						${queryData}
 					}
-				`,
-				errorPolicy,
-				variables
-			})
-			.toPromise()
-	}
+				}
+			`,
+			variables
+		})
 }

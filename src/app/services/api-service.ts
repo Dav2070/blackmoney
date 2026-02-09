@@ -372,10 +372,7 @@ export class ApiService {
 				}
 			`,
 			variables,
-			refetchQueries: [
-				this.retrieveCompany,
-				this.retrieveRestaurant
-			]
+			refetchQueries: [this.retrieveCompany, this.retrieveRestaurant]
 		})
 
 	retrieveRegister = async (queryData: string, variables: { uuid: string }) =>
@@ -561,10 +558,7 @@ export class ApiService {
 				}
 			`,
 			variables,
-			refetchQueries: [
-				this.retrieveRestaurant,
-				this.searchPrinters
-			]
+			refetchQueries: [this.retrieveRestaurant, this.searchPrinters]
 		})
 
 	updatePrinter = async (
@@ -593,10 +587,7 @@ export class ApiService {
 				}
 			`,
 			variables,
-			refetchQueries: [
-				this.retrieveRestaurant,
-				this.searchPrinters
-			]
+			refetchQueries: [this.retrieveRestaurant, this.searchPrinters]
 		})
 
 	createPrintRule = async (
@@ -740,10 +731,7 @@ export class ApiService {
 				}
 			`,
 			variables,
-			refetchQueries: [
-				this.retrieveRestaurant,
-				this.listRooms
-			]
+			refetchQueries: [this.retrieveRestaurant, this.listRooms]
 		})
 
 	updateRoom = async (
@@ -813,10 +801,7 @@ export class ApiService {
 				}
 			`,
 			variables,
-			refetchQueries: [
-				this.retrieveRestaurant,
-				this.retrieveRoom
-			]
+			refetchQueries: [this.retrieveRestaurant, this.retrieveRoom]
 		})
 
 	updateTable = async (

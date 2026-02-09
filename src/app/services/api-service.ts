@@ -1597,7 +1597,94 @@ export class ApiService {
 			.toPromise()
 	}
 
-	async createStripeConnectionToken(): Promise<
+	async createStripeAccountOnboardingLink(
+		queryData: string,
+		variables: {
+			refreshUrl: string
+			returnUrl: string
+		}
+	): Promise<
+		ApolloResult<{ createStripeAccountOnboardingLink: { url: string } }>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{ createStripeAccountOnboardingLink: { url: string } }>({
+				mutation: gql`
+					mutation CreateStripeAccountOnboardingLink(
+						$refreshUrl: String!
+						$returnUrl: String!
+					) {
+						createStripeAccountOnboardingLink(
+							refreshUrl: $refreshUrl
+							returnUrl: $returnUrl
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables,
+				errorPolicy
+			})
+			.toPromise()
+	}
+
+	async createStripeBillingPortalSession(
+		queryData: string,
+		variables: {
+			returnUrl: string
+		}
+	): Promise<
+		ApolloResult<{ createStripeBillingPortalSession: { url: string } }>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				createStripeBillingPortalSession: { url: string }
+			}>({
+				mutation: gql`
+					mutation CreateStripeBillingPortalSession($returnUrl: String!) {
+						createStripeBillingPortalSession(returnUrl: $returnUrl) {
+							${queryData}
+						}
+					}
+				`,
+				errorPolicy,
+				variables
+			})
+			.toPromise()
+	}
+
+	async createStripeSubscriptionCheckoutSession(
+		queryData: string,
+		variables: {
+			successUrl: string
+			cancelUrl: string
+		}
+	): Promise<
+		ApolloResult<{ createStripeSubscriptionCheckoutSession: { url: string } }>
+	> {
+		return await this.blackmoneyAuthApollo
+			.mutate<{
+				createStripeSubscriptionCheckoutSession: { url: string }
+			}>({
+				mutation: gql`
+					mutation CreateStripeSubscriptionCheckoutSession(
+						$successUrl: String!
+						$cancelUrl: String!
+					) {
+						createStripeSubscriptionCheckoutSession(
+							successUrl: $successUrl
+							cancelUrl: $cancelUrl
+						) {
+							${queryData}
+						}
+					}
+				`,
+				errorPolicy,
+				variables
+			})
+			.toPromise()
+	}
+
+	async createStripeConnectionToken(queryData: string): Promise<
 		ApolloResult<{
 			createStripeConnectionToken: { secret: string }
 		}>
@@ -1609,7 +1696,7 @@ export class ApiService {
 				mutation: gql`
 					mutation CreateStripeConnectionToken {
 						createStripeConnectionToken {
-							secret
+							${queryData}
 						}
 					}
 				`,

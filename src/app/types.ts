@@ -43,6 +43,8 @@ export interface SessionResource {
 export interface CompanyResource {
 	uuid: string
 	name: string
+	stripeOnboardingStatus: StripeOnboardingStatus
+	stripeSubscriptionStatus: StripeSubscriptionStatus
 	restaurants: List<RestaurantResource>
 	users: List<UserResource>
 }
@@ -284,6 +286,8 @@ export type DiscountType = "PERCENTAGE" | "AMOUNT"
 export type PaymentMethod = "CASH" | "CARD"
 export type Country = "DE"
 export type RegisterStatus = "ACTIVE" | "INACTIVE"
+export type StripeOnboardingStatus = "PENDING" | "COMPLETED"
+export type StripeSubscriptionStatus = "NOT_SUBSCRIBED" | "ACTIVE" | "INACTIVE"
 
 export type Weekday =
 	| "MONDAY"
@@ -302,6 +306,7 @@ export type ErrorCode =
 	| typeof ErrorCodes.priceInvalid
 	| typeof ErrorCodes.offerValueInvalid
 	| typeof ErrorCodes.registerAlreadyActive
+	| typeof ErrorCodes.noActiveSubscription
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword

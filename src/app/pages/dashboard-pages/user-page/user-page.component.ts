@@ -4,16 +4,26 @@ import { isPlatformServer } from "@angular/common"
 import {
 	faGear,
 	faArrowRightFromBracket,
-	faCashRegister,
+	faMap,
 	faUsers,
 	faShop,
-	faCalendarCheck
+	faCalendarCheck,
+	faMoneyCheckDollar,
+	faBadgeCheck,
+	faGears
 } from "@fortawesome/pro-regular-svg-icons"
 import { LogoutDialogComponent } from "src/app/dialogs/logout-dialog/logout-dialog.component"
+import { ActivateRegisterDialogComponent } from "src/app/dialogs/activate-register-dialog/activate-register-dialog.component"
 import { DataService } from "src/app/services/data-service"
 import { LocalizationService } from "src/app/services/localization-service"
 import { AuthService } from "src/app/services/auth-service"
-import { randomNumber } from "src/app/utils"
+import { ApiService } from "src/app/services/api-service"
+import {
+	getGraphQLErrorCodes,
+	navigateToStripeCheckout,
+	randomNumber,
+	showToast
+} from "src/app/utils"
 
 @Component({
 	templateUrl: "./user-page.component.html",
@@ -25,19 +35,29 @@ export class UserPageComponent {
 	actionsLocale = this.localizationService.locale.actions
 	faGear = faGear
 	faArrowRightFromBracket = faArrowRightFromBracket
-	faCashRegister = faCashRegister
+	faMap = faMap
 	faUsers = faUsers
 	faShop = faShop
 	faCalendarCheck = faCalendarCheck
+	faMoneyCheckDollar = faMoneyCheckDollar
+	faBadgeCheck = faBadgeCheck
+	faGears = faGears
 	@ViewChild("logoutDialog")
 	logoutDialog: LogoutDialogComponent
 	title = ""
+
+	//#region ActivateRegisterDialog
+	@ViewChild("activateRegisterDialog")
+	activateRegisterDialog: ActivateRegisterDialogComponent
+	activateRegisterDialogLoading: boolean = false
+	//#endregion
 
 	constructor(
 		public dataService: DataService,
 		private localizationService: LocalizationService,
 		private authService: AuthService,
 		private router: Router,
+		private apiService: ApiService,
 		@Inject(PLATFORM_ID) private platformId: object
 	) {}
 
@@ -74,7 +94,7 @@ export class UserPageComponent {
 		this.router.navigate(["dashboard", "settings"])
 	}
 
-	navigateToDashboardPage(event: MouseEvent) {
+	navigateToTableOverviewPage(event: MouseEvent) {
 		event.preventDefault()
 
 		this.router.navigate(["dashboard", "tables"])
@@ -96,5 +116,62 @@ export class UserPageComponent {
 		event.preventDefault()
 
 		this.router.navigate(["dashboard", "reservations"])
+	}
+
+	async navigateToStripeBillingPortal() {
+		const createStripeBillingPortalSessionResponse =
+			await this.apiService.createStripeBillingPortalSession(`url`, {
+				returnUrl: window.location.href
+			})
+
+		if (createStripeBillingPortalSessionResponse.data) {
+			window.location.href =
+				createStripeBillingPortalSessionResponse.data.createStripeBillingPortalSession.url
+		}
+	}
+
+	showActivateRegisterDialog() {
+		this.activateRegisterDialog.show()
+	}
+
+	async activateRegisterDialogPrimaryButtonClick() {
+		this.activateRegisterDialogLoading = true
+
+		const activateRegisterResponse = await this.apiService.activateRegister(
+			`status`,
+			{ uuid: this.dataService.register.uuid }
+		)
+
+		if (activateRegisterResponse.data?.activateRegister != null) {
+			this.dataService.register.status =
+				activateRegisterResponse.data.activateRegister.status
+			showToast(this.locale.activationSuccess)
+		} else {
+			const errors = getGraphQLErrorCodes(activateRegisterResponse)
+			if (errors == null) return
+
+			if (errors.includes("REGISTER_ALREADY_ACTIVE")) {
+				this.dataService.register.status = "ACTIVE"
+			} else if (errors.includes("NO_ACTIVE_SUBSCRIPTION")) {
+				await navigateToStripeCheckout(this.apiService)
+			} else {
+				showToast(this.locale.activationError)
+			}
+		}
+
+		this.activateRegisterDialog.hide()
+	}
+
+	async navigateToStripeOnboardingPage() {
+		const createStripeAccountOnboardingLinkResponse =
+			await this.apiService.createStripeAccountOnboardingLink(`url`, {
+				refreshUrl: window.location.href,
+				returnUrl: window.location.href
+			})
+
+		if (createStripeAccountOnboardingLinkResponse.data) {
+			window.location.href =
+				createStripeAccountOnboardingLinkResponse.data.createStripeAccountOnboardingLink.url
+		}
 	}
 }

@@ -18,8 +18,41 @@ h1 {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
+	max-width: 420px;
+	width: 100%;
 
 	dav-icon-card {
 		width: 100%;
+	}
+}
+
+.activation-actions-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	margin-top: 48px;
+	color: var(--dav-color-on-surface);
+
+	h2 {
+		font-weight: 500;
+		margin: 0;
+	}
+
+	p {
+		margin: 4px 0 28px 0;
+		font-size: 18px;
+	}
+
+	div {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		max-width: 420px;
+		width: 100%;
+
+		dav-icon-card {
+			width: 100%;
+		}
 	}
 }

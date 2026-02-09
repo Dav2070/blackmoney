@@ -9,6 +9,7 @@ import { LocalizationService } from "src/app/services/localization-service"
 import {
 	convertRegisterResourceToRegister,
 	getGraphQLErrorCodes,
+	navigateToStripeCheckout,
 	showToast
 } from "src/app/utils"
 
@@ -115,18 +116,18 @@ export class RegisterPageComponent {
 			{ uuid: this.registerUuid }
 		)
 
-		this.activateRegisterDialogLoading = false
-
 		if (activateRegisterResponse.data?.activateRegister != null) {
 			this.register.status =
 				activateRegisterResponse.data.activateRegister.status
 			showToast(this.locale.activationSuccess)
 		} else {
-			let errors = getGraphQLErrorCodes(activateRegisterResponse)
+			const errors = getGraphQLErrorCodes(activateRegisterResponse)
 			if (errors == null) return
 
 			if (errors.includes("REGISTER_ALREADY_ACTIVE")) {
 				this.register.status = "ACTIVE"
+			} else if (errors.includes("NO_ACTIVE_SUBSCRIPTION")) {
+				await navigateToStripeCheckout(this.apiService)
 			} else {
 				showToast(this.locale.activationError)
 			}

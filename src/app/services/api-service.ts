@@ -1479,17 +1479,86 @@ export class ApiService {
 					}
 				}
 			`,
-			variables,
-			refetchQueries: [this.listReservations]
+			variables
 		})
 
-	createStripeConnectionToken = async () =>
+	createStripeAccountOnboardingLink = async (
+		queryData: string,
+		variables: {
+			refreshUrl: string
+			returnUrl: string
+		}
+	) =>
+		this.mutate<{ createStripeAccountOnboardingLink: { url: string } }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateStripeAccountOnboardingLink(
+					$refreshUrl: String!
+					$returnUrl: String!
+				) {
+					createStripeAccountOnboardingLink(
+						refreshUrl: $refreshUrl
+						returnUrl: $returnUrl
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
+
+	createStripeBillingPortalSession = async (
+		queryData: string,
+		variables: {
+			returnUrl: string
+		}
+	) =>
+		this.mutate<{ createStripeBillingPortalSession: { url: string } }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateStripeBillingPortalSession($returnUrl: String!) {
+					createStripeBillingPortalSession(returnUrl: $returnUrl) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
+
+	createStripeSubscriptionCheckoutSession = async (
+		queryData: string,
+		variables: {
+			successUrl: string
+			cancelUrl: string
+		}
+	) =>
+		this.mutate<{ createStripeSubscriptionCheckoutSession: { url: string } }>(
+			{
+				apollo: this.blackmoneyAuthApollo,
+				mutation: gql`
+					mutation CreateStripeSubscriptionCheckoutSession(
+						$successUrl: String!
+						$cancelUrl: String!
+					) {
+						createStripeSubscriptionCheckoutSession(
+							successUrl: $successUrl
+							cancelUrl: $cancelUrl
+						) {
+							${queryData}
+						}
+					}
+				`,
+				variables
+			}
+		)
+
+	createStripeConnectionToken = async (queryData: string) =>
 		this.mutate<{ createStripeConnectionToken: { secret: string } }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateStripeConnectionToken {
 					createStripeConnectionToken {
-						secret
+						${queryData}
 					}
 				}
 			`

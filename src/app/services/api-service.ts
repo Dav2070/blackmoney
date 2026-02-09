@@ -231,7 +231,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.retrieveCompany]
 		})
 
 	setPasswordForUser = async (
@@ -370,7 +371,11 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [
+				this.retrieveCompany,
+				this.retrieveRestaurant
+			]
 		})
 
 	retrieveRegister = async (queryData: string, variables: { uuid: string }) =>
@@ -426,7 +431,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.retrieveRegister]
 		})
 
 	retrieveRegisterClient = async (
@@ -494,7 +500,11 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [
+				this.retrieveRegisterClient,
+				this.retrieveRegisterClientBySerialNumber
+			]
 		})
 
 	searchPrinters = async (
@@ -550,7 +560,11 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [
+				this.retrieveRestaurant,
+				this.searchPrinters
+			]
 		})
 
 	updatePrinter = async (
@@ -578,7 +592,11 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [
+				this.retrieveRestaurant,
+				this.searchPrinters
+			]
 		})
 
 	createPrintRule = async (
@@ -615,7 +633,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.retrieveRegisterClient]
 		})
 
 	updatePrintRule = async (
@@ -646,7 +665,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.retrieveRegisterClient]
 		})
 	}
 
@@ -660,7 +680,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.retrieveRegisterClient]
 		})
 
 	retrieveRoom = async (
@@ -718,7 +739,11 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [
+				this.retrieveRestaurant,
+				this.listRooms
+			]
 		})
 
 	updateRoom = async (
@@ -740,7 +765,12 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [
+				this.retrieveRestaurant,
+				this.retrieveRoom,
+				this.listRooms
+			]
 		})
 
 	deleteRoom = async (queryData: string, variables: { uuid: string }) =>
@@ -753,7 +783,12 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [
+				this.retrieveRestaurant,
+				this.retrieveRoom,
+				this.listRooms
+			]
 		})
 
 	createTable = async (
@@ -777,7 +812,11 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [
+				this.retrieveRestaurant,
+				this.retrieveRoom
+			]
 		})
 
 	updateTable = async (
@@ -799,7 +838,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.retrieveRestaurant]
 		})
 
 	deleteTable = async (queryData: string, variables: { uuid: string }) =>
@@ -812,7 +852,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.retrieveRestaurant]
 		})
 
 	retrieveCategory = async (
@@ -959,6 +1000,34 @@ export class ApiService {
 			]
 		})
 
+	searchProducts = async (
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			query: string
+			exclude?: string[]
+		}
+	) =>
+		this.query<{ searchProducts: List<CategoryResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query SearchProducts(
+					$restaurantUuid: String!
+					$query: String!
+					$exclude: [String!]
+				) {
+					searchProducts(
+						restaurantUuid: $restaurantUuid
+						query: $query
+						exclude: $exclude
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
+
 	createProduct = async (
 		queryData: string,
 		variables: {
@@ -993,7 +1062,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.searchProducts]
 		})
 
 	updateProduct = async (
@@ -1027,7 +1097,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.searchProducts]
 		})
 
 	deleteProduct = async (queryData: string, variables: { uuid: string }) =>
@@ -1040,7 +1111,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.searchProducts]
 		})
 
 	createOffer = async (
@@ -1163,34 +1235,6 @@ export class ApiService {
 		})
 	}
 
-	searchProducts = async (
-		queryData: string,
-		variables: {
-			restaurantUuid: string
-			query: string
-			exclude?: string[]
-		}
-	) =>
-		this.query<{ searchProducts: List<CategoryResource> }>({
-			apollo: this.blackmoneyAuthApollo,
-			query: gql`
-				query SearchProducts(
-					$restaurantUuid: String!
-					$query: String!
-					$exclude: [String!]
-				) {
-					searchProducts(
-						restaurantUuid: $restaurantUuid
-						query: $query
-						exclude: $exclude
-					) {
-						${queryData}
-					}
-				}
-			`,
-			variables
-		})
-
 	retrieveTable = async (
 		queryData: string,
 		variables: { uuid: string; paid?: boolean }
@@ -1212,6 +1256,36 @@ export class ApiService {
 			variables
 		})
 	}
+
+	listOrders = async (queryData: string, variables: { completed?: boolean }) =>
+		this.query<{ listOrders: List<OrderResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query ListOrders($completed:Boolean) {
+					listOrders(completed:$completed) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
+
+	createOrder = async (queryData: string, variables: { tableUuid: string }) =>
+		this.mutate<{ createOrder: OrderResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateOrder(
+					$tableUuid: String!
+				) {
+					createOrder(
+						tableUuid: $tableUuid
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
 
 	updateOrder = async (
 		queryData: string,
@@ -1297,37 +1371,6 @@ export class ApiService {
 			variables
 		})
 
-	updateOrderItem = async (
-		queryData: string,
-		variables: {
-			uuid: string
-			count: number
-			orderItemVariations: {
-				uuid: string
-				count: number
-			}[]
-		}
-	) =>
-		this.mutate<{ updateOrderItem: OrderResource }>({
-			apollo: this.blackmoneyAuthApollo,
-			mutation: gql`
-				mutation UpdateOrderItem(
-					$uuid: String!
-					$count: Int
-					$orderItemVariations: [OrderItemVariationInput!]
-				) {
-					updateOrderItem(
-						uuid: $uuid
-						count: $count
-						orderItemVariations: $orderItemVariations
-					) {
-						${queryData}
-					}
-				}
-			`,
-			variables
-		})
-
 	completeOrder = async (
 		queryData: string,
 		variables: {
@@ -1353,31 +1396,33 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.listOrders]
 		})
 
-	listOrders = async (queryData: string, variables: { completed?: boolean }) =>
-		this.query<{ listOrders: List<OrderResource> }>({
-			apollo: this.blackmoneyAuthApollo,
-			query: gql`
-				query ListOrders($completed:Boolean) {
-					listOrders(completed:$completed) {
-						${queryData}
-					}
-				}
-			`,
-			variables
-		})
-
-	createOrder = async (queryData: string, variables: { tableUuid: string }) =>
-		this.mutate<{ createOrder: OrderResource }>({
+	updateOrderItem = async (
+		queryData: string,
+		variables: {
+			uuid: string
+			count: number
+			orderItemVariations: {
+				uuid: string
+				count: number
+			}[]
+		}
+	) =>
+		this.mutate<{ updateOrderItem: OrderResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
-				mutation CreateOrder(
-					$tableUuid: String!
+				mutation UpdateOrderItem(
+					$uuid: String!
+					$count: Int
+					$orderItemVariations: [OrderItemVariationInput!]
 				) {
-					createOrder(
-						tableUuid: $tableUuid
+					updateOrderItem(
+						uuid: $uuid
+						count: $count
+						orderItemVariations: $orderItemVariations
 					) {
 						${queryData}
 					}
@@ -1449,7 +1494,8 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.listReservations]
 		})
 
 	createStripeConnectionToken = async () =>

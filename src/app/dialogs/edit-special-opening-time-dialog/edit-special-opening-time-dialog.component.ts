@@ -139,7 +139,7 @@ export class EditSpecialOpeningTimeDialogComponent {
 
 		console.log("ende1")
 		this.specialOpeningTime = {
-			ID: this.ID,
+			uuid: this.ID,
 			reason: this.reason,
 			from: this.fromDate,
 			to: this.toDate,

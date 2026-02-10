@@ -151,7 +151,8 @@ export const de = {
 	},
 	openingTimePage: {
 		headline: "Öffnungszeiten",
-		specialOpeningTime: "Sonder-Öffnungszeiten"
+		specialOpeningTime: "Sonder-Öffnungszeiten",
+		closed: "Geschlossen"
 	},
 	roomsPage: {
 		headline: "Deine Räume"
@@ -806,6 +807,15 @@ export const de = {
 		close: "Schließen",
 		reset: "Zurücksetzen",
 		skip: "Überspringen"
+	},
+	weekdays: {
+		monday: "Montag",
+		tuesday: "Dienstag",
+		wednesday: "Mittwoch",
+		thursday: "Donnerstag",
+		friday: "Freitag",
+		saturday: "Samstag",
+		sunday: "Sonntag"
 	},
 	errors: {
 		printerAlreadyExists:

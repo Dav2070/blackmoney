@@ -22,6 +22,8 @@ import {
 	ProductType,
 	PrintRuleType,
 	ReservationResource,
+	OpeningTimeResource,
+	SpecialOpeningTimeResource,
 	ProductResource,
 	OfferResource,
 	OfferType,
@@ -1480,6 +1482,203 @@ export class ApiService {
 				}
 			`,
 			variables
+		})
+
+	listOpeningTimes = async (
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+		}
+	) =>
+		this.query<{ listOpeningTimes: List<OpeningTimeResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query ListOpeningTimes($restaurantUuid: String!) {
+					listOpeningTimes(restaurantUuid: $restaurantUuid) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
+
+	updateOpeningTimes = async (
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			openingTimes: {
+				weekday: Weekday
+				durchgehend: boolean
+				pause: boolean
+				startTime1: string
+				endTime1: string
+				startTime2?: string
+				endTime2?: string
+			}[]
+		}
+	) =>
+		this.mutate<{ updateOpeningTimes: List<OpeningTimeResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateOpeningTimes(
+					$restaurantUuid: String!
+					$openingTimes: [OpeningTimeInput!]!
+				) {
+					updateOpeningTimes(
+						restaurantUuid: $restaurantUuid
+						openingTimes: $openingTimes
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [this.listOpeningTimes]
+		})
+
+	listSpecialOpeningTimes = async (
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+		}
+	) =>
+		this.query<{ listSpecialOpeningTimes: List<SpecialOpeningTimeResource> }>(
+			{
+				apollo: this.blackmoneyAuthApollo,
+				query: gql`
+					query ListSpecialOpeningTimes($restaurantUuid: String!) {
+						listSpecialOpeningTimes(restaurantUuid: $restaurantUuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables
+			}
+		)
+
+	createSpecialOpeningTime = async (
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			reason: string
+			from: string
+			to: string
+			durchgehend: boolean
+			pause?: boolean
+			geschlossen?: boolean
+			startTime1?: string
+			endTime1?: string
+			startTime2?: string
+			endTime2?: string
+		}
+	) =>
+		this.mutate<{ createSpecialOpeningTime: SpecialOpeningTimeResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateSpecialOpeningTime(
+					$restaurantUuid: String!
+					$reason: String!
+					$from: String!
+					$to: String!
+					$durchgehend: Boolean!
+					$pause: Boolean
+					$geschlossen: Boolean
+					$startTime1: String
+					$endTime1: String
+					$startTime2: String
+					$endTime2: String
+				) {
+					createSpecialOpeningTime(
+						restaurantUuid: $restaurantUuid
+						reason: $reason
+						from: $from
+						to: $to
+						durchgehend: $durchgehend
+						pause: $pause
+						geschlossen: $geschlossen
+						startTime1: $startTime1
+						endTime1: $endTime1
+						startTime2: $startTime2
+						endTime2: $endTime2
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [this.listSpecialOpeningTimes]
+		})
+
+	updateSpecialOpeningTime = async (
+		queryData: string,
+		variables: {
+			uuid: string
+			reason?: string
+			from?: string
+			to?: string
+			durchgehend?: boolean
+			pause?: boolean
+			geschlossen?: boolean
+			startTime1?: string
+			endTime1?: string
+			startTime2?: string
+			endTime2?: string
+		}
+	) =>
+		this.mutate<{ updateSpecialOpeningTime: SpecialOpeningTimeResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateSpecialOpeningTime(
+					$uuid: String!
+					$reason: String
+					$from: String
+					$to: String
+					$durchgehend: Boolean
+					$pause: Boolean
+					$geschlossen: Boolean
+					$startTime1: String
+					$endTime1: String
+					$startTime2: String
+					$endTime2: String
+				) {
+					updateSpecialOpeningTime(
+						uuid: $uuid
+						reason: $reason
+						from: $from
+						to: $to
+						durchgehend: $durchgehend
+						pause: $pause
+						geschlossen: $geschlossen
+						startTime1: $startTime1
+						endTime1: $endTime1
+						startTime2: $startTime2
+						endTime2: $endTime2
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [this.listSpecialOpeningTimes]
+		})
+
+	deleteSpecialOpeningTime = async (
+		queryData: string,
+		variables: {
+			uuid: string
+		}
+	) =>
+		this.mutate<{ deleteSpecialOpeningTime: SpecialOpeningTimeResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation DeleteSpecialOpeningTime($uuid: String!) {
+					deleteSpecialOpeningTime(uuid: $uuid) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [this.listSpecialOpeningTimes]
 		})
 
 	createStripeAccountOnboardingLink = async (

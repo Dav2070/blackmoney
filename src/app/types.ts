@@ -236,6 +236,31 @@ export interface ReservationResource {
 	checkedIn: boolean
 }
 
+export interface OpeningTimeResource {
+	uuid: string
+	weekday: Weekday
+	durchgehend: boolean
+	pause: boolean
+	startTime1: string
+	endTime1: string
+	startTime2?: string
+	endTime2?: string
+}
+
+export interface SpecialOpeningTimeResource {
+	uuid: string
+	reason: string
+	from: string
+	to: string
+	durchgehend: boolean
+	pause: boolean
+	geschlossen: boolean
+	startTime1?: string
+	endTime1?: string
+	startTime2?: string
+	endTime2?: string
+}
+
 export interface AddOrderItemInput {
 	uuid?: string
 	productUuid?: string

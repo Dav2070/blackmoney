@@ -15,7 +15,9 @@
 					<div class="openingTime-card-container">
 						<div class="openingTime-card-content">
 							@for (tag of Tage; track tag.day) {
-								@if (tag.durchgehend) {
+								@if (tag.geschlossen) {
+									<p>{{ tag.day }}: {{ locale.closed }}</p>
+								} @else if (tag.durchgehend) {
 									<p>
 										{{ tag.day }}: {{ tag.startTime1 }} -
 										{{ tag.endTime1 }}

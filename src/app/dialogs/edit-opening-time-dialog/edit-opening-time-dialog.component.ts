@@ -38,15 +38,18 @@ export class EditOpeningTimeDialogComponent {
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
 	selectedDays = new FormControl<string[]>([])
-	weekdays = [
-		"Montag",
-		"Dienstag",
-		"Mittwoch",
-		"Donnerstag",
-		"Freitag",
-		"Samstag",
-		"Sonntag"
-	]
+	get weekdays(): string[] {
+		const weekdaysLocale = this.localizationService.locale.weekdays
+		return [
+			weekdaysLocale.monday,
+			weekdaysLocale.tuesday,
+			weekdaysLocale.wednesday,
+			weekdaysLocale.thursday,
+			weekdaysLocale.friday,
+			weekdaysLocale.saturday,
+			weekdaysLocale.sunday
+		]
+	}
 	@Input() day: string[] = []
 	durchgehend: boolean = false
 	pause: boolean = false
@@ -144,7 +147,8 @@ export class EditOpeningTimeDialogComponent {
 	validateBlock(block: Block): string | null {
 		// Prüfe ob Tage ausgewählt wurden
 		if (!block.selectedDays || block.selectedDays.length === 0) {
-			return this.locale.errors.selectAtLeastOneDay
+			// Keine Tage ausgewählt ist OK (werden als geschlossen gespeichert)
+			return null
 		}
 
 		// Prüfe ob Zeiten ausgefüllt sind
@@ -209,7 +213,8 @@ export class EditOpeningTimeDialogComponent {
 
 	groupDaysByTime(days: Day[]): Block[] {
 		const groups: Block[] = []
-		const unassigned = [...days]
+		// Filtere geschlossene Tage heraus
+		const unassigned = [...days].filter(d => !d.geschlossen)
 
 		while (unassigned.length > 0) {
 			const ref = unassigned[0]
@@ -240,24 +245,64 @@ export class EditOpeningTimeDialogComponent {
 			})
 		}
 
+		// Falls keine Tage ausgewählt sind (alle geschlossen), erstelle einen leeren Block
+		if (groups.length === 0) {
+			groups.push({
+				selectedDays: [],
+				durchgehend: true,
+				pause: false,
+				startTime1: "",
+				endTime1: "",
+				startTime2: "",
+				endTime2: ""
+			})
+		}
+
 		return groups
 	}
 
 	saveBlocksToDays() {
 		this.Days = [] // Array leeren, damit wir neu aufbauen
+
+		// Zuerst sammeln wir alle ausgewählten Tage mit ihren Zeiten
+		const selectedDaysMap = new Map<string, Day>()
+
 		this.blocks.forEach(block => {
-			block.selectedDays.forEach(dayName => {
+			if (block.selectedDays && block.selectedDays.length > 0) {
+				block.selectedDays.forEach(dayName => {
+					const day: Day = {
+						day: dayName,
+						durchgehend: block.durchgehend,
+						pause: block.pause,
+						geschlossen: false,
+						startTime1: block.startTime1,
+						endTime1: block.endTime1,
+						startTime2: block.pause ? block.startTime2 : undefined,
+						endTime2: block.pause ? block.endTime2 : undefined
+					}
+					selectedDaysMap.set(dayName, day)
+				})
+			}
+		})
+
+		// Jetzt fügen wir ALLE Wochentage hinzu (in der richtigen Reihenfolge)
+		this.weekdays.forEach(dayName => {
+			if (selectedDaysMap.has(dayName)) {
+				this.Days.push(selectedDaysMap.get(dayName))
+			} else {
+				// Nicht ausgewählte Tage werden als geschlossen markiert
 				const day: Day = {
 					day: dayName,
-					durchgehend: block.durchgehend,
-					pause: block.pause,
-					startTime1: block.startTime1,
-					endTime1: block.endTime1,
-					startTime2: block.pause ? block.startTime2 : undefined,
-					endTime2: block.pause ? block.endTime2 : undefined
+					durchgehend: false,
+					pause: false,
+					geschlossen: true,
+					startTime1: "",
+					endTime1: "",
+					startTime2: undefined,
+					endTime2: undefined
 				}
 				this.Days.push(day)
-			})
+			}
 		})
 	}
 

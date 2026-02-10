@@ -492,17 +492,10 @@ export function convertMenuResourceToMenu(menuResource: MenuResource): Menu {
 		variations.push(convertVariationResourceToVariation(variation))
 	}
 
-	const offers: Offer[] = []
-
-	for (const offer of menuResource.offers?.items ?? []) {
-		offers.push(convertOfferResourceToOffer(offer))
-	}
-
 	return {
 		uuid: menuResource.uuid,
 		categories,
-		variations,
-		offers
+		variations
 	}
 }
 

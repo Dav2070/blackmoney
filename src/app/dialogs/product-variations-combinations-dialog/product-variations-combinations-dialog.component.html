@@ -1,0 +1,37 @@
+<dav-dialog
+	#dialog
+	[headline]="
+		mode === 'select' ? locale.selectHeadline : locale.removeHeadline
+	"
+	[primaryButtonText]="
+		mode === 'select' ? actionsLocale.select : actionsLocale.delete
+	"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[primaryButtonDisabled]="
+		mode === 'select' ? getAllVariationItemCount() === 0 : false
+	"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	@if (product != null) {
+		<div class="container">
+			<div class="variation-container">
+				@for (key of Object.keys(variationCombinations); track key) {
+					@let currentCount = variationCombinations[key] ?? 0;
+					@let originalCount = getOriginalCount(key);
+
+					<app-counter
+						[count]="currentCount"
+						[headline]="getHeadlineForKey(key)"
+						[minusButtonDisabled]="currentCount === 0"
+						[plusButtonDisabled]="currentCount >= originalCount"
+						(change)="counterChange(key, $event)"
+					></app-counter>
+				}
+			</div>
+		</div>
+	}
+</dav-dialog>

@@ -8,11 +8,13 @@ import {
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
 import { Order } from "../../Order"
 import { OrderItemMerger } from "./order-item-merger"
+import { VariationComparer } from "./variation-comparer"
 
 export class AllItemHandler {
 	private allPickedItems: OrderItem[] = []
 	private readonly merger: OrderItemMerger
 	private readonly priceCalculator = new PriceCalculator()
+	variationComparer = new VariationComparer()
 
 	constructor() {
 		this.merger = new OrderItemMerger(this.allPickedItems)
@@ -20,6 +22,11 @@ export class AllItemHandler {
 
 	getAllPickedItems() {
 		return this.allPickedItems
+	}
+
+	// Setzt Items direkt ohne Merging-Logik (für Backend-Responses, die bereits korrekt gemerged sind)
+	setItems(items: OrderItem[]) {
+		this.allPickedItems = items
 	}
 
 	// Lade alle Items einer Order
@@ -44,14 +51,47 @@ export class AllItemHandler {
 								count
 								type
 								discount
+								diversePrice
+								notes
+								takeAway
+								course
 								order {
 									uuid
 								}
 								product {
-									id
 									uuid
+									type
 									name
 									price
+									shortcut
+									variations {
+										total
+										items {
+											uuid
+											name
+											variationItems {
+												total
+												items {
+													id
+													uuid
+													name
+													additionalCost
+												}
+											}
+										}
+									}
+								}
+								offer {
+									id
+									uuid
+									offerType
+									discountType
+									offerValue
+									startDate
+									endDate
+									startTime
+									endTime
+									weekdays
 								}
 								orderItemVariations {
 									total
@@ -75,15 +115,16 @@ export class AllItemHandler {
 										count
 										type
 										discount
+										diversePrice
 										notes
 										takeAway
 										course
 										product {
-											id
 											uuid
 											name
 											type
 											price
+											shortcut
 											variations {
 												total
 												items {
@@ -92,10 +133,27 @@ export class AllItemHandler {
 													variationItems {
 														total
 														items {
+															id
 															uuid
 															name
 															additionalCost
 														}
+													}
+												}
+											}
+										}
+										orderItemVariations {
+											total
+											items {
+												uuid
+												count
+												variationItems {
+													total
+													items {
+														id
+														uuid
+														name
+														additionalCost
 													}
 												}
 											}
@@ -114,12 +172,12 @@ export class AllItemHandler {
 		)
 
 		if (order.data.retrieveTable.orders.total > 0) {
-			this.clearItems()
-
-			for (const item of order.data.retrieveTable.orders.items[0].orderItems
-				.items) {
-				this.pushNewItem(convertOrderItemResourceToOrderItem(item))
-			}
+			// Setze Items direkt ohne Merging-Logik (Backend hat bereits gemerged)
+			this.setItems(
+				order.data.retrieveTable.orders.items[0].orderItems.items.map(
+					item => convertOrderItemResourceToOrderItem(item)
+				)
+			)
 
 			return convertOrderResourceToOrder(
 				order.data.retrieveTable.orders.items[0]
@@ -130,19 +188,35 @@ export class AllItemHandler {
 	}
 
 	// Entry: neues Item hinzufügen (delegiert an gemeinsame Merge-Logik)
-	pushNewItem(pickedItem: OrderItem, index?: number) {
-		const incoming = { ...pickedItem } // Kopie zum Schutz vor Seiteneffekten
+	// Gibt das tatsächliche Item zurück (entweder das neue oder das gemergte)
+	pushNewItem(
+		pickedItem: OrderItem,
+		bookedItemHandler?: AllItemHandler,
+		index?: number
+	): OrderItem {
+		const incoming: OrderItem = { ...pickedItem } // Kopie zum Schutz vor Seiteneffekten
 
 		// Suche Merge-Ziel (gibt undefined zurück, wenn keines vorhanden)
 		const target = this.merger.findMergeTarget(incoming, this.allPickedItems)
 
 		if (target) {
-			// Match gefunden -> zusammenführen; wenn Merge fehlschlägt -> einfügen
+			// Match gefunden -> zusammenführen
 			this.merger.mergeIntoExisting(target, incoming)
+			// UUIDs vom gebuchten Item übernehmen
+			this.syncUuidsFromBookedItem(target, bookedItemHandler)
+			return target
 		} else {
 			// Kein Match -> neues Item einfügen
+			// UUIDs vom gebuchten Item übernehmen
+			this.syncUuidsFromBookedItem(incoming, bookedItemHandler)
 			this.insertAtIndex(incoming, index)
+			return incoming
 		}
+	}
+
+	findSimilarItem(incoming: OrderItem): OrderItem | null {
+		const target = this.merger.findMergeTarget(incoming, this.allPickedItems)
+		return target ?? null
 	}
 
 	// TODO: In eigene Datei auslagern
@@ -199,6 +273,75 @@ export class AllItemHandler {
 		}
 	}
 
+	// Übernimmt UUIDs vom matchingBookedItem für das Item und dessen Variationen
+	private syncUuidsFromBookedItem(
+		item: OrderItem,
+		bookedItemHandler?: AllItemHandler
+	): void {
+		if (!bookedItemHandler) {
+			return
+		}
+
+		const matchingBookedItem = bookedItemHandler.findSimilarItem(item)
+
+		if (!matchingBookedItem) {
+			return
+		}
+
+		// Übernimm UUID vom gebuchten Item
+		item.uuid = matchingBookedItem.uuid
+
+		// Übernimm UUIDs von Variationen, falls vorhanden
+		if (
+			item.orderItemVariations?.length > 0 &&
+			matchingBookedItem.orderItemVariations?.length > 0
+		) {
+			for (const variation of item.orderItemVariations) {
+				const matchingVariation =
+					this.variationComparer.findSimilarVariationItem(
+						matchingBookedItem,
+						variation
+					)
+				if (matchingVariation) {
+					variation.uuid = matchingVariation.uuid
+				}
+			}
+		}
+
+		// Übernimm UUIDs von Subitems (für Menüs), falls vorhanden
+		if (
+			item.orderItems?.length > 0 &&
+			matchingBookedItem.orderItems?.length > 0
+		) {
+			for (const subItem of item.orderItems) {
+				const matchingSubItem = matchingBookedItem.orderItems.find(
+					bookedSub =>
+						bookedSub.product.shortcut === subItem.product.shortcut
+				)
+				if (matchingSubItem) {
+					subItem.uuid = matchingSubItem.uuid
+
+					// Übernimm auch UUIDs von Variationen der Subitems
+					if (
+						subItem.orderItemVariations?.length > 0 &&
+						matchingSubItem.orderItemVariations?.length > 0
+					) {
+						for (const subVariation of subItem.orderItemVariations) {
+							const matchingSubVariation =
+								this.variationComparer.findSimilarVariationItem(
+									matchingSubItem,
+									subVariation
+								)
+							if (matchingSubVariation) {
+								subVariation.uuid = matchingSubVariation.uuid
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	// consolidateItems delegiert an dieselbe Merge-Implementierung
 	consolidateItems(changedItem: OrderItem) {
 		const target = this.merger.findMergeTarget(changedItem)
@@ -218,7 +361,7 @@ export class AllItemHandler {
 		return this.allPickedItems.map(item => {
 			return {
 				count: item.count,
-				productId: item.product.id,
+				productId: item.product.shortcut,
 				orderItemVariations:
 					item.orderItemVariations?.map(variation => {
 						return {
@@ -241,7 +384,9 @@ export class AllItemHandler {
 		let total = 0
 
 		for (let item of pickedItem.orderItems) {
-			total += item.product.price * item.count
+			// For diverse items use diversePrice, for regular products use product.price
+			const itemPrice = item.diversePrice ?? item.product.price
+			total += itemPrice * item.count
 
 			if (item.orderItemVariations) {
 				for (const variation of item.orderItemVariations) {

@@ -41,6 +41,7 @@
 
 .offer-order-item-card-total-price {
 	grid-column: 4;
+	white-space: nowrap;
 }
 
 .offer-order-item-card-total-price > p {
@@ -66,31 +67,11 @@
 	gap: 8px;
 }
 
-.note-icon {
-	color: var(--dav-color-primary);
-	cursor: pointer;
-	font-size: 16px;
-	transition: transform 200ms;
-
-	&:hover {
-		transform: scale(1.15);
-	}
-}
-
-.takeaway-icon {
-	color: var(--dav-color-primary);
-	cursor: pointer;
-	font-size: 16px;
-}
-
-.course-badge {
-	gap: 2px;
-	color: var(--dav-color-primary);
-	font-size: 16px;
-}
-
-.course-icon {
-	font-size: 16px;
+.sub-product-name {
+	color: var(--dav-color-outline);
+	font-weight: normal;
+	margin-left: 4px;
+	white-space: nowrap;
 }
 
 .offer-order-item-card-variation-unit-price {

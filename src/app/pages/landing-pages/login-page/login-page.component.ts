@@ -216,7 +216,6 @@ export class LoginPageComponent {
 			}
 		)
 
-		this.loading = false
 		const accessToken = loginResponse?.data?.login.uuid
 
 		if (accessToken != null) {
@@ -227,8 +226,7 @@ export class LoginPageComponent {
 				this.apiService,
 				this.authService,
 				this.dataService,
-				this.settingsService,
-				this.router
+				this.settingsService
 			)
 
 			// Save register uuid in settings
@@ -241,6 +239,14 @@ export class LoginPageComponent {
 				this.apiService,
 				this.dataService
 			)
+
+			if (this.dataService.registerClient.name == null) {
+				// Redirect to new device page, to set a name for this register client
+				this.router.navigate(["device-setup"])
+			} else {
+				// Redirect to dashboard page
+				this.router.navigate(["dashboard"])
+			}
 		} else {
 			const errors = getGraphQLErrorCodes(loginResponse)
 
@@ -261,5 +267,7 @@ export class LoginPageComponent {
 				this.errorMessage = this.locale.loginFailed
 			}
 		}
+
+		this.loading = false
 	}
 }

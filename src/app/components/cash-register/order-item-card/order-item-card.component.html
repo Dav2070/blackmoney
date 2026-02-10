@@ -5,28 +5,44 @@
 		selectedOrderItemNote === orderItem.notes
 	"
 	[class.clickable]="clickable"
+	[class.collapsible]="isCollapsible()"
 >
 	<div class="order-item-card-id">
-		<p>#{{ orderItem.product.id }}</p>
+		<p>#{{ getProductNumber(orderItem) }}</p>
 	</div>
 
 	<div class="order-item-card-name">
+		@if (isCollapsible()) {
+			<dav-icon-button size="xs">
+				<fa-icon
+					[icon]="isExpanded ? faChevronUp : faChevronDown"
+					(click)="toggleExpanded($event)"
+				></fa-icon>
+			</dav-icon-button>
+		}
+
 		<p>{{ orderItem.product.name }}</p>
+
 		@if (orderItem.notes) {
-			<fa-icon
-				[icon]="faNoteSticky"
-				class="note-icon"
-				(click)="onNoteIconClick($event)"
-			></fa-icon>
+			<dav-icon-button size="xs">
+				<fa-icon
+					[icon]="faNoteSticky"
+					(click)="onNoteIconClick($event)"
+				></fa-icon>
+			</dav-icon-button>
 		}
+
 		@if (orderItem.takeAway) {
-			<fa-icon [icon]="faCupTogo" class="takeaway-icon"></fa-icon>
+			<dav-icon-button size="xs">
+				<fa-icon [icon]="faCupTogo"></fa-icon>
+			</dav-icon-button>
 		}
+
 		@if (orderItem.course) {
-			<span class="course-badge">
-				<fa-icon [icon]="faUtensils" class="course-icon"></fa-icon>
+			<dav-button size="sm" text>
+				<fa-icon [icon]="faUtensils" slot="icon-left"></fa-icon>
 				{{ orderItem.course }}
-			</span>
+			</dav-button>
 		}
 	</div>
 
@@ -34,12 +50,7 @@
 		@if (orderItem.orderItemVariations.length === 0 && orderItem.count > 1) {
 			<p>
 				{{ orderItem.count }} ×
-				{{ formatPrice(orderItem.product.price) }}
-			</p>
-		} @else if (orderItem.orderItemVariations.length > 0) {
-			<p>
-				{{ orderItem.count }} ×
-				{{ formatPrice(orderItem.product.price) }}
+				{{ formatPrice(orderItem.diversePrice ?? orderItem.product.price) }}
 			</p>
 		}
 	</div>
@@ -48,28 +59,59 @@
 		<p>{{ formatPrice(calculateTotalPriceOfOrderItem(orderItem)) }}</p>
 	</div>
 
-	@if (orderItem.orderItemVariations.length > 0) {
-		<div class="order-item-variations-separator"></div>
+	@if (isCollapsible() && isExpanded) {
+		@if (orderItem.orderItemVariations.length > 0) {
+			<div class="order-item-variations-separator"></div>
 
-		@for (
-			orderItemVariation of orderItem.orderItemVariations;
-			track orderItemVariation.uuid
+			@for (
+				orderItemVariation of orderItem.orderItemVariations;
+				track orderItemVariation.uuid
+			) {
+				<div class="order-item-card-variation-name">
+					<p>- {{ getCombinedVariationNames(orderItemVariation) }}</p>
+				</div>
+
+				<div class="order-item-card-variation-unit-price">
+					<p>
+						{{ orderItemVariation.count }} ×
+						{{
+							formatPrice(
+								getTotalVariationPrice(orderItemVariation) +
+									(orderItem.diversePrice ?? orderItem.product.price)
+							)
+						}}
+					</p>
+				</div>
+			}
+		}
+
+		@if (
+			orderItem.type === OrderItemType.Special ||
+			orderItem.type === OrderItemType.Menu
 		) {
-			<div class="order-item-card-variation-name">
-				<p>- {{ getCombinedVariationNames(orderItemVariation) }}</p>
-			</div>
+			<div class="order-item-variations-separator"></div>
 
-			<div class="order-item-card-variation-unit-price">
-				<p>
-					{{ orderItemVariation.count }} ×
-					{{
-						formatPrice(
-							getTotalVariationPrice(orderItemVariation) +
-								orderItem.product.price
-						)
-					}}
-				</p>
-			</div>
+			@if (orderItem.orderItems && orderItem.orderItems.length > 0) {
+				@for (subItem of orderItem.orderItems; track subItem.uuid) {
+					<div class="order-item-card-sub-item-name">
+						<p>- {{ subItem.product.name }}</p>
+					</div>
+
+					<div class="order-item-card-sub-item-count">
+						<p>{{ subItem.count }}×</p>
+					</div>
+
+					<div class="order-item-card-sub-item-price">
+						<p>
+							{{
+								formatPrice(
+									subItem.diversePrice ?? subItem.product.price
+								)
+							}}
+						</p>
+					</div>
+				}
+			}
 		}
 	}
 </li>

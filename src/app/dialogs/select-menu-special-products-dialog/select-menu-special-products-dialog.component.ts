@@ -28,7 +28,8 @@ import { OfferItem } from "src/app/models/OfferItem"
 	standalone: false
 })
 export class SelectMenuSpecialProductsDialogComponent {
-	locale = this.localizationService.locale.dialogs.selectMenuSpecialProductsDialog
+	locale =
+		this.localizationService.locale.dialogs.selectMenuSpecialProductsDialog
 	actionsLocale = this.localizationService.locale.actions
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	@Input() product: Product = null
@@ -216,8 +217,6 @@ export class SelectMenuSpecialProductsDialogComponent {
 				count: value,
 				variationItems
 			})
-
-			totalCount += value
 		}
 
 		if (this.selectedProduct?.type === OrderItemType.Special) {
@@ -228,14 +227,20 @@ export class SelectMenuSpecialProductsDialogComponent {
 			for (let variation of newItem.orderItemVariations) {
 				newItem.count += variation.count
 			}
-
 			incoming.orderItems = [newItem]
 			incoming.count = newItem.count
 			this.allItemHandler.pushNewItem(incoming)
 		} else {
-			newItem.count = newItem.orderItemVariations.length
+			newItem.count = 0
+			for (let variation of newItem.orderItemVariations) {
+				newItem.count += variation.count
+			}
 			this.allItemHandler.pushNewItem(newItem)
-			this.selectedOfferItem.maxSelections -= totalCount
+
+			// Nur bei OfferItems (Menü) maxSelections verringern
+			if (this.selectedOfferItem) {
+				this.selectedOfferItem.maxSelections -= totalCount
+			}
 		}
 	}
 
@@ -287,6 +292,20 @@ export class SelectMenuSpecialProductsDialogComponent {
 
 	hide() {
 		this.visible = false
+	}
+
+	isSubmitDisabled(): boolean {
+		if (this.allItemHandler.isEmpty()) {
+			return true
+		}
+
+		if (this.product?.type === OrderItemType.Menu) {
+			return this.product.offer.offerItems.some(
+				offerItem => offerItem.maxSelections > 0
+			)
+		}
+
+		return false
 	}
 
 	submit() {

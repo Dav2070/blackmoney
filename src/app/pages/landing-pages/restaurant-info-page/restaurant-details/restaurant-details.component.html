@@ -1,0 +1,126 @@
+<dav-card class="restaurant-info-card">
+	<div class="restaurant-info-grid">
+		<div class="restaurant-info-left">
+			<div class="restaurant-details">
+				<div class="restaurant-header">
+					<h2 class="restaurant-name">{{ restaurant?.name }}</h2>
+					@if (restaurant?.ratings && restaurant.ratings.length > 0) {
+						<div class="restaurant-rating">
+							<div class="rating-stars">
+								@for (star of [1, 2, 3, 4, 5]; track star) {
+									<fa-icon
+										[icon]="faStar"
+										[class.filled]="star <= calculateAverageRating()"
+									></fa-icon>
+								}
+							</div>
+							<span class="rating-text"
+								>{{ calculateAverageRating() | number: "1.1-1" }} ({{
+									restaurant.ratings.length
+								}})</span
+							>
+						</div>
+					}
+				</div>
+
+				<div class="restaurant-address">
+					<p>{{ restaurant?.address?.line1 }}</p>
+					<p>
+						{{ restaurant?.address?.postalCode }}
+						{{ restaurant?.address?.city }}
+					</p>
+				</div>
+
+				<div class="restaurant-services">
+					@if (restaurant?.hasTakeaway) {
+						<div class="service-item">
+							<fa-icon [icon]="faCupTogo" class="service-icon"></fa-icon>
+							<span>{{ locale.takeaway }}</span>
+						</div>
+					}
+					@if (restaurant?.hasDelivery) {
+						<div class="service-item">
+							<fa-icon [icon]="faTruck" class="service-icon"></fa-icon>
+							<span>{{ locale.delivery }}</span>
+						</div>
+					}
+				</div>
+
+				<div class="restaurant-hours">
+					<h3>{{ locale.openingHours }}</h3>
+					<p>Mo-Fr: 08:00 - 18:00</p>
+					<p>Sa-So: 10:00 - 16:00</p>
+				</div>
+
+				<div class="restaurant-contact">
+					<div class="contact-item">
+						<strong>{{ locale.phone }}:</strong>
+						{{ restaurant?.phoneNumber }}
+					</div>
+					<div class="contact-item">
+						<strong>{{ locale.email }}:</strong> {{ restaurant?.mail }}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="restaurant-info-middle">
+			<div class="restaurant-actions">
+				<dav-button (click)="reserveTable()" class="reserve-button">{{
+					locale.reserveNow
+				}}</dav-button>
+				<dav-button (click)="orderNow()" class="order-button">{{
+					locale.orderNow
+				}}</dav-button>
+				<dav-button (click)="orderNow()" class="order-button">{{
+					locale.buyVoucher
+				}}</dav-button>
+			</div>
+		</div>
+
+		<div class="restaurant-image-section">
+			<div class="image-navigation">
+				<fa-icon
+					[icon]="faChevronLeft"
+					class="nav-arrow nav-arrow-left"
+					(click)="previousImage()"
+				></fa-icon>
+
+				<div class="image-container">
+					@if (currentImageUrl) {
+						<img
+							[src]="currentImageUrl"
+							alt="Restaurant"
+							class="restaurant-image"
+						/>
+					} @else {
+						<div class="image-placeholder">
+							{{ locale.noImageAvailable }}
+						</div>
+					}
+				</div>
+
+				<fa-icon
+					[icon]="faChevronRight"
+					class="nav-arrow nav-arrow-right"
+					(click)="nextImage()"
+				></fa-icon>
+			</div>
+
+			<div class="image-indicators">
+				@for (image of restaurant?.images || []; track $index) {
+					<div
+						class="indicator"
+						[class.active]="$index === currentImageIndex"
+						(click)="setCurrentImage($index)"
+					></div>
+				}
+			</div>
+
+			<button class="add-image-button" (click)="addImage()">
+				<fa-icon [icon]="faPlus"></fa-icon>
+				<span>{{ locale.addImage }}</span>
+			</button>
+		</div>
+	</div>
+</dav-card>

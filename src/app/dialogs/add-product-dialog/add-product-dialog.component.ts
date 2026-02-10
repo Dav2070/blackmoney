@@ -79,7 +79,12 @@ export class AddProductDialogComponent {
 	}
 
 	show() {
-		this.visible = true
+		// Reset first to clear previous state
+		this.reset()
+		// Use setTimeout to ensure Angular processes the reset before showing
+		setTimeout(() => {
+			this.visible = true
+		}, 0)
 	}
 
 	hide() {
@@ -92,6 +97,7 @@ export class AddProductDialogComponent {
 		this.name = ""
 		this.price = ""
 		this.takeaway = false
+		// Create new array to ensure Angular detects changes
 		this.selectedVariationUuids = []
 		this.expandedVariationUuids.clear()
 		this.idError = ""
@@ -127,10 +133,10 @@ export class AddProductDialogComponent {
 		)
 
 		const newProduct: Product = {
-			id: parseInt(this.productId.trim()),
 			uuid: `prod-${Date.now()}`,
 			name: this.name.trim(),
 			price: priceInCents,
+			shortcut: parseInt(this.productId.trim()),
 			type: this.productType,
 			category: this.category,
 			variations: selectedVariations,
@@ -162,12 +168,35 @@ export class AddProductDialogComponent {
 		this.takeaway = newValue
 	}
 
+	onVariationCheckboxChange(variationUuid: string, checked: boolean) {
+		if (checked && !this.selectedVariationUuids.includes(variationUuid)) {
+			this.selectedVariationUuids = [
+				...this.selectedVariationUuids,
+				variationUuid
+			]
+		} else if (
+			!checked &&
+			this.selectedVariationUuids.includes(variationUuid)
+		) {
+			this.selectedVariationUuids = this.selectedVariationUuids.filter(
+				uuid => uuid !== variationUuid
+			)
+		}
+	}
+
 	toggleVariationSelection(variationUuid: string) {
 		const index = this.selectedVariationUuids.indexOf(variationUuid)
 		if (index > -1) {
-			this.selectedVariationUuids.splice(index, 1)
+			// Create new array instead of mutating
+			this.selectedVariationUuids = this.selectedVariationUuids.filter(
+				uuid => uuid !== variationUuid
+			)
 		} else {
-			this.selectedVariationUuids.push(variationUuid)
+			// Create new array instead of mutating
+			this.selectedVariationUuids = [
+				...this.selectedVariationUuids,
+				variationUuid
+			]
 		}
 	}
 

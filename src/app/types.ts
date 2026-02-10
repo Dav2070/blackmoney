@@ -16,6 +16,25 @@ export type ApolloResult<T> = Apollo.MutateResult<T> & {
 	error?: { errors?: { extensions?: { code?: string; errors?: string[] } }[] }
 }
 
+export type SendMessage =
+	| {
+			type: "startPayment"
+			price: number
+	  }
+	| {
+			type: "createStripeConnectionToken"
+			secret: string
+	  }
+
+export type ReceiveMessage =
+	| {
+			type: "createStripeConnectionToken"
+	  }
+	| {
+			type: "captureStripePaymentIntent"
+			id: string
+	  }
+
 export interface SessionResource {
 	uuid: string
 	user: UserResource
@@ -24,6 +43,8 @@ export interface SessionResource {
 export interface CompanyResource {
 	uuid: string
 	name: string
+	stripeOnboardingStatus: StripeOnboardingStatus
+	stripeSubscriptionStatus: StripeSubscriptionStatus
 	restaurants: List<RestaurantResource>
 	users: List<UserResource>
 }
@@ -31,6 +52,10 @@ export interface CompanyResource {
 export interface RestaurantResource {
 	uuid: string
 	name: string
+	owner?: string
+	taxNumber?: string
+	mail?: string
+	phoneNumber?: string
 	city: string
 	country: Country
 	line1: string
@@ -41,11 +66,23 @@ export interface RestaurantResource {
 	rooms: List<RoomResource>
 	registers: List<RegisterResource>
 	printers: List<PrinterResource>
+	address: AddressResource
+}
+
+export interface AddressResource {
+	uuid: string
+	city?: string
+	country?: Country
+	line1?: string
+	line2?: string
+	houseNumber?: string
+	postalCode?: string
 }
 
 export interface RegisterResource {
 	uuid: string
 	name: string
+	status: RegisterStatus
 	registerClients: List<RegisterClientResource>
 }
 
@@ -53,6 +90,7 @@ export interface RegisterClientResource {
 	uuid: string
 	name: string
 	serialNumber: string
+	register: RegisterResource
 	printRules: List<PrintRuleResource>
 }
 
@@ -94,6 +132,7 @@ export interface PrintRuleResource {
 export interface MenuResource {
 	uuid: string
 	categories: List<CategoryResource>
+	variations: List<VariationResource>
 	offers: List<OfferResource>
 }
 
@@ -120,11 +159,11 @@ export interface OfferItemResource {
 }
 
 export interface ProductResource {
-	id: number
 	uuid: string
 	type: ProductType
 	name: string
 	price: number
+	shortcut: number
 	category: CategoryResource
 	offer?: OfferResource
 	variations: List<VariationResource>
@@ -169,11 +208,13 @@ export interface OrderItemResource {
 	count: number
 	type: OrderItemType
 	discount: number
+	diversePrice?: number
 	notes?: string
 	takeAway: boolean
 	course?: number
 	order: OrderResource
 	product: ProductResource
+	offer?: OfferResource
 	orderItems: List<OrderItemResource>
 	orderItemVariations: List<OrderItemVariationResource>
 }
@@ -184,40 +225,69 @@ export interface OrderItemVariationResource {
 	variationItems: List<VariationItemResource>
 }
 
-export interface AddProductsInput {
+export interface ReservationResource {
 	uuid: string
-	count: number
-	discount?: number
-	variations?: AddProductVariationInput[]
-	orderItems?: AddProductOrderItemInput[]
+	table: TableResource
+	name: string
+	phoneNumber?: string
+	email?: string
+	numberOfPeople: number
+	date: string
+	checkedIn: boolean
 }
 
-export interface AddProductVariationInput {
+export interface AddOrderItemInput {
+	uuid?: string
+	productUuid?: string
+	count: number
+	discount?: number
+	diversePrice?: number
+	type?: OrderItemType
+	notes?: string
+	takeAway?: boolean
+	course?: number
+	offerUuid?: string
+	variations?: AddOrderItemVariationInput[]
+	orderItems?: AddChildOrderItemInput[]
+}
+
+export interface AddOrderItemVariationInput {
+	uuid?: string
 	variationItemUuids: string[]
 	count: number
 }
 
-export interface AddProductOrderItemInput {
+export interface AddChildOrderItemInput {
+	uuid?: string
 	productUuid: string
 	count: number
+	variations?: AddOrderItemVariationInput[]
 }
 
 export type UserRole = "OWNER" | "ADMIN" | "USER"
 export type ProductType = "FOOD" | "DRINK" | "SPECIAL" | "MENU"
 export type PrintRuleType = "BILLS" | "PRODUCT_TYPE" | "CATEGORIES" | "PRODUCTS"
+export type OrderType = "DELIVERY" | "PICKUP"
 
 export enum OrderItemType {
 	Product = "PRODUCT",
 	Menu = "MENU",
-	Special = "SPECIAL"
+	Special = "SPECIAL",
+	DiverseFood = "DIVERSE_FOOD",
+	DiverseDrink = "DIVERSE_DRINK",
+	DiverseOther = "DIVERSE_OTHER"
 }
 
 export type TakeawayFilterType = "ALL" | "DELIVERY" | "PICKUP" | "DINEIN"
+export type ReviewFilterType = "newest" | "lowest" | "highest"
 
 export type OfferType = "FIXED_PRICE" | "DISCOUNT"
 export type DiscountType = "PERCENTAGE" | "AMOUNT"
 export type PaymentMethod = "CASH" | "CARD"
 export type Country = "DE"
+export type RegisterStatus = "ACTIVE" | "INACTIVE"
+export type StripeOnboardingStatus = "PENDING" | "COMPLETED"
+export type StripeSubscriptionStatus = "NOT_SUBSCRIBED" | "ACTIVE" | "INACTIVE"
 
 export type Weekday =
 	| "MONDAY"
@@ -231,6 +301,12 @@ export type Weekday =
 export type ErrorCode =
 	| typeof ErrorCodes.printerAlreadyExists
 	| typeof ErrorCodes.tableAlreadyExists
+	| typeof ErrorCodes.categoryNameAlreadyInUse
+	| typeof ErrorCodes.productAlreadyHasOffer
+	| typeof ErrorCodes.priceInvalid
+	| typeof ErrorCodes.offerValueInvalid
+	| typeof ErrorCodes.registerAlreadyActive
+	| typeof ErrorCodes.noActiveSubscription
 	| typeof ErrorCodes.notAuthenticated
 	| typeof ErrorCodes.userHasNoPassword
 	| typeof ErrorCodes.userAlreadyHasPassword
@@ -254,4 +330,12 @@ export interface TimeSlotSuggestion {
 		name: number
 		seats: number
 	}
+}
+
+export enum RatingNum {
+	One = 1,
+	Two = 2,
+	Three = 3,
+	Four = 4,
+	Five = 5
 }

@@ -2,35 +2,38 @@ import { NgModule } from "@angular/core"
 import { RouterModule, Routes } from "@angular/router"
 import { LandingPageComponent } from "./pages/landing-pages/landing-page/landing-page.component"
 import { LandingOverviewPageComponent } from "./pages/landing-pages/landing-overview-page/landing-overview-page.component"
+import { LandingOrderPageComponent } from "./pages/landing-pages/landing-order-page/landing-order-page.component"
 import { LandingPricingPageComponent } from "./pages/landing-pages/landing-pricing-page/landing-pricing-page.component"
-import { UserPageComponent } from "./pages/landing-pages/user-page/user-page.component"
-import { GeneralSettingsPageComponent } from "./pages/landing-pages/general-settings-page/general-settings-page.component"
-import { RestaurantsPageComponent } from "./pages/landing-pages/restaurants-page/restaurants-page.component"
-import { RestaurantPageComponent } from "./pages/landing-pages/restaurant-page/restaurant-page.component"
-import { RegistersPageComponent } from "./pages/landing-pages/registers-page/registers-page.component"
-import { RegisterPageComponent } from "./pages/landing-pages/register-page/register-page.component"
-import { RegisterClientPageComponent } from "./pages/landing-pages/register-client-page/register-client-page.component"
-import { EmployeesPageComponent } from "./pages/landing-pages/employees-page/employees-page.component"
-import { EmployeePageComponent } from "./pages/landing-pages/employee-page/employee-page.component"
+import { LandingGuestsPageComponent } from "./pages/landing-pages/landing-guests-page/landing-guests-page.component"
+import { UserPageComponent } from "./pages/dashboard-pages/user-page/user-page.component"
+import { GeneralSettingsPageComponent } from "./pages/dashboard-pages/general-settings-page/general-settings-page.component"
+import { RestaurantsPageComponent } from "./pages/dashboard-pages/restaurants-page/restaurants-page.component"
+import { RestaurantPageComponent } from "./pages/dashboard-pages/restaurant-page/restaurant-page.component"
+import { RegistersPageComponent } from "./pages/dashboard-pages/registers-page/registers-page.component"
+import { RegisterPageComponent } from "./pages/dashboard-pages/register-page/register-page.component"
+import { RegisterClientPageComponent } from "./pages/dashboard-pages/register-client-page/register-client-page.component"
+import { EmployeesPageComponent } from "./pages/dashboard-pages/employees-page/employees-page.component"
+import { EmployeePageComponent } from "./pages/dashboard-pages/employee-page/employee-page.component"
 import { LoginPageComponent } from "./pages/landing-pages/login-page/login-page.component"
 import { SetPasswordPageComponent } from "./pages/landing-pages/set-password-page/set-password-page.component"
+import { DeviceSetupPageComponent } from "./pages/landing-pages/device-setup-page/device-setup-page.component"
 import { OnboardingPageComponent } from "./pages/onboading-pages/onboarding-page/onboarding-page.component"
-import { CashRegisterPageComponent } from "./pages/cash-register-pages/cash-register-page/cash-register-page.component"
-import { TableOverviewPageComponent } from "./pages/cash-register-pages/table-overview-page/table-overview-page.component"
-import { BookingPageComponent } from "./pages/cash-register-pages/booking-page/booking-page.component"
-import { TransferPageComponent } from "./pages/cash-register-pages/transfer-page/transfer-page.component"
-import { PaymentPageComponent } from "./pages/cash-register-pages/payment-page/payment-page.component"
-import { RoomsPageComponent } from "./pages/landing-pages/rooms-page/rooms-page.component"
-import { RoomPageComponent } from "./pages/landing-pages/room-page/room-page.component"
-import { TableCombinationsPageComponent } from "./pages/landing-pages/table-combinations-page/table-combinations-page.component"
-import { PrintersPageComponent } from "./pages/landing-pages/printers-page/printers-page.component"
-import { OpeningTimePageComponent } from "./pages/landing-pages/opening-time-page/opening-time-page.component"
-import { ReservationsPageComponent } from "./pages/landing-pages/reservations-page/reservations-page.component"
-import { CategoryPageComponent } from "./pages/landing-pages/category-page/category-page.component"
-import { CategoriesPageComponent } from "./pages/landing-pages/categories-page/categories-page.component"
-import { VariationsOverviewPageComponent } from "./pages/landing-pages/variations-overview-page/variations-overview-page.component"
-import { ProductListComponent } from "./pages/landing-pages/category-page/product-list/product-list.component"
-import { MenuPageComponent } from "./pages/landing-pages/menu-page/menu-page.component"
+import { DashboardPageComponent } from "./pages/dashboard-pages/dashboard-page/dashboard-page.component"
+import { TableOverviewPageComponent } from "./pages/dashboard-pages/table-overview-page/table-overview-page.component"
+import { BookingPageComponent } from "./pages/dashboard-pages/booking-page/booking-page.component"
+import { TransferPageComponent } from "./pages/dashboard-pages/transfer-page/transfer-page.component"
+import { PaymentPageComponent } from "./pages/dashboard-pages/payment-page/payment-page.component"
+import { RoomsPageComponent } from "./pages/dashboard-pages/rooms-page/rooms-page.component"
+import { RoomPageComponent } from "./pages/dashboard-pages/room-page/room-page.component"
+import { TableCombinationsPageComponent } from "./pages/dashboard-pages/table-combinations-page/table-combinations-page.component"
+import { PrintersPageComponent } from "./pages/dashboard-pages/printers-page/printers-page.component"
+import { OpeningTimePageComponent } from "./pages/dashboard-pages/opening-time-page/opening-time-page.component"
+import { ReservationsPageComponent } from "./pages/dashboard-pages/reservations-page/reservations-page.component"
+import { CategoryPageComponent } from "./pages/dashboard-pages/category-page/category-page.component"
+import { CategoriesPageComponent } from "./pages/dashboard-pages/categories-page/categories-page.component"
+import { VariationsPageComponent } from "./pages/dashboard-pages/variations-page/variations-page.component"
+import { MenuPageComponent } from "./pages/dashboard-pages/menu-page/menu-page.component"
+import { RestaurantInfoPageComponent } from "./pages/landing-pages/restaurant-info-page/restaurant-info-page.component"
 
 const routes: Routes = [
 	{
@@ -42,112 +45,105 @@ const routes: Routes = [
 				component: LandingOverviewPageComponent
 			},
 			{
+				path: "order",
+				component: LandingOrderPageComponent
+			},
+			{
 				path: "pricing",
 				component: LandingPricingPageComponent
 			},
 			{
-				path: "login",
-				component: LoginPageComponent
+				path: "guests",
+				component: LandingGuestsPageComponent
 			},
 			{
-				path: "login/set-password",
-				component: SetPasswordPageComponent
-			},
-			{
-				path: "user",
-				component: UserPageComponent
-			},
-			{
-				path: "user/settings",
-				component: GeneralSettingsPageComponent
-			},
-			{
-				path: "user/restaurants",
-				component: RestaurantsPageComponent
-			},
-			{
-				path: "user/restaurants/:uuid",
-				component: RestaurantPageComponent
-			},
-			{
-				path: "user/restaurants/:uuid/printers",
-				component: PrintersPageComponent
-			},
-			{
-				path: "user/restaurants/:uuid/registers",
-				component: RegistersPageComponent
-			},
-			{
-				path: "user/restaurants/:restaurantUuid/registers/:registerUuid",
-				component: RegisterPageComponent
-			},
-			{
-				path: "user/restaurants/:restaurantUuid/registers/:registerUuid/clients/:registerClientUuid",
-				component: RegisterClientPageComponent
-			},
-			{
-				path: "user/employees",
-				component: EmployeesPageComponent
-			},
-			{
-				path: "user/employees/:uuid",
-				component: EmployeePageComponent
-			},
-			{
-				path: "user/reservations",
-				component: ReservationsPageComponent
-			},
-			{
-				path: "user/restaurants/:uuid/rooms",
-				component: RoomsPageComponent
-			},
-			{
-				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid",
-				component: RoomPageComponent
-			},
-			{
-				path: "user/restaurants/:restaurantUuid/rooms/:roomUuid/combinations",
-				component: TableCombinationsPageComponent
-			},
-			{
-				path: "user/restaurants/:uuid/openingTime",
-				component: OpeningTimePageComponent
-			},
-			{
-				path: "user/restaurants/:uuid/menu",
-				component: MenuPageComponent
-			},
-			{
-				path: "user/restaurants/:uuid/menu/categories",
-				component: CategoriesPageComponent
-			},
-			{
-				path: "user/restaurants/:restaurantUuid/menu/categories/:categoryUuid",
-				component: CategoryPageComponent,
-				children: [
-					{ path: "", redirectTo: "food", pathMatch: "full" },
-					{ path: "food", component: ProductListComponent },
-					{ path: "drinks", component: ProductListComponent }, // später durch DrinksListComponent ersetzen
-					{ path: "specials", component: ProductListComponent }, // später durch SpecialsListComponent ersetzen
-					{ path: "menus", component: ProductListComponent } // später durch MenusListComponent ersetzen
-				]
-			},
-			{
-				path: "user/restaurants/:uuid/menu/variations",
-				component: VariationsOverviewPageComponent
+				path: "guests/restaurantinfo/:uuid",
+				component: RestaurantInfoPageComponent
 			}
 		]
 	},
 	{
-		path: "onboarding",
-		component: OnboardingPageComponent
-	},
-	{
 		path: "dashboard",
-		component: CashRegisterPageComponent,
+		component: DashboardPageComponent,
 		children: [
 			{
 				path: "",
+				component: UserPageComponent
+			},
+			{
+				path: "settings",
+				component: GeneralSettingsPageComponent
+			},
+			{
+				path: "restaurants",
+				component: RestaurantsPageComponent
+			},
+			{
+				path: "restaurants/:uuid",
+				component: RestaurantPageComponent
+			},
+			{
+				path: "restaurants/:uuid/printers",
+				component: PrintersPageComponent
+			},
+			{
+				path: "restaurants/:uuid/registers",
+				component: RegistersPageComponent
+			},
+			{
+				path: "restaurants/:restaurantUuid/registers/:registerUuid",
+				component: RegisterPageComponent
+			},
+			{
+				path: "restaurants/:restaurantUuid/registers/:registerUuid/clients/:registerClientUuid",
+				component: RegisterClientPageComponent
+			},
+			{
+				path: "employees",
+				component: EmployeesPageComponent
+			},
+			{
+				path: "employees/:uuid",
+				component: EmployeePageComponent
+			},
+			{
+				path: "reservations",
+				component: ReservationsPageComponent
+			},
+			{
+				path: "restaurants/:uuid/rooms",
+				component: RoomsPageComponent
+			},
+			{
+				path: "restaurants/:restaurantUuid/rooms/:roomUuid",
+				component: RoomPageComponent
+			},
+			{
+				path: "restaurants/:restaurantUuid/rooms/:roomUuid/combinations",
+				component: TableCombinationsPageComponent
+			},
+			{
+				path: "restaurants/:uuid/openingTime",
+				component: OpeningTimePageComponent
+			},
+			{
+				path: "restaurants/:uuid/menu",
+				component: MenuPageComponent
+			},
+			{
+				path: "restaurants/:uuid/menu/categories",
+				component: CategoriesPageComponent
+			},
+			{
+				path: "restaurants/:restaurantUuid/menu/categories/:categoryUuid",
+				component: CategoryPageComponent
+			},
+			{
+				path: "restaurants/:uuid/menu/variations",
+				component: VariationsPageComponent
+			},
+			{
+				path: "tables",
 				component: TableOverviewPageComponent
 			},
 			{
@@ -163,6 +159,22 @@ const routes: Routes = [
 				component: TransferPageComponent
 			}
 		]
+	},
+	{
+		path: "onboarding",
+		component: OnboardingPageComponent
+	},
+	{
+		path: "login",
+		component: LoginPageComponent
+	},
+	{
+		path: "login/set-password",
+		component: SetPasswordPageComponent
+	},
+	{
+		path: "device-setup",
+		component: DeviceSetupPageComponent
 	}
 ]
 

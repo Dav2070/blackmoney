@@ -61,6 +61,7 @@ export class SetPasswordPageComponent {
 	async send() {
 		if (this.password.length < 6) {
 			this.errorMessage = this.errorsLocale.passwordTooShort
+			return
 		} else if (this.password !== this.passwordConfirmation) {
 			this.errorMessage =
 				this.errorsLocale.passwordDoesNotMatchPasswordConfirmation
@@ -110,9 +111,11 @@ export class SetPasswordPageComponent {
 					this.apiService,
 					this.authService,
 					this.dataService,
-					this.settingsService,
-					this.router
+					this.settingsService
 				)
+
+				// Redirect to dashboard page
+				this.router.navigate(["dashboard"])
 			} else {
 				// Redirect back to login page
 				this.router.navigate(["login"])

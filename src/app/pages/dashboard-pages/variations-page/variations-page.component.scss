@@ -1,0 +1,29 @@
+.variations-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 336px);
+	gap: 12px;
+	justify-content: center;
+}
+
+.no-items-message {
+	color: var(--dav-color-on-surface-variant);
+	font-style: italic;
+	text-align: center;
+	margin: 0;
+}
+
+@media (max-width: 1000px) {
+	.variations-grid {
+		grid-template-columns: 336px;
+	}
+}
+
+@media (max-width: 700px) {
+	.content-container {
+		padding: 16px 8px;
+	}
+
+	.variations-grid {
+		grid-template-columns: 1fr;
+	}
+}

@@ -1,0 +1,14 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+   [primaryButtonText]="locale.activate"
+   [defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	[loading]="loading"
+	maxWidth="500"
+	(dismiss)="hide()"
+   (primaryButtonClick)="submit()"
+   (defaultButtonClick)="hide()"
+>
+	<p [innerHTML]="locale.description"></p>
+</dav-dialog>

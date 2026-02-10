@@ -1,4 +1,10 @@
 export const de = {
+	header: {
+		registerNotActivated: "Kasse nicht aktiviert",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
+	},
 	loginPage: {
 		headline: "Anmelden",
 		restaurant: "Restaurant",
@@ -9,13 +15,19 @@ export const de = {
 		loginFailed: "Anmeldung fehlgeschlagen"
 	},
 	setPasswordPage: {
-		headline: "Willkommen!",
+		headline: "Willkommen, {name}!",
 		description:
 			"Bitte wähle ein Passwort, mit dem du dich zukünftig anmelden kannst.",
 		passwordLabel: "Dein Passwort",
 		passwordPlaceholder: "Wähle ein Passwort",
 		passwordConfirmationLabel: "Passwort bestätigen",
 		passwordConfirmationPlaceholder: "Wiederhole dein Passwort"
+	},
+	deviceSetupPage: {
+		headline: "Neues Gerät erkannt",
+		description:
+			"Gib diesem Gerät einen Namen, damit du es später bei der Verwaltung deiner Geräte einfacher hast.",
+		deviceNameLabel: "Gerätename"
 	},
 	onboardingPage: {
 		createCompanySection: {
@@ -46,10 +58,19 @@ export const de = {
 			"Grüezi {name}!"
 		],
 		generalSettings: "Allgemeine Einstellungen",
-		goToDashboard: "Zur Kasse",
+		goToTableOverview: "Zur Tischübersicht",
 		manageEmployees: "Mitarbeiter verwalten",
 		manageRestaurants: "Restaurants verwalten",
-		manageReservations: "Reservierungen verwalten"
+		manageReservations: "Reservierungen verwalten",
+		manageSubscription: "Abonnement verwalten",
+		activationActionsHeadline: "Bereit für echte Zahlungen?",
+		activationActionsDescription:
+			"Das fehlt noch, damit du durchstarten kannst:",
+		activateRegister: "Kasse aktivieren",
+		stripeOnboarding: "Onboarding abschließen",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	reservationsPage: {
 		headline: "Reservierungen",
@@ -90,6 +111,12 @@ export const de = {
 		manageTime: "Öffnungszeiten verwalten",
 		addPicture: "Bild hinzufügen",
 		manageMenu: "Speisekarte verwalten"
+	},
+	registerPage: {
+		notActivated: "Nicht aktiviert",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	registerClientPage: {
 		printRulesHeadline: "Druckregeln",
@@ -146,7 +173,6 @@ export const de = {
 			headline: "Grab & Go",
 			close: "Schließen",
 			add: "Hinzufügen",
-			filterAll: "Alle",
 			filterDelivery: "Lieferung",
 			filterPickUp: "Abholung",
 			filterDineIn: "Vor Ort",
@@ -157,21 +183,19 @@ export const de = {
 	},
 	menuPage: {
 		headline: "Deine Speisekarte",
-		clone: "Speisekarte kopieren",
-		products: "Produkte",
-		offers: "Angebote",
-		menu: "Menüs"
+		category: "Kategorien",
+		variations: "Variationen"
 	},
 	categoriesPage: {
 		headline: "Deine Kategorien",
 		noCategories: "Keine Kategorien vorhanden"
 	},
-	productPage: {
-		headline: "Produkte verwalten",
-		category: "Kategorien",
-		variations: "Variationen",
-		options: "Extras",
-		menus: "Menüs"
+	categoryPage: {
+		noProductsMessage: "Keine Produkte vorhanden",
+		addFood: "Speise hinzufügen",
+		addDrink: "Getränk hinzufügen",
+		addMenu: "Menü hinzufügen",
+		addSpecial: "Special hinzufügen"
 	},
 	bookingPage: {
 		tableHeadline: "Tisch {name}",
@@ -200,7 +224,10 @@ export const de = {
 		removeBill: "Rechnung entfernen",
 		payByCash: "Bar bezahlen",
 		payByCard: "Mit Karte bezahlen",
-		moveMultipleProducts: "Mehrere verschieben"
+		moveMultipleProducts: "Mehrere verschieben",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	transferPage: {
 		tableHeadline: "Tisch {tableName} – {roomName}",
@@ -214,116 +241,80 @@ export const de = {
 	variationsPage: {
 		options: "Weitere Optionen",
 		headline: "Variationen verwalten",
-		noVariations: "Keine Variationen vorhanden",
+		noVariations: "Keine Variationen vorhanden"
+	},
+	variationCard: {
+		options: "Weitere Optionen",
 		noVariationItems: "Keine Variations-Items vorhanden",
 		addVariationItem: "Item hinzufügen"
 	},
 	offerOrderItemCard: {
 		discount: "Rabatt"
 	},
-	offerList: {
+	offerCard: {
 		options: "Optionen",
-		noOffers: "Keine Angebote vorhanden",
-		noItems: "Keine Items vorhanden"
+		from: "ab",
+		until: "bis"
 	},
-	addOfferDialog: {
-		headline: "Menü hinzufügen",
-		specialHeadline: "Special hinzufügen",
-		tab1: "Grunddaten",
-		tab2: "Produkte",
-		specialTab2: "Produkte",
-		tab3: "Verfügbarkeit",
-		basicData: "Grunddaten",
-		id: "ID",
-		name: "Name",
-		offerType: "Typ",
-		fixedPrice: "Festpreis",
-		discount: "Rabatt",
-		discountType: "Rabatttyp",
-		percentage: "Prozent",
-		amount: "Betrag",
-		price: "Preis (€)",
-		discountPercentage: "Rabatt (%)",
-		discountAmount: "Rabatt (€)",
-		takeaway: "Takeaway verfügbar",
-		offerItems: "Menü-Items",
-		addNewItem: "Neues Item hinzufügen",
-		itemName: "Item-Name (z.B. Vorspeise, Hauptgang)",
-		maxSelections: "Maximale Auswahl",
-		selectProducts: "Produkte auswählen",
-		selectedProducts: "Ausgewählte Produkte",
-		addItem: "Item hinzufügen",
-		updateItem: "Item aktualisieren",
-		editItem: "Item bearbeiten",
-		editingItemInfo: "Sie bearbeiten gerade ein Item",
-		cancel: "Abbrechen",
-		availability: "Verfügbarkeit",
-		weekdays: "Wochentage",
-		selectAllDays: "Alle Tage auswählen",
-		startDate: "Startdatum (optional)",
-		endDate: "Enddatum (optional)",
-		startTime: "Startzeit (optional)",
-		endTime: "Endzeit (optional)",
-		previous: "Zurück",
-		next: "Weiter",
-		idRequired: "Bitte eine ID eingeben",
-		nameRequired: "Bitte einen Namen eingeben",
-		valueRequired: "Bitte einen Wert eingeben",
-		itemsRequired: "Bitte mindestens ein Item hinzufügen",
-		itemNameRequired: "Bitte einen Namen eingeben",
-		productsRequired: "Bitte mindestens ein Produkt auswählen"
+	landingOrderPage: {
+		offers: "Angebote",
+		cart: "Warenkorb",
+		cartEmptyMessage: "Ihr Warenkorb ist leer",
+		total: "Gesamt",
+		order: "Bestellen",
+		addNoteEdit: "Anmerkung bearbeiten",
+		addNoteAdd: "Anmerkung hinzufügen",
+		offerLabel: "Angebot"
 	},
-	editOfferDialog: {
-		headline: "Menü bearbeiten",
-		specialHeadline: "Special bearbeiten",
-		tab1: "Grunddaten",
-		tab2: "Produkte",
-		specialTab2: "Produkte",
-		tab3: "Verfügbarkeit",
-		basicData: "Grunddaten",
-		id: "ID",
-		name: "Name",
-		offerType: "Typ",
-		fixedPrice: "Festpreis",
+	landingGuestsPage: {
+		restaurantName: "Name des Restaurants",
+		cityPostalCode: "Stadt / PLZ",
+		distance: "Entfernung",
+		distanceKm: "Entfernung: {distance} km",
+		rating: "Bewertung",
+		takeaway: "Zum Mitnehmen",
+		delivery: "Lieferung"
+	},
+	restaurantInfoPage: {
+		restaurantName: "Name des Restaurants",
+		cityPostalCode: "Stadt / PLZ",
+		distance: "Entfernung",
+		distanceKm: "Entfernung: {distance} km",
+		rating: "Bewertung",
+		takeaway: "Zum Mitnehmen",
+		delivery: "Lieferung",
+		openingHours: "Öffnungszeiten",
+		phone: "Telefon",
+		email: "E-Mail",
+		reserveNow: "Jetzt reservieren",
+		orderNow: "Jetzt bestellen",
+		buyVoucher: "Gutschein Kaufen",
+		noImageAvailable: "Kein Bild verfügbar",
+		addImage: "Bild hinzufügen",
+		bestsellers: "Bestseller",
+		showFullMenu: "Gesamte Speisekarte anzeigen",
+		noBestsellers: "Keine Bestseller verfügbar",
+		offers: "Angebote",
 		discount: "Rabatt",
-		discountType: "Rabatttyp",
-		percentage: "Prozent",
-		amount: "Betrag",
-		price: "Preis (€)",
-		discountPercentage: "Rabatt (%)",
-		discountAmount: "Rabatt (€)",
-		takeaway: "Takeaway verfügbar",
-		offerItems: "Menü-Items",
-		addNewItem: "Neues Item hinzufügen",
-		itemName: "Item-Name (z.B. Vorspeise, Hauptgang)",
-		maxSelections: "Maximale Auswahl",
-		selectProducts: "Produkte auswählen",
-		selectedProducts: "Ausgewählte Produkte",
-		addItem: "Item hinzufügen",
-		updateItem: "Item aktualisieren",
-		editItem: "Item bearbeiten",
-		editingItemInfo: "Sie bearbeiten gerade ein Item",
-		cancel: "Abbrechen",
-		availability: "Verfügbarkeit",
-		weekdays: "Wochentage",
-		selectAllDays: "Alle Tage auswählen",
-		startDate: "Startdatum (optional)",
-		endDate: "Enddatum (optional)",
-		startTime: "Startzeit (optional)",
-		endTime: "Endzeit (optional)",
-		previous: "Zurück",
-		next: "Weiter",
-		idRequired: "Bitte eine ID eingeben",
-		nameRequired: "Bitte einen Namen eingeben",
-		valueRequired: "Bitte einen Wert eingeben",
-		itemsRequired: "Bitte mindestens ein Item hinzufügen",
-		itemNameRequired: "Bitte einen Namen eingeben",
-		productsRequired: "Bitte mindestens ein Produkt auswählen"
+		fixedPrice: "Festpreis",
+		max: "max.",
+		reviews: "Bewertungen",
+		addReview: "Bewertung hinzufügen",
+		showAllReviews: "Alle Bewertungen anzeigen",
+		noReviews: "Keine Bewertungen verfügbar",
+		reviewSingular: "Bewertung",
+		reviewPlural: "Bewertungen"
 	},
 	dialogs: {
 		logoutDialog: {
 			headline: "Abmelden",
 			description: "Bist du dir sicher, dass du dich abmelden möchtest?"
+		},
+		activateRegisterDialog: {
+			headline: "Kasse aktivieren",
+			description:
+				"Aktiviere diese Kasse, um Zahlungen von deinen Kunden zu akzeptieren und alle Transaktionen in der TSE zu speichern.<br /><br />Bitte beachte, dass pro aktivierter Kasse zusätzlich 49 € pro Monat an Kosten anfallen.",
+			activate: "Aktivieren"
 		},
 		editRegisterClientNameDialog: {
 			headline: "Gerätename bearbeiten",
@@ -332,6 +323,21 @@ export const de = {
 		editRestaurantNameDialog: {
 			headline: "Name bearbeiten",
 			name: "Name des Restaurants"
+		},
+		editRestaurantInfoDialog: {
+			headline: "Restaurant-Informationen bearbeiten",
+			addressSection: "Adresse",
+			ownerSection: "Inhaberinformationen",
+			contactSection: "Kontaktinformationen",
+			city: "Stadt",
+			line1: "Straße",
+			houseNumber: "Nr.",
+			line2: "Adresszusatz",
+			postalCode: "Postleitzahl",
+			owner: "Inhaber",
+			taxNumber: "Steuernummer",
+			mail: "E-Mail",
+			phoneNumber: "Telefonnummer"
 		},
 		editAddressDialog: {
 			headline: "Adresse bearbeiten",
@@ -531,8 +537,9 @@ export const de = {
 		selectProductVariationsDialog: {
 			headline: "Variationen auswählen"
 		},
-		subtractProductVariationsDialog: {
-			headline: "Variationen entfernen"
+		productVariationsCombinationsDialog: {
+			removeHeadline: "Variationen entfernen",
+			selectHeadline: "Variationen auswählen"
 		},
 		moveMultipleProductsDialog: {
 			headline: "Mehrere verschieben"
@@ -560,8 +567,8 @@ export const de = {
 			headline: "Außer Haus Bestellung",
 			name: "Name",
 			phoneNumber: "Telefonnummer",
-			addressLine1: "Straße",
-			addressLine2: "Adresszusatz",
+			line1: "Straße",
+			line2: "Adresszusatz",
 			houseNumber: "Hausnummer",
 			postalCode: "PLZ",
 			city: "Stadt",
@@ -584,8 +591,8 @@ export const de = {
 			headline: "Bestellung bearbeiten",
 			name: "Name",
 			phoneNumber: "Telefonnummer",
-			addressLine1: "Straße",
-			addressLine2: "Adresszusatz",
+			line1: "Straße",
+			line2: "Adresszusatz",
 			houseNumber: "Hausnummer",
 			postalCode: "PLZ",
 			city: "Stadt",
@@ -641,6 +648,148 @@ export const de = {
 			additionalCost: "Aufpreis (€)",
 			nameRequired: "Name ist erforderlich",
 			costPositive: "Preis muss positiv sein"
+		},
+		addOfferDialog: {
+			headline: "Menü hinzufügen",
+			specialHeadline: "Special hinzufügen",
+			tab1: "Grunddaten",
+			tab2: "Produkte",
+			specialTab2: "Produkte",
+			tab3: "Verfügbarkeit",
+			basicData: "Grunddaten",
+			id: "ID",
+			name: "Name",
+			offerType: "Typ",
+			fixedPrice: "Festpreis",
+			discount: "Rabatt",
+			discountType: "Rabatttyp",
+			percentage: "Prozent",
+			amount: "Betrag",
+			price: "Preis (€)",
+			discountPercentage: "Rabatt (%)",
+			discountAmount: "Rabatt (€)",
+			takeaway: "Takeaway verfügbar",
+			offerItems: "Menü-Items",
+			addNewItem: "Neues Item hinzufügen",
+			itemName: "Item-Name (z.B. Vorspeise, Hauptgang)",
+			maxSelections: "Maximale Auswahl",
+			selectProducts: "Produkte auswählen",
+			selectedProducts: "Ausgewählte Produkte",
+			addItem: "Item hinzufügen",
+			updateItem: "Item aktualisieren",
+			editItem: "Item bearbeiten",
+			editingItemInfo: "Sie bearbeiten gerade ein Item",
+			cancel: "Abbrechen",
+			availability: "Verfügbarkeit",
+			weekdays: "Wochentage",
+			selectAllDays: "Alle Tage auswählen",
+			startDate: "Startdatum (optional)",
+			endDate: "Enddatum (optional)",
+			startTime: "Startzeit (optional)",
+			endTime: "Endzeit (optional)",
+			previous: "Zurück",
+			next: "Weiter",
+			idRequired: "Bitte eine ID eingeben",
+			nameRequired: "Bitte einen Namen eingeben",
+			valueRequired: "Bitte einen Wert eingeben",
+			itemsRequired: "Bitte mindestens ein Item hinzufügen",
+			itemNameRequired: "Bitte einen Namen eingeben",
+			productsRequired: "Bitte mindestens ein Produkt auswählen"
+		},
+		editOfferDialog: {
+			headline: "Menü bearbeiten",
+			specialHeadline: "Special bearbeiten",
+			tab1: "Grunddaten",
+			tab2: "Produkte",
+			specialTab2: "Produkte",
+			tab3: "Verfügbarkeit",
+			basicData: "Grunddaten",
+			id: "ID",
+			name: "Name",
+			offerType: "Typ",
+			fixedPrice: "Festpreis",
+			discount: "Rabatt",
+			discountType: "Rabatttyp",
+			percentage: "Prozent",
+			amount: "Betrag",
+			price: "Preis (€)",
+			discountPercentage: "Rabatt (%)",
+			discountAmount: "Rabatt (€)",
+			takeaway: "Takeaway verfügbar",
+			offerItems: "Menü-Items",
+			addNewItem: "Neues Item hinzufügen",
+			itemName: "Item-Name (z.B. Vorspeise, Hauptgang)",
+			maxSelections: "Maximale Auswahl",
+			selectProducts: "Produkte auswählen",
+			selectedProducts: "Ausgewählte Produkte",
+			addItem: "Item hinzufügen",
+			updateItem: "Item aktualisieren",
+			editItem: "Item bearbeiten",
+			editingItemInfo: "Sie bearbeiten gerade ein Item",
+			cancel: "Abbrechen",
+			availability: "Verfügbarkeit",
+			weekdays: "Wochentage",
+			selectAllDays: "Alle Tage auswählen",
+			startDate: "Startdatum (optional)",
+			endDate: "Enddatum (optional)",
+			startTime: "Startzeit (optional)",
+			endTime: "Endzeit (optional)",
+			previous: "Zurück",
+			next: "Weiter",
+			idRequired: "Bitte eine ID eingeben",
+			nameRequired: "Bitte einen Namen eingeben",
+			valueRequired: "Bitte einen Wert eingeben",
+			itemsRequired: "Bitte mindestens ein Item hinzufügen",
+			itemNameRequired: "Bitte einen Namen eingeben",
+			productsRequired: "Bitte mindestens ein Produkt auswählen"
+		},
+		viewMenuDialog: {
+			headline: "Speisekarte",
+			close: "Schließen",
+			allProducts: "Alle Produkte",
+			allProductsCount: "Alle Produkte ({count})",
+			noProducts: "Keine Produkte in dieser Kategorie",
+			noCategories: "Keine Kategorien verfügbar"
+		},
+		uploadImageDialog: {
+			headline: "Bild hinzufügen",
+			dragDropText: "Bild hierher ziehen oder klicken",
+			fileFormats: "PNG, JPG, JPEG bis 5MB",
+			fileTooLarge: "Datei ist zu groß. Maximale Größe: 5MB",
+			invalidFileType: "Bitte nur Bilddateien hochladen",
+			uploadSuccess: "Bild erfolgreich hinzugefügt"
+		},
+		addReviewDialog: {
+			headline: "Bewertung hinzufügen",
+			ratingLabel: "Bewertung",
+			reviewLabel: "Ihre Bewertung (optional)",
+			reviewPlaceholder: "Teilen Sie Ihre Erfahrung mit anderen Gästen...",
+			submit: "Bewertung abgeben",
+			cancel: "Abbrechen",
+			reviewAdded: "Neue Bewertung hinzugefügt:"
+		},
+		viewReviewsDialog: {
+			headline: "Alle Bewertungen",
+			close: "Schließen",
+			starsLabel: "von 5 Sternen",
+			reviewSingular: "Bewertung",
+			reviewPlural: "Bewertungen",
+			newest: "Neueste",
+			lowest: "Niedrigste",
+			highest: "Höchste",
+			noReviews: "Keine Bewertungen verfügbar"
+		},
+		confirmOrderDialog: {
+			headline: "Bestellung abschließen",
+			delivery: "Lieferung",
+			pickup: "Abholung",
+			deliveryAddress: "Lieferadresse",
+			pickupAddress: "Abholadresse",
+			total: "Gesamt",
+			selectPaymentMethod: "Bezahlmethode wählen",
+			cash: "Bar",
+			card: "Karte",
+			cancel: "Abbrechen"
 		}
 	},
 	actions: {
@@ -655,12 +804,15 @@ export const de = {
 		edit: "Bearbeiten",
 		delete: "Löschen",
 		close: "Schließen",
-		reset: "Zurücksetzen"
+		reset: "Zurücksetzen",
+		skip: "Überspringen"
 	},
 	errors: {
 		printerAlreadyExists:
 			"Ein Drucker mit dieser IP-Adresse existiert bereits.",
 		tableAlreadyExists: "Ein Tisch mit dieser Nummer existiert bereits.",
+		categoryNameAlreadyExists:
+			"Eine Kategorie mit diesem Namen existiert bereits",
 		nameMissing: "Bitte gib einen Namen an.",
 		nameTooShort: "Der Name ist zu kurz.",
 		nameTooLong: "Der Name ist zu lang.",
@@ -677,6 +829,9 @@ export const de = {
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
 		dateInPast: "Datum darf nicht in der Vergangenheit liegen",
+		productAlreadyHasOffer: "Dieses Produkt hat bereits ein Angebot.",
+		priceInvalid: "Der Preis muss eine positive Zahl sein.",
+		offerValueInvalid: "Der Angebotswert muss eine positive Zahl sein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
 	}
 }

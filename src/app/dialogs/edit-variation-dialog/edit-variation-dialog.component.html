@@ -4,7 +4,7 @@
 	[primaryButtonText]="actionsLocale.save"
 	[defaultButtonText]="actionsLocale.cancel"
 	[visible]="visible"
-	maxWidth="600"
+	maxWidth="500"
 	[loading]="loading"
 	(dismiss)="hide()"
 	(primaryButtonClick)="submit()"
@@ -35,7 +35,7 @@
 						<div class="item-row">
 							<span class="item-name">{{ item.name }}</span>
 							<span class="item-cost">{{
-								item.additionalCost | currency: "EUR"
+								formatPrice(item.additionalCost)
 							}}</span>
 							<dav-icon-button
 								size="xs"

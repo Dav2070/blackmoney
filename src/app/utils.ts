@@ -1,4 +1,3 @@
-import { Router } from "@angular/router"
 import FingerprintJS from "@fingerprintjs/fingerprintjs"
 import { Toast } from "dav-ui-components"
 import { ApiService } from "./services/api-service"
@@ -25,6 +24,7 @@ import { Bill } from "./models/Bill"
 import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
+import { Reservation } from "./models/Reservation"
 import {
 	ApolloResult,
 	CategoryResource,
@@ -47,6 +47,7 @@ import {
 	BillResource,
 	OfferResource,
 	OfferItemResource,
+	ReservationResource,
 	ErrorCode,
 	Theme,
 	OrderItemType
@@ -68,6 +69,11 @@ export async function loadRegisterClient(
 					uuid
 					name
 					serialNumber
+					register {
+						uuid
+						name
+						status
+					}
 				`,
 				{
 					registerUuid,
@@ -86,6 +92,11 @@ export async function loadRegisterClient(
 			retrieveRegisterClientResponse.data
 				?.retrieveRegisterClientBySerialNumber != null
 		) {
+			dataService.register = convertRegisterResourceToRegister(
+				retrieveRegisterClientResponse.data
+					.retrieveRegisterClientBySerialNumber.register
+			)
+
 			dataService.registerClient =
 				convertRegisterClientResourceToRegisterClient(
 					retrieveRegisterClientResponse.data
@@ -94,6 +105,7 @@ export async function loadRegisterClient(
 		}
 	}
 
+	dataService.registerPromiseHolder.Resolve()
 	dataService.registerClientPromiseHolder.Resolve()
 }
 
@@ -126,16 +138,15 @@ export function calculateUnitPriceOfOrderItem(orderItem: OrderItem): number {
 			}
 		}
 	} else {
-		unitPrice =
-			orderItem.orderItemVariations.length === 0
-				? orderItem.product.price
-				: 0
+		// For diverse items use diversePrice, for regular products use product.price
+		const itemPrice = orderItem.diversePrice ?? orderItem.product.price
+
+		unitPrice = orderItem.orderItemVariations.length === 0 ? itemPrice : 0
 
 		for (const variation of orderItem.orderItemVariations) {
 			for (const variationItem of variation.variationItems) {
 				unitPrice +=
-					(orderItem.product.price + variationItem.additionalCost) *
-					variation.count
+					(itemPrice + variationItem.additionalCost) * variation.count
 			}
 		}
 	}
@@ -190,8 +201,7 @@ export async function initUserAfterLogin(
 	apiService: ApiService,
 	authService: AuthService,
 	dataService: DataService,
-	settingsService: SettingsService,
-	router: Router
+	settingsService: SettingsService
 ): Promise<void> {
 	await authService.setAccessToken(accessToken)
 	dataService.loadApollo(accessToken)
@@ -201,9 +211,22 @@ export async function initUserAfterLogin(
 	dataService.blackmoneyUserPromiseHolder.Resolve()
 
 	await settingsService.setRestaurant(restaurantUuid)
+}
 
-	// Redirect to user page
-	router.navigate(["user"])
+export async function navigateToStripeCheckout(apiService: ApiService) {
+	const createStripeSubscriptionCheckoutSessionResponse =
+		await apiService.createStripeSubscriptionCheckoutSession(`url`, {
+			successUrl: window.location.href,
+			cancelUrl: window.location.href
+		})
+
+	if (
+		createStripeSubscriptionCheckoutSessionResponse.data
+			?.createStripeSubscriptionCheckoutSession != null
+	) {
+		window.location.href =
+			createStripeSubscriptionCheckoutSessionResponse.data.createStripeSubscriptionCheckoutSession.url
+	}
 }
 
 export async function getSerialNumber(
@@ -253,6 +276,8 @@ export function convertCompanyResourceToCompany(
 	return {
 		uuid: companyResource.uuid,
 		name: companyResource.name,
+		stripeOnboardingStatus: companyResource.stripeOnboardingStatus,
+		stripeSubscriptionStatus: companyResource.stripeSubscriptionStatus,
 		users,
 		restaurants
 	}
@@ -292,16 +317,20 @@ export function convertRestaurantResourceToRestaurant(
 	return {
 		uuid: restaurantResource.uuid,
 		name: restaurantResource.name,
-		city: restaurantResource.city,
-		country: restaurantResource.country,
-		line1: restaurantResource.line1,
-		line2: restaurantResource.line2,
-		postalCode: restaurantResource.postalCode,
 		users,
 		rooms,
 		registers,
 		printers,
-		menu: convertMenuResourceToMenu(restaurantResource.menu)
+		menu: convertMenuResourceToMenu(restaurantResource.menu),
+		images: [],
+		address: {
+			uuid: restaurantResource.uuid,
+			line1: restaurantResource.line1,
+			line2: restaurantResource.line2,
+			postalCode: restaurantResource.postalCode,
+			city: restaurantResource.city,
+			country: restaurantResource.country
+		}
 	}
 }
 
@@ -323,6 +352,7 @@ export function convertRegisterResourceToRegister(
 	return {
 		uuid: registerResource.uuid,
 		name: registerResource.name,
+		status: registerResource.status,
 		registerClients
 	}
 }
@@ -344,6 +374,9 @@ export function convertRegisterClientResourceToRegisterClient(
 		uuid: registerClientResource.uuid,
 		name: registerClientResource.name,
 		serialNumber: registerClientResource.serialNumber,
+		register: convertRegisterResourceToRegister(
+			registerClientResource.register
+		),
 		printRules
 	}
 }
@@ -453,6 +486,12 @@ export function convertMenuResourceToMenu(menuResource: MenuResource): Menu {
 		categories.push(convertCategoryResourceToCategory(category))
 	}
 
+	const variations: Variation[] = []
+
+	for (const variation of menuResource.variations?.items ?? []) {
+		variations.push(convertVariationResourceToVariation(variation))
+	}
+
 	const offers: Offer[] = []
 
 	for (const offer of menuResource.offers?.items ?? []) {
@@ -462,6 +501,7 @@ export function convertMenuResourceToMenu(menuResource: MenuResource): Menu {
 	return {
 		uuid: menuResource.uuid,
 		categories,
+		variations,
 		offers
 	}
 }
@@ -485,12 +525,14 @@ export function convertOfferResourceToOffer(
 		offerType: offerResource.offerType,
 		discountType: offerResource.discountType,
 		offerValue: offerResource.offerValue,
-		startDate: offerResource.startDate
-			? new Date(offerResource.startDate)
-			: undefined,
-		endDate: offerResource.endDate
-			? new Date(offerResource.endDate)
-			: undefined,
+		startDate:
+			offerResource.startDate != null
+				? new Date(Number(offerResource.startDate))
+				: undefined,
+		endDate:
+			offerResource.endDate != null
+				? new Date(Number(offerResource.endDate))
+				: undefined,
 		startTime: offerResource.startTime,
 		endTime: offerResource.endTime,
 		weekdays: offerResource.weekdays,
@@ -529,15 +571,20 @@ export function convertProductResourceToProduct(
 	const variations: Variation[] = []
 
 	for (const variation of productResource.variations?.items ?? []) {
-		variations.push(convertVariationResourceToVariation(variation))
+		// Create a deep copy to avoid shared references between products
+		const variationCopy = convertVariationResourceToVariation(variation)
+		variations.push({
+			...variationCopy,
+			variationItems: variationCopy.variationItems?.map(item => ({ ...item })) || []
+		})
 	}
 
 	return {
-		id: productResource.id,
 		uuid: productResource.uuid,
 		type: productResource.type,
 		name: productResource.name,
 		price: productResource.price,
+		shortcut: productResource.shortcut,
 		category: convertCategoryResourceToCategory(productResource.category),
 		offer: convertOfferResourceToOffer(productResource.offer),
 		variations
@@ -659,6 +706,26 @@ export function convertOrderItemResourceToOrderItem(
 		)
 	}
 
+	// For diverse items (with diversePrice), create a minimal placeholder product
+	let product: Product
+	if (orderItemResource.diversePrice != null) {
+		// Create minimal placeholder product for diverse items
+		product = new Product()
+		product.uuid = null
+		product.variations = []
+
+		// Set name based on OrderItemType
+		if (orderItemResource.type === OrderItemType.DiverseFood) {
+			product.name = "Diverse Speise"
+		} else if (orderItemResource.type === OrderItemType.DiverseDrink) {
+			product.name = "Diverse Getränke"
+		} else if (orderItemResource.type === OrderItemType.DiverseOther) {
+			product.name = "Diverse Kosten"
+		}
+	} else {
+		product = convertProductResourceToProduct(orderItemResource.product)
+	}
+
 	return {
 		uuid: orderItemResource.uuid,
 		type: orderItemResource.type,
@@ -668,9 +735,11 @@ export function convertOrderItemResourceToOrderItem(
 		takeAway: orderItemResource.takeAway,
 		course: orderItemResource.course,
 		order: convertOrderResourceToOrder(orderItemResource.order),
-		product: convertProductResourceToProduct(orderItemResource.product),
+		product: product,
+		offer: convertOfferResourceToOffer(orderItemResource.offer),
 		orderItems,
-		orderItemVariations
+		orderItemVariations,
+		diversePrice: orderItemResource.diversePrice
 	}
 }
 
@@ -694,6 +763,27 @@ export function convertOrderItemVariationResourceToOrderItemVariation(
 		uuid: orderItemVariationResource.uuid,
 		count: orderItemVariationResource.count,
 		variationItems
+	}
+}
+
+export function convertReservationResourceToReservation(
+	reservationResource: ReservationResource
+): Reservation {
+	if (reservationResource == null) {
+		return null
+	}
+
+	return {
+		uuid: reservationResource.uuid,
+		table: convertTableResourceToTable(reservationResource.table),
+		name: reservationResource.name,
+		phoneNumber: reservationResource.phoneNumber,
+		email: reservationResource.email,
+		numberOfPeople: reservationResource.numberOfPeople,
+		date: reservationResource.date
+			? new Date(reservationResource.date)
+			: null,
+		checkedIn: reservationResource.checkedIn
 	}
 }
 

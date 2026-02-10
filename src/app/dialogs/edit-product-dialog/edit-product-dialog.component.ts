@@ -14,6 +14,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons"
 import { LocalizationService } from "src/app/services/localization-service"
 import { Product } from "src/app/models/Product"
 import { Variation } from "src/app/models/Variation"
+import { formatPrice } from "src/app/utils"
 
 @Component({
 	selector: "app-edit-product-dialog",
@@ -77,12 +78,19 @@ export class EditProductDialogComponent {
 	}
 
 	show(product: Product) {
-		this.product = product
-		this.productId = product.id.toString()
+		this.reset()
+
+		// Create a deep copy of the product to avoid mutating the original
+		this.product = {
+			...product,
+			variations: product.variations ? [...product.variations] : []
+		}
+		this.productId = product.shortcut.toString()
 		this.name = product.name
 		this.price = (product.price / 100).toFixed(2)
 		this.takeaway = product.takeaway
-		this.selectedVariationUuids = product.variations?.map(v => v.uuid) || []
+		this.selectedVariationUuids = product.variations.map(v => v.uuid)
+
 		this.expandedVariationUuids.clear()
 		this.visible = true
 	}
@@ -98,6 +106,7 @@ export class EditProductDialogComponent {
 		this.name = ""
 		this.price = ""
 		this.takeaway = false
+		// Create new array to ensure Angular detects changes
 		this.selectedVariationUuids = []
 		this.expandedVariationUuids.clear()
 		this.idError = ""
@@ -134,9 +143,9 @@ export class EditProductDialogComponent {
 
 		const updatedProduct: Product = {
 			...this.product,
-			id: parseInt(this.productId.trim()),
 			name: this.name.trim(),
 			price: priceInCents,
+			shortcut: parseInt(this.productId.trim()),
 			variations: selectedVariations,
 			takeaway: this.takeaway
 		}
@@ -166,12 +175,18 @@ export class EditProductDialogComponent {
 		this.takeaway = newValue
 	}
 
-	toggleVariationSelection(variationUuid: string) {
-		const index = this.selectedVariationUuids.indexOf(variationUuid)
-		if (index > -1) {
-			this.selectedVariationUuids.splice(index, 1)
+	checkboxChanged(variationUuid: string, event: Event) {
+		const checked = (event as CustomEvent).detail.checked
+
+		if (checked) {
+			if (!this.selectedVariationUuids.includes(variationUuid)) {
+				this.selectedVariationUuids.push(variationUuid)
+			}
 		} else {
-			this.selectedVariationUuids.push(variationUuid)
+			const index = this.selectedVariationUuids.indexOf(variationUuid)
+			if (index > -1) {
+				this.selectedVariationUuids.splice(index, 1)
+			}
 		}
 	}
 

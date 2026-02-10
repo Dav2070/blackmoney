@@ -1,15 +1,12 @@
 .container {
+	display: grid;
+	gap: 64px;
 	padding: 0 16px 16px;
 }
 
 h1 {
 	margin: 0;
 	color: var(--dav-color-on-surface);
-}
-
-.landing {
-	display: grid;
-	gap: 64px;
 }
 
 .hero {
@@ -139,6 +136,7 @@ h1 {
 	justify-content: center;
 	font-size: 24px;
 	margin-bottom: 12px;
+	color: var(--dav-color-on-surface);
 	background: var(--dav-color-surface-container-low);
 	border: 1px solid rgb(var(--dav-color-outline-variant-rgb), 0.3);
 }

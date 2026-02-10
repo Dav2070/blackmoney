@@ -11,6 +11,7 @@ import { DataService } from "./services/data-service"
 import { ApiService } from "./services/api-service"
 import { AuthService } from "./services/auth-service"
 import { SettingsService } from "./services/settings-service"
+import { MessageService } from "./services/message-service"
 import { environment } from "src/environments/environment"
 import {
 	convertCompanyResourceToCompany,
@@ -37,6 +38,7 @@ export class AppComponent {
 		private apiService: ApiService,
 		private authService: AuthService,
 		private settingsService: SettingsService,
+		private messageService: MessageService,
 		private activatedRoute: ActivatedRoute,
 		private apollo: Apollo,
 		private httpLink: HttpLink,
@@ -64,6 +66,7 @@ export class AppComponent {
 			return
 		}
 
+		this.messageService.init()
 		this.dataService.loadTheme()
 
 		new Dav({
@@ -86,6 +89,8 @@ export class AppComponent {
 			`
 				uuid
 				name
+				stripeOnboardingStatus
+				stripeSubscriptionStatus
 				restaurants {
 					total
 					items {

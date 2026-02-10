@@ -32,6 +32,20 @@
 			>
 				Preise
 			</dav-tab-bar-item>
+
+			<!-- <dav-tab-bar-item
+				[active]="orderTabActive"
+				(click)="navigateToOrderPage()"
+			>
+				Bestellen
+			</dav-tab-bar-item>
+
+			<dav-tab-bar-item
+				[active]="guestsTabActive"
+				(click)="navigateToGuestsPage()"
+			>
+				Gäste
+			</dav-tab-bar-item> -->
 		</dav-tab-bar>
 	</div>
 
@@ -74,6 +88,19 @@
 
 			<p slot="label">Übersicht</p>
 		</dav-navigation-bar-item>
+
+		<!-- <dav-navigation-bar-item
+			[active]="orderTabActive"
+			(click)="navigateToOrderPage()"
+		>
+			@if (orderTabActive) {
+				<fa-icon slot="icon" [icon]="faCartShoppingSolid"></fa-icon>
+			} @else {
+				<fa-icon slot="icon" [icon]="faCartShoppingRegular"></fa-icon>
+			}
+
+			<p slot="label">Bestellen</p>
+		</dav-navigation-bar-item> -->
 
 		<dav-navigation-bar-item
 			[active]="pricingTabActive"

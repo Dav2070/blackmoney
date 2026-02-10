@@ -1,0 +1,157 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[visible]="visible"
+	[defaultButtonText]="locale.close"
+	maxWidth="1200"
+	(dismiss)="close()"
+	(defaultButtonClick)="close()"
+>
+	<div class="dialog-container">
+		<div class="dialog-content">
+			<div class="content-header">
+				<h3>{{ getSelectedCategoryName() }}</h3>
+			</div>
+
+			@if (selectedCategoryId === null) {
+				<!-- Show all products grouped by category -->
+				@if (menu?.categories && menu.categories.length > 0) {
+					<div class="categories-container">
+						@for (category of menu.categories; track category.uuid) {
+							@if (category.products && category.products.length > 0) {
+								<div class="category-section">
+									<h4 class="category-title">{{ category.name }}</h4>
+									<div class="products-grid">
+										@for (
+											product of category.products;
+											track product.uuid
+										) {
+											<div class="product-item">
+												<div class="product-main">
+													<span class="product-name">{{
+														product.name
+													}}</span>
+													<span class="product-price">{{
+														formatPrice(product.price)
+													}}</span>
+												</div>
+
+												@if (
+													product.variations &&
+													product.variations.length > 0
+												) {
+													<div class="product-variations">
+														<div class="variations-chips">
+															@for (
+																variation of product.variations;
+																track variation.uuid
+															) {
+																<div
+																	class="variation-chip"
+																	[title]="
+																		getVariationTooltip(
+																			variation
+																		)
+																	"
+																>
+																	<fa-icon
+																		[icon]="faList"
+																		class="variation-icon"
+																	></fa-icon>
+																	<span
+																		class="variation-name"
+																		>{{
+																			variation.name
+																		}}</span
+																	>
+																</div>
+															}
+														</div>
+													</div>
+												}
+											</div>
+										}
+									</div>
+								</div>
+							}
+						}
+					</div>
+				} @else {
+					<div class="empty-state">
+						<p>{{ locale.noCategories }}</p>
+					</div>
+				}
+			} @else {
+				<!-- Show products from selected category -->
+				@if (getFilteredProducts().length > 0) {
+					<div class="products-grid">
+						@for (product of getFilteredProducts(); track product.uuid) {
+							<div class="product-item">
+								<div class="product-main">
+									<span class="product-name">{{ product.name }}</span>
+									<span class="product-price">{{
+										formatPrice(product.price)
+									}}</span>
+								</div>
+
+								@if (
+									product.variations && product.variations.length > 0
+								) {
+									<div class="product-variations">
+										<div class="variations-chips">
+											@for (
+												variation of product.variations;
+												track variation.uuid
+											) {
+												<div
+													class="variation-chip"
+													[title]="getVariationTooltip(variation)"
+												>
+													<fa-icon
+														[icon]="faList"
+														class="variation-icon"
+													></fa-icon>
+													<span class="variation-name">{{
+														variation.name
+													}}</span>
+												</div>
+											}
+										</div>
+									</div>
+								}
+							</div>
+						}
+					</div>
+				} @else {
+					<div class="empty-state">
+						<p>{{ locale.noProducts }}</p>
+					</div>
+				}
+			}
+		</div>
+
+		<div class="categories-sidenav-container">
+			<dav-sidenav>
+				<dav-sidenav-item
+					[value]="'Alle Produkte (' + getTotalProductCount() + ')'"
+					[active]="selectedCategoryId === null"
+					(click)="selectCategory(null)"
+				></dav-sidenav-item>
+				@if (menu?.categories && menu.categories.length > 0) {
+					@for (category of menu.categories; track category.uuid) {
+						<dav-sidenav-item
+							[value]="
+								category.name +
+								' (' +
+								(category.products?.length || 0) +
+								')'
+							"
+							[active]="selectedCategoryId === category.uuid"
+							(click)="selectCategory(category.uuid)"
+						></dav-sidenav-item>
+					}
+				}
+			</dav-sidenav>
+		</div>
+	</div>
+</dav-dialog>

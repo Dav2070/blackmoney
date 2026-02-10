@@ -9,7 +9,9 @@ export class OrderItemsArrayMerger {
 
 	// Merge alle orderItems von incoming in existing.orderItems (fügt zusammen oder hängt an)
 	mergeOrderItemArray(existing: OrderItem, incoming: OrderItem) {
-		if (!incoming?.orderItems?.length) return
+		if (!incoming?.orderItems?.length) {
+			return
+		}
 		if (!existing.orderItems) existing.orderItems = []
 
 		// Spezialbehandlung für Specials: nur ein Subitem, das gemerged wird
@@ -60,7 +62,7 @@ export class OrderItemsArrayMerger {
 		if (a.takeAway !== b.takeAway) return false
 		if (a.course !== b.course) return false
 		if (a.offer?.id !== b.offer?.id) return false
-		if (a.product.id !== b.product.id) return false
+		if (a.product.shortcut !== b.product.shortcut) return false
 
 		// Variations: Struktur (variationItems) muss gleich sein (counts dürfen abweichen)
 		if (

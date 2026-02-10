@@ -1,4 +1,4 @@
-<div class="landing container slide-up-in">
+<div class="container slide-up-in">
 	<section class="hero" [class.dark]="dataService.darkTheme">
 		<div class="hero-content">
 			<h1>Das moderne Kassensystem<br />für moderne Restaurants</h1>
@@ -15,29 +15,74 @@
 	<section class="features" aria-label="Vorteile und Funktionen">
 		<div class="features-grid">
 			<article class="feature-card">
-				<div class="icon" aria-hidden="true">🖥️</div>
-				<h3>Passende Geräte</h3>
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faCalendarDays"></fa-icon>
+				</div>
+
+				<h3>Online-Tisch-Reservierungen</h3>
 				<p>
-					Bei uns bekommst du die Hardware für dein Restaurant: Kasse,
-					Bon-Drucker, Bezahl-Terminals und mehr.
+					Deine Gäste können über unsere Webseite einen Tisch in deinem
+					Restaurant reservieren.
 				</p>
 			</article>
 
 			<article class="feature-card">
-				<div class="icon" aria-hidden="true">🧾</div>
-				<h3>Bestellen & Kassieren</h3>
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faBagShopping"></fa-icon>
+				</div>
+
+				<h3>Online-Bestellungen</h3>
 				<p>
-					Nimm Bestellungen deiner Gäste auf und kassiere schnell, sicher
-					und bequem.
+					Deine Gäste können über unsere Webseite in deinem Restaurant
+					Bestellungen aufgeben.
 				</p>
 			</article>
 
 			<article class="feature-card">
-				<div class="icon" aria-hidden="true">🧑‍🍳</div>
-				<h3>Druckerverwaltung</h3>
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faMobile"></fa-icon>
+				</div>
+
+				<h3>Geräte-Vermietung</h3>
 				<p>
-					Drucke Bons und Rechnungen und schicke Notizen für bestellte
-					Produkte direkt in die Küche.
+					Miete Hardware wie Kartenzahlungsterminal, Kassen und Bon-Drucker für
+					einen günstigen monatlichen Preis.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faUsers"></fa-icon>
+				</div>
+
+				<h3>Mitarbeiter-Verwaltung</h3>
+				<p>
+					Verwalte deine Mitarbeiter und füge neue hinzu, die für
+					unterschiedliche Aspekte in deinem Restaurant zuständig sind.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faDatabase"></fa-icon>
+				</div>
+
+				<h3>TSE-Unterstützung</h3>
+				<p>
+					Sichere deine Daten mit Cloud-TSE und erfülle alle KassenSichV-Anforderungen
+					automatisch und zuverlässig.
+				</p>
+			</article>
+
+			<article class="feature-card">
+				<div class="icon" aria-hidden="true">
+					<fa-icon [icon]="faWrench"></fa-icon>
+				</div>
+
+				<h3>Weitere Funktionen</h3>
+				<p>
+					Kundenmanagement, Umsatzanalysen, Marketing-Tools und vieles
+					mehr.
 				</p>
 			</article>
 		</div>

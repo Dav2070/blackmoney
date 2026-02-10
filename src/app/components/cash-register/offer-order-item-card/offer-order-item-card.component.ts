@@ -2,9 +2,12 @@ import { Component, EventEmitter, Input, Output } from "@angular/core"
 import {
 	faNoteSticky,
 	faCupTogo,
-	faUtensils
+	faUtensils,
+	faChevronDown,
+	faChevronUp
 } from "@fortawesome/pro-solid-svg-icons"
 import { OrderItem } from "src/app/models/OrderItem"
+import { OrderItemCard } from "src/app/types/orderItemCard"
 import { LocalizationService } from "src/app/services/localization-service"
 import { formatPrice } from "src/app/utils"
 import { PriceCalculator } from "src/app/models/cash-register/order-item-handling/price-calculator"
@@ -21,7 +24,9 @@ export class OfferOrderItemCardComponent {
 	faNoteSticky = faNoteSticky
 	faCupTogo = faCupTogo
 	faUtensils = faUtensils
-	@Input() orderItem: OrderItem = null
+	faChevronDown = faChevronDown
+	faChevronUp = faChevronUp
+	@Input() orderItem: OrderItemCard = null
 	@Input() selectedOrderItemUuid: string = null
 	@Input() clickable: boolean = false
 	@Output() noteIconClick = new EventEmitter<{
@@ -29,6 +34,10 @@ export class OfferOrderItemCardComponent {
 	}>()
 
 	private priceCalculator = new PriceCalculator()
+
+	get isExpanded(): boolean {
+		return this.orderItem?.isExpanded ?? false
+	}
 
 	constructor(private localizationService: LocalizationService) {}
 
@@ -50,5 +59,25 @@ export class OfferOrderItemCardComponent {
 		this.noteIconClick.emit({
 			orderItem: this.orderItem
 		})
+	}
+
+	/**
+	 * Checks if the OrderItem should be collapsible (has sub-items or discount)
+	 */
+	isCollapsible(): boolean {
+		return (
+			this.orderItem.orderItems?.length > 0 ||
+			this.calculateDiscountOfOrderItem(this.orderItem) > 0
+		)
+	}
+
+	/**
+	 * Toggles the expanded state
+	 */
+	toggleExpanded(event: Event) {
+		event.stopPropagation()
+		if (this.orderItem) {
+			this.orderItem.isExpanded = !this.orderItem.isExpanded
+		}
 	}
 }

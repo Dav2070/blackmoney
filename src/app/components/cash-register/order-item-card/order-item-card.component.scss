@@ -39,39 +39,17 @@
 	text-align: center;
 }
 
-.order-item-card-total-price > p {
-	text-align: right;
+.order-item-card-total-price {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	white-space: nowrap;
 }
 
 .order-item-card-name {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-}
-
-.note-icon {
-	color: var(--dav-color-primary);
-	cursor: pointer;
-	font-size: 16px;
-	transition: transform 200ms;
-
-	&:hover {
-		transform: scale(1.15);
-	}
-}
-
-.takeaway-icon {
-	color: var(--dav-color-primary);
-	font-size: 16px;
-}
-
-.course-badge {
-	color: var(--dav-color-primary);
-	font-size: 16px;
-}
-
-.course-icon {
-	font-size: 16px;
 }
 
 .order-item-card-variation-name {
@@ -87,4 +65,26 @@
 	grid-column: span 4;
 	border-top: 1px solid var(--dav-color-outline-variant);
 	margin: 8px 0;
+}
+
+.order-item-card-sub-item-name {
+	grid-column: 2;
+	padding-left: 8px;
+}
+
+.order-item-card-sub-item-count {
+	grid-column: 3;
+	text-align: center;
+}
+
+.order-item-card-sub-item-price {
+	grid-column: 4;
+	text-align: right;
+}
+
+.order-item-card-offer-info {
+	grid-column: 2 / span 3;
+	padding-left: 8px;
+	color: var(--dav-color-primary);
+	margin-top: 4px;
 }

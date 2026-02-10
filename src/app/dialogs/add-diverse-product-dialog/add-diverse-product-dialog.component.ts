@@ -89,11 +89,12 @@ export class AddDiverseProductDialogComponent {
 		this.priceString = (event as CustomEvent).detail.value
 
 		// Parse the price from the input (handle comma as decimal separator)
-		const cleanedPrice = this.priceString.replace(",", ".")
+		// Remove whitespace and replace comma with dot
+		const cleanedPrice = this.priceString.trim().replace(/,/g, ".")
 		const parsedPrice = parseFloat(cleanedPrice)
 
-		if (!isNaN(parsedPrice)) {
-			this.price = parsedPrice * 100
+		if (!isNaN(parsedPrice) && parsedPrice > 0) {
+			this.price = Math.round(parsedPrice * 100) // Convert to cents and round
 		} else {
 			this.price = 0
 		}

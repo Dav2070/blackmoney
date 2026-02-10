@@ -1,0 +1,106 @@
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			addButtonVisible
+			(backButtonClick)="navigateBack()"
+			(addButtonClick)="showAddVariationDialog()"
+		>
+			{{ locale.headline }}
+		</dav-header>
+
+		<!-- Variationen-Liste -->
+		@if (loading) {
+			<dav-progress-ring size="24"></dav-progress-ring>
+		} @else if (variations.length > 0) {
+			<div class="variations-grid">
+				@for (variation of variations; track variation.uuid) {
+					<app-variation-card
+						[variation]="variation"
+						(contextMenuClick)="
+							showVariationContextMenu($event.event, $event.variation)
+						"
+						(itemContextMenuClick)="
+							showVariationItemContextMenu(
+								$event.event,
+								$event.variation,
+								$event.item
+							)
+						"
+						(addItemClick)="showAddVariationItemDialog($event)"
+					></app-variation-card>
+				}
+			</div>
+		} @else {
+			<p class="no-items-message">{{ locale.noVariations }}</p>
+		}
+	</div>
+</div>
+
+<!-- Variation context menu -->
+<dav-context-menu
+	#variationContextMenu
+	[visible]="variationContextMenuVisible"
+	[posX]="variationContextMenuX"
+	[posY]="variationContextMenuY"
+>
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="editSelectedVariation()"
+	>
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="deleteSelectedVariation()"
+	>
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>
+
+<!-- Variation item context menu -->
+<dav-context-menu
+	#variationItemContextMenu
+	[visible]="variationItemContextMenuVisible"
+	[posX]="variationItemContextMenuX"
+	[posY]="variationItemContextMenuY"
+>
+	<dav-context-menu-item
+		[value]="actionsLocale.edit"
+		(click)="editSelectedVariationItem()"
+	>
+		<fa-icon slot="icon" [icon]="faPen"></fa-icon>
+	</dav-context-menu-item>
+
+	<dav-context-menu-item
+		[value]="actionsLocale.delete"
+		(click)="deleteSelectedVariationItem()"
+	>
+		<fa-icon slot="icon" [icon]="faTrash"></fa-icon>
+	</dav-context-menu-item>
+</dav-context-menu>
+
+<app-add-variation-dialog
+	#addVariationDialog
+	[loading]="addVariationDialogLoading"
+	(primaryButtonClick)="addVariationDialogPrimaryButtonClick($event)"
+></app-add-variation-dialog>
+
+<app-add-variation-item-dialog
+	#addVariationItemDialog
+	[loading]="addVariationItemDialogLoading"
+	(primaryButtonClick)="addVariationItemDialogPrimaryButtonClick($event)"
+></app-add-variation-item-dialog>
+
+<app-edit-variation-dialog
+	#editVariationDialog
+	[loading]="editVariationDialogLoading"
+	(primaryButtonClick)="editVariationDialogPrimaryButtonClick($event)"
+></app-edit-variation-dialog>
+
+<app-edit-variation-item-dialog
+	#editVariationItemDialog
+	[loading]="editVariationItemDialogLoading"
+	(primaryButtonClick)="editVariationItemDialogPrimaryButtonClick($event)"
+></app-edit-variation-item-dialog>

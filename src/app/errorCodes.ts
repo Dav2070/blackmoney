@@ -1,6 +1,10 @@
 //#region Api errors
 export const printerAlreadyExists = "PRINTER_ALREADY_EXISTS"
 export const tableAlreadyExists = "TABLE_ALREADY_EXISTS"
+export const categoryNameAlreadyInUse = "CATEGORY_NAME_ALREADY_IN_USE"
+export const productAlreadyHasOffer = "PRODUCT_ALREADY_HAS_OFFER"
+export const registerAlreadyActive = "REGISTER_ALREADY_ACTIVE"
+export const noActiveSubscription = "NO_ACTIVE_SUBSCRIPTION"
 //#endregion
 
 //#region Session & authentication
@@ -27,4 +31,6 @@ export const postalCodeInvalid = "POSTAL_CODE_INVALID"
 export const ipAddressInvalid = "IP_ADDRESS_INVALID"
 export const tableNameInvalid = "TABLE_NAME_INVALID"
 export const seatsInvalid = "SEATS_INVALID"
+export const priceInvalid = "PRICE_INVALID"
+export const offerValueInvalid = "OFFER_VALUE_INVALID"
 //#endregion

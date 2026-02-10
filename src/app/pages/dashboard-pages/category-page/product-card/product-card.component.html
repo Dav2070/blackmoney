@@ -1,0 +1,44 @@
+@if (product) {
+	<dav-card class="product-card">
+		<div class="product-header">
+			<div class="header-content">
+				<h3>{{ product.name }}</h3>
+				<span class="product-id">ID: {{ product.shortcut }}</span>
+			</div>
+			<div class="product-actions">
+				<dav-icon-button
+					size="xs"
+					[tooltip]="'Optionen'"
+					(click)="optionsButtonClick.emit($event)"
+				>
+					<fa-icon [icon]="faEllipsis"></fa-icon>
+				</dav-icon-button>
+			</div>
+		</div>
+
+		<div class="separator"></div>
+
+		<div class="product-content">
+			<div class="product-meta">
+				<span class="price">{{ formatPrice(product.price) }}</span>
+
+				@if (product.takeaway) {
+					<span class="badge takeaway">Takeaway</span>
+				}
+			</div>
+
+			@if (product.variations?.length > 0) {
+				<div class="variations-section">
+					<strong>Variationen:</strong>
+					<div class="variation-chips">
+						@for (variation of product.variations; track variation.uuid) {
+							<dav-badge color="secondary" tonal>
+								{{ variation.name }}
+							</dav-badge>
+						}
+					</div>
+				</div>
+			}
+		</div>
+	</dav-card>
+}

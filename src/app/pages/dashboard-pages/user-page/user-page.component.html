@@ -28,11 +28,11 @@
 
 		<div class="actions-container">
 			<dav-icon-card
-				[text]="locale.goToDashboard"
+				[text]="locale.goToTableOverview"
 				href="/dashboard/tables"
-				(click)="navigateToDashboardPage($event)"
+				(click)="navigateToTableOverviewPage($event)"
 			>
-				<fa-icon [icon]="faCashRegister"></fa-icon>
+				<fa-icon [icon]="faMap"></fa-icon>
 			</dav-icon-card>
 
 			@if (
@@ -62,8 +62,52 @@
 				>
 					<fa-icon [icon]="faCalendarCheck"></fa-icon>
 				</dav-icon-card>
+
+				@if (
+					dataService.company?.stripeSubscriptionStatus !==
+					"NOT_SUBSCRIBED"
+				) {
+					<dav-icon-card
+						[text]="locale.manageSubscription"
+						(click)="navigateToStripeBillingPortal()"
+					>
+						<fa-icon [icon]="faMoneyCheckDollar"></fa-icon>
+					</dav-icon-card>
+				}
 			}
 		</div>
+
+		@if (
+			dataService.user != null &&
+			["OWNER", "ADMIN"].includes(dataService.user.role) &&
+			(dataService.register?.status === "INACTIVE" ||
+				dataService.company?.stripeOnboardingStatus === "PENDING")
+		) {
+			<div class="activation-actions-container">
+				<h2>{{ locale.activationActionsHeadline }}</h2>
+				<p>{{ locale.activationActionsDescription }}</p>
+
+				<div>
+					@if (dataService.register?.status === "INACTIVE") {
+						<dav-icon-card
+							[text]="locale.activateRegister"
+							(click)="showActivateRegisterDialog()"
+						>
+							<fa-icon [icon]="faBadgeCheck"></fa-icon>
+						</dav-icon-card>
+					}
+
+					@if (dataService.company?.stripeOnboardingStatus === "PENDING") {
+						<dav-icon-card
+							[text]="locale.stripeOnboarding"
+							(click)="navigateToStripeOnboardingPage()"
+						>
+							<fa-icon [icon]="faGears"></fa-icon>
+						</dav-icon-card>
+					}
+				</div>
+			</div>
+		}
 	</div>
 </div>
 
@@ -71,3 +115,9 @@
 	#logoutDialog
 	(primaryButtonClick)="logout()"
 ></app-logout-dialog>
+
+<app-activate-register-dialog
+	#activateRegisterDialog
+	[loading]="activateRegisterDialogLoading"
+	(primaryButtonClick)="activateRegisterDialogPrimaryButtonClick()"
+></app-activate-register-dialog>

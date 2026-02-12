@@ -213,6 +213,22 @@ export async function initUserAfterLogin(
 	await settingsService.setRestaurant(restaurantUuid)
 }
 
+export async function navigateToStripeCheckout(apiService: ApiService) {
+	const createStripeSubscriptionCheckoutSessionResponse =
+		await apiService.createStripeSubscriptionCheckoutSession(`url`, {
+			successUrl: window.location.href,
+			cancelUrl: window.location.href
+		})
+
+	if (
+		createStripeSubscriptionCheckoutSessionResponse.data
+			?.createStripeSubscriptionCheckoutSession != null
+	) {
+		window.location.href =
+			createStripeSubscriptionCheckoutSessionResponse.data.createStripeSubscriptionCheckoutSession.url
+	}
+}
+
 export async function getSerialNumber(
 	settingsService: SettingsService
 ): Promise<string> {
@@ -260,6 +276,8 @@ export function convertCompanyResourceToCompany(
 	return {
 		uuid: companyResource.uuid,
 		name: companyResource.name,
+		stripeOnboardingStatus: companyResource.stripeOnboardingStatus,
+		stripeSubscriptionStatus: companyResource.stripeSubscriptionStatus,
 		users,
 		restaurants
 	}
@@ -474,17 +492,10 @@ export function convertMenuResourceToMenu(menuResource: MenuResource): Menu {
 		variations.push(convertVariationResourceToVariation(variation))
 	}
 
-	const offers: Offer[] = []
-
-	for (const offer of menuResource.offers?.items ?? []) {
-		offers.push(convertOfferResourceToOffer(offer))
-	}
-
 	return {
 		uuid: menuResource.uuid,
 		categories,
-		variations,
-		offers
+		variations
 	}
 }
 
@@ -507,12 +518,12 @@ export function convertOfferResourceToOffer(
 		offerType: offerResource.offerType,
 		discountType: offerResource.discountType,
 		offerValue: offerResource.offerValue,
-		startDate: offerResource.startDate
-			? new Date(offerResource.startDate)
-			: undefined,
-		endDate: offerResource.endDate
-			? new Date(offerResource.endDate)
-			: undefined,
+		startDate:
+			offerResource.startDate != null
+				? new Date(offerResource.startDate)
+				: null,
+		endDate:
+			offerResource.endDate != null ? new Date(offerResource.endDate) : null,
 		startTime: offerResource.startTime,
 		endTime: offerResource.endTime,
 		weekdays: offerResource.weekdays,
@@ -650,7 +661,7 @@ export function convertOrderResourceToOrder(
 		uuid: orderResource.uuid,
 		totalPrice: orderResource.totalPrice,
 		paymentMethod: orderResource.paymentMethod,
-		paidAt: new Date(orderResource.paidAt),
+		paidAt: orderResource.paidAt ? new Date(orderResource.paidAt) : null,
 		bill: convertBillResourceToBill(orderResource.bill),
 		table: convertTableResourceToTable(orderResource.table),
 		orderItems

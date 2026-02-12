@@ -38,7 +38,8 @@ export class MessageService {
       }
 
 		if (message.type === "createStripeConnectionToken") {
-			const response = await this.apiService.createStripeConnectionToken()
+			const response =
+				await this.apiService.createStripeConnectionToken(`secret`)
 			const secret = response.data.createStripeConnectionToken.secret
 
 			this.postMessage({

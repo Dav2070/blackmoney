@@ -20,10 +20,16 @@
 
 		<div class="offer-content">
 			<div class="offer-meta">
-				<span class="price">{{ formatPrice(offer.price) }}</span>
-
-				@if (offer.takeaway) {
-					<span class="badge takeaway">Takeaway</span>
+				@if (offer.offer.offerType === "FIXED_PRICE") {
+					<span class="price">{{
+						formatPrice(offer.offer.offerValue)
+					}}</span>
+				} @else if (offer.offer.discountType === "PERCENTAGE") {
+					<span class="price"> {{ offer.offer.offerValue }}% </span>
+				} @else {
+					<span class="price"
+						>-{{ formatPrice(offer.offer.offerValue) }}
+					</span>
 				}
 			</div>
 

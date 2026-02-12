@@ -66,13 +66,17 @@
 						<div
 							class="variation-header"
 							[class.selected]="isVariationSelected(variation.uuid)"
-							(click)="toggleVariationSelection(variation.uuid)"
 						>
 							<dav-checkbox
-								[value]="isVariationSelected(variation.uuid)"
+								[checked]="isVariationSelected(variation.uuid)"
 								[label]="variation.name"
 								[disabled]="loading"
-								(click)="$event.stopPropagation()"
+								(change)="
+									onVariationCheckboxChange(
+										variation.uuid,
+										$any($event).detail.checked
+									)
+								"
 							></dav-checkbox>
 							<dav-icon-button
 								size="xs"

@@ -58,10 +58,19 @@ export const de = {
 			"Grüezi {name}!"
 		],
 		generalSettings: "Allgemeine Einstellungen",
-		goToDashboard: "Zur Kasse",
+		goToTableOverview: "Zur Tischübersicht",
 		manageEmployees: "Mitarbeiter verwalten",
 		manageRestaurants: "Restaurants verwalten",
-		manageReservations: "Reservierungen verwalten"
+		manageReservations: "Reservierungen verwalten",
+		manageSubscription: "Abonnement verwalten",
+		activationActionsHeadline: "Bereit für echte Zahlungen?",
+		activationActionsDescription:
+			"Das fehlt noch, damit du durchstarten kannst:",
+		activateRegister: "Kasse aktivieren",
+		stripeOnboarding: "Onboarding abschließen",
+		activationSuccess: "Die Kasse wurde erfolgreich aktiviert.",
+		activationError:
+			"Es ist ein Fehler aufgetreten. Bitte versuche es später nochmal oder wende dich an den Support."
 	},
 	reservationsPage: {
 		headline: "Reservierungen",
@@ -239,7 +248,9 @@ export const de = {
 		discount: "Rabatt"
 	},
 	offerCard: {
-		options: "Optionen"
+		options: "Optionen",
+		from: "ab",
+		until: "bis"
 	},
 	landingOrderPage: {
 		offers: "Angebote",
@@ -780,6 +791,9 @@ export const de = {
 		passwordDoesNotMatchPasswordConfirmation:
 			"Die Passwörter stimmen nicht überein.",
 		dateInPast: "Datum darf nicht in der Vergangenheit liegen",
+		productAlreadyHasOffer: "Dieses Produkt hat bereits ein Angebot.",
+		priceInvalid: "Der Preis muss eine positive Zahl sein.",
+		offerValueInvalid: "Der Angebotswert muss eine positive Zahl sein.",
 		unexpectedError: "Ein unbekannter Fehler ist aufgetreten."
 	}
 }

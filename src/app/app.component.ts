@@ -89,6 +89,8 @@ export class AppComponent {
 			`
 				uuid
 				name
+				stripeOnboardingStatus
+				stripeSubscriptionStatus
 				restaurants {
 					total
 					items {

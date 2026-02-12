@@ -555,6 +555,17 @@ export class BookingPageComponent {
 					orderItem.count -= 1
 				}
 
+				// Sync mit Backend für alle Child-Items
+				for (let childItem of orderItem.orderItems) {
+					await this.sendOrderItem(childItem)
+				}
+				// Sync mit Backend für das Parent-Item
+				await this.apiService.syncOrderItem(`uuid`, {
+					uuid: orderItem.uuid,
+					count: orderItem.count,
+					orderItemVariations: []
+				})
+
 				this.tmpAnzahl = undefined
 				this.bookedItems.removeEmptyItems()
 				// Prüfe ob Item noch existiert
@@ -1123,6 +1134,12 @@ export class BookingPageComponent {
 				count: orderItem.orderItems[0].count,
 				orderItemVariations
 			})
+			// Sync auch das Parent-Item
+			await this.apiService.syncOrderItem(`uuid`, {
+				uuid: orderItem.uuid,
+				count: orderItem.count,
+				orderItemVariations: []
+			})
 		} else {
 			await this.apiService.syncOrderItem(`uuid`, {
 				uuid: orderItem.uuid,
@@ -1253,7 +1270,6 @@ export class BookingPageComponent {
 					count: newVariationCount
 				}
 			]
-
 
 			const result = await this.apiService.syncOrderItem(`uuid`, {
 				uuid: this.selectedOrderItem.uuid,

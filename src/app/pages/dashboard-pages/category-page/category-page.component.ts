@@ -117,7 +117,10 @@ export class CategoryPageComponent {
 			this.activatedRoute.snapshot.paramMap.get("restaurantUuid")
 		this.categoryUuid =
 			this.activatedRoute.snapshot.paramMap.get("categoryUuid")
+
 		await this.dataService.davUserPromiseHolder.AwaitResult()
+		await this.dataService.restaurantPromiseHolder.AwaitResult()
+
 		// Load available variations once (uses cache-first)
 		await this.loadVariations()
 		// Load category with products from backend
@@ -304,7 +307,7 @@ export class CategoryPageComponent {
 			const restaurant = convertRestaurantResourceToRestaurant(
 				retrieveRestaurantResponse.data.retrieveRestaurant
 			)
-			this.availableVariations = restaurant.menu?.variations || []
+			this.availableVariations = restaurant.menu?.variations ?? []
 		}
 	}
 

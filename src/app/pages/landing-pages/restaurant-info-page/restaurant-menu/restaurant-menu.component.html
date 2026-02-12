@@ -45,14 +45,17 @@
 					}
 				</div>
 
-				@if (bestsellers?.offers && bestsellers.offers.length > 0) {
+				@if (getOffersOfMenu(bestsellers).length > 0) {
 					<div class="offers-section">
 						<div class="category-header">
 							<h4>{{ locale.offers }}</h4>
 						</div>
 
 						<div class="offers-list">
-							@for (offer of bestsellers.offers; track offer.uuid) {
+							@for (
+								offer of getOffersOfMenu(bestsellers);
+								track offer.uuid
+							) {
 								<div class="offer-item">
 									<div class="offer-header-row">
 										<div class="offer-type">

@@ -271,245 +271,271 @@ export class RestaurantInfoPageComponent {
 		// Create a complete menu offer with offer items
 		this.bestsellers = {
 			uuid: crypto.randomUUID(),
-			categories: [],
-			variations: [],
-			offers: [
+			categories: [
 				{
-					id: 1,
 					uuid: crypto.randomUUID(),
-					offerType: "FIXED_PRICE",
-					offerValue: 45,
-					weekdays: [
-						"MONDAY",
-						"TUESDAY",
-						"WEDNESDAY",
-						"THURSDAY",
-						"FRIDAY",
-						"SATURDAY",
-						"SUNDAY"
-					],
-					offerItems: [
+					name: "Hauptgerichte",
+					products: [
 						{
 							uuid: crypto.randomUUID(),
-							name: "Hauptgericht",
-							maxSelections: 2,
-							products: [
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 10,
-									type: "FOOD",
-									name: "Grilled Chicken",
-									price: 1600,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 11,
-									type: "FOOD",
-									name: "Beef Burger",
-									price: 1400,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 12,
-									type: "FOOD",
-									name: "Vegetarian Pasta",
-									price: 1300,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 13,
-									type: "FOOD",
-									name: "Fish & Chips",
-									price: 1500,
-									category: undefined,
-									variations: []
-								}
-							]
+							name: "Hauptgericht Menü",
+							price: 0,
+							shortcut: 1,
+							type: "MENU",
+							variations: [],
+							offer: {
+								id: 1,
+								uuid: crypto.randomUUID(),
+								offerType: "FIXED_PRICE",
+								offerValue: 45,
+								weekdays: [
+									"MONDAY",
+									"TUESDAY",
+									"WEDNESDAY",
+									"THURSDAY",
+									"FRIDAY",
+									"SATURDAY",
+									"SUNDAY"
+								],
+								offerItems: [
+									{
+										uuid: crypto.randomUUID(),
+										name: "Hauptgericht",
+										maxSelections: 2,
+										products: [
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 10,
+												type: "FOOD",
+												name: "Grilled Chicken",
+												price: 1600,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 11,
+												type: "FOOD",
+												name: "Beef Burger",
+												price: 1400,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 12,
+												type: "FOOD",
+												name: "Vegetarian Pasta",
+												price: 1300,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 13,
+												type: "FOOD",
+												name: "Fish & Chips",
+												price: 1500,
+												category: undefined,
+												variations: []
+											}
+										]
+									},
+									{
+										uuid: crypto.randomUUID(),
+										name: "Beilage",
+										maxSelections: 2,
+										products: [
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 20,
+												type: "FOOD",
+												name: "French Fries",
+												price: 400,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 21,
+												type: "FOOD",
+												name: "Mixed Salad",
+												price: 450,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 22,
+												type: "FOOD",
+												name: "Steamed Vegetables",
+												price: 450,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 23,
+												type: "FOOD",
+												name: "Rice",
+												price: 350,
+												category: undefined,
+												variations: []
+											}
+										]
+									},
+									{
+										uuid: crypto.randomUUID(),
+										name: "Getränk",
+										maxSelections: 4,
+										products: [
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 30,
+												type: "DRINK",
+												name: "Cola",
+												price: 300,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 31,
+												type: "DRINK",
+												name: "Fanta",
+												price: 300,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 32,
+												type: "DRINK",
+												name: "Sprite",
+												price: 300,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 33,
+												type: "DRINK",
+												name: "Water",
+												price: 250,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 34,
+												type: "DRINK",
+												name: "Orange Juice",
+												price: 350,
+												category: undefined,
+												variations: []
+											}
+										]
+									},
+									{
+										uuid: crypto.randomUUID(),
+										name: "Dessert",
+										maxSelections: 1,
+										products: [
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 40,
+												type: "FOOD",
+												name: "Tiramisu",
+												price: 550,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 41,
+												type: "FOOD",
+												name: "Ice Cream",
+												price: 450,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 42,
+												type: "FOOD",
+												name: "Chocolate Cake",
+												price: 600,
+												category: undefined,
+												variations: []
+											}
+										]
+									}
+								]
+							}
 						},
 						{
 							uuid: crypto.randomUUID(),
-							name: "Beilage",
-							maxSelections: 2,
-							products: [
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 20,
-									type: "FOOD",
-									name: "French Fries",
-									price: 400,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 21,
-									type: "FOOD",
-									name: "Mixed Salad",
-									price: 450,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 22,
-									type: "FOOD",
-									name: "Steamed Vegetables",
-									price: 450,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 23,
-									type: "FOOD",
-									name: "Rice",
-									price: 350,
-									category: undefined,
-									variations: []
-								}
-							]
-						},
-						{
-							uuid: crypto.randomUUID(),
-							name: "Getränk",
-							maxSelections: 4,
-							products: [
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 30,
-									type: "DRINK",
-									name: "Cola",
-									price: 300,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 31,
-									type: "DRINK",
-									name: "Fanta",
-									price: 300,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 32,
-									type: "DRINK",
-									name: "Sprite",
-									price: 300,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 33,
-									type: "DRINK",
-									name: "Water",
-									price: 250,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 34,
-									type: "DRINK",
-									name: "Orange Juice",
-									price: 350,
-									category: undefined,
-									variations: []
-								}
-							]
-						},
-						{
-							uuid: crypto.randomUUID(),
-							name: "Dessert",
-							maxSelections: 1,
-							products: [
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 40,
-									type: "FOOD",
-									name: "Tiramisu",
-									price: 550,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 41,
-									type: "FOOD",
-									name: "Ice Cream",
-									price: 450,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 42,
-									type: "FOOD",
-									name: "Chocolate Cake",
-									price: 600,
-									category: undefined,
-									variations: []
-								}
-							]
-						}
-					]
-				},
-				{
-					id: 2,
-					uuid: crypto.randomUUID(),
-					offerType: "DISCOUNT",
-					discountType: "PERCENTAGE",
-					offerValue: 20,
-					startTime: "17:00",
-					endTime: "19:00",
-					weekdays: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY"],
-					offerItems: [
-						{
-							uuid: crypto.randomUUID(),
-							name: "Happy Hour Pizza",
-							maxSelections: 1,
-							products: [
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 50,
-									type: "FOOD",
-									name: "Margherita Pizza",
-									price: 1200,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 51,
-									type: "FOOD",
-									name: "Pepperoni Pizza",
-									price: 1400,
-									category: undefined,
-									variations: []
-								},
-								{
-									uuid: crypto.randomUUID(),
-									shortcut: 52,
-									type: "FOOD",
-									name: "Vegetarian Pizza",
-									price: 1300,
-									category: undefined,
-									variations: []
-								}
-							]
+							name: "Happy Hour",
+							price: 0,
+							shortcut: 2,
+							type: "SPECIAL",
+							variations: [],
+							offer: {
+								id: 2,
+								uuid: crypto.randomUUID(),
+								offerType: "DISCOUNT",
+								discountType: "PERCENTAGE",
+								offerValue: 20,
+								startTime: "17:00",
+								endTime: "19:00",
+								weekdays: [
+									"MONDAY",
+									"TUESDAY",
+									"WEDNESDAY",
+									"THURSDAY"
+								],
+								offerItems: [
+									{
+										uuid: crypto.randomUUID(),
+										name: "Happy Hour Pizza",
+										maxSelections: 1,
+										products: [
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 50,
+												type: "FOOD",
+												name: "Margherita Pizza",
+												price: 1200,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 51,
+												type: "FOOD",
+												name: "Pepperoni Pizza",
+												price: 1400,
+												category: undefined,
+												variations: []
+											},
+											{
+												uuid: crypto.randomUUID(),
+												shortcut: 52,
+												type: "FOOD",
+												name: "Vegetarian Pizza",
+												price: 1300,
+												category: undefined,
+												variations: []
+											}
+										]
+									}
+								]
+							}
 						}
 					]
 				}
-			]
+			],
+			variations: []
 		}
 	}
 

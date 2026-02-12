@@ -496,17 +496,10 @@ export function convertMenuResourceToMenu(menuResource: MenuResource): Menu {
 		variations.push(convertVariationResourceToVariation(variation))
 	}
 
-	const offers: Offer[] = []
-
-	for (const offer of menuResource.offers?.items ?? []) {
-		offers.push(convertOfferResourceToOffer(offer))
-	}
-
 	return {
 		uuid: menuResource.uuid,
 		categories,
-		variations,
-		offers
+		variations
 	}
 }
 
@@ -531,12 +524,10 @@ export function convertOfferResourceToOffer(
 		offerValue: offerResource.offerValue,
 		startDate:
 			offerResource.startDate != null
-				? new Date(Number(offerResource.startDate))
-				: undefined,
+				? new Date(offerResource.startDate)
+				: null,
 		endDate:
-			offerResource.endDate != null
-				? new Date(Number(offerResource.endDate))
-				: undefined,
+			offerResource.endDate != null ? new Date(offerResource.endDate) : null,
 		startTime: offerResource.startTime,
 		endTime: offerResource.endTime,
 		weekdays: offerResource.weekdays,
@@ -575,13 +566,7 @@ export function convertProductResourceToProduct(
 	const variations: Variation[] = []
 
 	for (const variation of productResource.variations?.items ?? []) {
-		// Create a deep copy to avoid shared references between products
-		const variationCopy = convertVariationResourceToVariation(variation)
-		variations.push({
-			...variationCopy,
-			variationItems:
-				variationCopy.variationItems?.map(item => ({ ...item })) || []
-		})
+		variations.push(convertVariationResourceToVariation(variation))
 	}
 
 	return {
@@ -680,7 +665,7 @@ export function convertOrderResourceToOrder(
 		uuid: orderResource.uuid,
 		totalPrice: orderResource.totalPrice,
 		paymentMethod: orderResource.paymentMethod,
-		paidAt: new Date(orderResource.paidAt),
+		paidAt: orderResource.paidAt ? new Date(orderResource.paidAt) : null,
 		bill: convertBillResourceToBill(orderResource.bill),
 		table: convertTableResourceToTable(orderResource.table),
 		orderItems

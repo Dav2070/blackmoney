@@ -117,6 +117,34 @@ export class LandingGuestsPageComponent implements OnInit {
 								name: "Tomato Soup",
 								price: 600,
 								variations: []
+							},
+							{
+								uuid: crypto.randomUUID(),
+								shortcut: 3,
+								type: "SPECIAL",
+								name: "Mittagsangebot",
+								price: 0,
+								variations: [],
+								offer: {
+									id: 1,
+									uuid: crypto.randomUUID(),
+									offerType: "DISCOUNT",
+									discountType: "PERCENTAGE",
+									offerValue: 10,
+									startDate: undefined,
+									endDate: undefined,
+									startTime: undefined,
+									endTime: undefined,
+									weekdays: ["MONDAY", "TUESDAY"],
+									offerItems: [
+										{
+											uuid: crypto.randomUUID(),
+											name: "Mittagsangebot",
+											maxSelections: 1,
+											products: []
+										}
+									]
+								}
 							}
 						]
 					},
@@ -158,28 +186,6 @@ export class LandingGuestsPageComponent implements OnInit {
 										]
 									}
 								]
-							}
-						]
-					}
-				],
-				offers: [
-					{
-						id: 1,
-						uuid: crypto.randomUUID(),
-						offerType: "DISCOUNT",
-						discountType: "PERCENTAGE",
-						offerValue: 10,
-						startDate: undefined,
-						endDate: undefined,
-						startTime: undefined,
-						endTime: undefined,
-						weekdays: ["MONDAY", "TUESDAY"],
-						offerItems: [
-							{
-								uuid: crypto.randomUUID(),
-								name: "Mittagsangebot",
-								maxSelections: 1,
-								products: []
 							}
 						]
 					}

@@ -134,6 +134,7 @@ export class SelectMenuSpecialProductsDialogComponent {
 	}
 
 	counterChange(orderItem: OrderItem, count: number) {
+		const oldCount = orderItem.count
 		orderItem.count = count
 
 		if (orderItem.count === 0) {
@@ -146,7 +147,10 @@ export class SelectMenuSpecialProductsDialogComponent {
 				oi.products.some(p => p.uuid === orderItem.product.uuid)
 			)
 
-			if (offerItem) offerItem.maxSelections++
+			if (offerItem) {
+				// Berechne die Differenz: wenn count sinkt, erhöhe maxSelections
+				offerItem.maxSelections += oldCount - count
+			}
 		}
 	}
 
@@ -155,6 +159,7 @@ export class SelectMenuSpecialProductsDialogComponent {
 		orderItemVariation: OrderItemVariation,
 		count: number
 	) {
+		const oldCount = orderItemVariation.count
 		orderItemVariation.count = count
 
 		if (orderItemVariation.count === 0) {
@@ -173,7 +178,10 @@ export class SelectMenuSpecialProductsDialogComponent {
 				oi.products.some(p => p.uuid === orderItem.product.uuid)
 			)
 
-			if (offerItem) offerItem.maxSelections++
+			if (offerItem) {
+				// Berechne die Differenz: wenn count sinkt, erhöhe maxSelections
+				offerItem.maxSelections += oldCount - count
+			}
 		}
 	}
 
@@ -239,7 +247,7 @@ export class SelectMenuSpecialProductsDialogComponent {
 
 			// Nur bei OfferItems (Menü) maxSelections verringern
 			if (this.selectedOfferItem) {
-				this.selectedOfferItem.maxSelections -= totalCount
+				this.selectedOfferItem.maxSelections -= newItem.count
 			}
 		}
 	}

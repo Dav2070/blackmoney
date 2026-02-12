@@ -427,7 +427,7 @@ export const de = {
 			name: "Name"
 		},
 		editOpeningTimeDialog: {
-			headline: "Öffnungszeiten bearbeiten",
+			headline: "Öffnungszeiten hinzufügen",
 			name: "Name",
 			reason: "Anlass/Grund",
 			from: "von",

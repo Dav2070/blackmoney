@@ -40,8 +40,10 @@
 	<div class="separator"></div>
 	<div class="special-content-container">
 		<dav-header
-			editButtonVisible
-			(editButtonClick)="showAddSpecialOpeningTimeDialog()"
+			class="special-opening-time-header"
+			addButtonVisible
+			size="sm"
+			(addButtonClick)="showAddSpecialOpeningTimeDialog()"
 		>
 			{{ specialOpeningTime }}
 		</dav-header>

@@ -1,0 +1,106 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		@for (block of blocks; track block; let i = $index) {
+			<div class="block-container">
+				<div class="day-row">
+					<!-- Line 1 -->
+					<mat-form-field
+						appearance="fill"
+						class="dialog-formfield-container"
+					>
+						<mat-label>{{ locale.days }}</mat-label>
+						<mat-select
+							[(ngModel)]="block.selectedDays"
+							name="days{{ i }}"
+							multiple
+							(selectionChange)="onTimeChange()"
+						>
+							@for (d of getAvailableDays(i); track d) {
+								<mat-option [value]="d">
+									{{ d }}
+								</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
+
+					<!-- Remove Button -->
+					<dav-icon-button
+						size="sm"
+						(click)="removeBlock(i)"
+						[disabled]="blocks.length === 1"
+						[tooltip]="locale.blockActions.remove"
+					>
+						<fa-icon [icon]="faTrash"></fa-icon>
+					</dav-icon-button>
+				</div>
+
+				<div class="time-row">
+					<dav-textfield
+						[value]="block.startTime1"
+						[label]="locale.timeLabels.opening"
+						type="time"
+						[errorMessage]="getBlockError(i)"
+						(change)="
+							block.startTime1 = $any($event).detail.value;
+							onTimeChange()
+						"
+					></dav-textfield>
+
+					<dav-textfield
+						[value]="block.endTime1"
+						[label]="locale.timeLabels.closing"
+						type="time"
+						(change)="
+							block.endTime1 = $any($event).detail.value; onTimeChange()
+						"
+					></dav-textfield>
+				</div>
+
+				<!-- Second time period for break times -->
+				<div class="time-row">
+					<dav-textfield
+						[value]="block.startTime2"
+						[label]="locale.timeLabels.reopening"
+						type="time"
+						(change)="
+							block.startTime2 = $any($event).detail.value;
+							onTimeChange()
+						"
+					></dav-textfield>
+
+					<dav-textfield
+						[value]="block.endTime2"
+						[label]="locale.timeLabels.closingFinal"
+						type="time"
+						(change)="
+							block.endTime2 = $any($event).detail.value; onTimeChange()
+						"
+					></dav-textfield>
+				</div>
+			</div>
+		}
+		<div class="separator"></div>
+
+		<!-- Plus-Button -->
+		<div class="add-row">
+			<dav-icon-button
+				size="sm"
+				(click)="addBlock()"
+				[tooltip]="locale.blockActions.add"
+			>
+				<fa-icon [icon]="faPlus"></fa-icon>
+			</dav-icon-button>
+		</div>
+	</form>
+</dav-dialog>

@@ -1,0 +1,84 @@
+<dav-dialog
+	#dialog
+	[headline]="locale.headline"
+	[primaryButtonText]="actionsLocale.save"
+	[defaultButtonText]="actionsLocale.cancel"
+	[visible]="visible"
+	maxWidth="450"
+	[loading]="loading"
+	(dismiss)="hide()"
+	(primaryButtonClick)="submit()"
+	(defaultButtonClick)="hide()"
+>
+	<form>
+		<!-- name -->
+		<div class="dialog-formfield-container">
+			<dav-textfield
+				[value]="name"
+				[label]="locale.reason"
+				[disabled]="loading"
+				[errorMessage]="nameError"
+				(change)="nameTextfieldChange($event)"
+			></dav-textfield>
+		</div>
+
+		<div class="date-row">
+			<!-- startDate -->
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="startDate"
+					[label]="locale.from"
+					type="date"
+					[disabled]="loading"
+					[errorMessage]="dateError"
+					(change)="startDatefieldChange($event)"
+				></dav-textfield>
+			</div>
+
+			<!-- endDate -->
+			<div class="dialog-formfield-container">
+				<dav-textfield
+					[value]="endDate"
+					[label]="locale.to"
+					type="date"
+					[disabled]="loading"
+					(change)="endDatefieldChange($event)"
+				></dav-textfield>
+			</div>
+		</div>
+
+		<div class="time-row">
+			<dav-textfield
+				[value]="startTime1"
+				[label]="locale.timeLabels.opening"
+				type="time"
+				[errorMessage]="timeError"
+				(change)="startTime1 = $any($event).detail.value; onTimeChange()"
+			></dav-textfield>
+
+			<dav-textfield
+				[value]="endTime1"
+				[label]="locale.timeLabels.closing"
+				type="time"
+				(change)="endTime1 = $any($event).detail.value; onTimeChange()"
+			></dav-textfield>
+		</div>
+
+		<!-- Second time period for break times -->
+		<div class="time-row">
+			<dav-textfield
+				[value]="startTime2"
+				[label]="locale.timeLabels.reopening"
+				type="time"
+				(change)="startTime2 = $any($event).detail.value; onTimeChange()"
+			></dav-textfield>
+
+			<dav-textfield
+				[value]="endTime2"
+				[label]="locale.timeLabels.closingFinal"
+				type="time"
+				(change)="endTime2 = $any($event).detail.value; onTimeChange()"
+			></dav-textfield>
+		</div>
+	</form>
+</dav-dialog>

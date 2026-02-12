@@ -25,6 +25,8 @@ import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
 import { Reservation } from "./models/Reservation"
+import { OpeningTime } from "./models/OpeningTime"
+import { SpecialOpeningTime } from "./models/SpecialOpeningTime"
 import {
 	ApolloResult,
 	CategoryResource,
@@ -48,6 +50,8 @@ import {
 	OfferResource,
 	OfferItemResource,
 	ReservationResource,
+	OpeningTimeResource,
+	SpecialOpeningTimeResource,
 	ErrorCode,
 	Theme,
 	OrderItemType
@@ -770,6 +774,42 @@ export function convertReservationResourceToReservation(
 			? new Date(reservationResource.date)
 			: null,
 		checkedIn: reservationResource.checkedIn
+	}
+}
+
+export function convertOpeningTimeResourceToOpeningTime(
+	openingTimeResource: OpeningTimeResource
+): OpeningTime {
+	if (openingTimeResource == null) {
+		return null
+	}
+
+	return {
+		uuid: openingTimeResource.uuid,
+		weekday: openingTimeResource.weekday,
+		startTime1: openingTimeResource.startTime1,
+		endTime1: openingTimeResource.endTime1,
+		startTime2: openingTimeResource.startTime2,
+		endTime2: openingTimeResource.endTime2
+	}
+}
+
+export function convertSpecialOpeningTimeResourceToSpecialOpeningTime(
+	specialOpeningTimeResource: SpecialOpeningTimeResource
+): SpecialOpeningTime {
+	if (specialOpeningTimeResource == null) {
+		return null
+	}
+
+	return {
+		uuid: specialOpeningTimeResource.uuid,
+		name: specialOpeningTimeResource.name,
+		startDate: new Date(specialOpeningTimeResource.startDate),
+		endDate: new Date(specialOpeningTimeResource.endDate),
+		startTime1: specialOpeningTimeResource.startTime1,
+		endTime1: specialOpeningTimeResource.endTime1,
+		startTime2: specialOpeningTimeResource.startTime2,
+		endTime2: specialOpeningTimeResource.endTime2
 	}
 }
 

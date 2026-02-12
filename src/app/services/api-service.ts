@@ -22,6 +22,8 @@ import {
 	ProductType,
 	PrintRuleType,
 	ReservationResource,
+	OpeningTimeResource,
+	SpecialOpeningTimeResource,
 	ProductResource,
 	OfferResource,
 	OfferType,
@@ -1480,6 +1482,183 @@ export class ApiService {
 				}
 			`,
 			variables
+		})
+
+	listOpeningTimes = async (
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+		}
+	) =>
+		this.query<{ listOpeningTimes: List<OpeningTimeResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			query: gql`
+				query ListOpeningTimes($restaurantUuid: String!) {
+					listOpeningTimes(restaurantUuid: $restaurantUuid) {
+						${queryData}
+					}
+				}
+			`,
+			variables
+		})
+
+	updateOpeningTimes = async (
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			openingTimes: {
+				weekday: Weekday
+				startTime1: string
+				endTime1: string
+				startTime2?: string
+				endTime2?: string
+			}[]
+		}
+	) =>
+		this.mutate<{ updateOpeningTimes: List<OpeningTimeResource> }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateOpeningTimes(
+					$restaurantUuid: String!
+					$openingTimes: [OpeningTimeInput!]!
+				) {
+					updateOpeningTimes(
+						restaurantUuid: $restaurantUuid
+						openingTimes: $openingTimes
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [this.listOpeningTimes]
+		})
+
+	listSpecialOpeningTimes = async (
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+		}
+	) =>
+		this.query<{ listSpecialOpeningTimes: List<SpecialOpeningTimeResource> }>(
+			{
+				apollo: this.blackmoneyAuthApollo,
+				query: gql`
+					query ListSpecialOpeningTimes($restaurantUuid: String!) {
+						listSpecialOpeningTimes(restaurantUuid: $restaurantUuid) {
+							${queryData}
+						}
+					}
+				`,
+				variables
+			}
+		)
+
+	createSpecialOpeningTime = async (
+		queryData: string,
+		variables: {
+			restaurantUuid: string
+			name: string
+			startDate: string
+			endDate: string
+			startTime1?: string
+			endTime1?: string
+			startTime2?: string
+			endTime2?: string
+		}
+	) =>
+		this.mutate<{ createSpecialOpeningTime: SpecialOpeningTimeResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation CreateSpecialOpeningTime(
+					$restaurantUuid: String!
+					$name: String!
+					$startDate: String!
+					$endDate: String!
+					$startTime1: String
+					$endTime1: String
+					$startTime2: String
+					$endTime2: String
+				) {
+					createSpecialOpeningTime(
+						restaurantUuid: $restaurantUuid
+						name: $name
+						startDate: $startDate
+						endDate: $endDate
+						startTime1: $startTime1
+						endTime1: $endTime1
+						startTime2: $startTime2
+						endTime2: $endTime2
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [this.listSpecialOpeningTimes]
+		})
+
+	updateSpecialOpeningTime = async (
+		queryData: string,
+		variables: {
+			uuid: string
+			name?: string
+			startDate?: string
+			endDate?: string
+			startTime1?: string
+			endTime1?: string
+			startTime2?: string
+			endTime2?: string
+		}
+	) =>
+		this.mutate<{ updateSpecialOpeningTime: SpecialOpeningTimeResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation UpdateSpecialOpeningTime(
+					$uuid: String!
+					$name: String
+					$startDate: String
+					$endDate: String
+					$startTime1: String
+					$endTime1: String
+					$startTime2: String
+					$endTime2: String
+				) {
+					updateSpecialOpeningTime(
+						uuid: $uuid
+						name: $name
+						startDate: $startDate
+						endDate: $endDate
+						startTime1: $startTime1
+						endTime1: $endTime1
+						startTime2: $startTime2
+						endTime2: $endTime2
+					) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [this.listSpecialOpeningTimes]
+		})
+
+	deleteSpecialOpeningTime = async (
+		queryData: string,
+		variables: {
+			uuid: string
+		}
+	) =>
+		this.mutate<{ deleteSpecialOpeningTime: SpecialOpeningTimeResource }>({
+			apollo: this.blackmoneyAuthApollo,
+			mutation: gql`
+				mutation DeleteSpecialOpeningTime($uuid: String!) {
+					deleteSpecialOpeningTime(uuid: $uuid) {
+						${queryData}
+					}
+				}
+			`,
+			variables,
+			refetchQueries: [this.listSpecialOpeningTimes]
 		})
 
 	createStripeAccountOnboardingLink = async (

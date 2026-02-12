@@ -236,6 +236,26 @@ export interface ReservationResource {
 	checkedIn: boolean
 }
 
+export interface OpeningTimeResource {
+	uuid: string
+	weekday: Weekday
+	startTime1?: string
+	endTime1?: string
+	startTime2?: string
+	endTime2?: string
+}
+
+export interface SpecialOpeningTimeResource {
+	uuid: string
+	name: string
+	startDate: string
+	endDate: string
+	startTime1?: string
+	endTime1?: string
+	startTime2?: string
+	endTime2?: string
+}
+
 export interface AddOrderItemInput {
 	uuid?: string
 	productUuid?: string
@@ -338,4 +358,21 @@ export enum RatingNum {
 	Three = 3,
 	Four = 4,
 	Five = 5
+}
+
+export class Day {
+	day: string
+	geschlossen?: boolean
+	startTime1: string
+	endTime1: string
+	startTime2?: string
+	endTime2?: string
+}
+
+export class Block {
+	selectedDays: string[]
+	startTime1: string
+	endTime1: string
+	startTime2?: string
+	endTime2?: string
 }

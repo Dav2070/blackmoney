@@ -1,1 +1,145 @@
-<p>opening-time-page works!</p>
+<div class="container slide-up-in">
+	<div class="content-container">
+		<dav-header
+			backButtonVisible
+			editButtonVisible
+			(backButtonClick)="navigateBack()"
+			(editButtonClick)="showEditOpeningTimeDialog()"
+		>
+			{{ name }}
+		</dav-header>
+
+		@if (Tage && Tage.length > 0) {
+			<div class="cards-container">
+				<dav-card>
+					<div class="openingTime-card-container">
+						<div class="openingTime-card-content">
+							@for (tag of Tage; track tag.day) {
+								@if (tag.geschlossen) {
+									<p>{{ tag.day }}: {{ locale.closed }}</p>
+								} @else if (!tag.startTime2 || !tag.endTime2) {
+									<p>
+										{{ tag.day }}: {{ tag.startTime1 }} -
+										{{ tag.endTime1 }}
+									</p>
+								} @else {
+									<p>
+										{{ tag.day }}: {{ tag.startTime1 }} -
+										{{ tag.endTime1 }} ; {{ tag.startTime2 }} -
+										{{ tag.endTime2 }}
+									</p>
+								}
+							}
+						</div>
+					</div>
+				</dav-card>
+			</div>
+		}
+	</div>
+
+	<div class="separator"></div>
+	<div class="special-content-container">
+		<dav-header
+			class="special-opening-time-header"
+			addButtonVisible
+			size="sm"
+			(addButtonClick)="showAddSpecialOpeningTimeDialog()"
+		>
+			{{ specialOpeningTime }}
+		</dav-header>
+		@if (sonderTage && sonderTage.length > 0) {
+			<div class="cards-container special-cards-container">
+				@for (sonderTag of sonderTage; track $index) {
+					<dav-card>
+						<div class="openingTime-card-container">
+							<div class="openingTime-card-content">
+								@if (sonderTag.startDate !== sonderTag.endDate) {
+									@if (!sonderTag.startTime2 || !sonderTag.endTime2) {
+										<p>{{ sonderTag.name }}</p>
+										<p>
+											{{
+												DateTime.fromJSDate(
+													sonderTag.startDate
+												).toFormat("dd.MM.yyyy")
+											}}
+											-
+											{{
+												DateTime.fromJSDate(
+													sonderTag.endDate
+												).toFormat("dd.MM.yyyy")
+											}}: {{ sonderTag.startTime1 }} -
+											{{ sonderTag.endTime1 }}
+										</p>
+									} @else {
+										<p>{{ sonderTag.name }}</p>
+										<p>
+											{{
+												DateTime.fromJSDate(
+													sonderTag.startDate
+												).toFormat("dd.MM.yyyy")
+											}}
+											-
+											{{
+												DateTime.fromJSDate(
+													sonderTag.endDate
+												).toFormat("dd.MM.yyyy")
+											}}: {{ sonderTag.startTime1 }} -
+											{{ sonderTag.endTime1 }} ;
+											{{ sonderTag.startTime2 }} -
+											{{ sonderTag.endTime2 }}
+										</p>
+									}
+								}
+								@if (sonderTag.startDate == sonderTag.endDate) {
+									@if (!sonderTag.startTime2 || !sonderTag.endTime2) {
+										<p>{{ sonderTag.name }}</p>
+										<p>
+											{{
+												DateTime.fromJSDate(
+													sonderTag.startDate
+												).toFormat("dd.MM.yyyy")
+											}}: {{ sonderTag.startTime1 }} -
+											{{ sonderTag.endTime1 }}
+										</p>
+									} @else {
+										<p>{{ sonderTag.name }}</p>
+										<p>
+											{{
+												DateTime.fromJSDate(
+													sonderTag.startDate
+												).toFormat("dd.MM.yyyy")
+											}}: {{ sonderTag.startTime2 }} -
+											{{ sonderTag.endTime2 }}
+										</p>
+									}
+								}
+							</div>
+
+							<dav-icon-button
+								size="xs"
+								[tooltip]="actionsLocale.edit"
+								(click)="
+									showEditSpecialOpeningTimeDialog(sonderTag, $index)
+								"
+							>
+								<fa-icon [icon]="faPen"></fa-icon>
+							</dav-icon-button>
+						</div>
+					</dav-card>
+				}
+			</div>
+		}
+	</div>
+</div>
+
+<app-edit-opening-time-dialog
+	#editOpeningTimeDialog
+	[loading]="editOpeningTimeDialogLoading"
+	(primaryButtonClick)="editOpeningTimeDialogPrimaryButtonClick($event)"
+></app-edit-opening-time-dialog>
+
+<app-edit-special-opening-time-dialog
+	#editSpecialOpeningTimeDialog
+	[loading]="editSpecialOpeningTimeDialogLoading"
+	(primaryButtonClick)="editSpecialOpeningTimeDialogPrimaryButtonClick($event)"
+></app-edit-special-opening-time-dialog>

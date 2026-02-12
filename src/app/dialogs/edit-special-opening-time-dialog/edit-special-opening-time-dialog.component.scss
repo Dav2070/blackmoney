@@ -1,0 +1,65 @@
+@media screen and (max-width: 600px) {
+	.dialog-horizontal-formfield-container {
+		flex-direction: column;
+	}
+}
+
+.block-container {
+	margin-bottom: 24px;
+}
+
+.day-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.day-select {
+	flex: 1;
+}
+
+.remove-btn {
+	margin-top: 4px;
+}
+
+.radio-row {
+	display: flex;
+	gap: 16px;
+	margin-top: 12px;
+}
+
+.time-row {
+	display: flex;
+	gap: 16px;
+	margin-top: 12px;
+}
+
+.add-row {
+	text-align: center;
+	margin-top: 16px;
+}
+
+.separator {
+	height: 1px;
+	background: #ddd;
+	margin: 16px 0;
+}
+
+.pause-layout {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	dav-textfield {
+		flex: 1 1 calc(50% - 8px);
+	}
+}
+
+.date-row {
+	display: flex;
+	gap: 20px;
+}
+
+.dialog-formfield-container {
+	flex: 1;
+	margin-bottom: 20px;
+}

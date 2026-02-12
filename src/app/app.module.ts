@@ -159,6 +159,8 @@ import { DeleteCategoryDialogComponent } from "./dialogs/delete-category-dialog/
 import { AddProductDialogComponent } from "./dialogs/add-product-dialog/add-product-dialog.component"
 import { EditProductDialogComponent } from "./dialogs/edit-product-dialog/edit-product-dialog.component"
 import { ReservationsPageComponent } from "./pages/dashboard-pages/reservations-page/reservations-page.component"
+import { EditOpeningTimeDialogComponent } from "./dialogs/edit-opening-time-dialog/edit-opening-time-dialog.component"
+import { EditSpecialOpeningTimeDialogComponent } from "./dialogs/edit-special-opening-time-dialog/edit-special-opening-time-dialog.component"
 
 @NgModule({
 	declarations: [
@@ -223,6 +225,8 @@ import { ReservationsPageComponent } from "./pages/dashboard-pages/reservations-
 		DeleteCategoryDialogComponent,
 		AddProductDialogComponent,
 		EditProductDialogComponent,
+		EditOpeningTimeDialogComponent,
+		EditSpecialOpeningTimeDialogComponent,
 		// Pages
 		LandingPageComponent,
 		LandingOverviewPageComponent,

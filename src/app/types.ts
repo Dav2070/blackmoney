@@ -239,22 +239,17 @@ export interface ReservationResource {
 export interface OpeningTimeResource {
 	uuid: string
 	weekday: Weekday
-	durchgehend: boolean
-	pause: boolean
-	startTime1: string
-	endTime1: string
+	startTime1?: string
+	endTime1?: string
 	startTime2?: string
 	endTime2?: string
 }
 
 export interface SpecialOpeningTimeResource {
 	uuid: string
-	reason: string
-	from: string
-	to: string
-	durchgehend: boolean
-	pause: boolean
-	geschlossen: boolean
+	name: string
+	startDate: string
+	endDate: string
 	startTime1?: string
 	endTime1?: string
 	startTime2?: string
@@ -363,4 +358,21 @@ export enum RatingNum {
 	Three = 3,
 	Four = 4,
 	Five = 5
+}
+
+export class Day {
+	day: string
+	geschlossen?: boolean
+	startTime1: string
+	endTime1: string
+	startTime2?: string
+	endTime2?: string
+}
+
+export class Block {
+	selectedDays: string[]
+	startTime1: string
+	endTime1: string
+	startTime2?: string
+	endTime2?: string
 }

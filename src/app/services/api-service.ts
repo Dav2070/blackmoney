@@ -1508,8 +1508,6 @@ export class ApiService {
 			restaurantUuid: string
 			openingTimes: {
 				weekday: Weekday
-				durchgehend: boolean
-				pause: boolean
 				startTime1: string
 				endTime1: string
 				startTime2?: string
@@ -1560,12 +1558,9 @@ export class ApiService {
 		queryData: string,
 		variables: {
 			restaurantUuid: string
-			reason: string
-			from: string
-			to: string
-			durchgehend: boolean
-			pause?: boolean
-			geschlossen?: boolean
+			name: string
+			startDate: string
+			endDate: string
 			startTime1?: string
 			endTime1?: string
 			startTime2?: string
@@ -1577,12 +1572,9 @@ export class ApiService {
 			mutation: gql`
 				mutation CreateSpecialOpeningTime(
 					$restaurantUuid: String!
-					$reason: String!
-					$from: String!
-					$to: String!
-					$durchgehend: Boolean!
-					$pause: Boolean
-					$geschlossen: Boolean
+					$name: String!
+					$startDate: String!
+					$endDate: String!
 					$startTime1: String
 					$endTime1: String
 					$startTime2: String
@@ -1590,12 +1582,9 @@ export class ApiService {
 				) {
 					createSpecialOpeningTime(
 						restaurantUuid: $restaurantUuid
-						reason: $reason
-						from: $from
-						to: $to
-						durchgehend: $durchgehend
-						pause: $pause
-						geschlossen: $geschlossen
+						name: $name
+						startDate: $startDate
+						endDate: $endDate
 						startTime1: $startTime1
 						endTime1: $endTime1
 						startTime2: $startTime2
@@ -1613,12 +1602,9 @@ export class ApiService {
 		queryData: string,
 		variables: {
 			uuid: string
-			reason?: string
-			from?: string
-			to?: string
-			durchgehend?: boolean
-			pause?: boolean
-			geschlossen?: boolean
+			name?: string
+			startDate?: string
+			endDate?: string
 			startTime1?: string
 			endTime1?: string
 			startTime2?: string
@@ -1630,12 +1616,9 @@ export class ApiService {
 			mutation: gql`
 				mutation UpdateSpecialOpeningTime(
 					$uuid: String!
-					$reason: String
-					$from: String
-					$to: String
-					$durchgehend: Boolean
-					$pause: Boolean
-					$geschlossen: Boolean
+					$name: String
+					$startDate: String
+					$endDate: String
 					$startTime1: String
 					$endTime1: String
 					$startTime2: String
@@ -1643,12 +1626,9 @@ export class ApiService {
 				) {
 					updateSpecialOpeningTime(
 						uuid: $uuid
-						reason: $reason
-						from: $from
-						to: $to
-						durchgehend: $durchgehend
-						pause: $pause
-						geschlossen: $geschlossen
+						name: $name
+						startDate: $startDate
+						endDate: $endDate
 						startTime1: $startTime1
 						endTime1: $endTime1
 						startTime2: $startTime2

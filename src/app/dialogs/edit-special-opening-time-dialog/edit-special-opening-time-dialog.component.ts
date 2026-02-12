@@ -11,7 +11,8 @@ import {
 import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
-import { SpecialOpeningTime } from "src/app/models/Day"
+import { SpecialOpeningTime } from "src/app/models/SpecialOpeningTime"
+import { DateTime } from "luxon"
 
 @Component({
 	selector: "app-edit-special-opening-time-dialog",
@@ -23,22 +24,19 @@ export class EditSpecialOpeningTimeDialogComponent {
 	locale = this.localizationService.locale.dialogs.editOpeningTimeDialog
 	actionsLocale = this.localizationService.locale.actions
 	@Input() loading: boolean = false
-	@Input() reason: string = ""
-	@Input() reasonError: string = ""
+	@Input() name: string = ""
+	@Input() nameError: string = ""
 	@Input() errorMessage: string
 	@Output() primaryButtonClick = new EventEmitter()
 	@Output() clearErrors = new EventEmitter()
 	@ViewChild("dialog") dialog: ElementRef<Dialog>
 	visible: boolean = false
-	durchgehend: boolean = false
-	pause: boolean = false
-	geschlossen: boolean = false
 	@Input() startTime1: string = ""
 	@Input() endTime1: string = ""
 	@Input() startTime2: string = ""
 	@Input() endTime2: string = ""
-	@Input() fromDate: string = ""
-	@Input() toDate: string = ""
+	@Input() startDate: Date = new Date()
+	@Input() endDate: Date = new Date()
 	ID: string = ""
 	timeError: string = ""
 	dateError: string = ""
@@ -63,16 +61,13 @@ export class EditSpecialOpeningTimeDialogComponent {
 	}
 
 	show(specialOpeningTime: SpecialOpeningTime) {
-		this.reason = specialOpeningTime.reason
+		this.name = specialOpeningTime.name
 		this.startTime1 = specialOpeningTime.startTime1
 		this.endTime1 = specialOpeningTime.endTime1
 		this.startTime2 = specialOpeningTime.startTime2
 		this.endTime2 = specialOpeningTime.endTime2
-		this.fromDate = specialOpeningTime.from
-		this.toDate = specialOpeningTime.to
-		this.durchgehend = specialOpeningTime.durchgehend
-		this.pause = specialOpeningTime.pause
-		this.geschlossen = specialOpeningTime.geschlossen
+		this.startDate = specialOpeningTime.startDate
+		this.endDate = specialOpeningTime.endDate
 		this.visible = true
 	}
 
@@ -85,42 +80,25 @@ export class EditSpecialOpeningTimeDialogComponent {
 		this.visible = false
 	}
 
-	reasonTextfieldChange(event: Event) {
-		this.reason = (event as CustomEvent).detail.value
+	nameTextfieldChange(event: Event) {
+		this.name = (event as CustomEvent).detail.value
 		this.clearErrors.emit()
 	}
 
-	fromDatefieldChange(event: Event) {
-		this.fromDate = (event as CustomEvent).detail.value
+	startDatefieldChange(event: Event) {
+		this.startDate = (event as CustomEvent).detail.value
 		this.onDateChange()
 		this.clearErrors.emit()
 	}
 
-	toDatefieldChange(event: Event) {
-		this.toDate = (event as CustomEvent).detail.value
+	endDatefieldChange(event: Event) {
+		this.endDate = (event as CustomEvent).detail.value
 		this.onDateChange()
 		this.clearErrors.emit()
 	}
 
 	onDateChange() {
 		this.dateError = ""
-	}
-
-	onOpeningTypeChange(value: string) {
-		if (value === "durchgehend") {
-			this.durchgehend = true
-			this.pause = false
-			this.geschlossen = false
-		} else if (value === "pause") {
-			this.durchgehend = false
-			this.pause = true
-			this.geschlossen = false
-		} else if (value === "geschlossen") {
-			this.durchgehend = false
-			this.pause = false
-			this.geschlossen = true
-		}
-		this.onTimeChange()
 	}
 
 	onTimeChange() {
@@ -140,17 +118,13 @@ export class EditSpecialOpeningTimeDialogComponent {
 		console.log("ende1")
 		this.specialOpeningTime = {
 			uuid: this.ID,
-			reason: this.reason,
-			from: this.fromDate,
-			to: this.toDate,
-			durchgehend: this.durchgehend,
-			pause: this.pause,
-			geschlossen: this.geschlossen,
+			name: this.name,
+			startDate: this.startDate,
+			endDate: this.endDate,
 			startTime1: this.startTime1,
 			endTime1: this.endTime1,
 			startTime2: this.startTime2,
-			endTime2: this.endTime2,
-			geschlossenText: "Geschlossen"
+			endTime2: this.endTime2
 		}
 
 		this.primaryButtonClick.emit({
@@ -163,13 +137,15 @@ export class EditSpecialOpeningTimeDialogComponent {
 		this.dateError = ""
 
 		// Prüfe ob Daten ausgefüllt sind
-		if (!this.fromDate || !this.toDate) {
+		if (!this.startDate || !this.endDate) {
 			this.dateError = this.locale.errors.fillBothDateFields
 			return false
 		}
 
-		// Prüfe ob toDate >= fromDate
-		if (this.compareDate(this.fromDate, this.toDate) > 0) {
+		// Prüfe ob endDate >= startDate
+		if (
+			DateTime.fromJSDate(this.endDate) < DateTime.fromJSDate(this.startDate)
+		) {
 			this.dateError = this.locale.errors.endDateAfterStartDate
 			return false
 		}
@@ -180,45 +156,34 @@ export class EditSpecialOpeningTimeDialogComponent {
 	validateTimes(): boolean {
 		this.timeError = ""
 
-		// Wenn geschlossen, keine Zeitvalidierung nötig
-		if (this.geschlossen) {
-			return true
-		}
-
 		// Prüfe ob Zeiten ausgefüllt sind
 		if (!this.startTime1 || !this.endTime1) {
 			this.timeError = this.locale.errors.fillAllTimeFields
 			return false
 		}
 
-		if (this.durchgehend) {
-			// Durchgehend: Schließung muss nach Öffnung sein
-			if (this.compareTime(this.startTime1, this.endTime1) >= 0) {
-				this.timeError = this.locale.errors.closingAfterOpening
-				return false
-			}
-		} else if (this.pause) {
-			// Mit Pause: Prüfe alle Zeiten
+		// Schließung muss nach Öffnung sein
+		if (this.compareTime(this.startTime1, this.endTime1) >= 0) {
+			this.timeError = this.locale.errors.closingAfterOpening
+			return false
+		}
+
+		// Wenn startTime2 oder endTime2 gesetzt ist, müssen beide gesetzt sein
+		if (this.startTime2 || this.endTime2) {
 			if (!this.startTime2 || !this.endTime2) {
 				this.timeError = this.locale.errors.fillAllTimeFields
 				return false
 			}
 
-			// Pause muss nach Öffnung beginnen
-			if (this.compareTime(this.startTime1, this.endTime1) >= 0) {
+			// Zweite Öffnung muss nach erster Schließung sein
+			if (this.compareTime(this.endTime1, this.startTime2) >= 0) {
 				this.timeError = this.locale.errors.breakAfterOpening
 				return false
 			}
 
-			// Pause muss vor Schließung enden
+			// Zweite Schließung muss nach zweiter Öffnung sein
 			if (this.compareTime(this.startTime2, this.endTime2) >= 0) {
-				this.timeError = this.locale.errors.closingAfterBreak
-				return false
-			}
-
-			// Pause Ende muss nach Pause Beginn sein
-			if (this.compareTime(this.endTime1, this.startTime2) >= 0) {
-				this.timeError = this.locale.errors.breakEndAfterBreakStart
+				this.timeError = this.locale.errors.closingAfterOpening
 				return false
 			}
 		}
@@ -242,30 +207,14 @@ export class EditSpecialOpeningTimeDialogComponent {
 		return 0
 	}
 
-	// Hilfsfunktion zum Vergleichen von Datumsstrings (YYYY-MM-DD)
-	// Gibt zurück: -1 wenn date1 < date2, 0 wenn gleich, 1 wenn date1 > date2
-	compareDate(date1: string, date2: string): number {
-		if (!date1 || !date2) return 0
-
-		const d1 = new Date(date1)
-		const d2 = new Date(date2)
-
-		if (d1 < d2) return -1
-		if (d1 > d2) return 1
-		return 0
-	}
-
 	clear() {
-		this.reason = ""
+		this.name = ""
 		this.startTime1 = ""
 		this.endTime1 = ""
 		this.startTime2 = ""
 		this.endTime2 = ""
-		this.fromDate = ""
-		this.toDate = ""
-		this.durchgehend = true
-		this.pause = false
-		this.geschlossen = false
+		this.startDate = new Date()
+		this.endDate = new Date()
 		this.timeError = ""
 		this.dateError = ""
 	}

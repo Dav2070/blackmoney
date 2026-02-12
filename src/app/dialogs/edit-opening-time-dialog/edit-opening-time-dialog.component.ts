@@ -12,7 +12,7 @@ import { isPlatformBrowser } from "@angular/common"
 import { Dialog } from "dav-ui-components"
 import { LocalizationService } from "src/app/services/localization-service"
 import { FormControl } from "@angular/forms"
-import { Day, Block } from "src/app/models/Day"
+import { Day, Block } from "src/app/types"
 import { faPlus, faTrash } from "@fortawesome/pro-regular-svg-icons"
 
 @Component({
@@ -51,8 +51,6 @@ export class EditOpeningTimeDialogComponent {
 		]
 	}
 	@Input() day: string[] = []
-	durchgehend: boolean = false
-	pause: boolean = false
 	@Input() startTime1: string = ""
 	@Input() endTime1: string = ""
 	@Input() startTime2: string = ""
@@ -104,16 +102,6 @@ export class EditOpeningTimeDialogComponent {
 		this.clearErrors.emit()
 	}
 
-	onOpeningTypeChange(block: Block, value: string) {
-		if (value === "durchgehend") {
-			block.durchgehend = true
-			block.pause = false
-		} else if (value === "pause") {
-			block.durchgehend = false
-			block.pause = true
-		}
-	}
-
 	submit() {
 		// Validiere alle Blöcke
 		if (!this.validateAllBlocks()) {
@@ -156,30 +144,25 @@ export class EditOpeningTimeDialogComponent {
 			return this.locale.errors.fillAllTimeFields
 		}
 
-		if (block.durchgehend) {
-			// Durchgehend: Schließung muss nach Öffnung sein
-			if (this.compareTime(block.startTime1, block.endTime1) >= 0) {
-				return this.locale.errors.closingAfterOpening
-			}
-		} else if (block.pause) {
-			// Mit Pause: Prüfe alle Zeiten
+		// Schließung muss nach Öffnung sein
+		if (this.compareTime(block.startTime1, block.endTime1) >= 0) {
+			return this.locale.errors.closingAfterOpening
+		}
+
+		// Wenn startTime2 oder endTime2 gesetzt ist, müssen beide gesetzt sein
+		if (block.startTime2 || block.endTime2) {
 			if (!block.startTime2 || !block.endTime2) {
 				return this.locale.errors.fillAllTimeFields
 			}
 
-			// Pause muss nach Öffnung beginnen
-			if (this.compareTime(block.startTime1, block.endTime1) >= 0) {
+			// Zweite Öffnung muss nach erster Schließung sein
+			if (this.compareTime(block.endTime1, block.startTime2) >= 0) {
 				return this.locale.errors.breakAfterOpening
 			}
 
-			// Pause muss vor Schließung enden
+			// Zweite Schließung muss nach zweiter Öffnung sein
 			if (this.compareTime(block.startTime2, block.endTime2) >= 0) {
-				return this.locale.errors.closingAfterBreak
-			}
-
-			// Pause Ende muss nach Pause Beginn sein
-			if (this.compareTime(block.endTime1, block.startTime2) >= 0) {
-				return this.locale.errors.breakEndAfterBreakStart
+				return this.locale.errors.closingAfterOpening
 			}
 		}
 
@@ -221,22 +204,18 @@ export class EditOpeningTimeDialogComponent {
 
 			const same = unassigned.filter(
 				d =>
-					d.durchgehend === ref.durchgehend &&
-					d.pause === ref.pause &&
 					d.startTime1 === ref.startTime1 &&
 					d.endTime1 === ref.endTime1 &&
-					(d.startTime2 ?? "") === (ref.startTime2 ?? "") &&
-					(d.endTime2 ?? "") === (ref.endTime2 ?? "")
+					d.startTime2 === ref.startTime2 &&
+					d.endTime2 === ref.endTime2
 			)
 
 			groups.push({
 				selectedDays: same.map(d => d.day),
-				durchgehend: ref.durchgehend,
-				pause: ref.pause,
 				startTime1: ref.startTime1,
 				endTime1: ref.endTime1,
-				startTime2: ref.startTime2 ?? "",
-				endTime2: ref.endTime2 ?? ""
+				startTime2: ref.startTime2,
+				endTime2: ref.endTime2
 			})
 
 			same.forEach(d => {
@@ -249,8 +228,6 @@ export class EditOpeningTimeDialogComponent {
 		if (groups.length === 0) {
 			groups.push({
 				selectedDays: [],
-				durchgehend: true,
-				pause: false,
 				startTime1: "",
 				endTime1: "",
 				startTime2: "",
@@ -272,13 +249,11 @@ export class EditOpeningTimeDialogComponent {
 				block.selectedDays.forEach(dayName => {
 					const day: Day = {
 						day: dayName,
-						durchgehend: block.durchgehend,
-						pause: block.pause,
 						geschlossen: false,
 						startTime1: block.startTime1,
 						endTime1: block.endTime1,
-						startTime2: block.pause ? block.startTime2 : undefined,
-						endTime2: block.pause ? block.endTime2 : undefined
+						startTime2: block.startTime2,
+						endTime2: block.endTime2
 					}
 					selectedDaysMap.set(dayName, day)
 				})
@@ -293,13 +268,11 @@ export class EditOpeningTimeDialogComponent {
 				// Nicht ausgewählte Tage werden als geschlossen markiert
 				const day: Day = {
 					day: dayName,
-					durchgehend: false,
-					pause: false,
 					geschlossen: true,
 					startTime1: "",
 					endTime1: "",
-					startTime2: undefined,
-					endTime2: undefined
+					startTime2: "",
+					endTime2: ""
 				}
 				this.Days.push(day)
 			}
@@ -313,8 +286,6 @@ export class EditOpeningTimeDialogComponent {
 
 		this.blocks.push({
 			selectedDays: [],
-			durchgehend: true,
-			pause: false,
 			startTime1: "",
 			endTime1: "",
 			startTime2: "",

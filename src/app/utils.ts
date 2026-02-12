@@ -25,7 +25,8 @@ import { Menu } from "./models/Menu"
 import { Offer } from "./models/Offer"
 import { OfferItem } from "./models/OfferItem"
 import { Reservation } from "./models/Reservation"
-import { OpeningTime, SpecialOpeningTime } from "./models/Day"
+import { OpeningTime } from "./models/OpeningTime"
+import { SpecialOpeningTime } from "./models/SpecialOpeningTime"
 import {
 	ApolloResult,
 	CategoryResource,
@@ -801,8 +802,6 @@ export function convertOpeningTimeResourceToOpeningTime(
 	return {
 		uuid: openingTimeResource.uuid,
 		weekday: openingTimeResource.weekday,
-		durchgehend: openingTimeResource.durchgehend,
-		pause: openingTimeResource.pause,
 		startTime1: openingTimeResource.startTime1,
 		endTime1: openingTimeResource.endTime1,
 		startTime2: openingTimeResource.startTime2,
@@ -819,12 +818,9 @@ export function convertSpecialOpeningTimeResourceToSpecialOpeningTime(
 
 	return {
 		uuid: specialOpeningTimeResource.uuid,
-		reason: specialOpeningTimeResource.reason,
-		from: specialOpeningTimeResource.from,
-		to: specialOpeningTimeResource.to,
-		durchgehend: specialOpeningTimeResource.durchgehend,
-		pause: specialOpeningTimeResource.pause,
-		geschlossen: specialOpeningTimeResource.geschlossen,
+		name: specialOpeningTimeResource.name,
+		startDate: new Date(specialOpeningTimeResource.startDate),
+		endDate: new Date(specialOpeningTimeResource.endDate),
 		startTime1: specialOpeningTimeResource.startTime1,
 		endTime1: specialOpeningTimeResource.endTime1,
 		startTime2: specialOpeningTimeResource.startTime2,

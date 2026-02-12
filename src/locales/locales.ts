@@ -442,7 +442,9 @@ export const de = {
 				opening: "Öffnung",
 				closing: "Schließung",
 				breakStart: "Pause beginnt",
-				breakEnd: "Pause endet"
+				breakEnd: "Pause endet",
+				reopening: "Wiedereröffnung",
+				closingFinal: "Endgültige Schließung"
 			},
 			blockActions: {
 				add: "Block hinzufügen",

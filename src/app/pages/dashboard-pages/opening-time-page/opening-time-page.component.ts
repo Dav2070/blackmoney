@@ -12,7 +12,10 @@ import {
 import { EditRestaurantNameDialogComponent } from "src/app/dialogs/edit-restaurant-name-dialog/edit-restaurant-name-dialog.component"
 import { LocalizationService } from "src/app/services/localization-service"
 import * as ErrorCodes from "src/app/errorCodes"
-import { Day, SpecialOpeningTime, OpeningTime } from "src/app/models/Day"
+import { OpeningTime } from "src/app/models/OpeningTime"
+import { SpecialOpeningTime } from "src/app/models/SpecialOpeningTime"
+import { Day } from "src/app/types"
+import { DateTime } from "luxon"
 import { EditOpeningTimeDialogComponent } from "src/app/dialogs/edit-opening-time-dialog/edit-opening-time-dialog.component"
 import { EditSpecialOpeningTimeDialogComponent } from "src/app/dialogs/edit-special-opening-time-dialog/edit-special-opening-time-dialog.component"
 import {
@@ -39,6 +42,8 @@ export class OpeningTimePageComponent {
 	Tage: Day[] = []
 	sonderTage: SpecialOpeningTime[] = []
 	currentEditIndex: number = null
+
+	DateTime = DateTime
 
 	private weekdayOrder = [
 		"MONDAY",
@@ -96,8 +101,6 @@ export class OpeningTimePageComponent {
 				items {
 					uuid
 					weekday
-					durchgehend
-					pause
 					startTime1
 					endTime1
 					startTime2
@@ -121,8 +124,6 @@ export class OpeningTimePageComponent {
 				if (openingTime) {
 					return {
 						day: this.weekdayNames[weekday],
-						durchgehend: openingTime.durchgehend,
-						pause: openingTime.pause,
 						geschlossen: false,
 						startTime1: openingTime.startTime1,
 						endTime1: openingTime.endTime1,
@@ -133,8 +134,6 @@ export class OpeningTimePageComponent {
 					// Keine Öffnungszeit = geschlossen
 					return {
 						day: this.weekdayNames[weekday],
-						durchgehend: false,
-						pause: false,
 						geschlossen: true,
 						startTime1: "",
 						endTime1: ""
@@ -149,12 +148,9 @@ export class OpeningTimePageComponent {
 				`
 					items {
 						uuid
-						reason
-						from
-						to
-						durchgehend
-						pause
-						geschlossen
+						name
+						startDate
+						endDate
 						startTime1
 						endTime1
 						startTime2
@@ -183,8 +179,6 @@ export class OpeningTimePageComponent {
 		if (this.Tage.length < 1) {
 			this.Tage = this.weekdayOrder.map(weekday => ({
 				day: this.weekdayNames[weekday],
-				durchgehend: false,
-				pause: false,
 				geschlossen: true,
 				startTime1: "",
 				endTime1: ""
@@ -221,8 +215,6 @@ export class OpeningTimePageComponent {
 				)
 				return {
 					weekday: this.weekdayOrder[weekdayIndex] as any,
-					durchgehend: tag.durchgehend,
-					pause: tag.pause,
 					startTime1: tag.startTime1,
 					endTime1: tag.endTime1,
 					startTime2: tag.startTime2,
@@ -237,8 +229,6 @@ export class OpeningTimePageComponent {
 					items {
 						uuid
 						weekday
-						durchgehend
-						pause
 						startTime1
 						endTime1
 						startTime2
@@ -271,12 +261,9 @@ export class OpeningTimePageComponent {
 				await this.apiService.updateSpecialOpeningTime(
 					`
 						uuid
-						reason
-						from
-						to
-						durchgehend
-						pause
-						geschlossen
+						name
+						startDate
+						endDate
 						startTime1
 						endTime1
 						startTime2
@@ -284,12 +271,9 @@ export class OpeningTimePageComponent {
 					`,
 					{
 						uuid: this.sonderTage[this.currentEditIndex].uuid,
-						reason: event.sonderTage.reason,
-						from: event.sonderTage.from,
-						to: event.sonderTage.to,
-						durchgehend: event.sonderTage.durchgehend,
-						pause: event.sonderTage.pause,
-						geschlossen: event.sonderTage.geschlossen,
+						name: event.sonderTage.name,
+						startDate: event.sonderTage.startDate.toISOString(),
+						endDate: event.sonderTage.endDate.toISOString(),
 						startTime1: event.sonderTage.startTime1,
 						endTime1: event.sonderTage.endTime1,
 						startTime2: event.sonderTage.startTime2,
@@ -310,12 +294,9 @@ export class OpeningTimePageComponent {
 				await this.apiService.createSpecialOpeningTime(
 					`
 						uuid
-						reason
-						from
-						to
-						durchgehend
-						pause
-						geschlossen
+						name
+						startDate
+						endDate
 						startTime1
 						endTime1
 						startTime2
@@ -323,12 +304,9 @@ export class OpeningTimePageComponent {
 					`,
 					{
 						restaurantUuid: this.uuid,
-						reason: event.sonderTage.reason,
-						from: event.sonderTage.from,
-						to: event.sonderTage.to,
-						durchgehend: event.sonderTage.durchgehend,
-						pause: event.sonderTage.pause ?? false,
-						geschlossen: event.sonderTage.geschlossen ?? false,
+						name: event.sonderTage.name,
+						startDate: event.sonderTage.startDate.toISOString(),
+						endDate: event.sonderTage.endDate.toISOString(),
 						startTime1: event.sonderTage.startTime1,
 						endTime1: event.sonderTage.endTime1,
 						startTime2: event.sonderTage.startTime2,

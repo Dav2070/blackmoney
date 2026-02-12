@@ -45,98 +45,49 @@
 					</dav-icon-button>
 				</div>
 
-				<div class="radio-row">
-					<dav-radio-group
+				<div class="time-row">
+					<dav-textfield
+						[value]="block.startTime1"
+						[label]="locale.timeLabels.opening"
+						type="time"
+						[errorMessage]="getBlockError(i)"
 						(change)="
-							onOpeningTypeChange(block, $any($event).detail.checked);
+							block.startTime1 = $any($event).detail.value;
 							onTimeChange()
 						"
-					>
-						<dav-radio-button
-							[label]="locale.openingTypes.continuous"
-							value="durchgehend"
-							[checked]="block.durchgehend"
-						></dav-radio-button>
+					></dav-textfield>
 
-						<dav-radio-button
-							[label]="locale.openingTypes.withBreak"
-							value="pause"
-							[checked]="block.pause"
-						></dav-radio-button>
-					</dav-radio-group>
+					<dav-textfield
+						[value]="block.endTime1"
+						[label]="locale.timeLabels.closing"
+						type="time"
+						(change)="
+							block.endTime1 = $any($event).detail.value; onTimeChange()
+						"
+					></dav-textfield>
 				</div>
 
-				<!-- Durchgehend -->
-				@if (block.durchgehend) {
-					<div class="time-row">
-						<dav-textfield
-							[value]="block.startTime1"
-							[label]="locale.timeLabels.opening"
-							type="time"
-							[errorMessage]="getBlockError(i)"
-							(change)="
-								block.startTime1 = $any($event).detail.value;
-								onTimeChange()
-							"
-						></dav-textfield>
+				<!-- Second time period for break times -->
+				<div class="time-row">
+					<dav-textfield
+						[value]="block.startTime2"
+						[label]="locale.timeLabels.reopening"
+						type="time"
+						(change)="
+							block.startTime2 = $any($event).detail.value;
+							onTimeChange()
+						"
+					></dav-textfield>
 
-						<dav-textfield
-							[value]="block.endTime1"
-							[label]="locale.timeLabels.closing"
-							type="time"
-							(change)="
-								block.endTime1 = $any($event).detail.value;
-								onTimeChange()
-							"
-						></dav-textfield>
-					</div>
-				}
-
-				<!-- Pause -->
-				@if (block.pause) {
-					<div class="time-row pause-layout">
-						<dav-textfield
-							[value]="block.startTime1"
-							[label]="locale.timeLabels.opening"
-							type="time"
-							[errorMessage]="getBlockError(i)"
-							(change)="
-								block.startTime1 = $any($event).detail.value;
-								onTimeChange()
-							"
-						></dav-textfield>
-
-						<dav-textfield
-							[value]="block.endTime1"
-							[label]="locale.timeLabels.breakStart"
-							type="time"
-							(change)="
-								block.endTime1 = $any($event).detail.value;
-								onTimeChange()
-							"
-						></dav-textfield>
-
-						<dav-textfield
-							[value]="block.startTime2"
-							[label]="locale.timeLabels.breakEnd"
-							type="time"
-							(change)="
-								block.startTime2 = $any($event).detail.value;
-								onTimeChange()
-							"
-						></dav-textfield>
-
-						<dav-textfield
-							[value]="block.endTime2"
-							[label]="locale.timeLabels.closing"
-							type="time"
-							(change)="
-								block.endTime2 = $any($event).detail.value;
-								onTimeChange()
-							"
-						></dav-textfield>
-					</div>
-				}
+					<dav-textfield
+						[value]="block.endTime2"
+						[label]="locale.timeLabels.closingFinal"
+						type="time"
+						(change)="
+							block.endTime2 = $any($event).detail.value; onTimeChange()
+						"
+					></dav-textfield>
+				</div>
 			</div>
 		}
 		<div class="separator"></div>

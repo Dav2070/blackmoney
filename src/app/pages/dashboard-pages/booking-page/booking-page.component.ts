@@ -21,7 +21,6 @@ import {
 	faCupTogo,
 	faNoteSticky,
 	faStar,
-	faSeat,
 	faUtensils,
 	faBurger
 } from "@fortawesome/pro-regular-svg-icons"
@@ -84,7 +83,6 @@ export class BookingPageComponent {
 	faNoteSticky = faNoteSticky
 	faStar = faStar
 	faBurger = faBurger
-	faSeat = faSeat
 	faUtensils = faUtensils
 	calculateTotalPriceOfOrderItem = calculateTotalPriceOfOrderItem
 	formatPrice = formatPrice
@@ -380,6 +378,7 @@ export class BookingPageComponent {
 	}
 
 	transferTableButtonClick() {
+		this.hideBottomSheet()
 		this.selectTableDialog.show(this.console, this.consoleActive, true)
 	}
 
@@ -1246,20 +1245,6 @@ export class BookingPageComponent {
 		this.billsOverviewDialog.show()
 	}
 
-	async navigateToTransferPage() {
-		let selectedTableNumber = Number(this.console)
-		if (isNaN(selectedTableNumber)) return
-
-		// Find the table
-		let table = this.room.tables.find(t => t.name == selectedTableNumber)
-		if (table == null) return
-
-		await this.hideBottomSheet()
-
-		// Navigate to the transfer page with the table UUID
-		this.router.navigate(["dashboard", "tables", this.table.uuid, table.uuid])
-	}
-
 	selectMenuSpecialProductsDialogPrimaryButtonClick(event: {
 		orderItems: OrderItem[]
 	}) {
@@ -1335,7 +1320,9 @@ export class BookingPageComponent {
 		this.showTotal(false)
 	}
 
-	addNoteButtonClick() {
+	async addNoteButtonClick() {
+		await this.hideBottomSheet()
+
 		if (this.selectedOrderItem != null) {
 			if (this.stagedItems.includes(this.selectedOrderItem)) {
 				this.tmpAllItemHandler = this.stagedItems
@@ -1434,8 +1421,9 @@ export class BookingPageComponent {
 		this.clickItem(product, event.name, orderItemType, event.price)
 	}
 
-	takeAwayButtonClick() {
+	async takeAwayButtonClick() {
 		if (this.selectedOrderItem != null) {
+			await this.hideBottomSheet()
 			this.selectedOrderItem.takeAway = !this.selectedOrderItem.takeAway
 		}
 	}
@@ -1455,6 +1443,11 @@ export class BookingPageComponent {
 				}
 			}
 		}
+	}
+
+	addDiverseProductButtonClick() {
+		this.hideBottomSheet()
+		this.addDiverseProductDialog.show()
 	}
 
 	/**

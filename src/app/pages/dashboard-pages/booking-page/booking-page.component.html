@@ -450,7 +450,7 @@
 				<dav-button
 					color="secondary"
 					text
-					(click)="addDiverseProductDialog.show()"
+					(click)="addDiverseProductButtonClick()"
 				>
 					<fa-icon [icon]="faBurger" slot="icon-left"></fa-icon>
 					{{ locale.diverseProducts }}
@@ -635,25 +635,45 @@
 		<dav-icon-card
 			[text]="locale.rebook"
 			size="sm"
-			(click)="navigateToTransferPage()"
+			(click)="transferTableButtonClick()"
 		>
 			<fa-icon [icon]="faArrowTurnDownRight"></fa-icon>
 		</dav-icon-card>
 
-		<dav-icon-card [text]="locale.switchTable" size="sm">
-			<fa-icon [icon]="faSeat"></fa-icon>
-		</dav-icon-card>
-
-		<dav-icon-card [text]="locale.takeAway" size="sm">
+		<dav-icon-card
+			[text]="locale.takeAway"
+			size="sm"
+			(click)="takeAwayButtonClick()"
+		>
 			<fa-icon [icon]="faCupTogo"></fa-icon>
 		</dav-icon-card>
 
-		<dav-icon-card [text]="locale.notes" size="sm">
+		<dav-icon-card
+			[text]="locale.notes"
+			size="sm"
+			(click)="addNoteButtonClick()"
+		>
 			<fa-icon [icon]="faNoteSticky"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card
+			[text]="locale.course"
+			size="sm"
+			(click)="setCourseButtonClick()"
+		>
+			<fa-icon [icon]="faUtensils"></fa-icon>
 		</dav-icon-card>
 
 		<dav-icon-card [text]="locale.extras" size="sm">
 			<fa-icon [icon]="faStar"></fa-icon>
+		</dav-icon-card>
+
+		<dav-icon-card
+			[text]="locale.diverseProducts"
+			size="sm"
+			(click)="addDiverseProductButtonClick()"
+		>
+			<fa-icon [icon]="faBurger"></fa-icon>
 		</dav-icon-card>
 	</div>
 </dav-bottom-sheet>

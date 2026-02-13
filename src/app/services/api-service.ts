@@ -72,7 +72,8 @@ export class ApiService {
 			args.query.definitions.length > 0 &&
 			args.query.definitions[0].kind === "OperationDefinition"
 		) {
-			queryName = args.query.definitions[0].name?.value
+			queryName =
+				args.query.definitions[0].name?.value?.toLowerCase() ?? null
 		}
 
 		const refetch =
@@ -116,7 +117,7 @@ export class ApiService {
 		return response
 	}
 
-	login = async (
+	login(
 		queryData: string,
 		variables: {
 			companyUuid: string
@@ -125,8 +126,8 @@ export class ApiService {
 			registerUuid: string
 			registerClientSerialNumber: string
 		}
-	) =>
-		this.mutate<{ login: SessionResource }>({
+	) {
+		return this.mutate<{ login: SessionResource }>({
 			apollo: this.davAuthApollo,
 			mutation: gql`
 				mutation Login(
@@ -149,9 +150,10 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	retrieveOwnUser = async (queryData: string) =>
-		this.query<{ retrieveOwnUser: UserResource }>({
+	retrieveOwnUser(queryData: string) {
+		return this.query<{ retrieveOwnUser: UserResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query RetrieveOwnUser {
@@ -161,9 +163,10 @@ export class ApiService {
 				}
 			`
 		})
+	}
 
-	retrieveUser = async (queryData: string, variables: { uuid: string }) =>
-		this.query<{ retrieveUser: UserResource }>({
+	retrieveUser(queryData: string, variables: { uuid: string }) {
+		return this.query<{ retrieveUser: UserResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query RetrieveUser($uuid: String!) {
@@ -174,16 +177,17 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createOwner = async (
+	createOwner(
 		queryData: string,
 		variables: {
 			companyUuid: string
 			name: string
 			password: string
 		}
-	) =>
-		this.mutate<{ createOwner: UserResource }>({
+	) {
+		return this.mutate<{ createOwner: UserResource }>({
 			apollo: this.davAuthApollo,
 			mutation: gql`
 				mutation CreateOwner(
@@ -202,8 +206,9 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createUser = async (
+	createUser(
 		queryData: string,
 		variables: {
 			companyUuid: string
@@ -211,8 +216,8 @@ export class ApiService {
 			role?: UserRole
 			restaurants: string[]
 		}
-	) =>
-		this.mutate<{ createUser: UserResource }>({
+	) {
+		return this.mutate<{ createUser: UserResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateUser(
@@ -234,15 +239,16 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveCompany]
 		})
+	}
 
-	setPasswordForUser = async (
+	setPasswordForUser(
 		queryData: string,
 		variables: {
 			uuid: string
 			password: string
 		}
-	) =>
-		this.mutate<{ setPasswordForUser: UserResource }>({
+	) {
+		return this.mutate<{ setPasswordForUser: UserResource }>({
 			apollo: this.davAuthApollo,
 			mutation: gql`
 				mutation SetPasswordForUser(
@@ -259,14 +265,15 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	resetPasswordOfUser = async (
+	resetPasswordOfUser(
 		queryData: string,
 		variables: {
 			uuid: string
 		}
-	) =>
-		this.mutate<{ resetPasswordOfUser: UserResource }>({
+	) {
+		return this.mutate<{ resetPasswordOfUser: UserResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation ResetPasswordOfUser($uuid: String!) {
@@ -277,9 +284,10 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	retrieveCompany = async (queryData: string) =>
-		this.query<{ retrieveCompany: CompanyResource }>({
+	retrieveCompany(queryData: string) {
+		return this.query<{ retrieveCompany: CompanyResource }>({
 			apollo: this.davAuthApollo,
 			query: gql`
 				query RetrieveCompany {
@@ -289,9 +297,10 @@ export class ApiService {
 				}
 			`
 		})
+	}
 
-	createCompany = async (queryData: string, variables: { name: string }) =>
-		this.mutate<{ createCompany: CompanyResource }>({
+	createCompany(queryData: string, variables: { name: string }) {
+		return this.mutate<{ createCompany: CompanyResource }>({
 			apollo: this.davAuthApollo,
 			mutation: gql`
 				mutation CreateCompany($name: String!) {
@@ -302,12 +311,13 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	retrieveRestaurant = async (
+	retrieveRestaurant(
 		queryData: string,
 		variables: { uuid: string }
-	) =>
-		this.query<{ retrieveRestaurant: RestaurantResource }>({
+	) {
+		return this.query<{ retrieveRestaurant: RestaurantResource }>({
 			apollo: this.davAuthApollo,
 			query: gql`
 				query RetrieveRestaurant($uuid: String!) {
@@ -318,8 +328,9 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	updateRestaurant = async (
+	updateRestaurant(
 		queryData: string,
 		variables: {
 			uuid: string
@@ -335,8 +346,8 @@ export class ApiService {
 			mail?: string
 			phoneNumber?: string
 		}
-	) =>
-		this.mutate<{ updateRestaurant: RestaurantResource }>({
+	) {
+		return this.mutate<{ updateRestaurant: RestaurantResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateRestaurant(
@@ -374,9 +385,10 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveCompany, this.retrieveRestaurant]
 		})
+	}
 
-	retrieveRegister = async (queryData: string, variables: { uuid: string }) =>
-		this.query<{ retrieveRegister: RegisterResource }>({
+	retrieveRegister(queryData: string, variables: { uuid: string }) {
+		return this.query<{ retrieveRegister: RegisterResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query RetrieveRegister($uuid: String!) {
@@ -387,15 +399,16 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createRegister = async (
+	createRegister(
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			name: string
 		}
-	) =>
-		this.mutate<{ createRegister: RegisterResource }>({
+	) {
+		return this.mutate<{ createRegister: RegisterResource }>({
 			apollo: this.davAuthApollo,
 			mutation: gql`
 				mutation CreateRegister(
@@ -412,14 +425,15 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	activateRegister = async (
+	activateRegister(
 		queryData: string,
 		variables: {
 			uuid: string
 		}
-	) =>
-		this.mutate<{ activateRegister: RegisterResource }>({
+	) {
+		return this.mutate<{ activateRegister: RegisterResource }>({
 			apollo: this.davAuthApollo,
 			mutation: gql`
 				mutation ActivateRegister($uuid: String!) {
@@ -431,12 +445,13 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveRegister]
 		})
+	}
 
-	retrieveRegisterClient = async (
+	retrieveRegisterClient(
 		queryData: string,
 		variables: { uuid: string }
-	) =>
-		this.query<{ retrieveRegisterClient: RegisterClientResource }>({
+	) {
+		return this.query<{ retrieveRegisterClient: RegisterClientResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query RetrieveRegisterClient($uuid: String!) {
@@ -447,15 +462,16 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	retrieveRegisterClientBySerialNumber = async (
+	retrieveRegisterClientBySerialNumber(
 		queryData: string,
 		variables: {
 			registerUuid: string
 			serialNumber: string
 		}
-	) =>
-		this.query<{
+	) {
+		return this.query<{
 			retrieveRegisterClientBySerialNumber: RegisterClientResource
 		}>({
 			apollo: this.blackmoneyAuthApollo,
@@ -474,15 +490,16 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	updateRegisterClient = async (
+	updateRegisterClient(
 		queryData: string,
 		variables: {
 			uuid: string
 			name?: string
 		}
-	) =>
-		this.mutate<{ updateRegisterClient: RegisterClientResource }>({
+	) {
+		return this.mutate<{ updateRegisterClient: RegisterClientResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateRegisterClient(
@@ -503,16 +520,17 @@ export class ApiService {
 				this.retrieveRegisterClientBySerialNumber
 			]
 		})
+	}
 
-	searchPrinters = async (
+	searchPrinters(
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			query: string
 			exclude?: string[]
 		}
-	) =>
-		this.query<{ searchPrinters: List<PrinterResource> }>({
+	) {
+		return this.query<{ searchPrinters: List<PrinterResource> }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query SearchPrinters(
@@ -531,16 +549,17 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createPrinter = async (
+	createPrinter(
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			name: string
 			ipAddress: string
 		}
-	) =>
-		this.mutate<{ createPrinter: PrinterResource }>({
+	) {
+		return this.mutate<{ createPrinter: PrinterResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreatePrinter(
@@ -560,16 +579,17 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveRestaurant, this.searchPrinters]
 		})
+	}
 
-	updatePrinter = async (
+	updatePrinter(
 		queryData: string,
 		variables: {
 			uuid: string
 			name: string
 			ipAddress: string
 		}
-	) =>
-		this.mutate<{ updatePrinter: PrinterResource }>({
+	) {
+		return this.mutate<{ updatePrinter: PrinterResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdatePrinter(
@@ -589,8 +609,9 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveRestaurant, this.searchPrinters]
 		})
+	}
 
-	createPrintRule = async (
+	createPrintRule(
 		queryData: string,
 		variables: {
 			registerClientUuid: string
@@ -600,8 +621,8 @@ export class ApiService {
 			categoryUuids?: string[]
 			productUuids?: string[]
 		}
-	) =>
-		this.mutate<{ createPrintRule: PrintRuleResource }>({
+	) {
+		return this.mutate<{ createPrintRule: PrintRuleResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreatePrintRule(
@@ -627,8 +648,9 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveRegisterClient]
 		})
+	}
 
-	updatePrintRule = async (
+	updatePrintRule(
 		queryData: string,
 		variables: {
 			uuid: string
@@ -636,7 +658,7 @@ export class ApiService {
 			categoryUuids?: string[]
 			productUuids?: string[]
 		}
-	) => {
+	) {
 		return this.mutate<{ updatePrintRule: PrintRuleResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
@@ -661,8 +683,8 @@ export class ApiService {
 		})
 	}
 
-	deletePrintRule = async (queryData: string, variables: { uuid: string }) =>
-		this.mutate<{ deletePrintRule: PrintRuleResource }>({
+	deletePrintRule(queryData: string, variables: { uuid: string }) {
+		return this.mutate<{ deletePrintRule: PrintRuleResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation DeletePrintRule($uuid: String!) {
@@ -674,14 +696,15 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveRegisterClient]
 		})
+	}
 
-	retrieveRoom = async (
+	retrieveRoom(
 		queryData: string,
 		variables: {
 			uuid: string
 		}
-	) =>
-		this.query<{ retrieveRoom: RoomResource }>({
+	) {
+		return this.query<{ retrieveRoom: RoomResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query RetrieveRoom($uuid: String!) {
@@ -692,14 +715,15 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	listRooms = async (
+	listRooms(
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 		}
-	) =>
-		this.query<{ listRooms: List<RoomResource> }>({
+	) {
+		return this.query<{ listRooms: List<RoomResource> }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query ListRooms($restaurantUuid: String!) {
@@ -710,12 +734,13 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createRoom = async (
+	createRoom(
 		queryData: string,
 		variables: { restaurantUuid: string; name: string }
-	) =>
-		this.mutate<{ createRoom: RoomResource }>({
+	) {
+		return this.mutate<{ createRoom: RoomResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateRoom(
@@ -733,12 +758,13 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveRestaurant, this.listRooms]
 		})
+	}
 
-	updateRoom = async (
+	updateRoom(
 		queryData: string,
 		variables: { uuid: string; name: string }
-	) =>
-		this.mutate<{ updateRoom: RoomResource }>({
+	) {
+		return this.mutate<{ updateRoom: RoomResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateRoom(
@@ -760,9 +786,10 @@ export class ApiService {
 				this.listRooms
 			]
 		})
+	}
 
-	deleteRoom = async (queryData: string, variables: { uuid: string }) =>
-		this.mutate<{ deleteRoom: RoomResource }>({
+	deleteRoom(queryData: string, variables: { uuid: string }) {
+		return this.mutate<{ deleteRoom: RoomResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation DeleteRoom($uuid: String!) {
@@ -778,12 +805,13 @@ export class ApiService {
 				this.listRooms
 			]
 		})
+	}
 
-	createTable = async (
+	createTable(
 		queryData: string,
 		variables: { roomUuid: string; name: number; seats: number }
-	) =>
-		this.mutate<{ createTable: TableResource }>({
+	) {
+		return this.mutate<{ createTable: TableResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateTable(
@@ -803,12 +831,13 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveRestaurant, this.retrieveRoom]
 		})
+	}
 
-	updateTable = async (
+	updateTable(
 		queryData: string,
 		variables: { uuid: string; seats?: number }
-	) =>
-		this.mutate<{ updateTable: TableResource }>({
+	) {
+		return this.mutate<{ updateTable: TableResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateTable(
@@ -826,9 +855,10 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveRestaurant]
 		})
+	}
 
-	deleteTable = async (queryData: string, variables: { uuid: string }) =>
-		this.mutate<{ deleteTable: TableResource }>({
+	deleteTable(queryData: string, variables: { uuid: string }) {
+		return this.mutate<{ deleteTable: TableResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation DeleteTable($uuid: String!) {
@@ -840,11 +870,12 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.retrieveRestaurant]
 		})
+	}
 
-	retrieveCategory = async (
+	retrieveCategory(
 		queryData: string,
 		variables: { uuid: string; type?: ProductType }
-	) => {
+	) {
 		const typeParam = queryData.includes("products")
 			? "$type: ProductType"
 			: ""
@@ -865,15 +896,15 @@ export class ApiService {
 		})
 	}
 
-	searchCategories = async (
+	searchCategories(
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			query: string
 			exclude?: string[]
 		}
-	) =>
-		this.query<{ searchCategories: List<CategoryResource> }>({
+	) {
+		return this.query<{ searchCategories: List<CategoryResource> }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query SearchCategories(
@@ -892,14 +923,15 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	listCategories = async (
+	listCategories(
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 		}
-	) =>
-		this.query<{ listCategories: List<CategoryResource> }>({
+	) {
+		return this.query<{ listCategories: List<CategoryResource> }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query ListCategories($restaurantUuid: String!) {
@@ -910,15 +942,16 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createCategory = async (
+	createCategory(
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			name: string
 		}
-	) =>
-		this.mutate<{ createCategory: CategoryResource }>({
+	) {
+		return this.mutate<{ createCategory: CategoryResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateCategory(
@@ -936,15 +969,16 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.searchCategories, this.listCategories]
 		})
+	}
 
-	updateCategory = async (
+	updateCategory(
 		queryData: string,
 		variables: {
 			uuid: string
 			name?: string
 		}
-	) =>
-		this.mutate<{ updateCategory: CategoryResource }>({
+	) {
+		return this.mutate<{ updateCategory: CategoryResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateCategory(
@@ -966,9 +1000,10 @@ export class ApiService {
 				this.listCategories
 			]
 		})
+	}
 
-	deleteCategory = async (queryData: string, variables: { uuid: string }) =>
-		this.mutate<{ deleteCategory: CategoryResource }>({
+	deleteCategory(queryData: string, variables: { uuid: string }) {
+		return this.mutate<{ deleteCategory: CategoryResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation DeleteCategory($uuid: String!) {
@@ -984,16 +1019,17 @@ export class ApiService {
 				this.listCategories
 			]
 		})
+	}
 
-	searchProducts = async (
+	searchProducts(
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			query: string
 			exclude?: string[]
 		}
-	) =>
-		this.query<{ searchProducts: List<CategoryResource> }>({
+	) {
+		return this.query<{ searchProducts: List<CategoryResource> }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query SearchProducts(
@@ -1012,8 +1048,9 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createProduct = async (
+	createProduct(
 		queryData: string,
 		variables: {
 			categoryUuid: string
@@ -1023,8 +1060,8 @@ export class ApiService {
 			shortcut?: number
 			variationUuids?: string[]
 		}
-	) =>
-		this.mutate<{ createProduct: ProductResource }>({
+	) {
+		return this.mutate<{ createProduct: ProductResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateProduct(
@@ -1050,8 +1087,9 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.searchProducts]
 		})
+	}
 
-	updateProduct = async (
+	updateProduct(
 		queryData: string,
 		variables: {
 			uuid: string
@@ -1060,8 +1098,8 @@ export class ApiService {
 			shortcut?: number
 			variationUuids?: string[]
 		}
-	) =>
-		this.mutate<{ updateProduct: ProductResource }>({
+	) {
+		return this.mutate<{ updateProduct: ProductResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateProduct(
@@ -1085,9 +1123,10 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.searchProducts]
 		})
+	}
 
-	deleteProduct = async (queryData: string, variables: { uuid: string }) =>
-		this.mutate<{ deleteProduct: ProductResource }>({
+	deleteProduct(queryData: string, variables: { uuid: string }) {
+		return this.mutate<{ deleteProduct: ProductResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation DeleteProduct($uuid: String!) {
@@ -1099,8 +1138,9 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.searchProducts]
 		})
+	}
 
-	createOffer = async (
+	createOffer(
 		queryData: string,
 		variables: {
 			productUuid: string
@@ -1118,8 +1158,8 @@ export class ApiService {
 				productUuids: string[]
 			}[]
 		}
-	) =>
-		this.mutate<{ createOffer: OfferResource }>({
+	) {
+		return this.mutate<{ createOffer: OfferResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateOffer(
@@ -1152,8 +1192,9 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	updateOffer = async (
+	updateOffer(
 		queryData: string,
 		variables: {
 			uuid: string
@@ -1171,8 +1212,8 @@ export class ApiService {
 				productUuids: string[]
 			}[]
 		}
-	) =>
-		this.mutate<{ updateOffer: OfferResource }>({
+	) {
+		return this.mutate<{ updateOffer: OfferResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateOffer(
@@ -1205,8 +1246,9 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	deleteOffer = async (queryData: string, variables: { uuid: string }) => {
+	deleteOffer(queryData: string, variables: { uuid: string }) {
 		return this.mutate<{ deleteOffer: OfferResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
@@ -1220,10 +1262,10 @@ export class ApiService {
 		})
 	}
 
-	retrieveTable = async (
+	retrieveTable(
 		queryData: string,
 		variables: { uuid: string; paid?: boolean }
-	) => {
+	) {
 		const paidParam = queryData.includes("paid") ? "$paid: Boolean" : ""
 
 		return this.query<{ retrieveTable: TableResource }>({
@@ -1242,8 +1284,8 @@ export class ApiService {
 		})
 	}
 
-	listOrders = async (queryData: string, variables: { completed?: boolean }) =>
-		this.query<{ listOrders: List<OrderResource> }>({
+	listOrders(queryData: string, variables: { completed?: boolean }) {
+		return this.query<{ listOrders: List<OrderResource> }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query ListOrders($completed:Boolean) {
@@ -1254,9 +1296,10 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createOrder = async (queryData: string, variables: { tableUuid: string }) =>
-		this.mutate<{ createOrder: OrderResource }>({
+	createOrder(queryData: string, variables: { tableUuid: string }) {
+		return this.mutate<{ createOrder: OrderResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateOrder(
@@ -1271,8 +1314,9 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	updateOrder = async (
+	updateOrder(
 		queryData: string,
 		variables: {
 			uuid: string
@@ -1287,8 +1331,8 @@ export class ApiService {
 				}[]
 			}[]
 		}
-	) =>
-		this.mutate<{ updateOrder: OrderResource }>({
+	) {
+		return this.mutate<{ updateOrder: OrderResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateOrder(
@@ -1305,15 +1349,16 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	addProductsToOrder = async (
+	addProductsToOrder(
 		queryData: string,
 		variables: {
 			uuid: string
 			products: AddOrderItemInput[]
 		}
-	) =>
-		this.mutate<{ addProductsToOrder: OrderResource }>({
+	) {
+		return this.mutate<{ addProductsToOrder: OrderResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation AddProductsToOrder(
@@ -1328,17 +1373,19 @@ export class ApiService {
 					}
 				}
 			`,
-			variables
+			variables,
+			refetchQueries: [this.retrieveTable]
 		})
+	}
 
-	removeProductsFromOrder = async (
+	removeProductsFromOrder(
 		queryData: string,
 		variables: {
 			uuid: string
 			products: AddOrderItemInput[]
 		}
-	) =>
-		this.mutate<{ removeProductsFromOrder: OrderResource }>({
+	) {
+		return this.mutate<{ removeProductsFromOrder: OrderResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation RemoveProductsFromOrder(
@@ -1355,16 +1402,17 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	completeOrder = async (
+	completeOrder(
 		queryData: string,
 		variables: {
 			uuid: string
 			billUuid: string
 			paymentMethod: PaymentMethod
 		}
-	) =>
-		this.mutate<{ completeOrder: OrderResource }>({
+	) {
+		return this.mutate<{ completeOrder: OrderResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CompleteOrder(
@@ -1384,8 +1432,9 @@ export class ApiService {
 			variables,
 			refetchQueries: [this.listOrders]
 		})
+	}
 
-	updateOrderItem = async (
+	updateOrderItem(
 		queryData: string,
 		variables: {
 			uuid: string
@@ -1395,8 +1444,8 @@ export class ApiService {
 				count: number
 			}[]
 		}
-	) =>
-		this.mutate<{ updateOrderItem: OrderResource }>({
+	) {
+		return this.mutate<{ updateOrderItem: OrderResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateOrderItem(
@@ -1415,12 +1464,13 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createBill = async (
+	createBill(
 		queryData: string,
 		variables: { registerClientUuid: string }
-	) =>
-		this.mutate<{ createBill: BillResource }>({
+	) {
+		return this.mutate<{ createBill: BillResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateBill($registerClientUuid: String!) {
@@ -1431,15 +1481,16 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	listReservations = (
+	listReservations(
 		queryData: string,
 		variables: {
 			restaurantUuid: string
 			date: string
 		}
-	) =>
-		this.query<{ listReservations: List<ReservationResource> }>({
+	) {
+		return this.query<{ listReservations: List<ReservationResource> }>({
 			apollo: this.blackmoneyAuthApollo,
 			query: gql`
 				query ListReservations(
@@ -1456,15 +1507,16 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	updateReservation = async (
+	updateReservation(
 		queryData: string,
 		variables: {
 			uuid: string
 			checkedIn?: boolean
 		}
-	) =>
-		this.mutate<{ updateReservation: ReservationResource }>({
+	) {
+		return this.mutate<{ updateReservation: ReservationResource }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation UpdateReservation(
@@ -1481,15 +1533,16 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createStripeAccountOnboardingLink = async (
+	createStripeAccountOnboardingLink(
 		queryData: string,
 		variables: {
 			refreshUrl: string
 			returnUrl: string
 		}
-	) =>
-		this.mutate<{ createStripeAccountOnboardingLink: { url: string } }>({
+	) {
+		return this.mutate<{ createStripeAccountOnboardingLink: { url: string } }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateStripeAccountOnboardingLink(
@@ -1506,14 +1559,15 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createStripeBillingPortalSession = async (
+	createStripeBillingPortalSession(
 		queryData: string,
 		variables: {
 			returnUrl: string
 		}
-	) =>
-		this.mutate<{ createStripeBillingPortalSession: { url: string } }>({
+	) {
+		return this.mutate<{ createStripeBillingPortalSession: { url: string } }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateStripeBillingPortalSession($returnUrl: String!) {
@@ -1524,15 +1578,16 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 
-	createStripeSubscriptionCheckoutSession = async (
+	createStripeSubscriptionCheckoutSession(
 		queryData: string,
 		variables: {
 			successUrl: string
 			cancelUrl: string
 		}
-	) =>
-		this.mutate<{ createStripeSubscriptionCheckoutSession: { url: string } }>(
+	) {
+		return this.mutate<{ createStripeSubscriptionCheckoutSession: { url: string } }>(
 			{
 				apollo: this.blackmoneyAuthApollo,
 				mutation: gql`
@@ -1551,9 +1606,10 @@ export class ApiService {
 				variables
 			}
 		)
+	}
 
-	createStripeConnectionToken = async (queryData: string) =>
-		this.mutate<{ createStripeConnectionToken: { secret: string } }>({
+	createStripeConnectionToken(queryData: string) {
+		return this.mutate<{ createStripeConnectionToken: { secret: string } }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CreateStripeConnectionToken {
@@ -1563,12 +1619,13 @@ export class ApiService {
 				}
 			`
 		})
+	}
 
-	captureStripePaymentIntent = async (
+	captureStripePaymentIntent(
 		queryData: string,
 		variables: { id: string }
-	) =>
-		this.mutate<{ captureStripePaymentIntent: { id: string } }>({
+	) {
+		return this.mutate<{ captureStripePaymentIntent: { id: string } }>({
 			apollo: this.blackmoneyAuthApollo,
 			mutation: gql`
 				mutation CaptureStripePaymentIntent($id: String!) {
@@ -1579,4 +1636,5 @@ export class ApiService {
 			`,
 			variables
 		})
+	}
 }

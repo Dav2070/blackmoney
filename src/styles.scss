@@ -119,6 +119,10 @@
 	--dav-color-palette-error99-rgb: 255, 251, 255; /* #fffbff */
 }
 
+html {
+	overscroll-behavior: none;
+}
+
 body {
 	/* RGB color variables */
 	/* light */

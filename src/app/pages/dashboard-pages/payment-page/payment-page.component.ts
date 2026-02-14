@@ -26,7 +26,11 @@ import {
 	navigateToStripeCheckout,
 	showToast
 } from "src/app/utils"
-import { AddOrderItemVariationInput, PaymentMethod } from "src/app/types"
+import {
+	AddOrderItemVariationInput,
+	PaymentMethod,
+	ReceiveMessage
+} from "src/app/types"
 
 @Component({
 	templateUrl: "./payment-page.component.html",
@@ -95,6 +99,7 @@ export class PaymentPageComponent {
 	) {}
 
 	async ngOnInit() {
+		this.messageService.addMessageListener(this.handleMessages)
 		await this.dataService.restaurantPromiseHolder.AwaitResult()
 
 		const uuid = this.activatedRoute.snapshot.paramMap.get("uuid")
@@ -114,10 +119,33 @@ export class PaymentPageComponent {
 		this.ordersLoading = false
 	}
 
+	ngOnDestroy() {
+		this.messageService.removeMessageListener(this.handleMessages)
+	}
+
 	@HostListener("document:click", ["$event"])
 	documentClick(event: MouseEvent) {
 		if (!this.contextMenu.nativeElement.contains(event.target as Node)) {
 			this.contextMenuVisible = false
+		}
+	}
+
+	handleMessages = async (message: ReceiveMessage) => {
+		if (message.type !== "captureStripePaymentIntent" || message.id == null) {
+			return
+		}
+
+		console.log(message)
+
+		const response = await this.apiService.captureStripePaymentIntent(`id`, {
+			id: message.id
+		})
+
+		const success = response.data.captureStripePaymentIntent.id != null
+		console.log(response, success)
+
+		if (success) {
+			this.removeBill()
 		}
 	}
 
@@ -185,7 +213,6 @@ export class PaymentPageComponent {
 	}
 
 	removeBill() {
-		this.bookedItems.transferAllItems(this.activeBill)
 		let index = this.bills.indexOf(this.activeBill)
 
 		this.bills.splice(index, 1)
@@ -354,9 +381,9 @@ export class PaymentPageComponent {
 				billUuid: this.billUuid,
 				paymentMethod
 			})
-		}
 
-		this.removeBill()
+			this.removeBill()
+		}
 	}
 
 	moveMultipleProductsDialogPrimaryButtonClick(event: { count: number }) {

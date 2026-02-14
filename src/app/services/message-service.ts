@@ -5,6 +5,7 @@ import { SendMessage, ReceiveMessage } from "../types"
 @Injectable()
 export class MessageService {
 	port: MessagePort = null
+	callbacks: Function[] = []
 
 	constructor(private apiService: ApiService) {}
 
@@ -27,7 +28,7 @@ export class MessageService {
 		this.port.postMessage(JSON.stringify(message))
 	}
 
-	async onMessageReceived(event: MessageEvent<string>) {
+	private async onMessageReceived(event: MessageEvent<string>) {
 		let message: ReceiveMessage = null
 
 		try {
@@ -35,7 +36,12 @@ export class MessageService {
 		} catch (error) {
 			console.error("Error parsing message data: ", error)
 			return
-      }
+		}
+
+		// Send message to all listeners
+		for (const callback of this.callbacks) {
+			callback(message)
+		}
 
 		if (message.type === "createStripeConnectionToken") {
 			const response =
@@ -46,19 +52,17 @@ export class MessageService {
 				type: "createStripeConnectionToken",
 				secret
 			})
-		} else if (
-			message.type === "captureStripePaymentIntent" &&
-			message.id != null
-		) {
-			const response = await this.apiService.captureStripePaymentIntent(
-				`id`,
-				{
-					id: message.id
-				}
-			)
-
-			const success = response.data.captureStripePaymentIntent.id != null
-			console.log(response, success)
 		}
+	}
+
+	addMessageListener(callback: Function) {
+		if (!this.callbacks.includes(callback)) {
+			this.callbacks.push(callback)
+		}
+	}
+
+	removeMessageListener(callback: Function) {
+		const i = this.callbacks.indexOf(callback)
+		if (i != -1) this.callbacks.splice(i, 1)
 	}
 }

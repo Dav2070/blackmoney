@@ -1445,8 +1445,8 @@ export class BookingPageComponent {
 		}
 	}
 
-	addDiverseProductButtonClick() {
-		this.hideBottomSheet()
+	async addDiverseProductButtonClick() {
+		await this.hideBottomSheet()
 		this.addDiverseProductDialog.show()
 	}
 

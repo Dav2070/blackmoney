@@ -51,7 +51,6 @@ export const de = {
 	userPage: {
 		headlines: [
 			"Willkommen zurück, {name}!",
-			"Schön dich wiederzusehen, {name}!",
 			"Hey {name}!",
 			"Hallo {name}!",
 			"Moin {name}!",
